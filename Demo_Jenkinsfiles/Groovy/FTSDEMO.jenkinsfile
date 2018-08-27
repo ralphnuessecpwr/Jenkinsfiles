@@ -81,36 +81,8 @@ String XLR_User             = "xebialabs"
 /**
  Helper Methods for the Pipeline Script
 */
-
-def String getISPWContainer(String HCI_Conn, String CES_Token, String Release, String Level)
-{
-
-    println "Parms received"
-    println "ISPW_Application ${ISPW_Application}"
-    println "ISPW_Src_Level ${ISPW_Src_Level}"    
-    println "ISPW_Release ${ISPW_Release}"
-
-    //Determine the ISPW container name and type for the current release
-    def ISPW_Release_Parm           = 'releaseId=' + Release
-    def ISPW_Level_Parm             = '\nlevel=' + Level
-
-    def ISPW_Parms                  = ISPW_Release_Parm + ISPW_Level_Parm
-
-    //Get the Task List for the Release    
-    def Response = ispwOperation connectionId: HCI_Conn,
-        credentialsId: CES_Token, 
-        ispwAction: 'GetReleaseTaskList', 
-        ispwRequestBody: ISPW_Parms
-
-    //Convert the response to a JSON Object
-    def jsonSlurper         = new JsonSlurper()
-    def TaskList            = jsonSlurper.parseText(Response.getContent())
-
-    return TaskList.tasks[0].container.toString()
-}
-
 //def ArrayList getTasksInSet(String HCI_Conn, String CES_Token, String Release, String Set, String Level)
-def getTasksInSet(String HCI_Conn, String CES_Token, String Release, String Set, String Level)
+def getTasksInSet(String HCI_Conn, String CES_Token, String Set)
 {
     println "getTasksInSet for"
     println "  Release          : " + Release
@@ -123,18 +95,9 @@ def getTasksInSet(String HCI_Conn, String CES_Token, String Release, String Set,
     def jsonSlurper         = new JsonSlurper()
     def TaskList        = []
     
-    def IspwReleaseParm      = 'releaseID=' + Release
-    def IspwLevelParm        = 'level=' + Level
     def IspwSetParm          = 'setID=' + Set
 
     def Response = ispwOperation connectionId: HCI_Conn,
-        credentialsId: CES_Token, 
-        ispwAction: 'GetReleaseTaskList', 
-        ispwRequestBody: IspwReleaseParm + '\n' + IspwLevelParm
-
-    def ReleaseTasks = jsonSlurper.parseText(Reponse.getContent)
-
-    Response = ispwOperation connectionId: HCI_Conn,
         credentialsId: CES_Token, 
         ispwAction: 'GetSetTaskList', 
         ispwRequestBody: IspwSetParm
@@ -206,8 +169,7 @@ node{
     stage("Download Source Code")
     {
 
-        println "Assigment  " + ISPW_Assignment
-        //getTasksInSet(HCI_Conn_ID, CES_Token, ISPW_Release, ISPW_SetId, ISPW_Src_Level)
+        getTasksInSet(HCI_Conn_ID, CES_Token, ISPW_SetId)
         /*
         //Retrieve the code from ISPW that has been promoted 
         checkout([$class: 'IspwContainerConfiguration', 
