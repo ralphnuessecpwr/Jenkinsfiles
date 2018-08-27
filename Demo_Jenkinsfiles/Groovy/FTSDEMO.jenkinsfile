@@ -100,7 +100,7 @@ import java.net.URL
 def ArrayList getISPWContainer(String HCI_Conn, String CES_Token, String Set)
 {
 
-    ArrayList tasksInSet = new ArrayList()
+    tasksInSet = []
 
     println "Parms received"
     println "Set ${Set}"
