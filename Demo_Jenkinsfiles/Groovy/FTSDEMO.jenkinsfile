@@ -100,6 +100,8 @@ import java.net.URL
 def ArrayList getISPWContainer(String HCI_Conn, String CES_Token, String Set)
 {
 
+    ArrayList tasksInSet = new ArrayList
+
     println "Parms received"
     println "Set ${Set}"
 
@@ -128,7 +130,12 @@ def ArrayList getISPWContainer(String HCI_Conn, String CES_Token, String Set)
     def jsonSlurper         = new JsonSlurper()
     def TaskList            = jsonSlurper.parseText(Response.getContent())
 
-    return TaskList //.tasks[0].moduleName.toString()
+    TaskList.each
+    {
+        tasksInSet.add(it.moduleName.toString)
+    }
+    //return TaskList //.tasks[0].moduleName.toString()
+    return tasksInSet
 
 }
 
