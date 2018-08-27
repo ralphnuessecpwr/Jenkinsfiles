@@ -128,6 +128,11 @@ def getTasksInSet(String HCI_Conn, String CES_Token, String Release, String Set,
     def IspwLevelParm        = 'level=' + Level
     def IspwSetParm          = 'setID=' + Set
 
+    println "Using "
+    println "IspwReleaseParm    " + IspwReleaseParm
+    ptintln "IspwLevelParm      " + IspwLevelParm
+    println "IspwSetParm        " + IspwSetParm
+
     def Response = ispwOperation connectionId: HCI_Conn,
         credentialsId: CES_Token, 
         ispwAction: 'GetReleaseTaskList', 
