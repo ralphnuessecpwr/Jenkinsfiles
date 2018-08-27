@@ -151,6 +151,7 @@ node{
     TasksInSet = getISPWContainer(HCI_Conn_ID, CES_Token, ISPW_SetId)
 
     println "Class TasksInSet: " + TasksInSet.getClass()
+    println "TasksInSet is empty: " + TasksInSet.isEmpty()
 
     TasksInSet.each
     {
