@@ -102,6 +102,8 @@ def ArrayList getISPWContainer(String HCI_Conn, String CES_Token, String Set)
 
     tasksInSet = []
 
+    println "Class: " + tasksInSet.getClass()
+
     println "Parms received"
     println "Set ${Set}"
 
