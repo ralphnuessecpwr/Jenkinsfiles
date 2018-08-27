@@ -125,18 +125,15 @@ def getTasksInSet(String HCI_Conn, String CES_Token, String Release, String Set,
     def TaskList        = []
     
     def IspwReleaseParm     = 'releaseId=' + Release
-    def IspwLevelParm       = 'level=' + Level
     def IspwSetParm         = 'setId=' + Set
 
-    def IspwParm            = IspwReleaseParm + '\n' + IspwLevelParm
-
     println "Using "
-    println "IspwParm    " + IspwParm
+    println "IspwReleaseParm    " + IspwReleaseParm
 
     def Response = ispwOperation connectionId: HCI_Conn,
         credentialsId: CES_Token, 
         ispwAction: 'GetReleaseTaskList', 
-        ispwRequestBody: IspwParm
+        ispwRequestBody: IspwReleaseParm
 
     def ReleaseTasks = jsonSlurper.parseText(Response.getContent())
 
