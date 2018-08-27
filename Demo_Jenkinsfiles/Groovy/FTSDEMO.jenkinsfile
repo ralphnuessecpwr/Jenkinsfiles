@@ -124,9 +124,9 @@ def String getISPWContainer(String HCI_Conn, String CES_Token, String Set)
         ignoreSslErrors: true, 
         url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${Set}/tasks"
 
-    if(Response.message != "")
+    if(Response."message" != "")
     {
-        error("Error is ISPW API Request; Message" + Response.message)
+        error("Error is ISPW API Request; Message" + Response."message")
     }
     else
     {
