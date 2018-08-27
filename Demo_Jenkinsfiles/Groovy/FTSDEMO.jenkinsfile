@@ -81,7 +81,7 @@ String XLR_User             = "xebialabs"
 /**
  Helper Methods for the Pipeline Script
 */
-
+/*
 def String getISPWContainer(String HCI_Conn, String CES_Token, String Release, String Level)
 {
 
@@ -97,7 +97,7 @@ def String getISPWContainer(String HCI_Conn, String CES_Token, String Release, S
     def ISPW_Parms                  = ISPW_Release_Parm + ISPW_Level_Parm
 
     //Get the Task List for the Release    
-    def Response = ispwOperation connectionId: "${HCI_Conn}",
+    def Response = ispwOperation connectionId: HCI_Conn,
         credentialsId: CES_Token, 
         ispwAction: 'GetReleaseTaskList', 
         ispwRequestBody: ISPW_Parms
@@ -108,7 +108,56 @@ def String getISPWContainer(String HCI_Conn, String CES_Token, String Release, S
 
     return TaskList.tasks[0].container.toString()
 }
+*/
 
+//def ArrayList getTasksInSet(String HCI_Conn, String CES_Token, String Release, String Set, String Level)
+def getTasksInSet(String HCI_Conn, String CES_Token, String Release, String Set, String Level)
+{
+    println "getTasksInSet for"
+    println "  Release          : " + Release
+    println "  Set              : " + Set
+    println "  Level            : " + Level
+    println "using"
+    println "  HCI Connection   : " + HCI_Conn
+    println "  CES Token        : " + CES_Token
+
+    def jsonSlurper         = new JsonSlurper()
+    def TaskList        = []
+    
+    def SetTasks        = []
+
+    def IspwReleaseParm      = 'releaseID=' + Release
+    def IspwLevelParm        = 'level=' + Level
+    def IspwSetParm          = 'setID=' + Set
+
+    def Response = ispwOperation connectionId: HCI_Conn,
+        credentialsId: CES_Token, 
+        ispwAction: 'GetReleaseTaskList', 
+        ispwRequestBody: IspwReleaseParm + '\n' + ISPW_Level_Parm
+
+    def ReleaseTasks = jsonSlurper.parseText(Reponse.getContent)
+
+    Response = ispwOperation connectionId: HCI_Conn,
+        credentialsId: CES_Token, 
+        ispwAction: 'GetSetTaskList', 
+        ispwRequestBody: IspwSetParm
+    
+    def SetTasks = jsonSlurper.parseText(Reponse.getContent)
+
+    println "Release Tasks"
+    
+    ReleaseTasks.tasks.each
+    {
+        println "Module : " + it.moduleName.toString()
+    }
+
+    println "Set Tasks"
+    
+    SetTasks.tasks.each
+    {
+        println "Module : " + it.moduleName.toString()
+    }
+}
 /**
  Determine the ISPW Path Number for use in Total Test
  @param Level - Level Parameter is the Level returned in the ISPW Webhook
@@ -148,7 +197,7 @@ node{
 
     def ISPW_Target_Level = "QA" + PathNum
 
-    def ISPW_Assignment = getISPWContainer(HCI_Conn_ID, CES_Token, ISPW_Release, ISPW_Target_Level)
+    //def ISPW_Assignment = getISPWContainer(HCI_Conn_ID, CES_Token, ISPW_Release, ISPW_Target_Level)
 
     def CC_DDIO_Override     = "SALESSUP.${ISPW_Application}.${ISPW_Target_Level}.SSD"
 
@@ -160,6 +209,8 @@ node{
     stage("Download Source Code")
     {
 
+        getTasksInSet(HCI_Conn_ID, CES_Token, ISPW_Release, ISPW_SetId, ISPW_Level)
+        /*
         //Retrieve the code from ISPW that has been promoted 
         checkout([$class: 'IspwContainerConfiguration', 
         componentType: '',                  // optional filter for component types in ISPW
@@ -186,7 +237,7 @@ node{
                 serverStream: "${ISPW_Stream}"])
         */
     }
-
+/*
     println "*******************"
     println "Download Unit Tests"
     println "*******************"    
@@ -203,11 +254,13 @@ node{
 
     // findFiles requires the "Pipeline Utilities Plugin"
     // Get all testscenario files in the current workspace into an array of type File
-    def TTTListOfScenarios = findFiles(glob: '**/*.testscenario')
+*/
+//    def TTTListOfScenarios = findFiles(glob: '**/*.testscenario')
 
     // Get all Sources in the MF_Source folder into an Array
-    def ListOfSources  = findFiles(glob: "**/${ISPW_Application}/${MF_Source}/*.cbl")
-
+    
+//    def ListOfSources  = findFiles(glob: "**/${ISPW_Application}/${MF_Source}/*.cbl")
+/*
     def ListOfPrograms = []
     
     ListOfSources.each
@@ -320,6 +373,7 @@ node{
     }
     */
     // Check Quality Gate from SonarQube Scanner
+/*    
     println "******************"
     println "Check Quality Gate"
     println "******************"
@@ -400,7 +454,7 @@ node{
         }
     } 
     */
-
+/*
     println "******************"
     println "Create Git Tags"
     println "******************"
@@ -443,4 +497,5 @@ node{
         }
 
     }
+*/    
 }
