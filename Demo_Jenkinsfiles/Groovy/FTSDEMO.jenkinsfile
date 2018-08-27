@@ -410,8 +410,8 @@ node{
         def TagRoot     = ISPW_SetId + " - "
         def TagMsg_Root = "Pipeline execution run for SetId: ${ISPW_SetId}, Program: "
 
-        def ListOfPrograms[]
-        def ListOfTags[]
+        def ListOfPrograms  = []
+        def ListOfTags      = []
 
         def RequestBody = "setId = ${ISPW_SetId}"
         def Response = ispwOperation connectionId: HCI_Conn,
