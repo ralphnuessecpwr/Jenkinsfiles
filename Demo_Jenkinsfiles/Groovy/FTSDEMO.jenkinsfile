@@ -97,7 +97,7 @@ import java.net.URL
  }
 
 // Function to return the ISPW Container from an ISPW Release
-def String getISPWContainer(String HCI_Conn, String CES_Token, String Set)
+def ArrayList getISPWContainer(String HCI_Conn, String CES_Token, String Set)
 {
 
     println "Parms received"
@@ -124,20 +124,12 @@ def String getISPWContainer(String HCI_Conn, String CES_Token, String Set)
         ignoreSslErrors: true, 
         url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${Set}/tasks"
 
-    if(Response."message" != "")
-    {
-        error("Error is ISPW API Request; Message" + Response."message")
-    }
-    else
-    {
-        //Convert the response to a JSON Object
-        def jsonSlurper         = new JsonSlurper()
-        def TaskList            = jsonSlurper.parseText(Response.getContent())
+    //Convert the response to a JSON Object
+    def jsonSlurper         = new JsonSlurper()
+    def TaskList            = jsonSlurper.parseText(Response.getContent())
 
-        println "Task Module Name " + TaskList.tasks[0].moduleName.toString()
+    return TaskList //.tasks[0].moduleName.toString()
 
-        return TaskList.tasks[0].moduleName.toString()
-    }
 }
 
 // One node with several stages => All variables are local to the node and available to all stages
@@ -149,7 +141,12 @@ node{
 
     def ISPW_Target_Level = "QA" + PathNum
 
-    def ISPW_Assignment = getISPWContainer(HCI_Conn_ID, CES_Token, ISPW_SetId)
+    def TasksInSet = getISPWContainer(HCI_Conn_ID, CES_Token, ISPW_SetId)
+
+    TasksInSet.each
+    {
+        println "Task Module Name " it.moduleName
+    }
 
     def CC_DDIO_Override     = "SALESSUP.${ISPW_Application}.${ISPW_Target_Level}.SSD"
 
