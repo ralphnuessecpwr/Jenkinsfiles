@@ -114,7 +114,7 @@ def String getISPWContainer(String HCI_Conn, String CES_Token, String Set, Strin
     //Get the Task List for the Release    
     def Response = ispwOperation connectionId: "${HCI_Conn}",
         credentialsId: CES_Token, 
-        ispwAction: 'GetReleaseTaskList', 
+        ispwAction: 'GetSetInfoAction', 
         ispwRequestBody: ISPW_Parms
 
     //Convert the response to a JSON Object
