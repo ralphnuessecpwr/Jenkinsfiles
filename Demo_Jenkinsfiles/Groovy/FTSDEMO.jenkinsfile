@@ -155,7 +155,7 @@ node{
 
     TasksInSet.each
     {
-        println "Task Module Name " it.moduleName
+        println "Task Module Name " it.toString()
     }
 
     def CC_DDIO_Override     = "SALESSUP.${ISPW_Application}.${ISPW_Target_Level}.SSD"
