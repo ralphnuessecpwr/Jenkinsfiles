@@ -360,7 +360,7 @@ node{
                 {
                 }
                 */
-                
+    /*                
                 println "Will abort the pipeline"
 
                 def mailRecipients = "ralph.nuesse@compuware.com"
