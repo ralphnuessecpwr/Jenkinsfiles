@@ -124,9 +124,9 @@ def getTasksInSet(String HCI_Conn, String CES_Token, String Release, String Set,
     def jsonSlurper         = new JsonSlurper()
     def TaskList        = []
     
-    def IspwReleaseParm     = 'releaseID=' + Release
+    def IspwReleaseParm     = 'releaseId=' + Release
     def IspwLevelParm       = 'level=' + Level
-    def IspwSetParm         = 'setID=' + Set
+    def IspwSetParm         = 'setId=' + Set
 
     def IspwParm            = IspwReleaseParm + '\n' + IspwLevelParm
 
