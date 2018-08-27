@@ -130,7 +130,7 @@ def ArrayList getISPWContainer(String HCI_Conn, String CES_Token, String Set)
     def jsonSlurper         = new JsonSlurper()
     def TaskList            = jsonSlurper.parseText(Response.getContent())
 
-    TaskList.each
+    TaskList.tasks.each
     {
         tasksInSet.add(it.moduleName.toString)
     }
