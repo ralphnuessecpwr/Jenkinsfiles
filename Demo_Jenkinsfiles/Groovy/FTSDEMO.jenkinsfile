@@ -233,7 +233,7 @@ node
         credentialsId: CES_Token, 
         ispwAction: 'GetReleaseTaskList', 
         ispwRequestBody: IspwReleaseParm
-
+/*
     def ReleaseTasks = jsonSlurper.parseText(Response.getContent())
 
     Response = ispwOperation connectionId: HCI_Conn_ID,
@@ -258,4 +258,5 @@ node
     }    
 
     }
+*/
 }
