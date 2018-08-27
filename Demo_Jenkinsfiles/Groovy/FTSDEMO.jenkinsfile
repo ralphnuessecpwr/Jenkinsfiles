@@ -23,7 +23,7 @@ import java.net.URL
  This Pipeline Requires the below Parameters to be defined in the Jenkins Job
  The Jenkins Parameters can be supplied by a ISPW Webhook by defining a webhook like the example below.  
  Please note that the assignment is not currently available in the webhook, but will be added in a future release.
- http://<<your jenkins server>>/job/<<you jenkins job>>/buildWithParameters?ISPW_Stream=$$stream$$&ISPW_Container=$$release$$&ISPW_Level=$$levels$$&ISPW_SetId=$$setID$$&ISPW_Release=$$release$$&Owner=$$owner$$
+ http://<<your jenkins server>>/job/<<you jenkins job>>/buildWithParameters?ISPW_Stream=$$stream$$&ISPW_Container=$$release$$&ISPW_Level=$$level$$&ISPW_SetId=$$setID$$&ISPW_Release=$$release$$&Owner=$$owner$$
  
  ISPW Webhook Parameter List below
  @param ISPW_Stream - ISPW Stream that had the code promotion
@@ -207,7 +207,7 @@ node{
     stage("Download Source Code")
     {
 
-        getTasksInSet(HCI_Conn_ID, CES_Token, ISPW_Release, ISPW_SetId, ISPW_Level)
+        getTasksInSet(HCI_Conn_ID, CES_Token, ISPW_Release, ISPW_SetId, ISPW_Src_Level)
         /*
         //Retrieve the code from ISPW that has been promoted 
         checkout([$class: 'IspwContainerConfiguration', 
