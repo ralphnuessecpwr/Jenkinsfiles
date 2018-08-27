@@ -92,16 +92,15 @@ def String getISPWContainer(String HCI_Conn, String CES_Token, String Release, S
 
     //Determine the ISPW container name and type for the current release
     def ISPW_Release_Parm           = 'releaseId=' + Release
-    //def ISPW_Level_Parm             = '\nlevel=' + Level
+    def ISPW_Level_Parm             = '\nlevel=' + Level
 
-    //def ISPW_Parms                  = ISPW_Release_Parm + ISPW_Level_Parm
+    def ISPW_Parms                  = ISPW_Release_Parm + ISPW_Level_Parm
 
     //Get the Task List for the Release    
     def Response = ispwOperation connectionId: HCI_Conn,
         credentialsId: CES_Token, 
         ispwAction: 'GetReleaseTaskList', 
-        //ispwRequestBody: ISPW_Parms
-        ispwRequestBody: ISPW_Release_Parm
+        ispwRequestBody: ISPW_Parms
 
     //Convert the response to a JSON Object
     def jsonSlurper         = new JsonSlurper()
