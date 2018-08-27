@@ -102,8 +102,6 @@ def ArrayList getISPWContainer(String HCI_Conn, String CES_Token, String Set)
 
     tasksInSet = []
 
-    println "Class: " + tasksInSet.getClass()
-
     println "Parms received"
     println "Set ${Set}"
 
@@ -150,7 +148,9 @@ node{
 
     def ISPW_Target_Level = "QA" + PathNum
 
-    def TasksInSet = getISPWContainer(HCI_Conn_ID, CES_Token, ISPW_SetId)
+    TasksInSet = getISPWContainer(HCI_Conn_ID, CES_Token, ISPW_SetId)
+
+    println "Class TasksInSet: " + TasksInSet.getClass()
 
     TasksInSet.each
     {
