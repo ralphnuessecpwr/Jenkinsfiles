@@ -223,8 +223,9 @@ node
     def jsonSlurper         = new JsonSlurper()
     def TaskList        = []
     
-    def IspwReleaseParm     = 'releaseId=' + ISPW_Release
-    def IspwSetParm         = 'setId=' + ISPW_SetId
+    def IspwReleaseParm      = 'releaseId=' + ISPW_Release
+    def IspwLevelParm        = '\nlevel=' + ISPW_Src_Level
+    def IspwSetParm          = 'setId=' + ISPW_SetId
 
     println "Using "
     println "IspwReleaseParm    " + IspwReleaseParm
@@ -232,7 +233,7 @@ node
     def Response = ispwOperation connectionId: HCI_Conn_ID,
         credentialsId: CES_Token, 
         ispwAction: 'GetReleaseTaskList', 
-        ispwRequestBody: IspwReleaseParm
+        ispwRequestBody: IspwReleaseParm + IspwLevelParm
 /*
     def ReleaseTasks = jsonSlurper.parseText(Response.getContent())
 
