@@ -85,9 +85,7 @@ String XLR_User             = "xebialabs"
 def getTasksInSet(String HCI_Conn, String CES_Token, String Set)
 {
     println "getTasksInSet for"
-    println "  Release          : " + Release
     println "  Set              : " + Set
-    println "  Level            : " + Level
     println "using"
     println "  HCI Connection   : " + HCI_Conn
     println "  CES Token        : " + CES_Token
