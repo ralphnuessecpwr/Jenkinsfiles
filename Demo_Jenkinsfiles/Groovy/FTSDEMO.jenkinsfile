@@ -104,10 +104,8 @@ def String getISPWContainer(String HCI_Conn, String CES_Token, String Set)
     println "Set ${Set}"
 
     //Determine the ISPW container name and type for the current release
-    def ISPW_Set_Parm           = 'SetId=' + Set
-    //def ISPW_Level_Parm             = '\nlevel=' + Level
-
-    def ISPW_Parms                  = ISPW_Set_Parm// + ISPW_Level_Parm
+    def ISPW_Set_Parm           = 'setId=' + Set
+    def ISPW_Parms              = ISPW_Set_Parm// + ISPW_Level_Parm
 
     println "GetSetInfoAction Using Parms"
     println ISPW_Parms
