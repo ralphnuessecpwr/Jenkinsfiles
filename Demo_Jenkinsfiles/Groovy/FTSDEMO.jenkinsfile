@@ -93,7 +93,7 @@ def getTasksInSet(String HCI_Conn, String CES_Token, String Set)
     def jsonSlurper         = new JsonSlurper()
     def TaskList        = []
     
-    def IspwSetParm          = 'setID=' + Set
+    def IspwSetParm          = 'setId=' + Set
 
     def Response = ispwOperation connectionId: HCI_Conn,
         credentialsId: CES_Token, 
