@@ -97,7 +97,7 @@ import java.net.URL
  }
 
 // Function to return the ISPW Container from an ISPW Release
-def String getISPWContainer(String HCI_Conn, String CES_Token, String Set, String Level)
+def String getISPWContainer(String HCI_Conn, String CES_Token, String Set)
 {
 
     println "Parms received"
