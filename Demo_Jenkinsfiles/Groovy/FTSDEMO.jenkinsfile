@@ -138,14 +138,14 @@ def getTasksInSet(String HCI_Conn, String CES_Token, String Release, String Set,
         ispwAction: 'GetReleaseTaskList', 
         ispwRequestBody: IspwParm
 
-    def ReleaseTasks = jsonSlurper.parseText(Response.getContent)
+    def ReleaseTasks = jsonSlurper.parseText(Response.getContent())
 
     Response = ispwOperation connectionId: HCI_Conn,
         credentialsId: CES_Token, 
         ispwAction: 'GetSetTaskList', 
         ispwRequestBody: IspwSetParm
     
-    def SetTasks = jsonSlurper.parseText(Response.getContent)
+    def SetTasks = jsonSlurper.parseText(Response.getContent())
 
     println "Release Tasks"
     
