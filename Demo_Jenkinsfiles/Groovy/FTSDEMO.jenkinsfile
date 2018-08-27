@@ -28,9 +28,9 @@ import java.net.URL
  @param ISPW_Stream - ISPW Stream that had the code promotion
  @param ISPW_Container - ISPW Container that had the code promotion
  @param ISPW_Level - ISPW Level that code was promoted from
- @param SetId - ISPW Set that was created for the promotion
+ @param ISPW_SetId - ISPW Set that was created for the promotion
  @param ISPW_Release - The ISPW Release Value that will be passed to XL Release
- @param Owner - The ISPW Owner value from the ISPW Set that was created for the promotion
+ @param ISPW_Owner - The ISPW Owner value from the ISPW Set that was created for the promotion
 
  The Pipeline also takes the following parameters from the Jenkins Job
  @param CES_Token - CES Personal Access Token.  These are configured in Compuware Enterprise Services / Security / Personal Access Tokens 
@@ -112,7 +112,7 @@ def String getISPWContainer(String HCI_Conn, String CES_Token, String Set, Strin
     def ISPW_Parms                  = ISPW_Set_Parm// + ISPW_Level_Parm
 
     //Get the Task List for the Release    
-    def Response = ispwOperation connectionId: "${HCI_Conn}",
+    def Response = ispwOperation connectionId: HCI_Conn,
         credentialsId: CES_Token, 
         ispwAction: 'GetSetInfoAction', 
         ispwRequestBody: ISPW_Parms
@@ -133,7 +133,7 @@ node{
 
     def ISPW_Target_Level = "QA" + PathNum
 
-    def ISPW_Assignment = getISPWContainer(HCI_Conn_ID, CES_Token, ISPW_Release, ISPW_Target_Level)
+    def ISPW_Assignment = getISPWContainer(HCI_Conn_ID, CES_Token, ISPW_SetId)
 
     def CC_DDIO_Override     = "SALESSUP.${ISPW_Application}.${ISPW_Target_Level}.SSD"
 
