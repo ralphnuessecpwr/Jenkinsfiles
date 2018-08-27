@@ -410,7 +410,7 @@ node{
         def TagRoot     = ISPW_SetId + " - "
         def TagMsg_Root = "Pipeline execution run for SetId: ${ISPW_SetId}, Program: "
 
-        def ListOfPrograms  = []
+        def ListOfTasks     = []
         def ListOfTags      = []
 
         def RequestBody = "setId = ${ISPW_SetId}"
@@ -427,7 +427,7 @@ node{
         {
             if(
                 it.moduleType == "COB" && 
-                !ListOfPrograms.contains(it.moduleName.toString)
+                !ListOfTasks.contains(it.moduleName.toString)
             )
             {
                 ListOfTags.add(TagRoot + it.moduleName.toString())
