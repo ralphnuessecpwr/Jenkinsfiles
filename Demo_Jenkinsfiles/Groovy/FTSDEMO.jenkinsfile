@@ -124,13 +124,20 @@ def String getISPWContainer(String HCI_Conn, String CES_Token, String Set)
         ignoreSslErrors: true, 
         url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${Set}/tasks"
 
-    //Convert the response to a JSON Object
-    def jsonSlurper         = new JsonSlurper()
-    def TaskList            = jsonSlurper.parseText(Response.getContent())
+    if(Response.message != "")
+    {
+        error("Error is ISPW API Request; Message" + Response.message)
+    }
+    else
+    {
+        //Convert the response to a JSON Object
+        def jsonSlurper         = new JsonSlurper()
+        def TaskList            = jsonSlurper.parseText(Response.getContent())
 
-    println "Task Module Name " + TaskList.tasks[0].moduleName.toString()
+        println "Task Module Name " + TaskList.tasks[0].moduleName.toString()
 
-    return TaskList.tasks[0].moduleName.toString()
+        return TaskList.tasks[0].moduleName.toString()
+    }
 }
 
 // One node with several stages => All variables are local to the node and available to all stages
