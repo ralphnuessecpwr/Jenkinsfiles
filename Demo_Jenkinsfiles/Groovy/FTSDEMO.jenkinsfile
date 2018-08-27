@@ -132,7 +132,7 @@ def ArrayList getISPWContainer(String HCI_Conn, String CES_Token, String Set)
 
     TaskList.tasks.each
     {
-        tasksInSet.add(it.moduleName.toString)
+        tasksInSet.add(it.moduleName)
     }
     //return TaskList //.tasks[0].moduleName.toString()
     return tasksInSet
