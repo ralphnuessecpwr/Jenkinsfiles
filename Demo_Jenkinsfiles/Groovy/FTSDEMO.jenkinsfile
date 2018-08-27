@@ -134,7 +134,7 @@ def getTasksInSet(String HCI_Conn, String CES_Token, String Release, String Set,
         credentialsId: CES_Token, 
         ispwAction: 'GetReleaseTaskList', 
         ispwRequestBody: IspwReleaseParm
-
+/*
     def ReleaseTasks = jsonSlurper.parseText(Response.getContent())
 
     Response = ispwOperation connectionId: HCI_Conn,
@@ -157,6 +157,7 @@ def getTasksInSet(String HCI_Conn, String CES_Token, String Release, String Set,
     {
         println "Module : " + it.moduleName.toString()
     }
+*/    
 }
 /**
  Determine the ISPW Path Number for use in Total Test
