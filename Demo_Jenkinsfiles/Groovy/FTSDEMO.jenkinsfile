@@ -122,7 +122,6 @@ def String getISPWContainer(String HCI_Conn, String CES_Token, String Set)
         customHeaders: [[maskValue: false, name: 'content-type', value: 'application/json'], 
         [maskValue: false, name: 'authorization', value: "665fc9fb-39de-428a-8a67-a3619752873d"]], 
         ignoreSslErrors: true, 
-        responseHandle: 'NONE', 
         url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${Set}/tasks"
 
     //Convert the response to a JSON Object
