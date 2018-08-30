@@ -143,6 +143,7 @@ public class Ispw implements Serializable
             }
         }
 
+        steps.echo 'return in setMap'
         return setMap        
 
     }
@@ -152,7 +153,9 @@ public class Ispw implements Serializable
     {
         steps.echo 'getSetAssignmentsList'
         
+        steps.echo 'call setMap'
         def setMap = getSetMap(setId)
+        steps.echo 'call outside setMap'
 
         def assignmentList  = []
         def jsonSlurper     = new JsonSlurper()
