@@ -243,9 +243,9 @@ node{
 
     def ISPW_Target_Level = "QA" + PathNum
 
-//    def ispw = new Ispw(steps, CES_Token_Clear)
+    def ispw = new Ispw(steps, CES_Token_Clear)
 
-    def setMap = ispw.getSetMap(ISPW_SetId)
+//    def setMap = ispw.getSetMap(ISPW_SetId)
 
     echo 'call getSetAssignmentsList'
     def assignmentList = ispw.getSetAssignmentsList(setMap, ISPW_Release)
