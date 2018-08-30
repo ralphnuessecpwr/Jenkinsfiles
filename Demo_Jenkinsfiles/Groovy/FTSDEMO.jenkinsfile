@@ -159,8 +159,6 @@ public class Ispw implements Serializable
         def resp            = jsonSlurper.parseText(Response.getContent())
         def taskList        = resp.tasks
         
-        def assignmentList  = []
-        
         taskList.each
         {
             if(setMap.containsKey(it.taskId))
