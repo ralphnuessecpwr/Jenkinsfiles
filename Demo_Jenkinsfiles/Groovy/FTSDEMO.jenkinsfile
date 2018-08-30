@@ -247,6 +247,8 @@ node{
 
 //    def setMap = ispw.getSetMap(ISPW_SetId)
 
+    def setMap = [:]
+
     echo 'call getSetAssignmentsList'
     def assignmentList = ispw.getSetAssignmentsList(setMap, ISPW_Release)
 
