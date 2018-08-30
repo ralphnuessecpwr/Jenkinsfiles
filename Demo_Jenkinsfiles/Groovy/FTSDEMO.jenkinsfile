@@ -275,6 +275,8 @@ node{
         customHeaders: [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
     )
 
+    echo "reponse class: " + response.getClass()
+
     def resp = jsonHandler.parseInput(response.getContent())
 
     echo 'IF in getSetMap'
