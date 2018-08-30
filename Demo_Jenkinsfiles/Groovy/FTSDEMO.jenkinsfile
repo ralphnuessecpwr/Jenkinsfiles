@@ -277,11 +277,8 @@ node{
         customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
     )
 
-    echo "reponse class: " + response.getClass()
-
     def resp = jsonHandler.parseInput(response)
 
-    echo 'IF in getSetMap'
     if(resp.message != null)
     {
         echo "Resp: " + resp.message
@@ -297,15 +294,38 @@ node{
                 setMap.put(it.taskId, it.moduleName) 
             }
         }
+
+        def assignmentList  = []
+
+        def response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/releases/${ISPW_Release}/tasks",
+            consoleLogResponseBody: true, 
+            customHeaders: [[maskValue: false, name: 'authorization', value: "${CES_Token_Clear}"]]
+        )
+            
+        def resp = jsonHandler.parseInput(response)
+
+        if(resp.message != null)
+        {
+            steps.echo "Resp: " + resp.message
+        }
+        else
+        {
+            step.echo 'ELSE'
+            def taskList        = resp.tasks
+            
+            taskList.each
+            {
+                if(setMap.containsKey(it.taskId))
+                {
+                    if(!(assignmentList.contains(it.container)))
+                    {
+                        steps.echo 'Add ' + it.container
+                        assignmentList.add(it.container)        
+                    }
+                }
+            }
+        }
     }
-
-    echo "ENDE"
-
-    def ispw = new Ispw(steps, CES_Token_Clear)
-
-//    def setMap = ispw.getSetMap(ISPW_SetId)
-
-    def assignmentList = ispw.getSetAssignmentsList(ISPW_SetId, ISPW_Release)
 
     assignmentList.each
     {
