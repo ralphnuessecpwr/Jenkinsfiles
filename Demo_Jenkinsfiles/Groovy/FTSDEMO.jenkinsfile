@@ -148,9 +148,11 @@ public class Ispw implements Serializable
     @NonCPS
     public ArrayList getSetAssignmentsList(Map setMap, String releaseId) 
     {
-        def assignmentList = []
-        def jsonSlurper = new JsonSlurper()
+        steps.echo 'getSetAssignmentsList'
+        def assignmentList  = []
+        def jsonSlurper     = new JsonSlurper()
 
+        steps.echo 'hhtpRequest'
         def Response = steps.httpRequest acceptType: 'APPLICATION_JSON', 
             consoleLogResponseBody: true, 
             contentType: 'APPLICATION_JSON', 
@@ -158,14 +160,16 @@ public class Ispw implements Serializable
             responseHandle: 'NONE', 
             url: "http://cwcc.compuware.com:2020/ispw/ispw/releases/${releaseId}/tasks"
             
-        def resp            = jsonSlurper.parseText(Response.getContent())
+        def resp = jsonSlurper.parseText(Response.getContent())
 
+        steps.ech 'IF'
         if(resp.message != null)
         {
             steps.echo "Resp: " + resp.message
         }
         else
         {
+            step.echo 'ELSE'
             def taskList        = resp.tasks
             
             taskList.each
