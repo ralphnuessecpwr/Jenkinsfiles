@@ -110,11 +110,11 @@ public class Ispw implements Serializable
 
     public Map getSetMap(String setId)
     {
-        println "getSetMap"
+        steps.echo "getSetMap"
         def setMap = [:]
         
-        println "httpRequest"
-        def Response = httpRequest acceptType: 'APPLICATION_JSON', 
+        steps.echo "httpRequest"
+        def Response = steps.httpRequest acceptType: 'APPLICATION_JSON', 
             consoleLogResponseBody: true, 
             contentType: 'APPLICATION_JSON', 
             customHeaders: [[maskValue: true, name: 'authorization', value: "${cesToken}"]],
@@ -126,7 +126,7 @@ public class Ispw implements Serializable
         
         if(resp.message != null)
         {
-            println "Resp: " + resp.message
+            steps.echo "Resp: " + resp.message
         }
         else
         {
