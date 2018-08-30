@@ -101,18 +101,19 @@ public class Ispw implements Serializable
 {
    	def steps
     def String cesToken
+    def jsonSlurper
 
 	Ispw(steps, String cesToken)
     {
-		this.steps = steps
-        this.cesToken = cesToken
+		this.steps          = steps
+        this.cesToken       = cesToken
+        this.jsonSlurper    = new JsonSlurper()
     }
 
     public Map getSetMap(String setId)
     {
 
-        def setMap      = [:]
-        def jsonSlurper = new JsonSlurper()
+        def setMap = [:]
 
         def Response = steps.httpRequest acceptType: 'APPLICATION_JSON', 
             consoleLogResponseBody: true, 
@@ -121,7 +122,7 @@ public class Ispw implements Serializable
             responseHandle: 'NONE', 
             url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${setId}/tasks"
         
-        def resp                = jsonSlurper.parseText(Response.getContent())
+        def resp = jsonSlurper.parseText(Response.getContent())
 
         if(resp.message != null)
         {
@@ -129,7 +130,7 @@ public class Ispw implements Serializable
         }
         else
         {
-            def taskList            = resp.tasks
+            def taskList = resp.tasks
         
             taskList.each
             {
@@ -140,16 +141,13 @@ public class Ispw implements Serializable
             }
         }
 
-        jsonSlurper = null
-
         return setMap        
 
     }
 
     public ArrayList getSetAssignmentsList(Map setMap, String releaseId) 
     {
-        def assignmentList  = []
-        def jsonSlurper     = new JsonSlurper()
+        def assignmentList = []
 
         def Response = httpRequest acceptType: 'APPLICATION_JSON', 
             consoleLogResponseBody: true, 
@@ -159,21 +157,27 @@ public class Ispw implements Serializable
             url: "http://cwcc.compuware.com:2020/ispw/ispw/releases/${releaseId}/tasks"
             
         def resp            = jsonSlurper.parseText(Response.getContent())
-        def taskList        = resp.tasks
-        
-        taskList.each
+
+        if(resp.message != null)
         {
-            if(setMap.containsKey(it.taskId))
+            steps.echo "Resp: " + resp.message
+        }
+        else
+        {
+            def taskList        = resp.tasks
+            
+            taskList.each
             {
-                if(!(assignmentList.contains(it.container)))
+                if(setMap.containsKey(it.taskId))
                 {
-                    assignmentList.add(it.container)        
+                    if(!(assignmentList.contains(it.container)))
+                    {
+                        assignmentList.add(it.container)        
+                    }
                 }
             }
         }
 
-        jsonSlurper = null
-        
         return assignmentList
     }
 }
