@@ -110,8 +110,10 @@ public class Ispw implements Serializable
 
     public Map getSetMap(String setId)
     {
+        println "getSetMap"
         def setMap = [:]
         
+        println "httpRequest"
         def Response = httpRequest acceptType: 'APPLICATION_JSON', 
             consoleLogResponseBody: true, 
             contentType: 'APPLICATION_JSON', 
@@ -140,7 +142,7 @@ public class Ispw implements Serializable
         }
 
         return setMap        
-        
+
     }
 }
 
