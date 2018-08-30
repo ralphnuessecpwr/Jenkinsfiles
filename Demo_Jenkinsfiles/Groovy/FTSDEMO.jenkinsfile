@@ -118,8 +118,8 @@ public class Ispw implements Serializable
         def jsonSlurper = new JsonSlurper()
 
         def response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${setId}/tasks",
+            httpMode: 'GET',
             consoleLogResponseBody: true,
-            validResponseContent: 'ok',
             customHeaders: [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
         )
 
