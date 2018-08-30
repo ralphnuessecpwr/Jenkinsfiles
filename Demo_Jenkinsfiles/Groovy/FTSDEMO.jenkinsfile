@@ -61,6 +61,7 @@ import java.net.URL
  String MF_Source            = "MF_Source"
  String XLR_Template         = "A Release from Jenkins"
  String XLR_User	         = "admin"	
+ String CES_Token_Clear      = "665fc9fb-39de-428a-8a67-a3619752873d"
 		 
 /**
  Helper Methods for the Pipeline Script
@@ -95,6 +96,59 @@ import java.net.URL
         submoduleCfg: [], 
         userRemoteConfigs: [[credentialsId: "${Credentials}", name: "origin", url: "${URL}"]]]
  }
+
+public class Ispw implements Serializable
+{
+   	def steps
+	def String componentNames
+	def String applicationId
+	def String applicationLevel
+	def String applicationStream
+
+	PropertiesInfo pinfo
+
+	Ispw(steps,String componentNames,String applicationId,String applicationLevel,String applicationStream) 
+    {
+		this.steps = steps
+		this.componentNames = componentNames
+		this.applicationId = applicationId
+		this.applicationLevel = applicationLevel
+		this.applicationStream = applicationStream
+    }
+
+    public Map getSetMap(String setId)
+    {
+        def Response = httpRequest acceptType: 'APPLICATION_JSON', 
+            consoleLogResponseBody: true, 
+            contentType: 'APPLICATION_JSON', 
+            customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]],
+            responseHandle: 'NONE', 
+            url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${setId}/tasks"
+        
+        def jsonSlurper         = new JsonSlurper()
+        def resp                = jsonSlurper.parseText(Response.getContent())
+        
+        if(resp.message != null)
+        {
+            println "Resp: " + resp.message
+        }
+        else
+        {
+            def taskList            = resp.tasks
+        
+            taskList.each
+            {
+                if(it.moduleType == 'COB' && it.level == 'QA3')
+                {
+                    setMap.put(it.taskId, it.moduleName) 
+                }
+            }
+
+            return setMap
+
+        }
+    }
+}
 
 // Function to return the ISPW Container from an ISPW Release
 def ArrayList getISPWContainer(String HCI_Conn, String CES_Token, String Set)
@@ -141,6 +195,7 @@ def ArrayList getISPWContainer(String HCI_Conn, String CES_Token, String Set)
 
 // One node with several stages => All variables are local to the node and available to all stages
 node{
+    
     def PathNum = getPathNum(ISPW_Src_Level)
 
     // Use the Path Number to determine the right Runner JCL to use (different STEPLIB concatenations)
@@ -148,7 +203,11 @@ node{
 
     def ISPW_Target_Level = "QA" + PathNum
 
-    TasksInSet = getISPWContainer(HCI_Conn_ID, CES_Token, ISPW_SetId)
+    def ispw = new ISPW(steps, ISPW_Application, ISPW_Src_Level, ISPW_Stream)
+
+    def setMap = ispw.getSetMap(ISPW_SetId)
+
+    //TasksInSet = getISPWContainer(HCI_Conn_ID, CES_Token, ISPW_SetId)
 
     println "Class TasksInSet: " + TasksInSet.getClass()
     println "TasksInSet is empty: " + TasksInSet.isEmpty()
