@@ -103,9 +103,6 @@ import java.net.URL
  {
     def jsonSlurper = new JsonSlurper()
     def returnMap   = [:]
-
-    echo "Response caught"
-
     def resp        = jsonSlurper.parseText(response.getContent())
 
     if(resp.message != null)
@@ -125,7 +122,7 @@ import java.net.URL
             }
         }
     }
-    steps.echo "Return returnMap"
+
     return returnMap
  }
 
@@ -179,7 +176,7 @@ node{
 
     def setMap          = getSetMap(response1)
 
-    def response2 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/releases/${release}/tasks",
+    def response2 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/releases/${ISPW_Release}/tasks",
         consoleLogResponseBody: true, 
         customHeaders: [[maskValue: false, name: 'authorization', value: "${token}"]]
     )
