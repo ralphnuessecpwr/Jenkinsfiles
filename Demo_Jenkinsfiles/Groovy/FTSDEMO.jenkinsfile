@@ -58,7 +58,7 @@ import java.net.URL
  String Git_TTT_Repo         = "${ISPW_Stream}_${ISPW_Application}_Unit_Tests"
  String Git_Branch           = "master"
  String SQ_Scanner_Name      = "Scanner" 
- String SQ_Server_Name       = "localhost"  
+ String SQ_Server_Name       = "CWCC"  
  String MF_Source            = "MF_Source"
  String XLR_Template         = "A Release from Jenkins"
  String XLR_User	         = "admin"	
@@ -181,13 +181,6 @@ node{
     )
 
     def assignmentList  = getAssigmentList(setMap, response2)
-
-    for(int i = 0; i < assignmentList.size(); i++)
-    {
-
-        println "Assigment " + assignmentList[i].toString()
-    
-    }
 
     def CC_DDIO_Override     = "SALESSUP.${ISPW_Application}.${ISPW_Target_Level}.SSD"
 
@@ -431,12 +424,18 @@ node{
                 {
                 }
                 */
-                /*
-                response3 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/assignments/${assigmentList[0].toString()}/tasks/regress?level=${ISPW_Target_Level}",
-                    httpMode: 'POST',
-                    consoleLogResponseBody: false,
-                    customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
+                
+                for(int i = 0; i < assignmentList.size(); i++)
+                {
+
+                    response3 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/assignments/${assigmentList[0].toString()}/tasks/regress?level=${ISPW_Target_Level}",
+                        httpMode: 'POST',
+                        consoleLogResponseBody: false,
+                        customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
                 )
+                
+                }
+
                 */
                 println "Will abort the pipeline"
 
