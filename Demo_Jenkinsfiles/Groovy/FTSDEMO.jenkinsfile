@@ -146,7 +146,7 @@ public class Ispw implements Serializable
     }
 
     @NonCPS
-    public String getSetAssignmentsList(String setId, String releaseId) 
+    public ArrayList getSetAssignmentsList(String setId, String releaseId) 
     {
         steps.echo 'getSetAssignmentsList'
         
@@ -187,7 +187,7 @@ public class Ispw implements Serializable
             }
         }
 
-        return assignmentList.toString()
+        return assignmentList
         
     }
 }
