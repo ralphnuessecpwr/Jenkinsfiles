@@ -99,19 +99,6 @@ import java.net.URL
  }
 
 @NonCPS
- def ResponseContentSupplier sendHttpRequestGet(String url, String token)
- {
-
-    def response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${setId}/tasks",
-        httpMode: 'GET',
-        consoleLogResponseBody: true,
-        customHeaders: [[maskValue: true, name: 'authorization', value: "${token}"]]
-    )
-
-    return response 
- }
-
-@NonCPS
  def Map getSetMap(ResponseContentSupplier response)
  {
     def jsonSlurper = new JsonSlurper()
@@ -143,15 +130,10 @@ import java.net.URL
  }
 
 @NonCPS
- def ArrayList getAssigmentList(Map setMap, String release, String token)
+ def ArrayList getAssigmentList(Map setMap, ResponseContentSupplier response)
  {
     def jsonSlurper = new JsonSlurper()
     def returnList  = []
-
-    def response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/releases/${release}/tasks",
-        consoleLogResponseBody: true, 
-        customHeaders: [[maskValue: false, name: 'authorization', value: "${token}"]]
-    )
 
     def resp        = jsonSlurper.parseText(response.getContent())
 
@@ -195,15 +177,14 @@ node{
         customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
     )
 
-    echo "Call getSetMap"
     def setMap          = getSetMap(response1)
-    echo "setMap Class: " + setMap.getClass()
-    setMap.each
-    {
-        entry -> echo "Entry $entry.key, $entry.value"
-    }
-    echo "Call getAssigmentList"
-    def assignmentList  = getAssigmentList(setMap, ISPW_Release, CES_Token_Clear)
+
+    def response2 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/releases/${release}/tasks",
+        consoleLogResponseBody: true, 
+        customHeaders: [[maskValue: false, name: 'authorization', value: "${token}"]]
+    )
+
+    def assignmentList  = getAssigmentList(setMap, response2)
 
     assignmentList.each
     {
