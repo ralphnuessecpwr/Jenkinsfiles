@@ -116,16 +116,11 @@ public class Ispw implements Serializable
 
         def setMap      = [:]
         def jsonSlurper = new JsonSlurper()
-/*
-        def Response = steps.httpRequest(acceptType: 'APPLICATION_JSON', 
-            consoleLogResponseBody: true, 
-            contentType: 'APPLICATION_JSON', 
-            customHeaders: [[maskValue: true, name: 'authorization', value: "${cesToken}"]],
-            responseHandle: 'STRING', 
-            url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${setId}/tasks"
+
+        def Response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${setId}/tasks",
+            customHeaders: [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
         )
-*/
-        
+
         steps.echo 'jsonSlurper'        
         def resp = jsonSlurper.parseText(Response.getContent())
 
