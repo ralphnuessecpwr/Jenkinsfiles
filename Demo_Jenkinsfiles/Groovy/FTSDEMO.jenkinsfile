@@ -123,9 +123,11 @@ public class Ispw implements Serializable
             customHeaders: [[maskValue: true, name: 'authorization', value: "${cesToken}"]],
             responseHandle: 'NONE', 
             url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${setId}/tasks"
-        
+
+        steps.echo 'jsonSlurper'        
         def resp = jsonSlurper.parseText(Response.getContent())
 
+        steps.echo 'IF in getSetMap'
         if(resp.message != null)
         {
             steps.echo "Resp: " + resp.message
