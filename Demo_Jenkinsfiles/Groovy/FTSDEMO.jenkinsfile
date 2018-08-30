@@ -149,7 +149,6 @@ import java.net.URL
             {
                 if(!(returnList.contains(it.container)))
                 {
-                    steps.echo 'Add ' + it.container
                     returnList.add(it.container)        
                 }
             }
@@ -182,6 +181,10 @@ node{
     )
 
     def assignmentList  = getAssigmentList(setMap, response2)
+
+    echo "assignmentList Class: " + assignmentList.getClass()
+    echo "Empty? "  + assignmentList.isEmpty()
+    echo "Size "  + assignmentList.size()
 
     assignmentList.each
     {
