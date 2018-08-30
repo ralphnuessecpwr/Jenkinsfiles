@@ -282,6 +282,7 @@ node{
     if(resp.message != null)
     {
         echo "Resp: " + resp.message
+        error
     }
     else
     {
@@ -297,21 +298,22 @@ node{
 
         def assignmentList  = []
 
-        def response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/releases/${ISPW_Release}/tasks",
+        response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/releases/${ISPW_Release}/tasks",
             consoleLogResponseBody: true, 
             customHeaders: [[maskValue: false, name: 'authorization', value: "${CES_Token_Clear}"]]
         )
             
-        def resp = jsonHandler.parseInput(response)
+        resp = jsonHandler.parseInput(response)
 
         if(resp.message != null)
         {
             steps.echo "Resp: " + resp.message
+            error
         }
         else
         {
-            step.echo 'ELSE'
-            def taskList        = resp.tasks
+
+            taskList        = resp.tasks
             
             taskList.each
             {
