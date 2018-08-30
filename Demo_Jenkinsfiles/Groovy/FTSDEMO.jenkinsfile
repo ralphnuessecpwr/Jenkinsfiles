@@ -182,10 +182,11 @@ node{
 
     def assignmentList  = getAssigmentList(setMap, response2)
 
-    for(Int i = 0, i < assignmentList.size(), i++)
+    for(int i = 0, i < assignmentList.size(), i++)
     {
         println "Assigment " assignmentList[i].toString()
     }
+
     def CC_DDIO_Override     = "SALESSUP.${ISPW_Application}.${ISPW_Target_Level}.SSD"
 
     // Download all sources from the desired level and above
@@ -240,8 +241,6 @@ node{
 
     def ListOfPrograms = []
     
-    echo "ListOfSources Class: " + ListOfSources.getClass()
-
     ListOfSources.each
     {
         ListOfPrograms.add(it.name.trim().split("\\.")[0])
@@ -410,12 +409,12 @@ node{
                 println "Will regress assignemt: ${ISPW_Assignment}, Level: ${ISPW_Target_Level}"
                 println "**********************************************************"
 
-                def ISPW_Assignment_Parm        = "assignmentId=" + ISPW_Assignment
-                def ISPW_Level_Parm             = '\nlevel=' + ISPW_Target_Level
-                def ISPW_Runtime_Config_Parm    = '\nruntimeConfiguration=' + ISPW_RuntimeConfig
+                //def ISPW_Assignment_Parm        = "assignmentId=" + ISPW_Assignment
+                //def ISPW_Level_Parm             = '\nlevel=' + ISPW_Target_Level
+                /def ISPW_Runtime_Config_Parm    = '\nruntimeConfiguration=' + ISPW_RuntimeConfig
                 //def ISPW_Remain_Parms           = '\nevents.name=Completed\nevents.body=Regressed\nevents.httpHeaders=Jenkins-Crumb:no-crumb\nevents.credentials=admin:library'
 
-                ISPW_Parms = ISPW_Assignment_Parm + ISPW_Level_Parm + ISPW_Runtime_Config_Parm// + ISPW_Remain_Parms
+                //ISPW_Parms = ISPW_Assignment_Parm + ISPW_Level_Parm + ISPW_Runtime_Config_Parm// + ISPW_Remain_Parms
                 
                 /*
                 try
@@ -430,7 +429,13 @@ node{
                 {
                 }
                 */
-                
+                /*
+                response3 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/assignments/${assigmentList[0].toString()}/tasks/regress?level=${ISPW_Target_Level}",
+                    httpMode: 'POST',
+                    consoleLogResponseBody: false,
+                    customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
+                )
+                */
                 println "Will abort the pipeline"
 
                 def mailRecipients = "ralph.nuesse@compuware.com"
