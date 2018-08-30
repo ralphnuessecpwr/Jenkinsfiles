@@ -4,6 +4,7 @@ import hudson.EnvVars
 import groovy.json.JsonSlurper
 import groovy.json.JsonBuilder
 import groovy.json.JsonOutput
+import jenkins.plugins.http_request.*
 import java.net.URL
 /**
  This is an example Jenkins Pipeline Script that runs a CI process against COBOL Code.  This pipeline is designed to be triggered from ISPW 
