@@ -201,7 +201,7 @@ node{
 
     def ISPW_Target_Level = "QA" + PathNum
 
-    def ispw = new ISPW(steps, ISPW_Application, ISPW_Src_Level, ISPW_Stream)
+    def ispw = new Ispw(steps, ISPW_Application, ISPW_Src_Level, ISPW_Stream)
 
     def setMap = ispw.getSetMap(ISPW_SetId)
 
