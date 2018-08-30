@@ -96,7 +96,7 @@ import java.net.URL
         submoduleCfg: [], 
         userRemoteConfigs: [[credentialsId: "${Credentials}", name: "origin", url: "${URL}"]]]
  }
-
+/*
 public class JsonHandler implements Serializable
 {
 
@@ -111,7 +111,7 @@ public class JsonHandler implements Serializable
     }
 
 }
-
+*/
 public class Ispw implements Serializable
 {
    	def steps
@@ -277,7 +277,7 @@ node{
 
     echo "reponse class: " + response.getClass()
 
-    def resp = jsonHandler.parseInput(response.getContent())
+    //def resp = jsonHandler.parseInput(response.getContent())
 
     echo 'IF in getSetMap'
     if(resp.message != null)
