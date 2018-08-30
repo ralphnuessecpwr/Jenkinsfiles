@@ -108,7 +108,7 @@ public class Ispw implements Serializable
 	Ispw(steps)
     {
 		this.steps = steps
-		this.setId = setId
+		//this.setId = setId
     }
 
     public Map getSetMap(String setId)
