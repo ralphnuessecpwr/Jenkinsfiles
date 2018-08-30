@@ -123,11 +123,9 @@ def Map getSetMap(String setId, String token)
 
         taskList.each
         {
+            if(it.moduleType == 'COB' && it.level == 'QA3')
             {
-                if(it.moduleType == 'COB' && it.level == 'QA3')
-                {
-                    setMap.put(it.taskId, it.moduleName) 
-                }
+                setMap.put(it.taskId, it.moduleName) 
             }
         }
     }
