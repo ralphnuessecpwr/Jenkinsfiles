@@ -100,24 +100,22 @@ import java.net.URL
 public class Ispw implements Serializable
 {
    	def steps
-	def String componentNames
-	def String applicationId
-	def String applicationLevel
-	def String applicationStream
+    def String cesToken
 
 	Ispw(steps, String cesToken)
     {
 		this.steps = steps
         this.cesToken = cesToken
-		//this.setId = setId
     }
 
     public Map getSetMap(String setId)
     {
+        def setMap = [:]
+        
         def Response = httpRequest acceptType: 'APPLICATION_JSON', 
             consoleLogResponseBody: true, 
             contentType: 'APPLICATION_JSON', 
-            customHeaders: [[maskValue: true, name: 'authorization', value: "cesToken}"]],
+            customHeaders: [[maskValue: true, name: 'authorization', value: "${cesToken}"]],
             responseHandle: 'NONE', 
             url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${setId}/tasks"
         
@@ -139,10 +137,10 @@ public class Ispw implements Serializable
                     setMap.put(it.taskId, it.moduleName) 
                 }
             }
-
-            return setMap
-
         }
+
+        return setMap        
+        
     }
 }
 
