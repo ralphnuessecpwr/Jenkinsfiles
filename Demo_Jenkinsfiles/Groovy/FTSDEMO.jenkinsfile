@@ -114,105 +114,33 @@ public class WrappJsonSlurper implements Serializable
 
 }
 
-public class Ispw implements Serializable
+public class WrappHttpRequest implements Serializable
 {
-   	def steps
-    def String cesToken
-
-	Ispw(steps, String cesToken)
-    {
-		this.steps          = steps
-        this.cesToken       = cesToken
-    }
-
     @NonCPS
-    private Map getSetMap(String setId)
+    public Object sendGetRequest(String url, String token)
     {
 
-        def setMap      = [:]
         def jsonSlurper = new JsonSlurper()
 
-        def response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${setId}/tasks",
+        def response = steps.httpRequest(url: url,
             httpMode: 'GET',
             consoleLogResponseBody: true,
-            customHeaders: [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
+            customHeaders: [[maskValue: true, name: 'authorization', value: token]]
         )
 
-        steps.echo 'jsonSlurper'        
-        def resp = jsonSlurper.parseText(response.getContent())
+        def resp        = jsonSlurper.parseText(map.getContent())
 
-        steps.echo 'IF in getSetMap'
         if(resp.message != null)
         {
-            steps.echo "Resp: " + resp.message
-        }
-        else
-        {
-            def taskList = resp.tasks
-        
-            taskList.each
-            {
-                if(it.moduleType == 'COB' && it.level == 'QA3')
-                {
-                    setMap.put(it.taskId, it.moduleName) 
-                }
-            }
+            echo "Resp: " + resp.message
+            error
         }
 
-        steps.echo 'return in setMap'
-        return setMap        
+        return resp
 
-    }
-
-    @NonCPS
-    public ArrayList getSetAssignmentsList(String setId, String releaseId) 
-    {
-        steps.echo 'getSetAssignmentsList'
-        
-        steps.echo 'call setMap'
-        def setMap = getSetMap(setId)
-        steps.echo 'call outside setMap'
-
-        def assignmentList  = []
-        def jsonSlurper     = new JsonSlurper()
-
-        steps.echo 'hhtpRequest'
-        def response = steps.httpRequest acceptType: 'APPLICATION_JSON', 
-            consoleLogResponseBody: true, 
-            contentType: 'APPLICATION_JSON', 
-            customHeaders: [[maskValue: false, name: 'authorization', value: "${cesToken}"]], 
-            responseHandle: 'NONE', 
-            url: "http://cwcc.compuware.com:2020/ispw/ispw/releases/${releaseId}/tasks"
-            
-        def resp = jsonSlurper.parseText(response.getContent())
-
-        steps.ech 'IF'
-        if(resp.message != null)
-        {
-            steps.echo "Resp: " + resp.message
-        }
-        else
-        {
-            step.echo 'ELSE'
-            def taskList        = resp.tasks
-            
-            taskList.each
-            {
-                if(setMap.containsKey(it.taskId))
-                {
-                    if(!(assignmentList.contains(it.container)))
-                    {
-                        steps.echo 'Add ' + it.container
-                        assignmentList.add(it.container)        
-                    }
-                }
-            }
-        }
-
-        return assignmentList
-        
     }
 }
+
 
 // Function to return the ISPW Container from an ISPW Release
 def ArrayList getISPWContainer(String HCI_Conn, String CES_Token, String Set)
@@ -267,16 +195,17 @@ node{
 
     def ISPW_Target_Level = "QA" + PathNum
 
-    def jsonHandler = new WrappJsonSlurper()
-
-    def setMap      = [:]
-
+    def jsonHandler     = new WrappJsonSlurper()
+    def myHttpRequest   = new WrappHttpRequest()
+    def setMap          = [:]
+    
+    /*
     def response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${ISPW_SetId}/tasks",
         httpMode: 'GET',
         consoleLogResponseBody: true,
         customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
     )
-
+    
     def resp = jsonHandler.parseInput(response)
 
     if(resp.message != null)
@@ -286,44 +215,47 @@ node{
     }
     else
     {
-        def taskList = resp.tasks
-    
+    */
+
+    resp = myHttpRequest("http://cwcc.compuware.com:2020/ispw/ispw/sets/${ISPW_SetId}/tasks")
+
+    def taskList = resp.tasks
+
+    taskList.each
+    {
+        if(it.moduleType == 'COB' && it.level == 'QA3')
+        {
+            setMap.put(it.taskId, it.moduleName) 
+        }
+    }
+
+    def assignmentList  = []
+
+    response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/releases/${ISPW_Release}/tasks",
+        consoleLogResponseBody: true, 
+        customHeaders: [[maskValue: false, name: 'authorization', value: "${CES_Token_Clear}"]]
+    )
+        
+    resp = jsonHandler.parseInput(response)
+
+    if(resp.message != null)
+    {
+        steps.echo "Resp: " + resp.message
+        error
+    }
+    else
+    {
+
+        taskList        = resp.tasks
+        
         taskList.each
         {
-            if(it.moduleType == 'COB' && it.level == 'QA3')
+            if(setMap.containsKey(it.taskId))
             {
-                setMap.put(it.taskId, it.moduleName) 
-            }
-        }
-
-        def assignmentList  = []
-
-        response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/releases/${ISPW_Release}/tasks",
-            consoleLogResponseBody: true, 
-            customHeaders: [[maskValue: false, name: 'authorization', value: "${CES_Token_Clear}"]]
-        )
-            
-        resp = jsonHandler.parseInput(response)
-
-        if(resp.message != null)
-        {
-            steps.echo "Resp: " + resp.message
-            error
-        }
-        else
-        {
-
-            taskList        = resp.tasks
-            
-            taskList.each
-            {
-                if(setMap.containsKey(it.taskId))
+                if(!(assignmentList.contains(it.container)))
                 {
-                    if(!(assignmentList.contains(it.container)))
-                    {
-                        steps.echo 'Add ' + it.container
-                        assignmentList.add(it.container)        
-                    }
+                    steps.echo 'Add ' + it.container
+                    assignmentList.add(it.container)        
                 }
             }
         }
