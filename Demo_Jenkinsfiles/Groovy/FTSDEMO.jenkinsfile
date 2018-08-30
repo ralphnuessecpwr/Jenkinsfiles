@@ -53,7 +53,7 @@ import java.net.URL
  @param XLR_Template - XL Release template to trigger at the end of the Jenkins workflow
  @param XLR_User - XL Release user ID. Configured in Jenkins/Manage Jenkins/Configure System/XL Release credentials
 */
- String Git_Credentials      = "github"
+ String Git_Credentials      = "87763671-db9a-47e1-80e7-33c1aba803b1"
  String Git_URL              = "https://github.com/${Git_Project}"
  String Git_TTT_Repo         = "${ISPW_Stream}_${ISPW_Application}_Unit_Tests"
  String Git_Branch           = "master"
@@ -169,15 +169,15 @@ node{
 
     def response1 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${ISPW_SetId}/tasks",
         httpMode: 'GET',
-        consoleLogResponseBody: true,
+        consoleLogResponseBody: false,
         customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
     )
 
     def setMap          = getSetMap(response1)
 
     def response2 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/releases/${ISPW_Release}/tasks",
-        consoleLogResponseBody: true, 
-        customHeaders: [[maskValue: false, name: 'authorization', value: "${CES_Token_Clear}"]]
+        consoleLogResponseBody: false, 
+        customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
     )
 
     def assignmentList  = getAssigmentList(setMap, response2)
