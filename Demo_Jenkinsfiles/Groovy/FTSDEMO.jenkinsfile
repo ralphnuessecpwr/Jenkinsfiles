@@ -272,7 +272,7 @@ node{
     def response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${ISPW_SetId}/tasks",
         httpMode: 'GET',
         consoleLogResponseBody: true,
-        customHeaders: [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
+        customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
     )
 
     echo "reponse class: " + response.getClass()
