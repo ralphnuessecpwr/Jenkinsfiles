@@ -128,7 +128,7 @@ public class WrappHttpRequest implements Serializable
             customHeaders: [[maskValue: true, name: 'authorization', value: token]]
         )
 
-        def resp        = jsonSlurper.parseText(map.getContent())
+        def resp        = jsonSlurper.parseText(response.getContent())
 
         if(resp.message != null)
         {
@@ -198,7 +198,7 @@ node{
     def jsonHandler     = new WrappJsonSlurper()
     def myHttpRequest   = new WrappHttpRequest()
     def setMap          = [:]
-    
+
     /*
     def response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${ISPW_SetId}/tasks",
         httpMode: 'GET',
