@@ -185,12 +185,12 @@ node{
     echo "assignmentList Class: " + assignmentList.getClass()
     echo "Empty? "  + assignmentList.isEmpty()
     echo "Size "  + assignmentList.size()
-
+/*
     assignmentList.each
     {
         println "Assigment " it.toString()
     }
-
+*/
     def CC_DDIO_Override     = "SALESSUP.${ISPW_Application}.${ISPW_Target_Level}.SSD"
 
     // Download all sources from the desired level and above
@@ -241,6 +241,8 @@ node{
 
     def ListOfPrograms = []
     
+    echo "ListOfSources Class: " + ListOfSources.getClass()
+
     ListOfSources.each
     {
         ListOfPrograms.add(it.name.trim().split("\\.")[0])
