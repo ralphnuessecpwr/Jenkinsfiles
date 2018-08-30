@@ -101,19 +101,19 @@ public class Ispw implements Serializable
 {
    	def steps
     def String cesToken
-    def jsonSlurper
 
 	Ispw(steps, String cesToken)
     {
 		this.steps          = steps
         this.cesToken       = cesToken
-        this.jsonSlurper    = new JsonSlurper()
     }
 
+    @NonCPS
     public Map getSetMap(String setId)
     {
 
-        def setMap = [:]
+        def setMap      = [:]
+        def jsonSlurper = new JsonSlurper()
 
         def Response = steps.httpRequest acceptType: 'APPLICATION_JSON', 
             consoleLogResponseBody: true, 
@@ -145,10 +145,12 @@ public class Ispw implements Serializable
 
     }
 
+    @NonCPS
     public ArrayList getSetAssignmentsList(Map setMap, String releaseId) 
     {
         def assignmentList = []
-
+        def jsonSlurper = new JsonSlurper()
+        
         def Response = httpRequest acceptType: 'APPLICATION_JSON', 
             consoleLogResponseBody: true, 
             contentType: 'APPLICATION_JSON', 
