@@ -220,6 +220,10 @@ node{
     println "Download Unit Tests"
     println "*******************"    
 
+    echo "Branch - " + Git_Branch
+    echo "Credentials - " + Git_Credentials
+    echo "URL - " + Git_URL
+
     // Download all available Unit Tests
     stage("Download Unit Tests")
     {
