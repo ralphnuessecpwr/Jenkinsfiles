@@ -261,7 +261,7 @@ node{
             // The split method uses regex to search for patterns, therefore
             // Backslahes, Dots and Underscores which mean certain patterns in regex need to be escaped 
             // The backslash in Windows paths is duplicated in Java, therefore it need to be escaped twice
-            def TTTProjectName         = it.path.trim().split("\\\\")[0]   // TTT Project name is the root folder of the full path to the testscenario 
+            def TTTProjectName         = it.path.trim().split("\\\\")[0] + "\\"+ it.path.trim().split("\\\\")[1]   // TTT Project name is the root folder of the full path to the testscenario 
             def TTTScenarioFullName    = it.name                           // Get the full name of the testscenario file i.e. "name.testscenario"
             def TTTScenarioName        = it.name.trim().split("\\.")[0]    // Get the name of the scenario file without ".testscenario"
             def TTTScenarioTarget      = TTTScenarioName.split("\\_")[0]      // Target Program will be the first part of the scenario name (convention)
@@ -325,45 +325,6 @@ node{
         // Requires SonarQube Scanner 2.8+
         def scannerHome = tool "${SQ_Scanner_Name}";
         
-        //def SonarTestDirsNames = []
-        //def SonarTestDirs = ''
-        //def SonarTestExecutionReportPaths = ''
-
-        // Build a comma separated list of 
-        //    test directories passed, using -Dsonar.test parameter and
-        //    test execution report paths, using -Dsonar.testExecutionReportPaths parameter
-        //TTTListOfScenarios.each
-        //{
-
-            //def TTTProjectName = it.path.trim().split("\\\\")[0] 
-            //def TTTScenarioName = it.name.trim().split("\\.")[0]
-           
-            //if(SonarTestDirsNames.contains(TTTProjectName)==false)
-            //{
-            //    //    the first list must not contain duplicates, therefore we need additional logic
-            //    SonarTestDirsNames.add(TTTProjectName)
-            //    if(SonarTestDirs == '') 
-            //    {
-            //        SonarTestDirs = SonarTestDirs + './' + TTTProjectName
-            //    }
-            //    else
-            //    {
-            //        SonarTestDirs = SonarTestDirs + ',./' + TTTProjectName
-            //    }
-            //}
-
-            //if(SonarTestExecutionReportPaths == '')
-            //{
-            //    SonarTestExecutionReportPaths = SonarTestExecutionReportPaths + 'TTTSonar/' + TTTScenarioName + '.xml'
-            //}
-            //else
-            //{
-            //    SonarTestExecutionReportPaths = SonarTestExecutionReportPaths + ',TTTSonar/' + TTTScenarioName + '.xml'
-            //}
-
-
-        //}
-
         //Finds all of the TTT results files that will be submitted to SonarQube
         def TTTListOfResults    = findFiles(glob: 'TTTSonar/*.xml')
         def SQ_TestResult       = "-Dsonar.testExecutionReportPaths="

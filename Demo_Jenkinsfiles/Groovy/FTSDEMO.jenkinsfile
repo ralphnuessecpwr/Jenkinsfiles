@@ -257,7 +257,7 @@ node{
             // The split method uses regex to search for patterns, therefore
             // Backslahes, Dots and Underscores which mean certain patterns in regex need to be escaped 
             // The backslash in Windows paths is duplicated in Java, therefore it need to be escaped twice
-            def TTTProjectName         = it.path.trim().split("\\\\")[0]   // TTT Project name is the root folder of the full path to the testscenario 
+            def TTTProjectName         = it.path.trim().split("\\\\")[0] + "\\"+ it.path.trim().split("\\\\")[1]   // TTT Project name is the root folder of the full path to the testscenario 
             def TTTScenarioFullName    = it.name                           // Get the full name of the testscenario file i.e. "name.testscenario"
             def TTTScenarioName        = it.name.trim().split("\\.")[0]    // Get the name of the scenario file without ".testscenario"
             def TTTScenarioTarget      = TTTScenarioName.split("\\_")[0]      // Target Program will be the first part of the scenario name (convention)
