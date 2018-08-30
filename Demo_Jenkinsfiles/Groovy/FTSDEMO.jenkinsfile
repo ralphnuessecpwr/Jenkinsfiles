@@ -63,6 +63,7 @@ import java.net.URL
  String XLR_Template         = "A Release from Jenkins"
  String XLR_User	         = "admin"	
  String CES_Token_Clear      = "665fc9fb-39de-428a-8a67-a3619752873d"
+ String TTT_Folder           = "tests"		 
 		 
 /**
  Helper Methods for the Pipeline Script
@@ -222,7 +223,7 @@ node{
             scm: [$class: 'GitSCM', 
                 branches: [[name: "*/${Git_Branch}"]], 
                 doGenerateSubmoduleConfigurations: false, 
-                extensions: [], 
+                extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "${TTT_Folder}"]], 
                 submoduleCfg: [], 
                 userRemoteConfigs: [[credentialsId: "${Git_Credentials}", name: 'origin', url: "${Git_URL}/${Git_TTT_Repo}"]]]
     }
@@ -320,45 +321,6 @@ node{
         // Requires SonarQube Scanner 2.8+
         def scannerHome = tool "${SQ_Scanner_Name}";
         
-        //def SonarTestDirsNames = []
-        //def SonarTestDirs = ''
-        //def SonarTestExecutionReportPaths = ''
-
-        // Build a comma separated list of 
-        //    test directories passed, using -Dsonar.test parameter and
-        //    test execution report paths, using -Dsonar.testExecutionReportPaths parameter
-        //TTTListOfScenarios.each
-        //{
-
-            //def TTTProjectName = it.path.trim().split("\\\\")[0] 
-            //def TTTScenarioName = it.name.trim().split("\\.")[0]
-           
-            //if(SonarTestDirsNames.contains(TTTProjectName)==false)
-            //{
-            //    //    the first list must not contain duplicates, therefore we need additional logic
-            //    SonarTestDirsNames.add(TTTProjectName)
-            //    if(SonarTestDirs == '') 
-            //    {
-            //        SonarTestDirs = SonarTestDirs + './' + TTTProjectName
-            //    }
-            //    else
-            //    {
-            //        SonarTestDirs = SonarTestDirs + ',./' + TTTProjectName
-            //    }
-            //}
-
-            //if(SonarTestExecutionReportPaths == '')
-            //{
-            //    SonarTestExecutionReportPaths = SonarTestExecutionReportPaths + 'TTTSonar/' + TTTScenarioName + '.xml'
-            //}
-            //else
-            //{
-            //    SonarTestExecutionReportPaths = SonarTestExecutionReportPaths + ',TTTSonar/' + TTTScenarioName + '.xml'
-            //}
-
-
-        //}
-
         //Finds all of the TTT results files that will be submitted to SonarQube
         def TTTListOfResults    = findFiles(glob: 'TTTSonar/*.xml')
         def SQ_TestResult       = "-Dsonar.testExecutionReportPaths="
@@ -374,7 +336,7 @@ node{
         withSonarQubeEnv("${SQ_Server_Name}") 
         {
             // Run SonarQube Scanner 
-            def SQ_Tests                = " -Dsonar.tests=./ ${SQ_TestResult} -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"
+            def SQ_Tests                = " -Dsonar.tests=${TTT_Folder} ${SQ_TestResult} -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"
             def SQ_ProjectKey           = " -Dsonar.projectKey=${SQ_Project} -Dsonar.projectName=${SQ_Project} -Dsonar.projectVersion=1.0"
             def SQ_Source               = " -Dsonar.sources=${ISPW_Application}\\${MF_Source}"
             def SQ_Copybook             = " -Dsonar.cobol.copy.directories=${ISPW_Application}\\${MF_Source}"
@@ -432,11 +394,10 @@ node{
                         httpMode: 'POST',
                         consoleLogResponseBody: false,
                         customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
-                )
+                    )
                 
                 }
 
-                */
                 println "Will abort the pipeline"
 
                 def mailRecipients = "ralph.nuesse@compuware.com"
