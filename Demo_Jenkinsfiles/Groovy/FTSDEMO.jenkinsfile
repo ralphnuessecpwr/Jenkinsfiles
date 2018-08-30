@@ -55,8 +55,8 @@ import java.net.URL
 */
  String Git_Credentials      = "github"
  String Git_URL              = "https://github.com/${Git_Project}"
- String Git_TTT_Repo         = "NED.git"
- String Git_Branch           = "UT"
+ String Git_TTT_Repo         = "${ISPW_Stream}_${ISPW_Application}_Unit_Tests"
+ String Git_Branch           = "master"
  String SQ_Scanner_Name      = "scanner" 
  String SQ_Server_Name       = "localhost"  
  String MF_Source            = "MF_Source"
