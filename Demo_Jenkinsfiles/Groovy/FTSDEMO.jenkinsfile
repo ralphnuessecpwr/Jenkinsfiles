@@ -96,22 +96,23 @@ import java.net.URL
         submoduleCfg: [], 
         userRemoteConfigs: [[credentialsId: "${Credentials}", name: "origin", url: "${URL}"]]]
  }
-/*
+
 public class JsonHandler implements Serializable
 {
 
     @NonCPS
-    public Object parseInput(LazyMap map)
+    public Object parseInput(ResponseContentSupplier map)
     {
 
         def jsonSlurper = new JsonSlurper()
-        def resp = jsonSlurper.parseText(map.getContent())
+        def resp        = jsonSlurper.parseText(map.getContent())
+
         return resp
 
     }
 
 }
-*/
+
 public class Ispw implements Serializable
 {
    	def steps
@@ -265,7 +266,7 @@ node{
 
     def ISPW_Target_Level = "QA" + PathNum
 
-    //def jsonHandler = new JsonHandler()
+    def jsonHandler = new JsonHandler()
 
     def setMap      = [:]
 
@@ -277,7 +278,7 @@ node{
 
     echo "reponse class: " + response.getClass()
 
-    //def resp = jsonHandler.parseInput(response.getContent())
+    def resp = jsonHandler.parseInput(response.getContent())
 
     echo 'IF in getSetMap'
     if(resp.message != null)
