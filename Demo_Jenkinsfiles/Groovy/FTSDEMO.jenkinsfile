@@ -105,8 +105,6 @@ public class Ispw implements Serializable
 	def String applicationLevel
 	def String applicationStream
 
-	PropertiesInfo pinfo
-
 	Ispw(steps,String componentNames,String applicationId,String applicationLevel,String applicationStream) 
     {
 		this.steps = steps
@@ -195,7 +193,7 @@ def ArrayList getISPWContainer(String HCI_Conn, String CES_Token, String Set)
 
 // One node with several stages => All variables are local to the node and available to all stages
 node{
-    
+
     def PathNum = getPathNum(ISPW_Src_Level)
 
     // Use the Path Number to determine the right Runner JCL to use (different STEPLIB concatenations)
