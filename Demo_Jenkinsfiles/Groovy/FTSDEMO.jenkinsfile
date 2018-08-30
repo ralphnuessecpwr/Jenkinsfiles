@@ -109,7 +109,7 @@ public class Ispw implements Serializable
     }
 
     @NonCPS
-    public Map getSetMap(String setId)
+    private Map getSetMap(String setId)
     {
 
         def setMap      = [:]
@@ -146,10 +146,12 @@ public class Ispw implements Serializable
     }
 
     @NonCPS
-    public String getSetAssignmentsList(Map setMap, String releaseId) 
+    public String getSetAssignmentsList(String setId, String releaseId) 
     {
         steps.echo 'getSetAssignmentsList'
         
+        def setMap = getSetMap(setId)
+
         def assignmentList  = []
         def jsonSlurper     = new JsonSlurper()
 
@@ -245,9 +247,9 @@ node{
 
     def ispw = new Ispw(steps, CES_Token_Clear)
 
-    def setMap = ispw.getSetMap(ISPW_SetId)
+//    def setMap = ispw.getSetMap(ISPW_SetId)
 
-    def assignmentList = ispw.getSetAssignmentsList(setMap, ISPW_Release)
+    def assignmentList = ispw.getSetAssignmentsList(ISPW_SetId, ISPW_Release)
 
     assignmentList.each
     {
