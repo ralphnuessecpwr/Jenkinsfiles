@@ -233,7 +233,7 @@ node{
                 doGenerateSubmoduleConfigurations: false, 
                 extensions: [], 
                 submoduleCfg: [], 
-                userRemoteConfigs: [[credentialsId: "${Git_Credentials}", name: 'origin', url: "${Git_URL}"]]]
+                userRemoteConfigs: [[credentialsId: "${Git_Credentials}", name: 'origin', url: "${Git_URL}/${Git_TTT_Repo}"]]]
     }
 
     // findFiles requires the "Pipeline Utilities Plugin"
