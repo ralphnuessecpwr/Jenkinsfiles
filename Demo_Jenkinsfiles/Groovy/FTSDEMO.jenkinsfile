@@ -149,6 +149,7 @@ public class Ispw implements Serializable
     public ArrayList getSetAssignmentsList(Map setMap, String releaseId) 
     {
         steps.echo 'getSetAssignmentsList'
+        /*
         def assignmentList  = []
         def jsonSlurper     = new JsonSlurper()
 
@@ -185,6 +186,7 @@ public class Ispw implements Serializable
         }
 
         return assignmentList
+        */
     }
 }
 
