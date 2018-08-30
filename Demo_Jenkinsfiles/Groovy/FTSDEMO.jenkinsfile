@@ -117,12 +117,13 @@ public class Ispw implements Serializable
         def setMap      = [:]
         def jsonSlurper = new JsonSlurper()
 
-        def Response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${setId}/tasks",
+        def response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${setId}/tasks",
+            consoleLogResponseBody: true,
             customHeaders: [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
         )
 
         steps.echo 'jsonSlurper'        
-        def resp = jsonSlurper.parseText(Response.getContent())
+        def resp = jsonSlurper.parseText(response.getContent())
 
         steps.echo 'IF in getSetMap'
         if(resp.message != null)
@@ -160,14 +161,14 @@ public class Ispw implements Serializable
         def jsonSlurper     = new JsonSlurper()
 
         steps.echo 'hhtpRequest'
-        def Response = steps.httpRequest acceptType: 'APPLICATION_JSON', 
+        def response = steps.httpRequest acceptType: 'APPLICATION_JSON', 
             consoleLogResponseBody: true, 
             contentType: 'APPLICATION_JSON', 
             customHeaders: [[maskValue: false, name: 'authorization', value: "${cesToken}"]], 
             responseHandle: 'NONE', 
             url: "http://cwcc.compuware.com:2020/ispw/ispw/releases/${releaseId}/tasks"
             
-        def resp = jsonSlurper.parseText(Response.getContent())
+        def resp = jsonSlurper.parseText(response.getContent())
 
         steps.ech 'IF'
         if(resp.message != null)
@@ -221,7 +222,7 @@ def ArrayList getISPWContainer(String HCI_Conn, String CES_Token, String Set)
         ispwRequestBody: ISPW_Parms
     */
 
-    def Response = httpRequest consoleLogResponseBody: true, 
+    def response = httpRequest consoleLogResponseBody: true, 
         customHeaders: [[maskValue: false, name: 'content-type', value: 'application/json'], 
         [maskValue: false, name: 'authorization', value: "665fc9fb-39de-428a-8a67-a3619752873d"]], 
         ignoreSslErrors: true, 
@@ -229,7 +230,7 @@ def ArrayList getISPWContainer(String HCI_Conn, String CES_Token, String Set)
 
     //Convert the response to a JSON Object
     def jsonSlurper         = new JsonSlurper()
-    def TaskList            = jsonSlurper.parseText(Response.getContent())
+    def TaskList            = jsonSlurper.parseText(response.getContent())
 
     TaskList.tasks.each
     {
