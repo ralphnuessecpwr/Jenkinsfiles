@@ -57,7 +57,7 @@ import java.net.URL
  String Git_URL              = "https://github.com/${Git_Project}"
  String Git_TTT_Repo         = "${ISPW_Stream}_${ISPW_Application}_Unit_Tests"
  String Git_Branch           = "master"
- String SQ_Scanner_Name      = "scanner" 
+ String SQ_Scanner_Name      = "Scanner" 
  String SQ_Server_Name       = "localhost"  
  String MF_Source            = "MF_Source"
  String XLR_Template         = "A Release from Jenkins"
@@ -182,15 +182,10 @@ node{
 
     def assignmentList  = getAssigmentList(setMap, response2)
 
-    echo "assignmentList Class: " + assignmentList.getClass()
-    echo "Empty? "  + assignmentList.isEmpty()
-    echo "Size "  + assignmentList.size()
-/*
-    assignmentList.each
+    for(Int i = 0, i < assignmentList.size(), i++)
     {
-        println "Assigment " it.toString()
+        println "Assigment " assignmentList[i].toString()
     }
-*/
     def CC_DDIO_Override     = "SALESSUP.${ISPW_Application}.${ISPW_Target_Level}.SSD"
 
     // Download all sources from the desired level and above
