@@ -178,7 +178,7 @@ node{
 
     def response2 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/releases/${ISPW_Release}/tasks",
         consoleLogResponseBody: true, 
-        customHeaders: [[maskValue: false, name: 'authorization', value: "${token}"]]
+        customHeaders: [[maskValue: false, name: 'authorization', value: "${CES_Token_Clear}"]]
     )
 
     def assignmentList  = getAssigmentList(setMap, response2)
