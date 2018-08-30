@@ -182,7 +182,7 @@ node{
 
     def assignmentList  = getAssigmentList(setMap, response2)
 
-    for(int i = 0; i < assigmentList.size(); i++)
+    for(int i = 0; i < assignmentList.size(); i++)
     {
 
         println "Assigment " assignmentList[i].toString()
