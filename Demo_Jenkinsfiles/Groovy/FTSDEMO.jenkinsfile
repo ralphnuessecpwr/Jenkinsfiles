@@ -97,6 +97,21 @@ import java.net.URL
         userRemoteConfigs: [[credentialsId: "${Credentials}", name: "origin", url: "${URL}"]]]
  }
 
+public class JsonHandler implements Serializable
+{
+
+    @NonCPS
+    public Object parseInput(LazyMap map)
+    {
+
+        def jsonSlurper = new JsonSlurper()
+        def resp = jsonSlurper.parseText(map.getContent())
+        return resp
+
+    }
+
+}
+
 public class Ispw implements Serializable
 {
    	def steps
@@ -111,8 +126,6 @@ public class Ispw implements Serializable
     @NonCPS
     private Map getSetMap(String setId)
     {
-
-        steps.echo 'getSetMap'
 
         def setMap      = [:]
         def jsonSlurper = new JsonSlurper()
@@ -251,6 +264,38 @@ node{
     def TTT_Jcl = "Runner_PATH" + PathNum + ".jcl"
 
     def ISPW_Target_Level = "QA" + PathNum
+
+    def jsonHandler = new JsonHandler
+
+    def setMap      = [:]
+
+    def response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${setId}/tasks",
+        httpMode: 'GET',
+        consoleLogResponseBody: true,
+        customHeaders: [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
+    )
+
+    def resp = jsonHandler.parseInput(response.getContent())
+
+    echo 'IF in getSetMap'
+    if(resp.message != null)
+    {
+        echo "Resp: " + resp.message
+    }
+    else
+    {
+        def taskList = resp.tasks
+    
+        taskList.each
+        {
+            if(it.moduleType == 'COB' && it.level == 'QA3')
+            {
+                setMap.put(it.taskId, it.moduleName) 
+            }
+        }
+    }
+
+    echo "ENDE"
 
     def ispw = new Ispw(steps, CES_Token_Clear)
 
