@@ -97,7 +97,6 @@ import java.net.URL
         userRemoteConfigs: [[credentialsId: "${Credentials}", name: "origin", url: "${URL}"]]]
  }
 
-@NonCPS
 public class Ispw implements Serializable
 {
    	def steps
@@ -108,7 +107,8 @@ public class Ispw implements Serializable
 		this.steps          = steps
         this.cesToken       = cesToken
     }
-    
+
+    @NonCPS
     public Map getSetMap(String setId)
     {
 
@@ -145,8 +145,8 @@ public class Ispw implements Serializable
 
     }
 
-    //@NonCPS
-    public ArrayList getSetAssignmentsList(Map setMap, String releaseId) 
+    @NonCPS
+    public String getSetAssignmentsList(Map setMap, String releaseId) 
     {
         steps.echo 'getSetAssignmentsList'
         
@@ -185,7 +185,7 @@ public class Ispw implements Serializable
             }
         }
 
-        return assignmentList
+        return assignmentList.toString()
         
     }
 }
