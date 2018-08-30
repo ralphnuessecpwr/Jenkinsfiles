@@ -99,16 +99,27 @@ import java.net.URL
  }
 
 @NonCPS
+ def ResponseContentSupplier sendHttpRequestGet(String url, String token)
+ {
+
+    def response = steps.httpRequest(url: "",
+        httpMode: 'GET',
+        consoleLogResponseBody: true,
+        customHeaders: [[maskValue: true, name: 'authorization', value: "${token}"]]
+    )
+
+    return response 
+ }
+
+@NonCPS
  def Map getSetMap(String setId, String token)
  {
     def jsonSlurper = new JsonSlurper()
     def returnMap   = [:]
 
-    def response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${setId}/tasks",
-        httpMode: 'GET',
-        consoleLogResponseBody: true,
-        customHeaders: [[maskValue: true, name: 'authorization', value: "${token}"]]
-    )
+    def response    = sendHttpRequestGet("http://cwcc.compuware.com:2020/ispw/ispw/sets/${setId}/tasks", token)
+
+    echo "Response caught"
 
     def resp        = jsonSlurper.parseText(response.getContent())
 
