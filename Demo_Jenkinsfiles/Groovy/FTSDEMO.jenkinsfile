@@ -105,13 +105,10 @@ public class Ispw implements Serializable
 	def String applicationLevel
 	def String applicationStream
 
-	Ispw(steps,String componentNames,String applicationId,String applicationLevel,String applicationStream) 
+	Ispw(steps)
     {
 		this.steps = steps
-		this.componentNames = componentNames
-		this.applicationId = applicationId
-		this.applicationLevel = applicationLevel
-		this.applicationStream = applicationStream
+		this.setId = setId
     }
 
     public Map getSetMap(String setId)
