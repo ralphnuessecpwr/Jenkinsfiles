@@ -112,6 +112,8 @@ public class Ispw implements Serializable
     private Map getSetMap(String setId)
     {
 
+        steps.echo 'getSetMap'
+
         def setMap      = [:]
         def jsonSlurper = new JsonSlurper()
 
