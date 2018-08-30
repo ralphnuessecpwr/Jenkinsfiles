@@ -98,49 +98,78 @@ import java.net.URL
         userRemoteConfigs: [[credentialsId: "${Credentials}", name: "origin", url: "${URL}"]]]
  }
 
-public class WrappJsonSlurper implements Serializable
+@NonCPS
+def Map getSetMap(String setId, String token)
 {
+    def jsonSlurper = new JsonSlurper()
+    def returnMap   = [:]
 
-    @NonCPS
-    public Object parseInput(ResponseContentSupplier map)
+    def response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${setId}/tasks",
+        httpMode: 'GET',
+        consoleLogResponseBody: true,
+        customHeaders: [[maskValue: true, name: 'authorization', value: "${token}"]]
+    )
+
+    def resp        = jsonSlurper.parseText(response.getContent())
+
+    if(resp.message != null)
     {
+        echo "Resp: " + resp.message
+        error
+    }
+    else
+    {
+        def taskList = resp.tasks
 
-        def jsonSlurper = new JsonSlurper()
-        def resp        = jsonSlurper.parseText(map.getContent())
-
-        return resp
-
+        taskList.each
+        {
+            {
+                if(it.moduleType == 'COB' && it.level == 'QA3')
+                {
+                    setMap.put(it.taskId, it.moduleName) 
+                }
+            }
+        }
     }
 
+    return returnMap
 }
 
-public class WrappHttpRequest implements Serializable
+def ArrayList getAssigmentList(Map setMap, String release, String token)
 {
-    @NonCPS
-    public Object sendGetRequest(String url, String token)
+    def jsonSlurper = new JsonSlurper()
+    def returnList  = []
+
+    def response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/releases/${release}/tasks",
+        consoleLogResponseBody: true, 
+        customHeaders: [[maskValue: false, name: 'authorization', value: "${token}"]]
+    )
+
+    def resp        = jsonSlurper.parseText(response.getContent())
+
+    if(resp.message != null)
     {
+        echo "Resp: " + resp.message
+        error
+    }
+    else
+    {
+        def taskList = resp.tasks
 
-        def jsonSlurper = new JsonSlurper()
-
-        def response = steps.httpRequest(url: url,
-            httpMode: 'GET',
-            consoleLogResponseBody: true,
-            customHeaders: [[maskValue: true, name: 'authorization', value: token]]
-        )
-
-        def resp        = jsonSlurper.parseText(response.getContent())
-
-        if(resp.message != null)
+        taskList.each
         {
-            echo "Resp: " + resp.message
-            error
+            if(setMap.containsKey(it.taskId))
+            {
+                if(!(returnList.contains(it.container)))
+                {
+                    steps.echo 'Add ' + it.container
+                    returnList.add(it.container)        
+                }
+            }
         }
 
-        return resp
-
-    }
+    return returnList    
 }
-
 
 // Function to return the ISPW Container from an ISPW Release
 def ArrayList getISPWContainer(String HCI_Conn, String CES_Token, String Set)
@@ -195,71 +224,8 @@ node{
 
     def ISPW_Target_Level = "QA" + PathNum
 
-    def jsonHandler     = new WrappJsonSlurper()
-    def myHttpRequest   = new WrappHttpRequest()
-    def setMap          = [:]
-
-    /*
-    def response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${ISPW_SetId}/tasks",
-        httpMode: 'GET',
-        consoleLogResponseBody: true,
-        customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
-    )
-    
-    def resp = jsonHandler.parseInput(response)
-
-    if(resp.message != null)
-    {
-        echo "Resp: " + resp.message
-        error
-    }
-    else
-    {
-    */
-
-    resp = myHttpRequest("http://cwcc.compuware.com:2020/ispw/ispw/sets/${ISPW_SetId}/tasks", "{CES_Token_Clear}")
-
-    def taskList = resp.tasks
-
-    taskList.each
-    {
-        if(it.moduleType == 'COB' && it.level == 'QA3')
-        {
-            setMap.put(it.taskId, it.moduleName) 
-        }
-    }
-
-    def assignmentList  = []
-
-    response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/releases/${ISPW_Release}/tasks",
-        consoleLogResponseBody: true, 
-        customHeaders: [[maskValue: false, name: 'authorization', value: "${CES_Token_Clear}"]]
-    )
-        
-    resp = jsonHandler.parseInput(response)
-
-    if(resp.message != null)
-    {
-        steps.echo "Resp: " + resp.message
-        error
-    }
-    else
-    {
-
-        taskList        = resp.tasks
-        
-        taskList.each
-        {
-            if(setMap.containsKey(it.taskId))
-            {
-                if(!(assignmentList.contains(it.container)))
-                {
-                    steps.echo 'Add ' + it.container
-                    assignmentList.add(it.container)        
-                }
-            }
-        }
-    }
+    def setMap          = getSetMap(ISPW_SetId, CES_Token_Clear)
+    def assignmentList  = getAssigmentList(setMap, ISPW_Release, CES_Token_Clear)
 
     assignmentList.each
     {
