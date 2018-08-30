@@ -59,6 +59,7 @@ import java.net.URL
  String Git_Branch           = "master"
  String SQ_Scanner_Name      = "Scanner" 
  String SQ_Server_Name       = "CWCC"  
+ String SQ_Project           = "Ralph_Madrid" 
  String MF_Source            = "MF_Source"
  String XLR_Template         = "A Release from Jenkins"
  String XLR_User	         = "admin"	
