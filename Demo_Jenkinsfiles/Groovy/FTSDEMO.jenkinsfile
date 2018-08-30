@@ -99,8 +99,8 @@ import java.net.URL
  }
 
 @NonCPS
-def Map getSetMap(String setId, String token)
-{
+ def Map getSetMap(String setId, String token)
+ {
     def jsonSlurper = new JsonSlurper()
     def returnMap   = [:]
 
@@ -131,10 +131,11 @@ def Map getSetMap(String setId, String token)
     }
 
     return returnMap
-}
+ }
 
-def ArrayList getAssigmentList(Map setMap, String release, String token)
-{
+@NonCPS
+ def ArrayList getAssigmentList(Map setMap, String release, String token)
+ {
     def jsonSlurper = new JsonSlurper()
     def returnList  = []
 
@@ -165,52 +166,9 @@ def ArrayList getAssigmentList(Map setMap, String release, String token)
                 }
             }
         }
-
-    return returnList    
-}
-
-// Function to return the ISPW Container from an ISPW Release
-def ArrayList getISPWContainer(String HCI_Conn, String CES_Token, String Set)
-{
-
-    tasksInSet = []
-
-    println "Parms received"
-    println "Set ${Set}"
-
-    //Determine the ISPW container name and type for the current release
-    def ISPW_Set_Parm           = 'setId=' + Set
-    def ISPW_Parms              = ISPW_Set_Parm// + ISPW_Level_Parm
-
-    println "GetSetInfoAction Using Parms"
-    println ISPW_Parms
-
-    /*
-    //Get the Task List for the Release    
-    def Response = ispwOperation connectionId: HCI_Conn,
-        credentialsId: CES_Token, 
-        ispwAction: 'GetSetInfoAction', 
-        ispwRequestBody: ISPW_Parms
-    */
-
-    def response = httpRequest consoleLogResponseBody: true, 
-        customHeaders: [[maskValue: false, name: 'content-type', value: 'application/json'], 
-        [maskValue: false, name: 'authorization', value: "665fc9fb-39de-428a-8a67-a3619752873d"]], 
-        ignoreSslErrors: true, 
-        url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${Set}/tasks"
-
-    //Convert the response to a JSON Object
-    def jsonSlurper         = new JsonSlurper()
-    def TaskList            = jsonSlurper.parseText(response.getContent())
-
-    TaskList.tasks.each
-    {
-        tasksInSet.add(it.moduleName)
     }
-    //return TaskList //.tasks[0].moduleName.toString()
-    return tasksInSet
-
-}
+    return returnList    
+ }
 
 // One node with several stages => All variables are local to the node and available to all stages
 node{
