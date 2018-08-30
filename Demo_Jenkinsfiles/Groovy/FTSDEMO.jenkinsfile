@@ -102,7 +102,7 @@ import java.net.URL
  def ResponseContentSupplier sendHttpRequestGet(String url, String token)
  {
 
-    def response = steps.httpRequest(url: "${url}",
+    def response = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${setId}/tasks",
         httpMode: 'GET',
         consoleLogResponseBody: true,
         customHeaders: [[maskValue: true, name: 'authorization', value: "${token}"]]
@@ -112,12 +112,10 @@ import java.net.URL
  }
 
 @NonCPS
- def Map getSetMap(String setId, String token)
+ def Map getSetMap(ResponseContentSupplier response)
  {
     def jsonSlurper = new JsonSlurper()
     def returnMap   = [:]
-
-    def response    = sendHttpRequestGet("http://cwcc.compuware.com:2020/ispw/ispw/sets/${setId}/tasks", token)
 
     echo "Response caught"
 
@@ -191,8 +189,14 @@ node{
 
     def ISPW_Target_Level = "QA" + PathNum
 
+    def response1 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${ISPW_SetId}/tasks",
+        httpMode: 'GET',
+        consoleLogResponseBody: true,
+        customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
+    )
+
     echo "Call getSetMap"
-    def setMap          = getSetMap(ISPW_SetId, CES_Token_Clear)
+    def setMap          = getSetMap(response1)
     echo "setMap Class: " + setMap.getClass()
     setMap.each
     {
