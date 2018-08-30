@@ -279,7 +279,7 @@ node{
 
     echo "reponse class: " + response.getClass()
 
-    def resp = jsonHandler.parseInput(response.getContent())
+    def resp = steps.jsonHandler.parseInput(response.getContent())
 
     echo 'IF in getSetMap'
     if(resp.message != null)
