@@ -102,7 +102,7 @@ import java.net.URL
  def ResponseContentSupplier sendHttpRequestGet(String url, String token)
  {
 
-    def response = steps.httpRequest(url: "",
+    def response = steps.httpRequest(url: "${url}",
         httpMode: 'GET',
         consoleLogResponseBody: true,
         customHeaders: [[maskValue: true, name: 'authorization', value: "${token}"]]
