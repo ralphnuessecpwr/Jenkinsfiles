@@ -134,7 +134,7 @@ import java.net.URL
         {
             if(it.moduleType == 'COB' && it.level == 'QA3')
             {
-                setMap.put(it.taskId, it.moduleName) 
+                returnMap.put(it.taskId, it.moduleName) 
             }
         }
     }
