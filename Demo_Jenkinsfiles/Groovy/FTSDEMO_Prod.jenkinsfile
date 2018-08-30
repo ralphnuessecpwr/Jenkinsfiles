@@ -67,6 +67,7 @@ import java.net.URL
  String XLR_Template         = "A Release from Jenkins - RNU"    
  String XLR_User             = "Ralph"                           
  String CES_Token_Clear      = "665fc9fb-39de-428a-8a67-a3619752873d"
+ String TTT_Folder           = "tests"
 		 
 /**
  Helper Methods for the Pipeline Script
@@ -226,7 +227,7 @@ node{
             scm: [$class: 'GitSCM', 
                 branches: [[name: "*/${Git_Branch}"]], 
                 doGenerateSubmoduleConfigurations: false, 
-                extensions: [], 
+                extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "${TTT_Folder}"]], 
                 submoduleCfg: [], 
                 userRemoteConfigs: [[credentialsId: "${Git_Credentials}", name: 'origin', url: "${Git_URL}/${Git_TTT_Repo}"]]]
     }
@@ -378,7 +379,7 @@ node{
         withSonarQubeEnv("${SQ_Server_Name}") 
         {
             // Run SonarQube Scanner 
-            def SQ_Tests                = " -Dsonar.tests=./ ${SQ_TestResult} -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"
+            def SQ_Tests                = " -Dsonar.tests=${TTT_Folder} ${SQ_TestResult} -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"
             def SQ_ProjectKey           = " -Dsonar.projectKey=${SQ_Project} -Dsonar.projectName=${SQ_Project} -Dsonar.projectVersion=1.0"
             def SQ_Source               = " -Dsonar.sources=${ISPW_Application}\\${MF_Source}"
             def SQ_Copybook             = " -Dsonar.cobol.copy.directories=${ISPW_Application}\\${MF_Source}"
