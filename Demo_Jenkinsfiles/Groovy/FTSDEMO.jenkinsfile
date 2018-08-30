@@ -129,7 +129,7 @@ import java.net.URL
             }
         }
     }
-
+    steps.echo "Return returnMap"
     return returnMap
  }
 
@@ -180,7 +180,9 @@ node{
 
     def ISPW_Target_Level = "QA" + PathNum
 
+    echo "Call getSetMap"
     def setMap          = getSetMap(ISPW_SetId, CES_Token_Clear)
+    echo "Call getAssigmentList"
     def assignmentList  = getAssigmentList(setMap, ISPW_Release, CES_Token_Clear)
 
     assignmentList.each
