@@ -98,7 +98,7 @@ import java.net.URL
         userRemoteConfigs: [[credentialsId: "${Credentials}", name: "origin", url: "${URL}"]]]
  }
 
-public class JsonHandler implements Serializable
+public class WrappJsonSlurper implements Serializable
 {
 
     @NonCPS
@@ -267,7 +267,7 @@ node{
 
     def ISPW_Target_Level = "QA" + PathNum
 
-    def jsonHandler = new JsonHandler()
+    def jsonHandler = new WrappJsonSlurper()
 
     def setMap      = [:]
 
@@ -279,7 +279,7 @@ node{
 
     echo "reponse class: " + response.getClass()
 
-    def resp = steps.jsonHandler.parseInput(response)
+    def resp = jsonHandler.parseInput(response)
 
     echo 'IF in getSetMap'
     if(resp.message != null)
