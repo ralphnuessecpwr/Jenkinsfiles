@@ -217,7 +217,7 @@ node{
     {
     */
 
-    resp = myHttpRequest("http://cwcc.compuware.com:2020/ispw/ispw/sets/${ISPW_SetId}/tasks")
+    resp = myHttpRequest("http://cwcc.compuware.com:2020/ispw/ispw/sets/${ISPW_SetId}/tasks", "{CES_Token_Clear}")
 
     def taskList = resp.tasks
 
