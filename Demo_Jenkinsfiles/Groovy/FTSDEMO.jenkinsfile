@@ -181,6 +181,7 @@ public class Ispw implements Serializable
                 {
                     if(!(assignmentList.contains(it.container)))
                     {
+                        steps.echo 'Add ' + it.container
                         assignmentList.add(it.container)        
                     }
                 }
