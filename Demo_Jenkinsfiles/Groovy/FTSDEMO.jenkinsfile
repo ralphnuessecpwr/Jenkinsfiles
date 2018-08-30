@@ -182,6 +182,7 @@ node{
 
     echo "Call getSetMap"
     def setMap          = getSetMap(ISPW_SetId, CES_Token_Clear)
+    echo "setMap Class: " + setMap.getClass()
     echo "Call getAssigmentList"
     def assignmentList  = getAssigmentList(setMap, ISPW_Release, CES_Token_Clear)
 
