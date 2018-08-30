@@ -150,8 +150,8 @@ public class Ispw implements Serializable
     {
         def assignmentList = []
         def jsonSlurper = new JsonSlurper()
-        
-        def Response = httpRequest acceptType: 'APPLICATION_JSON', 
+
+        def Response = steps.httpRequest acceptType: 'APPLICATION_JSON', 
             consoleLogResponseBody: true, 
             contentType: 'APPLICATION_JSON', 
             customHeaders: [[maskValue: false, name: 'authorization', value: "${cesToken}"]], 
