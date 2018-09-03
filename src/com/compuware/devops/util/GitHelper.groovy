@@ -16,7 +16,7 @@ class GitHelper implements Serializable {
         this.steps = steps
     }
 
-    public viod gitcheckout(String gitUrl, String gitBranch, String gitCredentials, String tttFolder)
+    def gitcheckout(String gitUrl, String gitBranch, String gitCredentials, String tttFolder)
     {
         println "Scenario " + gitUrl
         println "Scenario " + gitBranch

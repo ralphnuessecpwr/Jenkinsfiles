@@ -9,7 +9,7 @@ class MailList implements Serializable {
         MailListMap = ["HDDRXM0":"ralph.nuesse@compuware.com"]
     }
 
-    public Map getEmail(String key)
+    def Map getEmail(String key)
     {
         return this.MailListMap[(key.toUpperCase())]
     }
