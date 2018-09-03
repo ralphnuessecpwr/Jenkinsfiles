@@ -1,5 +1,7 @@
 package com.compuware.devops.util
 
+import jenkins.plugins.http_request.*
+
 class HttpRequestWrapper implements Serializable {
 
     def steps
@@ -9,7 +11,7 @@ class HttpRequestWrapper implements Serializable {
         this.steps = steps
     }
 
-    def ResponseContentSupplier echoValue(String url, String token)
+    def ResponseContentSupplier httpGet(String url, String token)
     {
         return steps.httpRequest(url: "${url}",
             httpMode: 'GET',
