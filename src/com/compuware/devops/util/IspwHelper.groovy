@@ -22,6 +22,14 @@ class IspwHelper implements Serializable {
 
     }
 
+/* 
+    Receive a response from an "Get Tasks in Set"-httpRequest and build a list of task IDs
+*/
+/* 
+    "@NonCPS" is required to tell Jenkins that the objects in the method do not need to survive a Jenkins re-start
+    This is necessary because JsonSlurper uses non serializable classes, which will leed to exceptions when not used
+    in methods in a @NonCPS section 
+*/
 @NonCPS
     def ArrayList getSetTaskIdList(ResponseContentSupplier response, String level)
     {
@@ -34,7 +42,7 @@ class IspwHelper implements Serializable {
 
         if(resp.message != null)
         {
-            echo "Resp: " + resp.message
+            steps.echo "Resp: " + resp.message
             error
         }
         else
@@ -51,12 +59,53 @@ class IspwHelper implements Serializable {
         }
 
         returnList.each{
-            echo "returnList: " it.toString()
+            steps.echo "returnList: " it.toString()
         }
 
         return returnList
     
     }
 
-    
+/* 
+    Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build a list of Assignments
+    that are contained in both the Task Id List and the List of Tasks in the Release 
+*/
+/* 
+    "@NonCPS" is required to tell Jenkins that the objects in the method do not need to survive a Jenkins re-start
+    This is necessary because JsonSlurper uses non serializable classes, which will leed to exceptions when not used
+    in methods in a @NonCPS section 
+*/
+@NonCPS
+    def ArrayList getAssigmentList(ArrayList taskIds, ResponseContentSupplier response)
+    {
+        def jsonSlurper = new JsonSlurper()
+        def returnList  = []
+
+        def resp        = jsonSlurper.parseText(response.getContent())
+
+        if(resp.message != null)
+        {
+            steps.echo "Resp: " + resp.message
+            error
+        }
+        else
+        {
+            def taskList = resp.tasks
+
+            taskList.each
+            {
+                if(taskIds.contains(it.taskId))
+                {
+                    if(!(returnList.contains(it.container)))
+                    {
+                        returnList.add(it.container)        
+                    }
+                }
+            }
+        }
+
+        return returnList    
+
+    }
+
 }
