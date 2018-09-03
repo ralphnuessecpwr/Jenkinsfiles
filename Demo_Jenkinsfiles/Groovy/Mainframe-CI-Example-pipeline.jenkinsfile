@@ -194,6 +194,9 @@ node{
     // Also set the Level that the code currently resides in
     def ISPW_Target_Level = "QA" + PathNum
 
+    echo ISPW_Owner
+    echo ISPW_Owner.toUpperCase()
+
      String mailRecipientTest    = mailRecipientMap[(ISPW_Owner.toUpperCase())]
 
      echo "Mail Recipient: " + mailRecipientTest
