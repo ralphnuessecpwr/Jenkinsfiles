@@ -22,12 +22,17 @@ class GitHelper implements Serializable {
         println "Scenario " + gitBranch
         println "Scenario " + gitCredentials
 
-        steps.checkout changelog: false, poll: false, 
-            scm: [$class: 'GitSCM', 
-            branches: [[name: "*/${gitBranch}"]], 
-            doGenerateSubmoduleConfigurations: false, 
-            extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "${tttFolder}"]], 
-            submoduleCfg: [], 
-            userRemoteConfigs: [[credentialsId: "${gitCredentials}", name: 'origin', url: "${gitUrl}"]]]
+        steps.checkout(
+            changelog:  false, 
+            poll:       false, 
+            scm:        [
+                        $class:                                 'GitSCM', 
+                            branches:                           [[name: "*/${gitBranch}"]], 
+                            doGenerateSubmoduleConfigurations:  false, 
+                            extensions:                         [[$class: 'RelativeTargetDirectory', relativeTargetDir: "${tttFolder}"]], 
+                            submoduleCfg:                       [], 
+                            userRemoteConfigs:                  [[credentialsId: "${gitCredentials}", name: 'origin', url: "${gitUrl}"]]
+                        ]
+        )
     }
 }

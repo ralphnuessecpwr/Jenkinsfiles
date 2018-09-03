@@ -338,5 +338,27 @@ def call(Map pipelineParams)
                 }
             }   
         }
+
+        /* 
+        This stage triggers a XL Release Pipeline that will move code into the high levels in the ISPW Lifecycle  
+        */ 
+        stage("Start release in XL Release")
+        {
+            // Use the Path Number to determine what QA Path to Promote the code from in ISPW.  This example has seperate QA paths in ISPW Lifecycle (i.e. DEV1->QA1->STG->PRD / DEV2->QA2->STG->PRD)
+            def XLRPath = "QA" + PathNum 
+
+            // Trigger XL Release Jenkins Plugin to kickoff a Release
+            xlrCreateRelease(
+                releaseTitle:       'A Release for $BUILD_TAG',
+                serverCredentials:  "${XLR_User}",
+                startRelease:       true,
+                template:           "${XLR_Template}"
+                variables:          [
+                                        [propertyName:  'ISPW_Dev_level',   propertyValue: "${ISPW_Target_Level}"], // Level in ISPW that the Code resides currently
+                                        [propertyName:  'ISPW_RELEASE_ID',  propertyValue: "${ISPW_Release}"],     // ISPW Release value from the ISPW Webhook
+                                        [propertyName:  'CES_Token',        propertyValue: "${CES_Token}"]
+                                    ]
+            )
+        }        
     }
 }
