@@ -197,17 +197,7 @@ node{
         customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
     )
 
-    echo "Define assignmentList"
-
     def assignmentList  = getAssigmentList(setMap, response2)
-
-    for(int i = 0; i < assignmentList.size(); i++)
-    {
-
-        echo "Identified Assignment ${assigmentList[0].toString()}, Level ${ISPW_Target_Level}"
-                        
-    }
-
 
     def CC_DDIO_Override     = "SALESSUP.${ISPW_Application}.${ISPW_Target_Level}.SSD"
      /*
@@ -383,9 +373,9 @@ node{
                 for(int i = 0; i < assignmentList.size(); i++)
                 {
 
-                    echo "Regress Assignment ${assigmentList[0].toString()}, Level ${ISPW_Target_Level}"
+                    echo "Regress Assignment ${assignmentList[0].toString()}, Level ${ISPW_Target_Level}"
                     
-                    response3 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/assignments/${assigmentList[0].toString()}/tasks/regress?level=${ISPW_Target_Level}",
+                    response3 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/assignments/${assignmentList[i].toString()}/tasks/regress?level=${ISPW_Target_Level}",
                         httpMode: 'POST',
                         consoleLogResponseBody: false,
                         customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
