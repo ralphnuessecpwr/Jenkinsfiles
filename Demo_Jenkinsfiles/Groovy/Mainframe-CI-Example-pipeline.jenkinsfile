@@ -29,8 +29,8 @@ import java.net.URL
  @param ISPW_Stream - ISPW Stream that had the code promotion
  @param ISPW_Container - ISPW Container that had the code promotion
  @param ISPW_Container_Type - Type of ISPW Container that had the code promotion, 0 - Assignment, 1 - Release, 3 - Set
- @param ISPW_Level - ISPW Level that code was promoted from
  @param ISPW_Release - The ISPW Release Value that will be passed to XL Release
+ @param ISPW_Level - ISPW Level that code was promoted from
  @param ISPW_Owner - The ISPW Owner value from the ISPW Set that was created for the promotion
 
  The Pipeline also takes the following parameters from the Jenkins Job
@@ -54,6 +54,9 @@ import java.net.URL
  @param MF_Source - directory that contains cobol source downloaded from ISPW
  @param XLR_Template - XL Release template to trigger at the end of the Jenkins workflow
  @param XLR_User - XL Release user ID. Configured in Jenkins/Manage Jenkins/Configure System/XL Release credentials
+ @param TTT_Folder - Folder to download TTT projects from GitHub into, i.e. store all TTT projects into one folder
+ @param ISPW_URL - URL to the ISPW Rest API
+ @param ISPW_Runtime - ISPW Runtime configuration
 */
 
  String Git_Credentials      = "github"
@@ -66,9 +69,14 @@ import java.net.URL
  String MF_Source            = "MF_Source"
  String XLR_Template         = "A Release from Jenkins"
  String XLR_User             = "admin"                           
- String ISPW_Runtime         = "ispw"		 
  String TTT_Folder           = "tests"	
  String ISPW_URL             = "http://cwcc.compuware.com:2020"
+ String ISPW_Runtime         = "ispw"		 
+ 
+/*
+    Map containing ISPW Owners (TSO Users) to eMail addresses
+    For sending mail when the Quality Gate fails
+*/
 
  Map    mailRecipientMap     = ["HDDRXM0":"ralph.nuesse@compuware.com"]
  
@@ -417,16 +425,16 @@ node{
                         "runtimeConfiguration": "''' + ISPW_Runtime + '''"
                     }'''
 
-                    echo "Request Body :"
-                    echo requestBodyParm
-
                     response3 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/assignments/${assignmentList[i].toString()}/tasks/regress?level=${ISPW_Target_Level}",
                         httpMode: 'POST',
                         consoleLogResponseBody: true,
                         contentType: 'APPLICATION_JSON',
+                        requestBody: requestBodyParm,
+                        /*
                         requestBody: '''{ 
                             "runtimeConfiguration": "ispw"
                             }''',
+                        */
                         customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
                     )
                 
