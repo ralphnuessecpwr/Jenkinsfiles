@@ -324,6 +324,7 @@ node{
         // Requires SonarQube Scanner 2.8+
         // Retrieve the location of the SonarQube Scanner.  
         def scannerHome = tool "${SQ_Scanner_Name}";
+
         withSonarQubeEnv("${SQ_Server_Name}")       // 'localhost' is the name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section
         {
             // Finds all of the Total Test results files that will be submitted to SonarQube
@@ -356,40 +357,46 @@ node{
             // Call the SonarQube Scanner with properties defined above
             bat "${scannerHome}/bin/sonar-scanner" + SQ_Scanner_Properties
         }
-            // Wait for the results of the SonarQube Quality Gate
-            timeout(time: 2, unit: 'MINUTES') {
-                
-                // Wait for webhook call back from SonarQube.  SonarQube webhook for callback to Jenkins must be configured on the SonarQube server.
-                def qg = waitForQualityGate()
-                
-                // Evaluate the status of the Quality Gate
-                if (qg.status != 'OK')
+    
+        // Wait for the results of the SonarQube Quality Gate
+        timeout(time: 2, unit: 'MINUTES') {
+            
+            // Wait for webhook call back from SonarQube.  SonarQube webhook for callback to Jenkins must be configured on the SonarQube server.
+            def qg = waitForQualityGate()
+            
+            // Evaluate the status of the Quality Gate
+            if (qg.status != 'OK')
+            {
+                echo "Sonar quality gate failure: ${qg.status}"
+                echo "Pipeline will be aborted and ISPW Assignment(s) will be regressed"
+
+                for(int i = 0; i < assignmentList.size(); i++)
                 {
-                        for(int i = 0; i < assignmentList.size(); i++)
-                        {
 
-                            response3 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/assignments/${assigmentList[0].toString()}/tasks/regress?level=${ISPW_Target_Level}",
-                                httpMode: 'POST',
-                                consoleLogResponseBody: false,
-                                customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
-                            )
-                        
-                        }
-
-                        def mailRecipients = "ralph.nuesse@compuware.com"
-                            
-                        // Email
-                        emailext subject: '$DEFAULT_SUBJECT',
-                                    body: '$DEFAULT_CONTENT',
-                                    //body: '$DEFAULT_CONTENT',
-                                    replyTo: '$DEFAULT_REPLYTO',
-                                    //attachmentsPattern: 'reports/*.zip',
-                                    to: "${mailRecipients}"
-
-                    echo "Pipeline aborted due to quality gate failure: ${qg.status}"
-                    error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
+                    echo "Regress Assignment ${assigmentList[0].toString()}, Level ${ISPW_Target_Level}"
+                    
+                    response3 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/assignments/${assigmentList[0].toString()}/tasks/regress?level=${ISPW_Target_Level}",
+                        httpMode: 'POST',
+                        consoleLogResponseBody: false,
+                        customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
+                    )
+                
                 }
-            }   
+
+                def mailRecipients = "ralph.nuesse@compuware.com"
+                    
+                // Email
+                emailext subject: '$DEFAULT_SUBJECT',
+                            body: '$DEFAULT_CONTENT',
+                            //body: '$DEFAULT_CONTENT',
+                            replyTo: '$DEFAULT_REPLYTO',
+                            //attachmentsPattern: 'reports/*.zip',
+                            to: "${mailRecipients}"
+
+                
+                error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
+            }
+        }   
     }
 
     /* 
