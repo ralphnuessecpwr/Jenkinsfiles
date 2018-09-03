@@ -51,8 +51,12 @@ class IspwHelper implements Serializable {
 
             taskList.each
             {
+                steps.echo "Check for level " + level
+                steps.echo "Check " + (it.level == level)
+
                 if(it.moduleType == 'COB' && it.level == level)
                 {
+                    steps.echo "ADD " + it.taskId
                     returnList.add(it.taskId)
                 }
             }
