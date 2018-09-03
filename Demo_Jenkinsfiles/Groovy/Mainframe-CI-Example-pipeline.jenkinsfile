@@ -430,11 +430,6 @@ node{
                         consoleLogResponseBody: true,
                         contentType: 'APPLICATION_JSON',
                         requestBody: requestBodyParm,
-                        /*
-                        requestBody: '''{ 
-                            "runtimeConfiguration": "ispw"
-                            }''',
-                        */
                         customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
                     )
                 
@@ -459,9 +454,6 @@ node{
      */ 
     stage("Start release in XL Release")
     {
-            //// Determine the current ISPW Path and Level that the code Promotion is from
-            //PathNum = getPathNum(ISPW_Src_Level)
-
             // Use the Path Number to determine what QA Path to Promote the code from in ISPW.  This example has seperate QA paths in ISPW Lifecycle (i.e. DEV1->QA1->STG->PRD / DEV2->QA2->STG->PRD)
             def XLRPath = "QA" + PathNum 
 
