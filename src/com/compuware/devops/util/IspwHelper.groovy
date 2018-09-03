@@ -21,6 +21,7 @@ class IspwHelper implements Serializable {
 
     }
 
+@NonCPS
     def ArrayList getSetTaskIdList(String level)
     {
         def jsonSlurper = new JsonSlurper()
