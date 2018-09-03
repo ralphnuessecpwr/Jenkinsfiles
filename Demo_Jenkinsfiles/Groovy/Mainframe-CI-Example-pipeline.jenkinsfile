@@ -199,6 +199,14 @@ node{
 
     def assignmentList  = getAssigmentList(setMap, response2)
 
+    for(int i = 0; i < assignmentList.size(); i++)
+    {
+
+        echo "Identified Assignment ${assigmentList[0].toString()}, Level ${ISPW_Target_Level}"
+                        
+    }
+
+
     def CC_DDIO_Override     = "SALESSUP.${ISPW_Application}.${ISPW_Target_Level}.SSD"
      /*
      This stage is used to retrieve source from ISPW
