@@ -63,11 +63,11 @@ def call(Map pipelineParams)
         echo "HCI_Token:        " + pipelineParams.HCI_Token
         echo "CC_repository:    " + pipelineParams.CC_repository
 
-
         // PipelineConfig is a class storing constants independant from user used throuout the pipeline
         PipelineConfig  pConfig     = new PipelineConfig()
         GitHelper       gitHelper   = new GitHelper(steps)
         MailList        mailList    = new MailList()
+        IspwHelper      ispeHelper  = new IspwHelper(steps)
 
         // Store properties values in variables (easier to retrieve during code)
         def Git_Credentials      = pConfig.Git_Credentials
@@ -83,6 +83,8 @@ def call(Map pipelineParams)
 
         def mailRecipient = mailList.getEmail(ISPW_Owner)
 
+        echo "mailRecipient: " + mailRecipient
+
         // Determine the current ISPW Path and Level that the code Promotion is from
         def PathNum = getPathNum(ISPW_Src_Level)
 
@@ -90,6 +92,17 @@ def call(Map pipelineParams)
         def TTT_Jcl = "Runner_PATH" + PathNum + ".jcl"
         // Also set the Level that the code currently resides in
         def ISPW_Target_Level = "QA" + PathNum
+
+        /*************************************************************************************************************/
+        // Build a list of Assignments based on a Set
+        // Use httpRequest to get all Tasks for the Set
+        def response1 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
+            httpMode: 'GET',
+            consoleLogResponseBody: false,
+            customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
+        )
+
+        def setTaskIdList          = getSetTaskIdList(response1, ISPW_Target_Level)
 
         stage("Retrieve Code From ISPW")
         {
