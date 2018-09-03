@@ -103,8 +103,8 @@ def call(Map pipelineParams)
             customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
         )
         */
-        
-        def setTaskIdList          = ispwHelper.getSetTaskIdList(response1, ISPW_Target_Level)
+
+        def setTaskIdList          = ispwHelper.getSetTaskIdList(ISPW_Target_Level)
 
         stage("Retrieve Code From ISPW")
         {

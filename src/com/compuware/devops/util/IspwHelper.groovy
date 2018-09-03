@@ -21,7 +21,7 @@ class IspwHelper implements Serializable {
 
     }
 
-    def ArrayList getSetTaskIdList(ResponseContentSupplier response, String level)
+    def ArrayList getSetTaskIdList(String level)
     {
         def jsonSlurper = new JsonSlurper()
         def returnList  = []
