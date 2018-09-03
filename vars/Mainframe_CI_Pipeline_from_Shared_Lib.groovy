@@ -69,7 +69,7 @@ def call(Map pipelineParams)
         PipelineConfig  pConfig     = new PipelineConfig()
         GitHelper       gitHelper   = new GitHelper(steps)
         MailList        mailList    = new MailList()
-        IspwHelper      ispeHelper  = new IspwHelper(steps)
+        IspwHelper      ispwHelper  = new IspwHelper(steps)
 
         // Store properties values in variables (easier to retrieve during code)
         def Git_Credentials      = pConfig.Git_Credentials
@@ -84,8 +84,6 @@ def call(Map pipelineParams)
         def ISPW_Runtime         = pConfig.ISPW_Runtime
 
         def mailRecipient = mailList.getEmail(ISPW_Owner)
-
-        echo "mailRecipient: " + mailRecipient
 
         // Determine the current ISPW Path and Level that the code Promotion is from
         def PathNum = getPathNum(ISPW_Src_Level)
@@ -104,7 +102,7 @@ def call(Map pipelineParams)
             customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
         )
 
-        def setTaskIdList          = getSetTaskIdList(response1, ISPW_Target_Level)
+        def setTaskIdList          = ispwHelper.getSetTaskIdList(response1, ISPW_Target_Level)
 
         stage("Retrieve Code From ISPW")
         {
