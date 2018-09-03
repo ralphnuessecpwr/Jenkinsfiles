@@ -63,7 +63,7 @@ import java.net.URL
  String MF_Source            = "MF_Source"
  String XLR_Template         = "A Release from Jenkins - RNU"    
  String XLR_User             = "Ralph"                           
-		 
+ String ISPW_Runtime         = "ispw"		 
  String CES_Token_Clear      = "665fc9fb-39de-428a-8a67-a3619752873d"
  String TTT_Folder           = "tests"		 
 /**
@@ -378,6 +378,9 @@ node{
                     response3 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/assignments/${assignmentList[i].toString()}/tasks/regress?level=${ISPW_Target_Level}",
                         httpMode: 'POST',
                         consoleLogResponseBody: false,
+                        requestBody: '''{
+                            "runtimeConfiguration": "${ISPW_Runtime}"
+                            }''',
                         customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
                     )
                 
