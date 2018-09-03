@@ -71,10 +71,7 @@ import java.net.URL
  String ISPW_URL             = "http://cwcc.compuware.com:2020"
 
  Map    mailRecipientMap     = ["HDDRXM0":"ralph.nuesse@compuware.com"]
- String mailRecipientTest    = mailRecipientMap.ISPW_Owner.toUpperCase()
-
- echo "Mail Recipient: " + mailRecipientTest
-
+ 
 /**
  Helper Methods for the Pipeline Script
 */
@@ -196,6 +193,10 @@ node{
     def TTT_Jcl = "Runner_PATH" + PathNum + ".jcl"
     // Also set the Level that the code currently resides in
     def ISPW_Target_Level = "QA" + PathNum
+
+     String mailRecipientTest    = mailRecipientMap[(ISPW_Owner.toUpperCase())]
+
+     echo "Mail Recipient: " + mailRecipientTest
 
     /* 
      This stage can be used is you want to clean out the workspace from any previously downloaded source from ISPW.  
