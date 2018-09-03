@@ -377,7 +377,7 @@ node{
                     
                     response3 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/assignments/${assignmentList[i].toString()}/tasks/regress?level=${ISPW_Target_Level}",
                         httpMode: 'POST',
-                        consoleLogResponseBody: false,
+                        consoleLogResponseBody: true,
                         requestBody: '''{
                             "runtimeConfiguration": "${ISPW_Runtime}"
                             }''',
