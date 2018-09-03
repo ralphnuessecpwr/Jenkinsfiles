@@ -226,7 +226,7 @@ node{
         Git_URL = "${Git_URL}/${Git_TTT_Repo}"
 
         //call gitcheckout wrapper function
-        gitcheckout(Git_URL, Git_Branch, Git_Credentials, "tests")
+        gitcheckout(Git_URL, Git_Branch, Git_Credentials, TTT_Folder)
     }
 
     // findFiles method requires the "Pipeline Utilities Plugin"
