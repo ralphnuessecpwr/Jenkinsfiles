@@ -50,6 +50,7 @@ def call(Map pipelineParams)
         def Git_URL             = "https://github.com/${Git_Project}"
         def Git_TTT_Repo        = "${ISPW_Stream}_${ISPW_Application}_Unit_Tests.git"
 
+        /*
         echo "Parameters passed:"
 
         echo "ISPW_Stream:      " + pipelineParams.ISPW_Stream
@@ -64,7 +65,8 @@ def call(Map pipelineParams)
         echo "HCI_Conn_ID:      " + pipelineParams.HCI_Conn_ID
         echo "HCI_Token:        " + pipelineParams.HCI_Token
         echo "CC_repository:    " + pipelineParams.CC_repository
-
+        */
+        
         // PipelineConfig is a class storing constants independant from user used throuout the pipeline
         PipelineConfig  pConfig     = new PipelineConfig()
 
