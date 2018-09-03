@@ -103,10 +103,12 @@ def call(Map pipelineParams)
             url:                        "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
             httpMode:                   'GET',
             consoleLogResponseBody:     false,
-            customHeaders:              [[maskValue:    true, 
-                                        name:           'authorization', 
-                                        value:          "${CES_Token_Clear}"]]
-        )
+            customHeaders:              [[
+                                        maskValue:  true, 
+                                        name:       'authorization', 
+                                        value:      "${CES_Token_Clear}"
+                                        ]]
+            )
 
         // Use method getSetTaskIdList to extract the list of Task IDs from the response of the httpRequest
         def setTaskIdList          = ispwHelper.getSetTaskIdList(response1, ISPW_Target_Level)
@@ -114,12 +116,13 @@ def call(Map pipelineParams)
         // Use httpRequest to get all Assignments for the Release
         // Need to use two separate objects to store the responses for the httpRequests, 
         // otherwise the script will fail with a NotSerializable Exception
-        def response2 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/releases/${ISPW_Release}/tasks",
+        def response2 = steps.httpRequest(
+            url:                        "${ISPW_URL}/ispw/${ISPW_Runtime}/releases/${ISPW_Release}/tasks",
             consoleLogResponseBody:     false, 
             customHeaders:              [[maskValue:    true, 
                                         name:           'authorization', 
                                         value:          "${CES_Token_Clear}"]]
-        )
+            )
 
         // Use method getAssigmentList to get all Assignments from the Release,
         // that belong to Tasks in the Set
