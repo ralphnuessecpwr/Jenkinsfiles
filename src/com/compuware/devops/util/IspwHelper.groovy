@@ -1,5 +1,5 @@
-import groovy.json.JsonSlurper
 package com.compuware.devops.util
+import groovy.json.JsonSlurper
 
 class IspwHelper implements Serializable {
 
