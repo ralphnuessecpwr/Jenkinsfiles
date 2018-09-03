@@ -16,6 +16,9 @@ class HttpRequestWrapper implements Serializable {
         return steps.httpRequest(url: "${url}",
             httpMode: 'GET',
             consoleLogResponseBody: false,
+            acceptType: 'APPLICATION_JSON', 
+            contentType: 'APPLICATION_JSON',
+            responseHandle: 'NONE',
             customHeaders: [[maskValue: true, name: 'authorization', value: "${token}"]]
         )
     }
