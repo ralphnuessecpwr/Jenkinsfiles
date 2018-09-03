@@ -119,9 +119,11 @@ def call(Map pipelineParams)
         def response2 = steps.httpRequest(
             url:                        "${ISPW_URL}/ispw/${ISPW_Runtime}/releases/${ISPW_Release}/tasks",
             consoleLogResponseBody:     false, 
-            customHeaders:              [[maskValue:    true, 
-                                        name:           'authorization', 
-                                        value:          "${CES_Token_Clear}"]]
+            customHeaders:              [[
+                                        maskValue:  true, 
+                                        name:       'authorization', 
+                                        value:      "${CES_Token_Clear}"
+                                        ]]
             )
 
         // Use method getAssigmentList to get all Assignments from the Release,
@@ -133,15 +135,17 @@ def call(Map pipelineParams)
         stage("Retrieve Code From ISPW")
         {
             //Retrieve the code from ISPW that has been promoted 
-            checkout([$class:       'IspwContainerConfiguration', 
-                componentType:      '',                          // optional filter for component types in ISPW
-                connectionId:       "${HCI_Conn_ID}",     
-                credentialsId:      "${HCI_Token}",      
-                containerName:      "${ISPW_Container}",   
-                containerType:      "${ISPW_Container_Type}",    // 0-Assignment 1-Release 2-Set
-                ispwDownloadAll:    false,                     // false will not download files that exist in the workspace and haven't previous changed
-                serverConfig:       '',                           // ISPW runtime config.  if blank ISPW will use the default runtime config
-                serverLevel:        ''])                           // level to download the components from
+            checkout([
+                $class:       'IspwContainerConfiguration', 
+                    componentType:      '',                          // optional filter for component types in ISPW
+                    connectionId:       "${HCI_Conn_ID}",     
+                    credentialsId:      "${HCI_Token}",      
+                    containerName:      "${ISPW_Container}",   
+                    containerType:      "${ISPW_Container_Type}",    // 0-Assignment 1-Release 2-Set
+                    ispwDownloadAll:    false,                     // false will not download files that exist in the workspace and haven't previous changed
+                    serverConfig:       '',                           // ISPW runtime config.  if blank ISPW will use the default runtime config
+                    serverLevel:        ''
+            ])                           // level to download the components from
         }
 
         stage("Retrieve Tests")
@@ -200,19 +204,21 @@ def call(Map pipelineParams)
                     println "Project " + TTTProjectName
                     println "*************************"
                 
-                    step([$class:       'TotalTestBuilder', 
-                        ccClearStats:   false,                // Clear out any existing Code Coverage stats for the given ccSystem and ccTestId
-                        ccRepo:         "${CC_repository}",
-                        ccSystem:       "${ISPW_Application}", 
-                        ccTestId:       "${BUILD_NUMBER}",        // Jenkins environment variable, resolves to build number, i.e. #177 
-                        credentialsId:  "${HCI_Token}", 
-                        deleteTemp:     true,                   // (true|false) Automatically delete any temp files created during the execution
-                        hlq:            '',                            // Optional - high level qualifier used when allocation datasets
-                        connectionId:   "${HCI_Conn_ID}",    
-                        jcl:            "${TTT_Jcl}",                  // Name of the JCL file in the Total Test Project to execute
-                        projectFolder:  "${TTTProjectName}", // Name of the Folder in the file system that contains the Total Test Project.  
-                        testSuite:      "${TTTScenarioFullName}",// Name of the Total Test Scenario to execute
-                        useStubs:       true])                   // (true|false) - Execute with or without stubs
+                    step([
+                        $class:       'TotalTestBuilder', 
+                            ccClearStats:   false,                // Clear out any existing Code Coverage stats for the given ccSystem and ccTestId
+                            ccRepo:         "${CC_repository}",
+                            ccSystem:       "${ISPW_Application}", 
+                            ccTestId:       "${BUILD_NUMBER}",        // Jenkins environment variable, resolves to build number, i.e. #177 
+                            credentialsId:  "${HCI_Token}", 
+                            deleteTemp:     true,                   // (true|false) Automatically delete any temp files created during the execution
+                            hlq:            '',                            // Optional - high level qualifier used when allocation datasets
+                            connectionId:   "${HCI_Conn_ID}",    
+                            jcl:            "${TTT_Jcl}",                  // Name of the JCL file in the Total Test Project to execute
+                            projectFolder:  "${TTTProjectName}", // Name of the Folder in the file system that contains the Total Test Project.  
+                            testSuite:      "${TTTScenarioFullName}",// Name of the Total Test Scenario to execute
+                            useStubs:       true
+                    ])                   // (true|false) - Execute with or without stubs
                 }
             }
 
@@ -234,11 +240,13 @@ def call(Map pipelineParams)
             // The Code Coverage Plugin passes it's primary configuration in the string or a file
             def ccproperties = 'cc.sources=' + sources + '\rcc.repos=' + CC_repository + '\rcc.system=' + ISPW_Application  + '\rcc.test=' + BUILD_NUMBER
 
-            step([$class:                   'CodeCoverageBuilder',
-                analysisProperties:         ccproperties,       // Pass in the analysisProperties as a string
-                analysisPropertiesPath:     '',             // Pass in the analysisProperties as a file.  Not used in this example
-                connectionId:               "${HCI_Conn_ID}", 
-                credentialsId:              "${HCI_Token}"])
+            step([
+                $class:                   'CodeCoverageBuilder',
+                    analysisProperties:         ccproperties,       // Pass in the analysisProperties as a string
+                    analysisPropertiesPath:     '',             // Pass in the analysisProperties as a file.  Not used in this example
+                    connectionId:               "${HCI_Conn_ID}", 
+                    credentialsId:              "${HCI_Token}"
+            ])
         }
 
         /* 
@@ -305,14 +313,17 @@ def call(Map pipelineParams)
                             "runtimeConfiguration": "''' + ISPW_Runtime + '''"
                         }'''
 
-                        response3 = steps.httpRequest(url:  "${ISPW_URL}/ispw/${ISPW_Runtime}/assignments/${assignmentList[i].toString()}/tasks/regress?level=${ISPW_Target_Level}",
-                            httpMode:                       'POST',
-                            consoleLogResponseBody:         true,
-                            contentType:                    'APPLICATION_JSON',
-                            requestBody:                    requestBodyParm,
-                            customHeaders:                  [[maskValue:    true, 
-                                                            name:           'authorization', 
-                                                            value:          "${CES_Token_Clear}"]]
+                        response3 = steps.httpRequest(
+                            url:                    "${ISPW_URL}/ispw/${ISPW_Runtime}/assignments/${assignmentList[i].toString()}/tasks/regress?level=${ISPW_Target_Level}",
+                            httpMode:               'POST',
+                            consoleLogResponseBody: true,
+                            contentType:            'APPLICATION_JSON',
+                            requestBody:            requestBodyParm,
+                            customHeaders:          [[
+                                                    maskValue:    true, 
+                                                    name:           'authorization', 
+                                                    value:          "${CES_Token_Clear}"
+                                                    ]]
                         )
                     
                     }
@@ -320,9 +331,7 @@ def call(Map pipelineParams)
                     // Email
                     emailext subject:       '$DEFAULT_SUBJECT',
                                 body:       '$DEFAULT_CONTENT',
-                                //body: '$DEFAULT_CONTENT',
                                 replyTo:    '$DEFAULT_REPLYTO',
-                                //attachmentsPattern: 'reports/*.zip',
                                 to:         "${mailRecipient}"
                     
                     error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
