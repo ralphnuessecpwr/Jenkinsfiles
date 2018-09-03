@@ -69,7 +69,7 @@ def call(Map pipelineParams)
         def mailRecipient = mailList.getEmail(ISPW_Owner)
 
         // Determine the current ISPW Path and Level that the code Promotion is from
-        def PathNum = getPathNum(ISPW_Level)
+        def PathNum = getPathNum(ISPW_Src_Level)
 
         // Use the Path Number to determine the right Runner JCL to use (different STEPLIB concatenations)
         def TTT_Jcl = "Runner_PATH" + PathNum + ".jcl"
