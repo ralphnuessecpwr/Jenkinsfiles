@@ -379,8 +379,8 @@ node{
                         httpMode: 'POST',
                         consoleLogResponseBody: true,
                         contentType: 'APPLICATION_JSON',
-                        requestBody: '''{
-                            "runtimeConfiguration": "${ISPW_Runtime}"
+                        requestBody: '''{ 
+                            "runtimeConfiguration": "ispw"
                             }''',
                         customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
                     )
