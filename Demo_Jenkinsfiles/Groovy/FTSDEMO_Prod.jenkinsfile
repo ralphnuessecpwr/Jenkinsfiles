@@ -96,11 +96,11 @@ import java.net.URL
         println "Scenario " + Credentials
         checkout changelog: false, poll: false, 
         scm: [$class: 'GitSCM', 
-        branches: [[name: '**']], 
+        branches: [[name: "*/${Branch}"]], 
         doGenerateSubmoduleConfigurations: false, 
         extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "${Folder}"]], 
         submoduleCfg: [], 
-        userRemoteConfigs: [[credentialsId: "${Credentials}", name: "origin", url: "${URL}"]]]
+        userRemoteConfigs: [[credentialsId: "${Credentials}", name: 'origin', url: "${URL}"]]]
  }
 
 @NonCPS
@@ -160,16 +160,16 @@ import java.net.URL
         }
     }
     return returnList    
- }
+}
 
 // One node with several stages => All variables are local to the node and available to all stages
 node{
-
+    // Determine the current ISPW Path and Level that the code Promotion is from
     def PathNum = getPathNum(ISPW_Src_Level)
 
     // Use the Path Number to determine the right Runner JCL to use (different STEPLIB concatenations)
     def TTT_Jcl = "Runner_PATH" + PathNum + ".jcl"
-
+    // Also set the Level that the code currently resides in
     def ISPW_Target_Level = "QA" + PathNum
 
     def response1 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${ISPW_SetId}/tasks",
@@ -256,11 +256,11 @@ node{
         // Loop through all downloaded TTT scenarios
         TTTListOfScenarios.each
         {
-            def TTTScenarioPath = it.path
             // Get root node of the path, i.e. the name of the TTT project
             // The split method uses regex to search for patterns, therefore
             // Backslahes, Dots and Underscores which mean certain patterns in regex need to be escaped 
             // The backslash in Windows paths is duplicated in Java, therefore it need to be escaped twice
+            def TTTScenarioPath        = it.path
             def TTTProjectName         = it.path.trim().split("\\\\")[0] + "\\"+ it.path.trim().split("\\\\")[1]   // TTT Project name is the root folder of the full path to the testscenario 
             def TTTScenarioFullName    = it.name                           // Get the full name of the testscenario file i.e. "name.testscenario"
             def TTTScenarioName        = it.name.trim().split("\\.")[0]    // Get the name of the scenario file without ".testscenario"
