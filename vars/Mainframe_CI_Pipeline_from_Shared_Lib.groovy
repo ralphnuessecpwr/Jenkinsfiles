@@ -69,7 +69,7 @@ def call(Map pipelineParams)
         PipelineConfig  pConfig     = new PipelineConfig()
         GitHelper       gitHelper   = new GitHelper(steps)
         MailList        mailList    = new MailList()
-        IspwHelper      ispwHelper  = new IspwHelper(steps)
+        IspwHelper      ispwHelper  = new IspwHelper(steps, ISPW_URL, ISPW_Runtime, ISPW_Container, CES_Token_Clear)
 
         // Store properties values in variables (easier to retrieve during code)
         def Git_Credentials      = pConfig.Git_Credentials
@@ -96,12 +96,14 @@ def call(Map pipelineParams)
         /*************************************************************************************************************/
         // Build a list of Assignments based on a Set
         // Use httpRequest to get all Tasks for the Set
+        /*
         def response1 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
             httpMode: 'GET',
             consoleLogResponseBody: false,
             customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
         )
-
+        */
+        
         def setTaskIdList          = ispwHelper.getSetTaskIdList(response1, ISPW_Target_Level)
 
         stage("Retrieve Code From ISPW")

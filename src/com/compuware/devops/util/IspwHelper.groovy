@@ -6,17 +6,35 @@ import jenkins.plugins.http_request.*
 class IspwHelper implements Serializable {
 
     def steps
+    def String ispwUrl
+    def String ispwRuntime
+    def String ispwContainer
+    def String cesToken
     
-    IspwHelper(steps) 
+    IspwHelper(steps, String ispwUrl, String ispwRuntime, String ispwContainer, String cesToken) 
     {
-        this.steps = steps
+        this.steps          = steps
+        this.ispwUrl        = ispwUrl
+        this.ispwRuntime    = ispwRuntime
+        this.ispwContainer  = ispwContainer
+        this.cesToken       = cesToken
+
     }
 
     def ArrayList getSetTaskIdList(ResponseContentSupplier response, String level)
     {
         def jsonSlurper = new JsonSlurper()
         def returnList  = []
-        def resp        = jsonSlurper.parseText(response.getContent())
+
+        def response = steps.httpRequest(url: "${ispwUrl}/ispw/${ispwRuntime}/sets/${ispwContainer}/tasks",
+            httpMode: 'GET',
+            consoleLogResponseBody: false,
+            customHeaders: [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
+        )
+
+        echo "After httpRequest"
+
+        def resp = jsonSlurper.parseText(response.getContent())
 
         if(resp.message != null)
         {
