@@ -197,6 +197,8 @@ node{
         customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
     )
 
+    echo "Define assignmentList"
+
     def assignmentList  = getAssigmentList(setMap, response2)
 
     for(int i = 0; i < assignmentList.size(); i++)
