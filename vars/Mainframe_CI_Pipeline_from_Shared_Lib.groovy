@@ -99,7 +99,7 @@ def call(Map pipelineParams)
         // Use httpRequest to get all Tasks for the Set
         def response1 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
             httpMode: 'GET',
-            consoleLogResponseBody: false,
+            consoleLogResponseBody: true,
             customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
         )
 
@@ -110,7 +110,7 @@ def call(Map pipelineParams)
         // Need to use two separate objects to store the responses for the httpRequests, 
         // otherwise the script will fail with a NotSerializable Exception
         def response2 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/releases/${ISPW_Release}/tasks",
-            consoleLogResponseBody: false, 
+            consoleLogResponseBody: true, 
             customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
         )
 
