@@ -30,6 +30,8 @@ class IspwHelper implements Serializable {
 
         def returnList  = []
 
+        echo "Before httpRequest"
+
         def response = httpRequestWrapper.httpGet("${ispwUrl}/ispw/${ispwRuntime}/sets/${ispwContainer}/tasks", cesToken)
 
         echo "After httpRequest"
