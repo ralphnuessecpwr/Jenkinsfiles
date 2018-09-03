@@ -66,7 +66,7 @@ def call(Map pipelineParams)
         echo "HCI_Token:        " + pipelineParams.HCI_Token
         echo "CC_repository:    " + pipelineParams.CC_repository
         */
-        
+
         // PipelineConfig is a class storing constants independant from user used throuout the pipeline
         PipelineConfig  pConfig     = new PipelineConfig()
 
@@ -101,7 +101,7 @@ def call(Map pipelineParams)
         // Use httpRequest to get all Tasks for the Set
         def response1 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
             httpMode: 'GET',
-            consoleLogResponseBody: true,
+            consoleLogResponseBody: false,
             customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
         )
 
@@ -112,7 +112,7 @@ def call(Map pipelineParams)
         // Need to use two separate objects to store the responses for the httpRequests, 
         // otherwise the script will fail with a NotSerializable Exception
         def response2 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/releases/${ISPW_Release}/tasks",
-            consoleLogResponseBody: true, 
+            consoleLogResponseBody: false, 
             customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
         )
 
@@ -121,13 +121,6 @@ def call(Map pipelineParams)
         // If the Sonar Quality Gate fails, these Assignments will be regressed
         def assignmentList  = ispwHelper.getAssigmentList(setTaskIdList, response2)
         /*************************************************************************************************************/
-
-        for(int i = 0; i < assignmentList.size(); i++)
-        {
-
-            echo "Assignment ${assignmentList[0].toString()}"
-
-        }
 
         stage("Retrieve Code From ISPW")
         {
@@ -141,6 +134,15 @@ def call(Map pipelineParams)
             ispwDownloadAll: false,                     // false will not download files that exist in the workspace and haven't previous changed
             serverConfig: '',                           // ISPW runtime config.  if blank ISPW will use the default runtime config
             serverLevel: ''])                           // level to download the components from
+        }
+
+        stage("Retrieve Tests")
+        {
+            //Retrieve the Tests from Github that match that ISPWW Stream and Application
+            Git_URL = "${Git_URL}/${Git_TTT_Repo}"
+
+            //call gitcheckout wrapper function
+            gitHelper.gitcheckout(Git_URL, Git_Branch, Git_Credentials, TTT_Folder)
         }
     }
 }
