@@ -42,6 +42,7 @@ def call(Map pipelineParams)
         def Git_Project         = pipelineParams.Git_Project
 
         def CES_Token           = pipelineParams.CES_Token
+        def CES_Token_Clear     = pipelineParams.CES_Token_Clear
         def HCI_Conn_ID         = pipelineParams.HCI_Conn_ID
         def HCI_Token           = pipelineParams.HCI_Token
         def CC_repository       = pipelineParams.CC_repository
