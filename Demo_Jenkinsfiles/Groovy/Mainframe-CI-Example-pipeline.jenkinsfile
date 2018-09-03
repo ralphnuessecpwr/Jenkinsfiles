@@ -414,7 +414,7 @@ node{
                     echo "Regress Assignment ${assignmentList[0].toString()}, Level ${ISPW_Target_Level}"
                     
                     def requestBodyParm = '''{
-                        "runtimeConfiguration": "''' + ISPW_Tuntime + '''"
+                        "runtimeConfiguration": "''' + ISPW_Runtime + '''"
                     }'''
 
                     echo "Request Body :"
