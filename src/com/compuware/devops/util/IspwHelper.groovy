@@ -54,6 +54,10 @@ class IspwHelper implements Serializable {
             }
         }
 
+        returnList.each{
+            echo "returnList: " it.toString()
+        }
+
         return returnList
     
     }
