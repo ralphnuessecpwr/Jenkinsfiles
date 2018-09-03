@@ -28,18 +28,20 @@ import java.net.URL
  ISPW Webhook Parameter List below
  @param ISPW_Stream - ISPW Stream that had the code promotion
  @param ISPW_Container - ISPW Container that had the code promotion
+ @param ISPW_Container_Type - Type of ISPW Container that had the code promotion, 0 - Assignment, 1 - Release, 3 - Set
  @param ISPW_Level - ISPW Level that code was promoted from
- @param ISPW_SetId - ISPW Set that was created for the promotion
  @param ISPW_Release - The ISPW Release Value that will be passed to XL Release
  @param ISPW_Owner - The ISPW Owner value from the ISPW Set that was created for the promotion
 
  The Pipeline also takes the following parameters from the Jenkins Job
  @param CES_Token - CES Personal Access Token.  These are configured in Compuware Enterprise Services / Security / Personal Access Tokens 
+ @param CES_Token_Clear - Name of the CES Token in Clear Text
  @param HCI_Conn_ID - HCI Connection ID configured in the Compuware Common Configuration Plugin.  Use Pipeline Syntax Generator to determine this value. 
  @param HCI_Token - The ID of the Jenkins Credential for the TSO ID that will used to execute the pipeline
  @param CES_Connection - The URL of Compuware Enterprise Services
  @param CC_repository - The Compuware Xpediter Code Coverage Repository that the Pipeline will use
  @param Git_Project - Github project/user used to store the Topaz for Total Test Projects
+ 
 */
 /**
  Below is a list of parameters that is hardcoded into the Pipeline
@@ -53,19 +55,26 @@ import java.net.URL
  @param XLR_Template - XL Release template to trigger at the end of the Jenkins workflow
  @param XLR_User - XL Release user ID. Configured in Jenkins/Manage Jenkins/Configure System/XL Release credentials
 */
+
  String Git_Credentials      = "github"
  String Git_URL              = "https://github.com/${Git_Project}"
  String Git_TTT_Repo         = "${ISPW_Stream}_${ISPW_Application}_Unit_Tests.git"
  String Git_Branch           = "master"
  String SQ_Scanner_Name      = "scanner" 
  String SQ_Server_Name       = "localhost"  
- String SQ_Project           = "Ralph_Madrid" 
+ String SQ_Project           = "${JOB_NAME}" 
  String MF_Source            = "MF_Source"
- String XLR_Template         = "A Release from Jenkins - RNU"    
- String XLR_User             = "Ralph"                           
+ String XLR_Template         = "A Release from Jenkins"
+ String XLR_User             = "admin"                           
  String ISPW_Runtime         = "ispw"		 
- String CES_Token_Clear      = "665fc9fb-39de-428a-8a67-a3619752873d"
- String TTT_Folder           = "tests"		 
+ String TTT_Folder           = "tests"	
+ String ISPW_URL             = "http://cwcc.compuware.com:2020"
+
+ Map    mailRecipientMap     = ["HDDRXM0":"ralph.nuesse@compuware.com"]
+ String mailRecipientTest    = mailRecipientMap.ISPW_Owner.toUpperCase()
+
+ echo "Mail Recipient: " + mailRecipientTest
+
 /**
  Helper Methods for the Pipeline Script
 */
@@ -88,10 +97,11 @@ import java.net.URL
 */
  def gitcheckout(String URL, String Branch, String Credentials, String Folder)
  {
-        println "Scenario " + URL
-        println "Scenario " + Branch
-        println "Scenario " + Credentials
-        checkout changelog: false, poll: false, 
+    println "Scenario " + URL
+    println "Scenario " + Branch
+    println "Scenario " + Credentials
+
+    checkout changelog: false, poll: false, 
         scm: [$class: 'GitSCM', 
         branches: [[name: "*/${Branch}"]], 
         doGenerateSubmoduleConfigurations: false, 
@@ -100,11 +110,19 @@ import java.net.URL
         userRemoteConfigs: [[credentialsId: "${Credentials}", name: 'origin', url: "${URL}"]]]
  }
 
+/* 
+    Receive a response from an "Get Tasks in Set"-httpRequest and build a list of task IDs
+*/
+/* 
+    "@NonCPS" is required to tell Jenkins that the objects in the method do not need to survive a Jenkins re-start
+    This is necessary because JsonSlurper uses non serializable classes, which will leed to exceptions when not used
+    in methods in a @NonCPS section 
+*/
 @NonCPS
- def Map getSetMap(ResponseContentSupplier response)
+ def ArrayList getSetTaskIdList(ResponseContentSupplier response)
  {
     def jsonSlurper = new JsonSlurper()
-    def returnMap   = [:]
+    def returnList  = []
     def resp        = jsonSlurper.parseText(response.getContent())
 
     if(resp.message != null)
@@ -120,17 +138,26 @@ import java.net.URL
         {
             if(it.moduleType == 'COB' && it.level == 'QA3')
             {
-                returnMap.put(it.taskId, it.moduleName) 
+                returnList.add(it.taskId)
             }
         }
     }
 
-    return returnMap
+    return returnList
  
  }
 
+/* 
+    Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build a list of Assignments
+    that are contained in both the Task Id List and the List of Tasks in the Release 
+*/
+/* 
+    "@NonCPS" is required to tell Jenkins that the objects in the method do not need to survive a Jenkins re-start
+    This is necessary because JsonSlurper uses non serializable classes, which will leed to exceptions when not used
+    in methods in a @NonCPS section 
+*/
 @NonCPS
- def ArrayList getAssigmentList(Map setMap, ResponseContentSupplier response)
+ def ArrayList getAssigmentList(ArrayList taskIds, ResponseContentSupplier response)
  {
     def jsonSlurper = new JsonSlurper()
     def returnList  = []
@@ -148,7 +175,7 @@ import java.net.URL
 
         taskList.each
         {
-            if(setMap.containsKey(it.taskId))
+            if(taskIds.contains(it.taskId))
             {
                 if(!(returnList.contains(it.container)))
                 {
@@ -174,7 +201,7 @@ node{
      This stage can be used is you want to clean out the workspace from any previously downloaded source from ISPW.  
      This stage shouldn't be necessary in the ordinary execution of the pipeline 
      */ 
-    
+    /*
     stage("clean previously downloaded source")
     {
         // Clean out any previously downloaded source
@@ -183,21 +210,33 @@ node{
             deleteDir()
         }
     }
-    
-    def response1 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/sets/${ISPW_SetId}/tasks",
+    */
+
+    /*************************************************************************************************************/
+    // Build a list of Assignments based on a Set
+    // Use httpRequest to get all Tasks for the Set
+    def response1 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
         httpMode: 'GET',
         consoleLogResponseBody: false,
         customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
     )
 
-    def setMap          = getSetMap(response1)
+    // Use method getSetTaskIdList to extract the list of Task IDs from the response of the httpRequest
+    def setTaskIdList          = getSetTaskIdList(response1)
 
-    def response2 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/releases/${ISPW_Release}/tasks",
+    // Use httpRequest to get all Assignments for the Release
+    // Need to use two separate objects to store the responses for the httpRequests, 
+    // otherwise the script will fail with a NotSerializable Exception
+    def response2 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/releases/${ISPW_Release}/tasks",
         consoleLogResponseBody: false, 
         customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
     )
 
-    def assignmentList  = getAssigmentList(setMap, response2)
+    // Use method getAssigmentList to get all Assignments from the Release,
+    // that belong to Tasks in the Set
+    // If the Sonar Quality Gate fails, these Assignments will be regressed
+    def assignmentList  = getAssigmentList(setTaskIdList, response2)
+    /*************************************************************************************************************/
 
     def CC_DDIO_Override     = "SALESSUP.${ISPW_Application}.${ISPW_Target_Level}.SSD"
      /*
@@ -207,14 +246,14 @@ node{
     {
             //Retrieve the code from ISPW that has been promoted 
             checkout([$class: 'IspwContainerConfiguration', 
-            componentType: '',                  // optional filter for component types in ISPW
+            componentType: '',                          // optional filter for component types in ISPW
             connectionId: "${HCI_Conn_ID}",     
             credentialsId: "${HCI_Token}",      
-            containerName: "${ISPW_SetId}",   
-            containerType: '2',                 // 0-Assignment 1-Release 2-Set
-            ispwDownloadAll: false,             // false will not download files that exist in the workspace and haven't previous changed
-            serverConfig: '',                   // ISPW runtime config.  if blank ISPW will use the default runtime config
-            serverLevel: ''])                   // level to download the components from
+            containerName: "${ISPW_Container}",   
+            containerType: "${ISPW_Container_Type}",    // 0-Assignment 1-Release 2-Set
+            ispwDownloadAll: false,                     // false will not download files that exist in the workspace and haven't previous changed
+            serverConfig: '',                           // ISPW runtime config.  if blank ISPW will use the default runtime config
+            serverLevel: ''])                           // level to download the components from
     }
 
     /* 
@@ -375,7 +414,14 @@ node{
 
                     echo "Regress Assignment ${assignmentList[0].toString()}, Level ${ISPW_Target_Level}"
                     
-                    response3 = steps.httpRequest(url: "http://cwcc.compuware.com:2020/ispw/ispw/assignments/${assignmentList[i].toString()}/tasks/regress?level=${ISPW_Target_Level}",
+                    def requestBodyParm = '''{
+                        "runtimeConfiguration": "''' + ISPW_Tuntime + '''"
+                    }'''
+
+                    echo "Request Body :"
+                    echo requestBodyParm
+
+                    response3 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/assignments/${assignmentList[i].toString()}/tasks/regress?level=${ISPW_Target_Level}",
                         httpMode: 'POST',
                         consoleLogResponseBody: true,
                         contentType: 'APPLICATION_JSON',
@@ -386,8 +432,6 @@ node{
                     )
                 
                 }
-
-                def mailRecipients = "ralph.nuesse@compuware.com"
                     
                 // Email
                 emailext subject: '$DEFAULT_SUBJECT',
