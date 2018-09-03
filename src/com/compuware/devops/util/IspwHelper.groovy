@@ -1,5 +1,7 @@
 package com.compuware.devops.util
+
 import groovy.json.JsonSlurper
+import jenkins.plugins.http_request.*
 
 class IspwHelper implements Serializable {
 
