@@ -13,6 +13,7 @@ class IspwHelper implements Serializable {
     
     IspwHelper(steps, String ispwUrl, String ispwRuntime, String ispwContainer, String cesToken) 
     {
+
         this.steps          = steps
         this.ispwUrl        = ispwUrl
         this.ispwRuntime    = ispwRuntime
@@ -24,14 +25,12 @@ class IspwHelper implements Serializable {
 @NonCPS
     def ArrayList getSetTaskIdList(String level)
     {
-        def jsonSlurper = new JsonSlurper()
+        def jsonSlurper         = new JsonSlurper()
+        def httpRequestWrapper  = new HttpRequestWrapper(steps)
+
         def returnList  = []
 
-        def response = steps.httpRequest(url: "${ispwUrl}/ispw/${ispwRuntime}/sets/${ispwContainer}/tasks",
-            httpMode: 'GET',
-            consoleLogResponseBody: false,
-            customHeaders: [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
-        )
+        def response = httpRequestWrapper.httpGet("${ispwUrl}/ispw/${ispwRuntime}/sets/${ispwContainer}/tasks", cesToken)
 
         echo "After httpRequest"
 
