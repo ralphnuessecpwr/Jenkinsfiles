@@ -97,15 +97,35 @@ def call(Map pipelineParams)
         /*************************************************************************************************************/
         // Build a list of Assignments based on a Set
         // Use httpRequest to get all Tasks for the Set
-        /*
         def response1 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
             httpMode: 'GET',
             consoleLogResponseBody: false,
             customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
         )
-        */
 
-        def setTaskIdList          = ispwHelper.getSetTaskIdList(ISPW_Target_Level)
+        // Use method getSetTaskIdList to extract the list of Task IDs from the response of the httpRequest
+        def setTaskIdList          = ispwHelper.getSetTaskIdList(response1, ISPW_Target_Level)
+
+        // Use httpRequest to get all Assignments for the Release
+        // Need to use two separate objects to store the responses for the httpRequests, 
+        // otherwise the script will fail with a NotSerializable Exception
+        def response2 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/releases/${ISPW_Release}/tasks",
+            consoleLogResponseBody: false, 
+            customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
+        )
+
+        // Use method getAssigmentList to get all Assignments from the Release,
+        // that belong to Tasks in the Set
+        // If the Sonar Quality Gate fails, these Assignments will be regressed
+        def assignmentList  = ispwHelper.getAssigmentList(setTaskIdList, response2)
+        /*************************************************************************************************************/
+
+        for(int i = 0; i < assignmentList.size(); i++)
+        {
+
+            echo "Assignment ${assignmentList[0].toString()}"
+
+        }
 
         stage("Retrieve Code From ISPW")
         {

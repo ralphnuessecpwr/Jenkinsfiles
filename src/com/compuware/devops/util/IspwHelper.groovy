@@ -23,18 +23,12 @@ class IspwHelper implements Serializable {
     }
 
 @NonCPS
-    def ArrayList getSetTaskIdList(String level)
+    def ArrayList getSetTaskIdList(ResponseContentSupplier response, String level)
     {
         def jsonSlurper         = new JsonSlurper()
         def httpRequestWrapper  = new HttpRequestWrapper(steps)
 
         def returnList  = []
-
-        steps.echo "Before httpRequest"
-
-        def response = httpRequestWrapper.httpGet("${ispwUrl}/ispw/${ispwRuntime}/sets/${ispwContainer}/tasks", cesToken)
-
-        steps.echo "After httpRequest"
 
         def resp = jsonSlurper.parseText(response.getContent())
 
@@ -64,4 +58,5 @@ class IspwHelper implements Serializable {
     
     }
 
+    
 }
