@@ -210,7 +210,7 @@ node{
             componentType: '',                  // optional filter for component types in ISPW
             connectionId: "${HCI_Conn_ID}",     
             credentialsId: "${HCI_Token}",      
-            containerName: "${SetId}",   
+            containerName: "${ISPW_SetId}",   
             containerType: '2',                 // 0-Assignment 1-Release 2-Set
             ispwDownloadAll: false,             // false will not download files that exist in the workspace and haven't previous changed
             serverConfig: '',                   // ISPW runtime config.  if blank ISPW will use the default runtime config
