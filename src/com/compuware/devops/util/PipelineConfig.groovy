@@ -7,7 +7,6 @@ class PipelineConfig
 Class to hold Jenkins server specific setup information
 */
 
-public String Git_Credentials      = "87763671-db9a-47e1-80e7-33c1aba803b1" //"github"
 public String Git_Branch           = "master"
 public String SQ_Scanner_Name      = "Scanner" //"scanner" 
 public String SQ_Server_Name       = "CWCC" //"localhost"  

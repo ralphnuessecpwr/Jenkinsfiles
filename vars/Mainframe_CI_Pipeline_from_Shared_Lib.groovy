@@ -40,6 +40,7 @@ def call(Map pipelineParams)
         def ISPW_Owner          = pipelineParams.ISPW_Owner
 
         def Git_Project         = pipelineParams.Git_Project
+        def Git_Credentials     = pipelineParams.Git_Credentials
 
         def CES_Token           = pipelineParams.CES_Token
         def CES_Token_Clear     = pipelineParams.CES_Token_Clear
@@ -71,7 +72,6 @@ def call(Map pipelineParams)
         PipelineConfig  pConfig     = new PipelineConfig()
 
         // Store properties values in variables (easier to retrieve during code)
-        def Git_Credentials      = pConfig.Git_Credentials
         def Git_Branch           = pConfig.Git_Branch
         def SQ_Scanner_Name      = pConfig.SQ_Scanner_Name
         def SQ_Server_Name       = pConfig.SQ_Server_Name
