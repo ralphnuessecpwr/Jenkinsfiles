@@ -27,18 +27,13 @@ import java.net.URL
  
  ISPW Webhook Parameter List below
  @param ISPW_Stream - ISPW Stream that had the code promotion
+ @param ISPW_Application - ISPW application that had the code promotion 
  @param ISPW_Container - ISPW Container that had the code promotion
- @param ISPW_Container_Type - Type of ISPW Container that had the code promotion, 0 - Assignment, 1 - Release, 3 - Set
- @param ISPW_Release - The ISPW Release Value that will be passed to XL Release
  @param ISPW_Src_Level - ISPW Level that code was promoted from
  @param ISPW_Owner - The ISPW Owner value from the ISPW Set that was created for the promotion
 
  The Pipeline also takes the following parameters from the Jenkins Job
  @param CES_Token - CES Personal Access Token.  These are configured in Compuware Enterprise Services / Security / Personal Access Tokens 
- @param HCI_Conn_ID - HCI Connection ID configured in the Compuware Common Configuration Plugin.  Use Pipeline Syntax Generator to determine this value. 
- @param HCI_Token - The ID of the Jenkins Credential for the TSO ID that will used to execute the pipeline
- @param CES_Connection - The URL of Compuware Enterprise Services
- @param CC_repository - The Compuware Xpediter Code Coverage Repository that the Pipeline will use
  @param Git_Project - Github project/user used to store the Topaz for Total Test Projects
  
 */
@@ -300,16 +295,16 @@ node{
                 echo "Branch ${gitNewBranch} already exists - nothing to create"
 
                 emailBody = "Jenkins Job ${JOB_NAME} was executed because you checked out tasks to ISPW assigment ${gitNewBranch}." +
-                            "\nBranch ${gitNewBranch} already existed. Make sure you fetched the latest changes for this branch  from GitHub."
-
+                            "\n\nBranch ${gitNewBranch} already existed. Make sure you fetched the latest changes for this branch  from GitHub." +
+                            "\n\n${DEFAUL_CONTENT}"
             }
             else
             {
                 echo "Branch ${gitNewBranch} created"
 
                 emailBody = "Jenkins Job ${JOB_NAME} was executed because you checked out tasks to ISPW assigment ${gitNewBranch}." +
-                            "\nBranch ${gitNewBranch} was created. Fetch this branch from GitHub to start work on your Unit Tests."
-
+                            "\n\nBranch ${gitNewBranch} was created. Fetch this branch from GitHub to start work on your Unit Tests." +
+                            "\n\n${DEFAUL_CONTENT}"
             }
 
             stdout = bat(returnStdout: true, script: "git checkout ${gitNewBranch}")
@@ -326,7 +321,6 @@ node{
                 body:           emailBody,
                 replyTo:        '$DEFAULT_REPLYTO',
                 to:             "${mailRecipient}"
-
         }
     }
 }
