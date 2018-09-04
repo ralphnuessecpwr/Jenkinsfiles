@@ -51,22 +51,22 @@ def call(Map pipelineParams)
         def Git_URL             = "https://github.com/${Git_Project}"
         def Git_TTT_Repo        = "${ISPW_Stream}_${ISPW_Application}_Unit_Tests.git"
 
-        /*
+        
         echo "Parameters passed:"
 
-        echo "ISPW_Stream:      " + pipelineParams.ISPW_Stream
-        echo "ISPW_Application: " + pipelineParams.ISPW_Application
-        echo "ISPW_Release:     " + pipelineParams.ISPW_Release
-        echo "ISPW_Container:   " + pipelineParams.ISPW_Container
-        echo "ISPW_Container_Type: " + pipelineParams.ISPW_Container_Type
-        echo "ISPW_Src_Level:   " + pipelineParams.ISPW_Src_Level
-        echo "ISPW_Owner:       " + pipelineParams.ISPW_Owner
-        echo "Git_Project:      " + pipelineParams.Git_Project
-        echo "CES_Token:        " + pipelineParams.CES_Token
-        echo "HCI_Conn_ID:      " + pipelineParams.HCI_Conn_ID
-        echo "HCI_Token:        " + pipelineParams.HCI_Token
-        echo "CC_repository:    " + pipelineParams.CC_repository
-        */
+        echo "ISPW_Stream:          " + pipelineParams.ISPW_Stream
+        echo "ISPW_Application:     " + pipelineParams.ISPW_Application
+        echo "ISPW_Release:         " + pipelineParams.ISPW_Release
+        echo "ISPW_Container:       " + pipelineParams.ISPW_Container
+        echo "ISPW_Container_Type:  " + pipelineParams.ISPW_Container_Type
+        echo "ISPW_Src_Level:       " + pipelineParams.ISPW_Src_Level
+        echo "ISPW_Owner:           " + pipelineParams.ISPW_Owner
+        echo "Git_Project:          " + pipelineParams.Git_Project
+        echo "CES_Token:            " + pipelineParams.CES_Token
+        echo "HCI_Conn_ID:          " + pipelineParams.HCI_Conn_ID
+        echo "HCI_Token:            " + pipelineParams.HCI_Token
+        echo "CC_repository:        " + pipelineParams.CC_repository
+        
 
         // PipelineConfig is a class storing constants independant from user used throuout the pipeline
         PipelineConfig  pConfig     = new PipelineConfig()
