@@ -301,16 +301,14 @@ node{
                 echo "Branch ${gitNewBranch} already exists - nothing to create"
 
                 emailBody = "Jenkins Job ${JOB_NAME} was executed because you checked out tasks to ISPW assigment ${gitNewBranch}." +
-                            "\n\nBranch ${gitNewBranch} already existed. Make sure you fetched the latest changes for this branch  from GitHub." +
-                            "\n\n${DEFAULT_CONTENT}"
+                            "\n\nBranch ${gitNewBranch} already existed. Make sure you fetched the latest changes for this branch  from GitHub."
             }
             else
             {
                 echo "Branch ${gitNewBranch} created"
 
                 emailBody = "Jenkins Job ${JOB_NAME} was executed because you checked out tasks to ISPW assigment ${gitNewBranch}." +
-                            "\n\nBranch ${gitNewBranch} was created. Fetch this branch from GitHub to start work on your Unit Tests." +
-                            "\n\n${DEFAULT_CONTENT}"
+                            "\n\nBranch ${gitNewBranch} was created. Fetch this branch from GitHub to start work on your Unit Tests."
             }
 
             stdout = bat(returnStdout: true, script: "git checkout ${gitNewBranch}")
@@ -324,7 +322,7 @@ node{
             }
 
             emailext subject:   "Git assignment branch ${gitNewBranch}",
-                body:           emailBody,
+                body:           emailBody + "\n\n${DEFAULT_CONTENT}",
                 replyTo:        '$DEFAULT_REPLYTO',
                 to:             "${mailRecipient}"
         }
