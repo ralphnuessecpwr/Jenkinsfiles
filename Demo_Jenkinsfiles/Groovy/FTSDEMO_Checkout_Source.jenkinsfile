@@ -246,26 +246,32 @@ node{
             if(stdstatus > 0)
             {
                 echo "Branch ${gitNewBranch} already exists - nothing to create"
+
+                emailBody = "Jenkins Job ${JOB_NAME} was executed because you checked out tasks to ISPW assigment ${gitNewBranch}." +
+                            "\nBranch ${gitNewBranch} already existed. Make sure you fetched the latest changes for this branch  from GitHub."
+
             }
             else
             {
                 echo "Branch ${gitNewBranch} created"
+
+                emailBody = "Jenkins Job ${JOB_NAME} was executed because you checked out tasks to ISPW assigment ${gitNewBranch}." +
+                            "\nBranch ${gitNewBranch} was created. Fetch this branch from GitHub to start work on your Unit Tests."
+
             }
 
             stdout = bat(returnStdout: true, script: "git checkout ${gitNewBranch}")
-            /*
-            withCredentials(
-                [usernamePassword(
-                    credentialsId: 'stevekansagithub', 
-                    passwordVariable: 'GIT_PASSWORD', 
-                    usernameVariable: 'GIT_USERNAME'
-                    )
-                ]
-            ) 
-            */
 
             stdout = bat(returnStdout: true, script: "git push origin ${gitNewBranch}")
-            echo "push" + stdout
+            echo "pushed " + stdout
+
+            emailext(
+                subject:    "Git assignment branch ${gitNewBranch}",
+                body:       emailBody,
+                replyTo:    '$DEFAULT_REPLYTO',
+                to:         "${mailRecipient}"
+            )
+
         }
     }
 }
