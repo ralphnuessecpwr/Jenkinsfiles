@@ -202,7 +202,7 @@ node{
     // Use httpRequest to get all Tasks for the Set
     def response1 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
         httpMode: 'GET',
-        consoleLogResponseBody: true,
+        consoleLogResponseBody: false,
         customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
     )
 
@@ -213,7 +213,7 @@ node{
     // Need to use two separate objects to store the responses for the httpRequests, 
     // otherwise the script will fail with a NotSerializable Exception
     def response2 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/releases/${ISPW_Release}/tasks",
-        consoleLogResponseBody: true, 
+        consoleLogResponseBody: false, 
         customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
     )
 
@@ -234,7 +234,7 @@ node{
 
     stage("Create and push new branch")
     {
-        dir{"${TTT_Folder}"}
+        dir{TTT_Folder}
         {
             def gitNewBranch = assignmentList[0].toString()
 
