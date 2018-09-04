@@ -130,8 +130,6 @@ import java.net.URL
     def returnList  = []
     def resp        = jsonSlurper.parseText(response.getContent())
 
-echo "resp: " + resp.toString()
-
     if(resp.message != null)
     {
         echo "Resp: " + resp.message
@@ -141,11 +139,8 @@ echo "resp: " + resp.toString()
     {
         def taskList = resp.tasks
 
-echo "Task List size: " + taskList.size()
-
         taskList.each
         {
-echo "Task: " + it.toString()            
             if(it.moduleType == 'COB' && it.level == level)
             {
                 returnList.add(it.taskId)
