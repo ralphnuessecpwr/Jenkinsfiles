@@ -265,12 +265,10 @@ node{
             stdout = bat(returnStdout: true, script: "git push origin ${gitNewBranch}")
             echo "pushed " + stdout
 
-            emailext(
-                subject:    "Git assignment branch ${gitNewBranch}",
-                body:       emailBody,
-                replyTo:    '$DEFAULT_REPLYTO',
-                to:         "${mailRecipient}"
-            )
+            emailext subject:   "Git assignment branch ${gitNewBranch}",
+                body:           emailBody,
+                replyTo:        '$DEFAULT_REPLYTO',
+                to:             "${mailRecipient}"
 
         }
     }
