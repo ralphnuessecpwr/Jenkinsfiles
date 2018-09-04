@@ -35,7 +35,6 @@ import java.net.URL
 
  The Pipeline also takes the following parameters from the Jenkins Job
  @param CES_Token - CES Personal Access Token.  These are configured in Compuware Enterprise Services / Security / Personal Access Tokens 
- @param CES_Token_Clear - Name of the CES Token in Clear Text
  @param HCI_Conn_ID - HCI Connection ID configured in the Compuware Common Configuration Plugin.  Use Pipeline Syntax Generator to determine this value. 
  @param HCI_Token - The ID of the Jenkins Credential for the TSO ID that will used to execute the pipeline
  @param CES_Connection - The URL of Compuware Enterprise Services
@@ -235,6 +234,7 @@ node{
     def mailRecipient = mailRecipientMap[(ISPW_Owner.toUpperCase())]
 
     def ResponseContentSupplier response1
+    def ResponseContentSupplier response2
 
     /*************************************************************************************************************/
     // Build a list of Assignments based on a Set
@@ -259,10 +259,15 @@ node{
     // Use httpRequest to get all Assignments for the Release
     // Need to use two separate objects to store the responses for the httpRequests, 
     // otherwise the script will fail with a NotSerializable Exception
-    def response2 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/releases/${ISPW_Release}/tasks",
-        consoleLogResponseBody: false, 
-        customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
-    )
+    withCredentials(
+        [string(credentialsId: "${CES_Token}", variable: 'cesToken')]
+    ) 
+    {
+        response2 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/releases/${ISPW_Release}/tasks",
+            consoleLogResponseBody: false, 
+            customHeaders: [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
+        )
+    }
 
     // Use method getAssigmentList to get all Assignments from the Release,
     // that belong to Tasks in the Set
@@ -313,7 +318,7 @@ node{
                 [usernamePassword(credentialsId: "${Git_Credentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]
             ) 
             {                
-                stdout = bat(returnStdout: true, script: "git push origin ${gitNewBranch}")
+                stdout = bat(returnStdout: true, script: "git push https://${gitUsername}:${gitPassword}@github.com/${Git_Project}/${Git_TTT_Repo}")
                 echo "pushed " + stdout
             }
 
