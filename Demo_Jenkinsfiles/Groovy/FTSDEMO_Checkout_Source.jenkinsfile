@@ -130,6 +130,8 @@ import java.net.URL
     def returnList  = []
     def resp        = jsonSlurper.parseText(response.getContent())
 
+    echo "resp: " + resp.toString()
+
     if(resp.message != null)
     {
         echo "Resp: " + resp.message
