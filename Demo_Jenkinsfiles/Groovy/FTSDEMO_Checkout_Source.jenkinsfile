@@ -234,8 +234,10 @@ node{
 
     stage("Create and push new branch")
     {
+        echo "Pre Dir"
         dir{TTT_Folder}
         {
+            echo "within Dir"
             def gitNewBranch = assignmentList[0].toString()
 
             bat(script: "git config --global user.name ${ISPW_Owner} \r\ngit config --global user.email ${mailRecipient}")
