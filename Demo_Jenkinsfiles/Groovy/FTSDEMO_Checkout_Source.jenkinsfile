@@ -302,7 +302,7 @@ node{
 
                 emailBody = "Jenkins Job ${JOB_NAME} was executed because you checked out tasks to ISPW assigment ${gitNewBranch}." +
                             "\n\nBranch ${gitNewBranch} already existed. Make sure you fetched the latest changes for this branch  from GitHub." +
-                            "\n\n${DEFAUL_CONTENT}"
+                            "\n\n${DEFAULT_CONTENT}"
             }
             else
             {
@@ -310,7 +310,7 @@ node{
 
                 emailBody = "Jenkins Job ${JOB_NAME} was executed because you checked out tasks to ISPW assigment ${gitNewBranch}." +
                             "\n\nBranch ${gitNewBranch} was created. Fetch this branch from GitHub to start work on your Unit Tests." +
-                            "\n\n${DEFAUL_CONTENT}"
+                            "\n\n${DEFAULT_CONTENT}"
             }
 
             stdout = bat(returnStdout: true, script: "git checkout ${gitNewBranch}")
