@@ -234,9 +234,7 @@ node{
 
     stage("Create and push new branch")
     {
-        echo "Pre Dir"
-
-        dir{"github"}
+        dir("${TTT_Folder}")
         {
             echo "within Dir"
             def gitNewBranch = assignmentList[0].toString()
