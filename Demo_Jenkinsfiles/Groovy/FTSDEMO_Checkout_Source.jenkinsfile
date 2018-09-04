@@ -322,7 +322,7 @@ node{
             }
 
             emailext subject:   "Git assignment branch ${gitNewBranch}",
-                body:           emailBody + "\n\n${DEFAULT_CONTENT}",
+                body:           emailBody + "\n\n" + '$DEFAULT_CONTENT',
                 replyTo:        '$DEFAULT_REPLYTO',
                 to:             "${mailRecipient}"
         }
