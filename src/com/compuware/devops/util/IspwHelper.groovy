@@ -9,16 +9,14 @@ class IspwHelper implements Serializable {
     def String ispwUrl
     def String ispwRuntime
     def String ispwContainer
-    def String cesToken
     
-    IspwHelper(steps, String ispwUrl, String ispwRuntime, String ispwContainer, String cesToken) 
+    IspwHelper(steps, String ispwUrl, String ispwRuntime, String ispwContainer)
     {
 
         this.steps          = steps
         this.ispwUrl        = ispwUrl
         this.ispwRuntime    = ispwRuntime
         this.ispwContainer  = ispwContainer
-        this.cesToken       = cesToken
 
     }
 

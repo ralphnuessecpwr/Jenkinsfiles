@@ -43,7 +43,6 @@ def call(Map pipelineParams)
         def Git_Credentials     = pipelineParams.Git_Credentials
 
         def CES_Token           = pipelineParams.CES_Token
-        def CES_Token_Clear     = pipelineParams.CES_Token_Clear
         def HCI_Conn_ID         = pipelineParams.HCI_Conn_ID
         def HCI_Token           = pipelineParams.HCI_Token
         def CC_repository       = pipelineParams.CC_repository
@@ -84,7 +83,7 @@ def call(Map pipelineParams)
 
         GitHelper       gitHelper   = new GitHelper(steps)
         MailList        mailList    = new MailList()
-        IspwHelper      ispwHelper  = new IspwHelper(steps, ISPW_URL, ISPW_Runtime, ISPW_Container, CES_Token_Clear)
+        IspwHelper      ispwHelper  = new IspwHelper(steps, ISPW_URL, ISPW_Runtime, ISPW_Container)
 
         def mailRecipient = mailList.getEmail(ISPW_Owner)
 
@@ -99,16 +98,26 @@ def call(Map pipelineParams)
         /*************************************************************************************************************/
         // Build a list of Assignments based on a Set
         // Use httpRequest to get all Tasks for the Set
-        def response1 = steps.httpRequest(
-            url:                        "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
-            httpMode:                   'GET',
-            consoleLogResponseBody:     false,
-            customHeaders:              [[
-                                        maskValue:  true, 
-                                        name:       'authorization', 
-                                        value:      "${CES_Token_Clear}"
-                                        ]]
+
+        def ResponseContentSupplier response1
+        def ResponseContentSupplier response2
+        def ResponseContentSupplier response3
+
+        withCredentials(
+            [string(credentialsId: "${CES_Token}", variable: 'cesToken')]
+        ) 
+        {
+            response1 = steps.httpRequest(
+                url:                        "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
+                httpMode:                   'GET',
+                consoleLogResponseBody:     false,
+                customHeaders:              [[
+                                            maskValue:  true, 
+                                            name:       'authorization', 
+                                            value:      "${cesToken}"
+                                            ]]
             )
+        }
 
         // Use method getSetTaskIdList to extract the list of Task IDs from the response of the httpRequest
         def setTaskIdList          = ispwHelper.getSetTaskIdList(response1, ISPW_Target_Level)
@@ -116,15 +125,20 @@ def call(Map pipelineParams)
         // Use httpRequest to get all Assignments for the Release
         // Need to use two separate objects to store the responses for the httpRequests, 
         // otherwise the script will fail with a NotSerializable Exception
-        def response2 = steps.httpRequest(
-            url:                        "${ISPW_URL}/ispw/${ISPW_Runtime}/releases/${ISPW_Release}/tasks",
-            consoleLogResponseBody:     false, 
-            customHeaders:              [[
-                                        maskValue:  true, 
-                                        name:       'authorization', 
-                                        value:      "${CES_Token_Clear}"
-                                        ]]
-            )
+        withCredentials(
+            [string(credentialsId: "${CES_Token}", variable: 'cesToken')]
+        ) 
+        {
+            response2 = steps.httpRequest(
+                url:                        "${ISPW_URL}/ispw/${ISPW_Runtime}/releases/${ISPW_Release}/tasks",
+                consoleLogResponseBody:     false, 
+                customHeaders:              [[
+                                            maskValue:  true, 
+                                            name:       'authorization', 
+                                            value:      "${cesToken}"
+                                            ]]
+                )
+        }
 
         // Use method getAssigmentList to get all Assignments from the Release,
         // that belong to Tasks in the Set
@@ -313,19 +327,24 @@ def call(Map pipelineParams)
                             "runtimeConfiguration": "''' + ISPW_Runtime + '''"
                         }'''
 
-                        response3 = steps.httpRequest(
-                            url:                    "${ISPW_URL}/ispw/${ISPW_Runtime}/assignments/${assignmentList[i].toString()}/tasks/regress?level=${ISPW_Target_Level}",
-                            httpMode:               'POST',
-                            consoleLogResponseBody: true,
-                            contentType:            'APPLICATION_JSON',
-                            requestBody:            requestBodyParm,
-                            customHeaders:          [[
-                                                    maskValue:    true, 
-                                                    name:           'authorization', 
-                                                    value:          "${CES_Token_Clear}"
-                                                    ]]
-                        )
-                    
+                        withCredentials(
+                            [string(credentialsId: "${CES_Token}", variable: 'cesToken')]
+                        ) 
+                        {
+
+                            response3 = steps.httpRequest(
+                                url:                    "${ISPW_URL}/ispw/${ISPW_Runtime}/assignments/${assignmentList[i].toString()}/tasks/regress?level=${ISPW_Target_Level}",
+                                httpMode:               'POST',
+                                consoleLogResponseBody: true,
+                                contentType:            'APPLICATION_JSON',
+                                requestBody:            requestBodyParm,
+                                customHeaders:          [[
+                                                        maskValue:    true, 
+                                                        name:           'authorization', 
+                                                        value:          "${cesToken}"
+                                                        ]]
+                            )
+                        }                    
                     }
                         
                     // Email
