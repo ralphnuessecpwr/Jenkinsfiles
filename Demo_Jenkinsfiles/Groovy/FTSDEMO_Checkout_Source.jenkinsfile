@@ -226,6 +226,12 @@ import java.net.URL
 // One node with several stages => All variables are local to the node and available to all stages
 node{
 
+    // Clean out any previously downloaded source
+    dir(".\\") 
+    {
+        deleteDir()
+    }
+
     def mailRecipient = mailRecipientMap[(ISPW_Owner.toUpperCase())]
 
     def ResponseContentSupplier response1
