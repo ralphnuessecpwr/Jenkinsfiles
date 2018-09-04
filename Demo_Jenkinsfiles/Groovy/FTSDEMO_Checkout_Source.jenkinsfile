@@ -237,8 +237,9 @@ node{
     /*************************************************************************************************************/
     // Build a list of Assignments based on a Set
     // Use httpRequest to get all Tasks for the Set
-    withCredentials
-        ([string(credentialsId: "${CES_Token}", variable: 'cesToken')]) 
+    withCredentials(
+        [string(credentialsId: "${CES_Token}", variable: 'cesToken')]
+    ) 
     {
         def response1 = steps.httpRequest(
             url:                    "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
@@ -308,7 +309,7 @@ node{
 
             withCredentials(
                 [usernamePassword(credentialsId: "${Git_Credentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]
-                ) 
+            ) 
             {                
                 stdout = bat(returnStdout: true, script: "git push origin ${gitNewBranch}")
                 echo "pushed " + stdout
