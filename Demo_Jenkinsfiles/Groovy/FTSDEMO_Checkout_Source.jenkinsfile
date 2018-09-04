@@ -263,10 +263,9 @@ node{
                 ]
             ) 
             */
-            /*
+
             stdout = bat(returnStdout: true, script: "git push origin ${gitNewBranch}")
-            */
-            echo "would push" //+ stdout
+            echo "push" + stdout
         }
     }
 }
