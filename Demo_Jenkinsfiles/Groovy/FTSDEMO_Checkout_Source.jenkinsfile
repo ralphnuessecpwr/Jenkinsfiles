@@ -207,7 +207,7 @@ node{
     )
 
     // Use method getSetTaskIdList to extract the list of Task IDs from the response of the httpRequest
-    def setTaskIdList          = getSetTaskIdList(response1, ISPW_Target_Level)
+    def setTaskIdList          = getSetTaskIdList(response1, ISPW_Src_Level)
 
     // Use httpRequest to get all Assignments for the Release
     // Need to use two separate objects to store the responses for the httpRequests, 
