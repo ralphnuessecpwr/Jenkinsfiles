@@ -234,6 +234,8 @@ node{
 
     def mailRecipient = mailRecipientMap[(ISPW_Owner.toUpperCase())]
 
+    def ResponseContentSupplier response1
+
     /*************************************************************************************************************/
     // Build a list of Assignments based on a Set
     // Use httpRequest to get all Tasks for the Set
@@ -241,7 +243,7 @@ node{
         [string(credentialsId: "${CES_Token}", variable: 'cesToken')]
     ) 
     {
-        def response1 = steps.httpRequest(
+        response1 = steps.httpRequest(
             url:                    "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
             httpMode:               'GET',
             consoleLogResponseBody: false,
