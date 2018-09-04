@@ -235,7 +235,8 @@ node{
     stage("Create and push new branch")
     {
         echo "Pre Dir"
-        dir{TTT_Folder}
+
+        dir{"github"}
         {
             echo "within Dir"
             def gitNewBranch = assignmentList[0].toString()
@@ -264,8 +265,10 @@ node{
                 ]
             ) 
             */
+            /*
             stdout = bat(returnStdout: true, script: "git push origin ${gitNewBranch}")
-            echo "push" + stdout
+            */
+            echo "would push" //+ stdout
         }
     }
 }
