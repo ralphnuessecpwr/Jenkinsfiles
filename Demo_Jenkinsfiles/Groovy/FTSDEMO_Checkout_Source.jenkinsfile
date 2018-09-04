@@ -59,7 +59,7 @@ import java.net.URL
  @param ISPW_Runtime - ISPW Runtime configuration
 */
 
- String Git_Credentials      = "github"
+ String Git_Credentials      = "67a3fb18-073f-498b-adee-1a3c75192745" //"github"
  String Git_URL              = "https://github.com/${Git_Project}"
  String Git_TTT_Repo         = "${ISPW_Stream}_${ISPW_Application}_Unit_Tests.git"
  String Git_Branch           = "master"
@@ -237,11 +237,16 @@ node{
     /*************************************************************************************************************/
     // Build a list of Assignments based on a Set
     // Use httpRequest to get all Tasks for the Set
-    def response1 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
-        httpMode: 'GET',
-        consoleLogResponseBody: false,
-        customHeaders: [[maskValue: true, name: 'authorization', value: "${CES_Token_Clear}"]]
-    )
+    withCredentials
+        ([string(credentialsId: "${CES_Token}", variable: 'cesToken')]) 
+    {
+        def response1 = steps.httpRequest(
+            url:                    "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
+            httpMode:               'GET',
+            consoleLogResponseBody: false,
+            customHeaders:          [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
+        )
+    }
 
     // Use method getSetTaskIdList to extract the list of Task IDs from the response of the httpRequest
     def setTaskIdList          = getSetTaskIdList(response1, ISPW_Src_Level)
@@ -301,8 +306,13 @@ node{
 
             stdout = bat(returnStdout: true, script: "git checkout ${gitNewBranch}")
 
-            stdout = bat(returnStdout: true, script: "git push origin ${gitNewBranch}")
-            echo "pushed " + stdout
+            withCredentials(
+                [usernamePassword(credentialsId: "${Git_Credentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]
+                ) 
+            {                
+                stdout = bat(returnStdout: true, script: "git push origin ${gitNewBranch}")
+                echo "pushed " + stdout
+            }
 
             emailext subject:   "Git assignment branch ${gitNewBranch}",
                 body:           emailBody,
