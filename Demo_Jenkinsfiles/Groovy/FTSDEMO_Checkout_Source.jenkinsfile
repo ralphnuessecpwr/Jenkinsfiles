@@ -261,19 +261,10 @@ import java.net.URL
     return returnMap    
  }
 
-@NonCPS
- def buildGitTags(String branch, Map programVersions)
+ def buildGitTag(String tag)
  {
-    echo "PARM " + programVersions.toString()
-    for(entry in programVersions)
-    {
-        echo "Will Create Tag " 
-        gitTag = branch + '_' + entry.key + '_' + entry.value
-        echo "Will Create Tag " + gitTag
-
-        stdout = bat(returnStdout: true, script: "git tag --force -a ${gitTag} -m ${gitTag}")
-        echo "Create Tag " + stdout
-    }
+    stdout = bat(returnStdout: true, script: "git tag --force -a ${tag} -m ${tag}")
+    echo "Create Tag " + stdout
  }
 
 // One node with several stages => All variables are local to the node and available to all stages
@@ -364,10 +355,14 @@ node{
                 stdout = bat(returnStdout: true, script: "git checkout ${gitNewBranch}")
                 echo "Checkout branch " + stdout
 
-                echo "CALL"
-                echo programVersionMap.toString()
-
-                buildGitTags(gitNewBranch, programVersionMap)
+                for(entry in programVersionMap)
+                {
+                    
+                    gitTag = gitNewBanch + '_' + entry.key + '_' + entry.value
+                    echo "Will build Tag " + gitTag
+                    
+                    buildGitTag(gitTag)                    
+                }
 
                 /*
                 withCredentials(
