@@ -312,8 +312,10 @@ node{
             }
 
             stdout = bat(returnStdout: true, script: "git checkout ${gitNewBranch}")
+            echo "Checkout branch " + stdout
 
-            stdout = bat(returnStdout: true, script: "git tag --force -a ${gitNewBranch} -m \"${gitNewBranch}")
+            stdout = bat(returnStdout: true, script: "git tag --force -a ${gitNewBranch} -m ${gitNewBranch}")
+            echo "Create Tag " + stdout
 
             withCredentials(
                 [usernamePassword(credentialsId: "${Git_Credentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]
