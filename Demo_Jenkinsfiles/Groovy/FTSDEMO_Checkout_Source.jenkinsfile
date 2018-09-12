@@ -363,8 +363,18 @@ node{
                 stdout = bat(returnStdout: true, script: "git checkout ${gitNewBranch}")
                 echo "Checkout branch " + stdout
 
-                buildGitTags(gitNewBranch, programVersionMap)
+                //buildGitTags(gitNewBranch, programVersionMap)
 
+                for(entry in programVersionsMap)
+                {
+                    echo "Will Create Tag " 
+                    gitTag = branch + '_' + entry.key + '_' + entry.value
+                    echo "Will Create Tag " + gitTag
+
+//                    stdout = bat(returnStdout: true, script: "git tag --force -a ${gitTag} -m ${gitTag}")
+  //                  echo "Create Tag " + stdout
+                }
+                /*
                 withCredentials(
                     [usernamePassword(credentialsId: "${Git_Credentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]
                 ) 
@@ -372,7 +382,7 @@ node{
                     stdout = bat(returnStdout: true, script: "git push https://${gitUsername}:${gitPassword}@github.com/${Git_Project}/${Git_TTT_Repo} HEAD:${gitNewBranch} -f --tags")
                     echo "pushed " + stdout
                 }
-
+                */
                 emailBody = "Jenkins Job ${JOB_NAME} was executed because you checked out tasks to ISPW assignment ${gitNewBranch}." +
                             "\n\nBranch ${gitNewBranch} was created. Fetch this branch from GitHub to start work on your Unit Tests:" + 
                             "\n\n- Use 'Fetch from Upstream' to fetch the remote branch." +
