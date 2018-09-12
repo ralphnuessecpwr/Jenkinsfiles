@@ -356,13 +356,19 @@ node{
                 stdout = bat(returnStdout: true, script: "git checkout ${gitNewBranch}")
                 echo "Checkout branch " + stdout
 
+                def gitTagList = []
+
                 for(entry in programVersionMap)
                 {
-                    echo entry.getClass().toString()
-                    gitTag = gitNewBranch + '_' + entry.key + '_' + entry.value
-                    echo "Will build Tag " + gitTag
 
-                    buildGitTag(gitTag)                    
+                    gitTag = gitNewBranch + '_' + entry.key + '_' + entry.value
+                    gitTagList.add(gitTag)
+
+                }
+
+                for(int i; i < gitTagList.size(); i++)
+                {
+                    buildGitTag(gitTagList[i])
                 }
 
                 /*
