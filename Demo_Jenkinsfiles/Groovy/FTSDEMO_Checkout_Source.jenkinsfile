@@ -365,7 +365,7 @@ node{
 
                 //buildGitTags(gitNewBranch, programVersionMap)
 
-                for(entry in programVersionsMap)
+                for(entry in programVersionMap)
                 {
                     echo "Will Create Tag " 
                     gitTag = branch + '_' + entry.key + '_' + entry.value
