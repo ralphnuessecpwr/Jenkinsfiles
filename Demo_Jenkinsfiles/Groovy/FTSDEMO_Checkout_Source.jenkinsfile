@@ -261,13 +261,6 @@ import java.net.URL
     return returnMap    
  }
 
-@NonCPS
- def buildGitTag(String tag)
- {
-    stdout = bat(returnStdout: true, script: "git tag --force -a ${tag} -m ${tag}")
-    echo "Create Tag " + stdout
- }
-
 // One node with several stages => All variables are local to the node and available to all stages
 node{
 
@@ -358,6 +351,7 @@ node{
 
                 def gitTagList = []
 
+                // Build List of Tags to add to Git
                 for(entry in programVersionMap)
                 {
 
@@ -366,6 +360,7 @@ node{
 
                 }
 
+                // Add Tags to Git (using a Map entry would not work when using in a loop that calls bat, since the entry object is non serializable)
                 for(int i = 0; i < gitTagList.size(); i++)
                 {
                     echo "Build Tag " + gitTagList[i].toString()
@@ -373,10 +368,8 @@ node{
                     stdout = bat(returnStdout: true, script: "git tag --force -a ${gitTagList[i].toString()} -m ${gitTagList[i].toString()}")
                     echo "Create Tag " + stdout
 
-                    //buildGitTag(gitTagList[i])
                 }
 
-                /*
                 withCredentials(
                     [usernamePassword(credentialsId: "${Git_Credentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]
                 ) 
@@ -384,7 +377,7 @@ node{
                     stdout = bat(returnStdout: true, script: "git push https://${gitUsername}:${gitPassword}@github.com/${Git_Project}/${Git_TTT_Repo} HEAD:${gitNewBranch} -f --tags")
                     echo "pushed " + stdout
                 }
-                */
+
                 emailBody = "Jenkins Job ${JOB_NAME} was executed because you checked out tasks to ISPW assignment ${gitNewBranch}." +
                             "\n\nBranch ${gitNewBranch} was created. Fetch this branch from GitHub to start work on your Unit Tests:" + 
                             "\n\n- Use 'Fetch from Upstream' to fetch the remote branch." +
