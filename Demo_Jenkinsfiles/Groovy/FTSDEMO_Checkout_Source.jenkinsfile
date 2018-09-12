@@ -381,7 +381,7 @@ node{
                 emailBody = "Jenkins Job ${JOB_NAME} was executed because you checked out tasks to ISPW assignment ${gitNewBranch}." +
                             "\n\nBranch ${gitNewBranch} was created. Fetch this branch from GitHub to start work on your Unit Tests:" + 
                             "\n\n- Use 'Fetch from Upstream' to fetch the remote branch." +
-                            "\n- And 'Checkout' the remote branch as local branch."
+                            "\n- And 'Checkout' the remote branch 'origin/${gitNewBranch}' as local branch."
 
             }
 
