@@ -227,8 +227,7 @@ import java.net.URL
 }
 
 /* 
-    Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build a list of Assignments
-    that are contained in both the Task Id List and the List of Tasks in the Release 
+    Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build a Map of Programs and Base Versions
 */
 /* 
     "@NonCPS" is required to tell Jenkins that the objects in the method do not need to survive a Jenkins re-start

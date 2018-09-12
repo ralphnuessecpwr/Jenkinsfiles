@@ -223,6 +223,44 @@ import java.net.URL
     return returnList    
 }
 
+/* 
+    Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build a Map of Programs and Base Versions
+*/
+/* 
+    "@NonCPS" is required to tell Jenkins that the objects in the method do not need to survive a Jenkins re-start
+    This is necessary because JsonSlurper uses non serializable classes, which will leed to exceptions when not used
+    in methods in a @NonCPS section 
+*/
+@NonCPS
+ def Map getProgramVersionMap(ArrayList taskIds, ResponseContentSupplier response)
+ {
+    def jsonSlurper = new JsonSlurper()
+    def returnMap  = [:]
+
+    def resp        = jsonSlurper.parseText(response.getContent())
+
+    if(resp.message != null)
+    {
+        echo "Resp: " + resp.message
+        error
+    }
+    else
+    {
+        def taskList = resp.tasks
+
+        taskList.each
+        {
+            if(taskIds.contains(it.taskId))
+            {
+                echo "Add to ProgramVersionMap: " + it.moduleName + " : " + it.baseVersion
+                returnMap.put(it.moduleName, it.baseVersion)
+            }
+        }
+    }
+
+    return returnMap    
+ }
+
 // One node with several stages => All variables are local to the node and available to all stages
 node{
 
@@ -274,6 +312,7 @@ node{
     // that belong to Tasks in the Set
     // If the Sonar Quality Gate fails, these Assignments will be regressed
     def assignmentList  = getAssigmentList(setTaskIdList, response2)
+    def programVersionMap   = getProgramVersionMap(setTaskIdList, response2)
     /*************************************************************************************************************/
 
     stage("Checkout TTT assets from GitHub")
@@ -310,8 +349,13 @@ node{
                 stdout = bat(returnStdout: true, script: "git checkout ${gitNewBranch}")
                 echo "Checkout branch " + stdout
 
-                stdout = bat(returnStdout: true, script: "git tag --force -a ${gitNewBranch} -m ${gitNewBranch}")
-                echo "Create Tag " + stdout
+                for(program in ProgramVersionMap)
+                {
+                    gitTag = gitNewBranch + '_' + program.key + '_' + program.value
+                
+                    stdout = bat(returnStdout: true, script: "git tag --force -a ${gitTag} -m ${gitTag}")
+                    echo "Create Tag " + stdout
+                }
 
                 withCredentials(
                     [usernamePassword(credentialsId: "${Git_Credentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]
