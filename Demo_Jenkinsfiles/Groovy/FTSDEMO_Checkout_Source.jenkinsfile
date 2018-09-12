@@ -358,7 +358,7 @@ node{
 
                 for(entry in programVersionMap)
                 {
-                    echo entry.getClass()
+                    echo entry.getClass().toString()
                     gitTag = gitNewBranch + '_' + entry.key + '_' + entry.value
                     echo "Will build Tag " + gitTag
 
