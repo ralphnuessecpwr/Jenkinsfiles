@@ -262,7 +262,7 @@ import java.net.URL
  }
 
 @NonCPS
- def void buildGitTags(String, branch, Map programVersions)
+ def buildGitTags(String, branch, Map programVersions)
  {
     for(entry in programVersions)
     {
