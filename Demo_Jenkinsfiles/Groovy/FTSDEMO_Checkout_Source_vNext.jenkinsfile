@@ -137,6 +137,7 @@ import java.net.URL
         {
             if(it.moduleType == 'COB' && it.level == level)
             {
+                echo "Add to SetTaskIdList: " + it.taskID
                 returnList.add(it.taskId)
             }
         }
@@ -174,6 +175,7 @@ import java.net.URL
         {
             if(it.moduleType == 'COB')
             {
+                echo "Add to SetReleaseList: " + it.release
                 returnList.add(it.release)
             }
         }
@@ -215,6 +217,7 @@ import java.net.URL
             {
                 if(!(returnList.contains(it.container)))
                 {
+                    echo "Add to SetAssignmentList: " + it.container
                     returnList.add(it.container)        
                 }
             }
@@ -253,6 +256,7 @@ import java.net.URL
         {
             if(taskIds.contains(it.taskId))
             {
+                echo "Add to ProgramVersionMap: " + it.moduleName + " : " + it.baseVersion
                 returnMap = [(it.moduleName):(it.baseVersion)]
             }
         }
