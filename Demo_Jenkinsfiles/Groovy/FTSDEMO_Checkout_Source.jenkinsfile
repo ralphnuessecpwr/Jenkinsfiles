@@ -321,7 +321,7 @@ node{
                 [usernamePassword(credentialsId: "${Git_Credentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]
             ) 
             {                
-                stdout = bat(returnStdout: true, script: "git push https://${gitUsername}:${gitPassword}@github.com/${Git_Project}/${Git_TTT_Repo}")
+                stdout = bat(returnStdout: true, script: "git push https://${gitUsername}:${gitPassword}@github.com/${Git_Project}/${Git_TTT_Repo} -f --tags")
                 echo "pushed " + stdout
             }
 
