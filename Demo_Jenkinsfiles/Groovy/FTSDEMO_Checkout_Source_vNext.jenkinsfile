@@ -256,8 +256,10 @@ import java.net.URL
         {
             if(taskIds.contains(it.taskId))
             {
-                echo "Add to ProgramVersionMap: " + it.moduleName + " : " + it.baseVersion
-                returnMap(it.moduleName) = (it.baseVersion)
+                def tmpModuleName   = it.moduleName
+                def tmpBaseVersion  = it.baseVersion
+                echo "Add to ProgramVersionMap: " + tmpModuleName + " : " + tmpBaseVersion
+                returnMap(tmpModuleName) = (tmpBaseVersion)
             }
         }
     }
