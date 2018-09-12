@@ -514,7 +514,7 @@ node{
 
             // Push changes and tag to the Remote Github repository 
             withCredentials([usernamePassword(credentialsId: "${Git_Credentials}", passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                stdout = bat(returnStdout: true, script: "git push  https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${Git_Project}/${Git_TTT_Repo} HEAD:CONS -f --tags")
+                stdout = bat(returnStdout: true, script: "git push  https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${Git_Project}/${Git_TTT_Repo} HEAD:${Git_Target_Branch} -f --tags")
                 echo "push " + stdout
 
             }
