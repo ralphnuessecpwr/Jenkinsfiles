@@ -264,7 +264,7 @@ import java.net.URL
 @NonCPS
  def buildGitTags(String branch, Map programVersions)
  {
-    echo "PARM " programVersions.toString()
+    echo "PARM " + programVersions.toString()
     for(entry in programVersions)
     {
         echo "Will Create Tag " 
