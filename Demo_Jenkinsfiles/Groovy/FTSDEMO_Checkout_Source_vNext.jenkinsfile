@@ -286,7 +286,7 @@ node{
         response1 = steps.httpRequest(
             url:                    "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
             httpMode:               'GET',
-            consoleLogResponseBody: false,
+            consoleLogResponseBody: true,
             customHeaders:          [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
         )
     }
@@ -304,7 +304,7 @@ node{
     ) 
     {
         response2 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/releases/${ISPW_Release}/tasks",
-            consoleLogResponseBody: false, 
+            consoleLogResponseBody: true, 
             customHeaders: [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
         )
     }
@@ -320,7 +320,7 @@ node{
     stage("Test")
     {
         echo "Size: " + setTaskList.size()
-        for(Int i; i < setTaskList.size(); i++)
+        for(int i; i < setTaskList.size(); i++)
         {
             echo setTaskList[i].taskId.toString()
         }
