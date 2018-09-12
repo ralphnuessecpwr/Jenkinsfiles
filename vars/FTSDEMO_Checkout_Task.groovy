@@ -29,7 +29,9 @@ def call(Map pipelineParams)
         // Store parameter values in variables (easier to retrieve during code)
         def ISPW_Stream         = pipelineParams.ISPW_Stream
         def ISPW_Application    = pipelineParams.ISPW_Application
+        def ISPW_Release        = pipelineParams.ISPW_Release
         def ISPW_Container      = pipelineParams.ISPW_Container
+        def ISPW_Container_Type = pipelineParams.ISPW_Container_Type
         def ISPW_Src_Level      = pipelineParams.ISPW_Src_Level
         def ISPW_Owner          = pipelineParams.ISPW_Owner
 
@@ -37,6 +39,9 @@ def call(Map pipelineParams)
         def Git_Credentials     = pipelineParams.Git_Credentials
 
         def CES_Token           = pipelineParams.CES_Token
+        def HCI_Conn_ID         = pipelineParams.HCI_Conn_ID
+        def HCI_Token           = pipelineParams.HCI_Token
+        def CC_repository       = pipelineParams.CC_repository
 
         def Git_Project         = "https://github.com/${Git_Project}"
         def Git_TTT_Repo        = "${ISPW_Stream}_${ISPW_Application}_Unit_Tests.git"

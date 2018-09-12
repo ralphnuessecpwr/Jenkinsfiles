@@ -22,6 +22,8 @@ class GitHelper implements Serializable {
         println "Scenario " + gitBranch
         println "Scenario " + gitCredentials
 
+    //To check out more branches: branches: [[name: '*/RXN3000007'], [name: '*/CONS']]
+
         steps.checkout(
             changelog:  false, 
             poll:       false, 
