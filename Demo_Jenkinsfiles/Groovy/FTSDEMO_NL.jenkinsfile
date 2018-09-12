@@ -499,7 +499,7 @@ node{
 
                 TTTScenarioName     = it.name.trim().split("\\.")[0] 
                 TTTScenarioTarget   = TTTScenarioName.split("\\_")[0]       
-                gitTag              = assignmentList[i].toString() + '_' + TTTScenarioTarget
+                gitTag              = assignmentList[0].toString() + '_' + TTTScenarioTarget
 
                 // Create a tag for each program
                 stdout = bat(returnStdout: true, script: "git tag --force -a ${gitTag} -m \"${gitTag}")
