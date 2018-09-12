@@ -362,12 +362,11 @@ node{
                 {
 
                     gitTag = gitNewBranch + '_' + entry.key + '_' + entry.value
-                    echo "Add " + gitTag
                     gitTagList.add(gitTag)
 
                 }
 
-                for(int i; i < gitTagList.size(); i++)
+                for(int i = 0; i < gitTagList.size(); i++)
                 {
                     echo "Build Tag " + gitTagList[i].toString()
                     
