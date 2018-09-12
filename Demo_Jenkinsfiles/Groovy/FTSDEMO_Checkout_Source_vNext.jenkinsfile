@@ -137,7 +137,7 @@ import java.net.URL
         {
             if(it.moduleType == 'COB' && it.level == level)
             {
-                echo "Add to SetTaskIdList: " + it.taskID
+                echo "Add to SetTaskIdList: " + it.taskId
                 returnList.add(it.taskId)
             }
         }
@@ -257,7 +257,7 @@ import java.net.URL
             if(taskIds.contains(it.taskId))
             {
                 echo "Add to ProgramVersionMap: " + it.moduleName + " : " + it.baseVersion
-                returnMap = [(it.moduleName):(it.baseVersion)]
+                returnMap(it.moduleName) = (it.baseVersion)
             }
         }
     }
