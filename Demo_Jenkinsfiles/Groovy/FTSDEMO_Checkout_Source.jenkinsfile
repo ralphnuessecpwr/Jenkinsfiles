@@ -358,9 +358,9 @@ node{
                 for(entry in programVersionMap)
                 {
                     
-                    gitTag = gitNewBanch + '_' + entry.key + '_' + entry.value
+                    gitTag = gitNewBranch + '_' + entry.key + '_' + entry.value
                     echo "Will build Tag " + gitTag
-                    
+
                     buildGitTag(gitTag)                    
                 }
 
