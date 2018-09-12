@@ -362,13 +362,19 @@ node{
                 {
 
                     gitTag = gitNewBranch + '_' + entry.key + '_' + entry.value
+                    echo "Add " + gitTag
                     gitTagList.add(gitTag)
 
                 }
 
                 for(int i; i < gitTagList.size(); i++)
                 {
-                    buildGitTag(gitTagList[i])
+                    echo "Build Tag " + gitTagList[i].toString()
+                    
+                    stdout = bat(returnStdout: true, script: "git tag --force -a ${gitTagList[i].toString()} -m ${gitTagList[i].toString()}")
+                    echo "Create Tag " + stdout
+
+                    //buildGitTag(gitTagList[i])
                 }
 
                 /*
