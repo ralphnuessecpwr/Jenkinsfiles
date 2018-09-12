@@ -252,7 +252,7 @@ import java.net.URL
         {
             if(taskIds.contains(it.taskId))
             {
-                echo "Add to ProgramVersionMap: " + it.moduleName + " : " + it.baseVersion
+                echo "Add to programVersionMap: " + it.moduleName + " : " + it.baseVersion
                 returnMap.put(it.moduleName, it.baseVersion)
             }
         }
@@ -363,6 +363,9 @@ node{
 
                 stdout = bat(returnStdout: true, script: "git checkout ${gitNewBranch}")
                 echo "Checkout branch " + stdout
+
+                echo "CALL"
+                echo programVersionMap.toString()
 
                 buildGitTags(gitNewBranch, programVersionMap)
 
