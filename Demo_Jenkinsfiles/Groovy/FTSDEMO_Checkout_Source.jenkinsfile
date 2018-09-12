@@ -301,14 +301,16 @@ node{
                 echo "Branch ${gitNewBranch} already exists - nothing to create"
 
                 emailBody = "Jenkins Job ${JOB_NAME} was executed because you checked out tasks to ISPW assignment ${gitNewBranch}." +
-                            "\n\nBranch ${gitNewBranch} already existed. Make sure you fetched the latest changes for this branch  from GitHub."
+                            "\n\nBranch ${gitNewBranch} already existed. Make sure you fetched the latest changes for this branch from GitHub."
             }
             else
             {
                 echo "Branch ${gitNewBranch} created"
 
                 emailBody = "Jenkins Job ${JOB_NAME} was executed because you checked out tasks to ISPW assignment ${gitNewBranch}." +
-                            "\n\nBranch ${gitNewBranch} was created. Fetch this branch from GitHub to start work on your Unit Tests."
+                            "\n\nBranch ${gitNewBranch} was created. Fetch this branch from GitHub to start work on your Unit Tests:" + 
+                            "\n\nUse 'Fetch from Upstream' to fetch the remote branch." +
+                            "\n\nAnd 'Checkout' the remote branch as local branch."
             }
 
             stdout = bat(returnStdout: true, script: "git checkout ${gitNewBranch}")
