@@ -150,7 +150,7 @@ def call(Map pipelineParams)
         This stage can be used is you want to clean out the workspace from any previously downloaded source from ISPW.  
         This stage shouldn't be necessary in the ordinary execution of the pipeline 
         */ 
-        /*
+        
         stage("clean previously downloaded source")
         {
             // Clean out any previously downloaded source
@@ -159,7 +159,7 @@ def call(Map pipelineParams)
                 deleteDir()
             }
         }
-        */
+        
 
         stage("Retrieve Code From ISPW")
         {
