@@ -140,46 +140,6 @@ class IspwHelper implements Serializable
     }
 
 /* 
-    Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build a list of Assignments
-    that are contained in both the Task Id List and the List of Tasks in the Release 
-*/
-/* 
-    "@NonCPS" is required to tell Jenkins that the objects in the method do not need to survive a Jenkins re-start
-    This is necessary because JsonSlurper uses non serializable classes, which will leed to exceptions when not used
-    in methods in a @NonCPS section 
-*/
-@NonCPS
-    def ArrayList getAssigmentList(ArrayList taskIds, ResponseContentSupplier response)
-    {
-        def jsonSlurper = new JsonSlurper()
-        def returnList  = []
-
-        def resp        = jsonSlurper.parseText(response.getContent())
-
-        if(resp.message != null)
-        {
-            echo "Resp: " + resp.message
-            error
-        }
-        else
-        {
-            def taskList = resp.tasks
-
-            taskList.each
-            {
-                if(taskIds.contains(it.taskId))
-                {
-                    if(!(returnList.contains(it.container)))
-                    {
-                        returnList.add(it.container)        
-                    }
-                }
-            }
-        }
-        return returnList    
-    }
-
-/* 
     Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build a Map of Programs and Base Versions
 */
 /* 
