@@ -1,9 +1,9 @@
 package com.compuware.devops.util
 
 import groovy.json.JsonSlurper
-import jenkins.plugins.http_request.*
 
-class IspwHelper implements Serializable {
+class IspwHelper implements Serializable 
+{
 
     def steps
     def String ispwUrl
@@ -101,8 +101,6 @@ class IspwHelper implements Serializable {
 
     }
 
-}
-
 /* 
     Receive a response from an "Get Tasks in Set"-httpRequest and return the Release
 */
@@ -112,33 +110,33 @@ class IspwHelper implements Serializable {
     in methods in a @NonCPS section 
 */
 @NonCPS
- def ArrayList getSetRelease(ResponseContentSupplier response)
- {
-    def jsonSlurper = new JsonSlurper()
-    def returnList  = []
-    def resp        = jsonSlurper.parseText(response.getContent())
-
-    if(resp.message != null)
+    def ArrayList getSetRelease(ResponseContentSupplier response)
     {
-        echo "Resp: " + resp.message
-        error
-    }
-    else
-    {
-        def taskList = resp.tasks
+        def jsonSlurper = new JsonSlurper()
+        def returnList  = []
+        def resp        = jsonSlurper.parseText(response.getContent())
 
-        taskList.each
+        if(resp.message != null)
         {
-            if(it.moduleType == 'COB')
+            echo "Resp: " + resp.message
+            error
+        }
+        else
+        {
+            def taskList = resp.tasks
+
+            taskList.each
             {
-                returnList.add(it.release)
+                if(it.moduleType == 'COB')
+                {
+                    returnList.add(it.release)
+                }
             }
         }
-    }
 
-    return returnList
- 
- }
+        return returnList
+    
+    }
 
 /* 
     Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build a list of Assignments
@@ -150,35 +148,35 @@ class IspwHelper implements Serializable {
     in methods in a @NonCPS section 
 */
 @NonCPS
- def ArrayList getAssigmentList(ArrayList taskIds, ResponseContentSupplier response)
- {
-    def jsonSlurper = new JsonSlurper()
-    def returnList  = []
-
-    def resp        = jsonSlurper.parseText(response.getContent())
-
-    if(resp.message != null)
+    def ArrayList getAssigmentList(ArrayList taskIds, ResponseContentSupplier response)
     {
-        echo "Resp: " + resp.message
-        error
-    }
-    else
-    {
-        def taskList = resp.tasks
+        def jsonSlurper = new JsonSlurper()
+        def returnList  = []
 
-        taskList.each
+        def resp        = jsonSlurper.parseText(response.getContent())
+
+        if(resp.message != null)
         {
-            if(taskIds.contains(it.taskId))
+            echo "Resp: " + resp.message
+            error
+        }
+        else
+        {
+            def taskList = resp.tasks
+
+            taskList.each
             {
-                if(!(returnList.contains(it.container)))
+                if(taskIds.contains(it.taskId))
                 {
-                    returnList.add(it.container)        
+                    if(!(returnList.contains(it.container)))
+                    {
+                        returnList.add(it.container)        
+                    }
                 }
             }
         }
+        return returnList    
     }
-    return returnList    
-}
 
 /* 
     Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build a Map of Programs and Base Versions
@@ -189,31 +187,33 @@ class IspwHelper implements Serializable {
     in methods in a @NonCPS section 
 */
 @NonCPS
- def Map getProgramVersionMap(ArrayList taskIds, ResponseContentSupplier response)
- {
-    def jsonSlurper = new JsonSlurper()
-    def returnMap  = [:]
-
-    def resp        = jsonSlurper.parseText(response.getContent())
-
-    if(resp.message != null)
+    def Map getProgramVersionMap(ArrayList taskIds, ResponseContentSupplier response)
     {
-        echo "Resp: " + resp.message
-        error
-    }
-    else
-    {
-        def taskList = resp.tasks
+        def jsonSlurper = new JsonSlurper()
+        def returnMap  = [:]
 
-        taskList.each
+        def resp        = jsonSlurper.parseText(response.getContent())
+
+        if(resp.message != null)
         {
-            if(taskIds.contains(it.taskId))
+            echo "Resp: " + resp.message
+            error
+        }
+        else
+        {
+            def taskList = resp.tasks
+
+            taskList.each
             {
-                echo "Add to programVersionMap: " + it.moduleName + " : " + it.baseVersion
-                returnMap.put(it.moduleName, it.baseVersion)
+                if(taskIds.contains(it.taskId))
+                {
+                    echo "Add to programVersionMap: " + it.moduleName + " : " + it.baseVersion
+                    returnMap.put(it.moduleName, it.baseVersion)
+                }
             }
         }
+
+        return returnMap    
     }
 
-    return returnMap    
- }
+}
