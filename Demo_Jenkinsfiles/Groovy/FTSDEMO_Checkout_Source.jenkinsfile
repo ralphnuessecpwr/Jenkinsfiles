@@ -368,7 +368,7 @@ node{
                 for(entry in programVersionMap)
                 {
                     echo "Will Create Tag " 
-                    gitTag = branch + '_' + entry.key + '_' + entry.value
+                    gitTag = gitNewBranch + '_' + entry.key + '_' + entry.value
                     echo "Will Create Tag " + gitTag
 
 //                    stdout = bat(returnStdout: true, script: "git tag --force -a ${gitTag} -m ${gitTag}")
