@@ -349,7 +349,7 @@ node{
                 stdout = bat(returnStdout: true, script: "git checkout ${gitNewBranch}")
                 echo "Checkout branch " + stdout
 
-                for(program in programVersionMa)
+                for(program in programVersionMap)
                 {
                     gitTag = gitNewBranch + '_' + program.key + '_' + program.value
                 
