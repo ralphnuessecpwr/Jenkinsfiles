@@ -264,6 +264,7 @@ import java.net.URL
 @NonCPS
  def buildGitTags(String branch, Map programVersions)
  {
+    echo "PARM " programVersions.toString()
     for(entry in programVersions)
     {
         echo "Will Create Tag " 
@@ -363,17 +364,8 @@ node{
                 stdout = bat(returnStdout: true, script: "git checkout ${gitNewBranch}")
                 echo "Checkout branch " + stdout
 
-                //buildGitTags(gitNewBranch, programVersionMap)
+                buildGitTags(gitNewBranch, programVersionMap)
 
-                for(entry in programVersionMap)
-                {
-                    echo "Will Create Tag " 
-                    gitTag = gitNewBranch + '_' + entry.key + '_' + entry.value
-                    echo "Will Create Tag " + gitTag
-
-//                    stdout = bat(returnStdout: true, script: "git tag --force -a ${gitTag} -m ${gitTag}")
-  //                  echo "Create Tag " + stdout
-                }
                 /*
                 withCredentials(
                     [usernamePassword(credentialsId: "${Git_Credentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]
