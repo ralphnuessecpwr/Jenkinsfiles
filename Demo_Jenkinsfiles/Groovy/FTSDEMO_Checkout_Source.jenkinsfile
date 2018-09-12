@@ -264,7 +264,7 @@ import java.net.URL
 @NonCPS
  def buildGitTag(String tag)
  {
-    stdout = bat(returnStdout: true, script: "git tag --force -a ${tag} -m ${tag}")
+    //stdout = bat(returnStdout: true, script: "git tag --force -a ${tag} -m ${tag}")
     echo "Create Tag " + stdout
  }
 
