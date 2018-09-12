@@ -147,45 +147,6 @@ import java.net.URL
  }
 
 /* 
-    Receive a response from an "Get Tasks in Set"-httpRequest and a list of relevant taskIDs
-    and returns the list of corresponding task objects
-*/
-/* 
-    "@NonCPS" is required to tell Jenkins that the objects in the method do not need to survive a Jenkins re-start
-    This is necessary because JsonSlurper uses non serializable classes, which will leed to exceptions when not used
-    in methods in a @NonCPS section 
-*/
-@NonCPS
- def ArrayList getSetTasksList (ResponseContentSupplier response, ArrayList taskIdList)
- {
-
-    def jsonSlurper = new JsonSlurper()
-    def returnList  = []
-    def resp        = jsonSlurper.parseText(response.getContent())
-
-    if(resp.message != null)
-    {
-        echo "Resp: " + resp.message
-        error
-    }
-    else
-    {
-        def taskList = resp.tasks
-
-        taskList.each
-        {
-            if(taskIdList.contains(it.taskId))
-            {
-                returnList.add(it)
-            }
-        }
-    }
-
-    return returnList
-
- }
-
-/* 
     Receive a response from an "Get Tasks in Set"-httpRequest and return the Release
 */
 /* 
@@ -262,6 +223,44 @@ import java.net.URL
     return returnList    
 }
 
+/* 
+    Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build a list of Assignments
+    that are contained in both the Task Id List and the List of Tasks in the Release 
+*/
+/* 
+    "@NonCPS" is required to tell Jenkins that the objects in the method do not need to survive a Jenkins re-start
+    This is necessary because JsonSlurper uses non serializable classes, which will leed to exceptions when not used
+    in methods in a @NonCPS section 
+*/
+@NonCPS
+ def Map getProgramVersionMap(ArrayList taskIds, ResponseContentSupplier response)
+ {
+    def jsonSlurper = new JsonSlurper()
+    def returnMap  = [:]
+
+    def resp        = jsonSlurper.parseText(response.getContent())
+
+    if(resp.message != null)
+    {
+        echo "Resp: " + resp.message
+        error
+    }
+    else
+    {
+        def taskList = resp.tasks
+
+        taskList.each
+        {
+            if(taskIds.contains(it.taskId))
+            {
+                returnMap = [(it.moduleName):(it.baseVersion)]
+            }
+        }
+    }
+
+    return returnMap    
+ }
+
 // One node with several stages => All variables are local to the node and available to all stages
 node{
 
@@ -286,7 +285,7 @@ node{
         response1 = steps.httpRequest(
             url:                    "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
             httpMode:               'GET',
-            consoleLogResponseBody: true,
+            consoleLogResponseBody: false,
             customHeaders:          [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
         )
     }
@@ -304,7 +303,7 @@ node{
     ) 
     {
         response2 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/releases/${ISPW_Release}/tasks",
-            consoleLogResponseBody: true, 
+            consoleLogResponseBody: false, 
             customHeaders: [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
         )
     }
@@ -312,18 +311,16 @@ node{
     // Use method getAssigmentList to get all Assignments from the Release,
     // that belong to Tasks in the Set
     // If the Sonar Quality Gate fails, these Assignments will be regressed
-    def assignmentList  = getAssigmentList(setTaskIdList, response2)
-
-    def setTaskList = getSetTasksList(response1, setTaskIdList)
+    def assignmentList      = getAssigmentList(setTaskIdList, response2)
+    def programVersionMap   = getProgramVersionMap(setTaskIdList, response2)
     /*************************************************************************************************************/
 
     stage("Test")
     {
-        echo "Size: " + setTaskList.size()
-        for(int i; i < setTaskList.size(); i++)
+        for(e in programVersionMap)
         {
-            echo setTaskList[i].taskId.toString()
+            echo "Program   : " + e.key
+            echo "Version   : " + e.value
         }
     }
-
 }

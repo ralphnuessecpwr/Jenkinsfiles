@@ -105,6 +105,8 @@ import java.net.URL
     println "Scenario " + Branch
     println "Scenario " + Credentials
 
+    //To check out more branches: branches: [[name: '*/RXN3000007'], [name: '*/CONS']]
+
     checkout changelog: false, poll: false, 
         scm: [$class: 'GitSCM', 
         branches: [[name: "*/${Branch}"]], 
