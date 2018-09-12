@@ -476,7 +476,9 @@ node{
 
             // Set username and to ISPW Set Owner so GitHub tracks who promoted change            
             bat(script: "git config --global user.name ${ISPW_Owner} \r\ngit config --global user.email ${mailRecipient}") 
-                        // Commit changed files to local git repo
+
+            /*            
+            // Commit changed files to local git repo
             gitMessage = "Changes for SetID " + SetId + " from User: " + ISPW_Owner
             stdstatus = bat(returnStatus: true, script: "git commit -m \"${gitMessage}")
 
@@ -486,6 +488,11 @@ node{
                 echo "Set Already added to Github" 
                 return
             }
+            else
+            {
+                echo "Changes committed"
+            }
+            */
 
             TTTListOfScenarios.each
             {
@@ -495,7 +502,7 @@ node{
 
                 // Create a tag for each program
                 stdout = bat(returnStdout: true, script: "git tag --force -a ${gitTag} -m \"${gitTag}")
-                echo "Created tag " + stdout
+                echo "Created tag ${gitTag}: " + stdout
 
             }
 
@@ -505,7 +512,7 @@ node{
             // Push changes and tag to the Remote Github repository 
             withCredentials([usernamePassword(credentialsId: "${Git_Credentials}", passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                 stdout = bat(returnStdout: true, script: "git push  https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${Git_Project}/${Git_TTT_Repo} HEAD:CONS -f --tags")
-                echo "push" + stdout
+                echo "push " + stdout
 
             }
         }
