@@ -261,6 +261,20 @@ import java.net.URL
     return returnMap    
  }
 
+@NonCPS
+ def void buildGitTags(Map programVersions)
+ {
+    for(entry in programVersions)
+    {
+        echo "Will Create Tag " 
+        gitTag = gitNewBranch + '_' + entry.key + '_' + entry.value
+        echo "Will Create Tag " + gitTag
+
+        stdout = bat(returnStdout: true, script: "git tag --force -a ${gitTag} -m ${gitTag}")
+        echo "Create Tag " + stdout
+    }
+ }
+
 // One node with several stages => All variables are local to the node and available to all stages
 node{
 
@@ -349,15 +363,7 @@ node{
                 stdout = bat(returnStdout: true, script: "git checkout ${gitNewBranch}")
                 echo "Checkout branch " + stdout
 
-                for(entry in programVersionMap)
-                {
-                    echo "Will Create Tag " 
-                    gitTag = gitNewBranch + '_' + entry.key + '_' + entry.value
-                    echo "Will Create Tag " + gitTag
-
-                    stdout = bat(returnStdout: true, script: "git tag --force -a ${gitTag} -m ${gitTag}")
-                    echo "Create Tag " + stdout
-                }
+                buildGitTags(programVersionMap)
 
                 withCredentials(
                     [usernamePassword(credentialsId: "${Git_Credentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]
