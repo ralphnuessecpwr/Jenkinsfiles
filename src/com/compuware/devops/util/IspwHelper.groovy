@@ -68,7 +68,7 @@ class IspwHelper implements Serializable
         steps.echo "getSetTaskList"
         def jsonSlurper         = new JsonSlurper()
 
-        def ispwTask            = new PipelineAsset()
+        int ispwTaskCounter     = 0
 
         def returnList  = []
 
@@ -87,19 +87,15 @@ class IspwHelper implements Serializable
             {
                 if(it.moduleType == 'COB' && it.level == level)
                 {
+                    def returnList[ispwTaskCounter] = new PipelineAsset()
                     steps.echo "Set ispwTask"
                     steps.echo "Name    " + it.moduleName
                     steps.echo "taskId  " + it.taskId
 
-                    ispwTask.programName    = it.moduleName
-                    ispwTask.ispwTaskId     = it.taskId
+                    returnList[ispwTaskCounter].programName    = it.moduleName
+                    returnList[ispwTaskCounter].ispwTaskId     = it.taskId
 
-        steps.echo "ispwTask after Set" + ispwTask.toString()
-        steps.echo "Name " + ispwTask.programName
-        steps.echo "BV " + ispwTask.ispwTaskId
-
-                    steps.echo "Add ispwTask to return"
-                    returnList.add(ispwTask)
+                    ispwTaskCounter++
                 }
             }
         }
