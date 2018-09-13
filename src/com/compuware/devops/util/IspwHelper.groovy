@@ -70,8 +70,8 @@ class IspwHelper implements Serializable
 
         def ispwTask            = new PipelineAsset()
         steps.echo "ispwTask " + ispwTask.toString()
-        steps.echo "Name " + ispwTask.programName()
-        steps.echo "BV " + ispwTask.baseVersion()
+        steps.echo "Name " + ispwTask.programName
+        steps.echo "BV " + ispwTask.baseVersion
         def returnList  = []
 
         def resp = jsonSlurper.parseText(response.getContent())
