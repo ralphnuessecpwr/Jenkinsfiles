@@ -51,20 +51,20 @@ def call(Map pipelineParams)
         def Git_TTT_Repo        = "${ISPW_Stream}_${ISPW_Application}_Unit_Tests.git"
 
         /*
-        echo "Parameters passed:"
+        echo "Parameters passed:" +
 
-        echo "ISPW_Stream:          " + pipelineParams.ISPW_Stream
-        echo "ISPW_Application:     " + pipelineParams.ISPW_Application
-        echo "ISPW_Release:         " + pipelineParams.ISPW_Release
-        echo "ISPW_Container:       " + pipelineParams.ISPW_Container
-        echo "ISPW_Container_Type:  " + pipelineParams.ISPW_Container_Type
-        echo "ISPW_Src_Level:       " + pipelineParams.ISPW_Src_Level
-        echo "ISPW_Owner:           " + pipelineParams.ISPW_Owner
-        echo "Git_Project:          " + pipelineParams.Git_Project
-        echo "CES_Token:            " + pipelineParams.CES_Token
-        echo "HCI_Conn_ID:          " + pipelineParams.HCI_Conn_ID
-        echo "HCI_Token:            " + pipelineParams.HCI_Token
-        echo "CC_repository:        " + pipelineParams.CC_repository
+            "\n\nISPW_Stream:          " + pipelineParams.ISPW_Stream +
+            "\nISPW_Application:     " + pipelineParams.ISPW_Application +
+            "\nISPW_Release:         " + pipelineParams.ISPW_Release +
+            "\nISPW_Container:       " + pipelineParams.ISPW_Container +
+            "\nISPW_Container_Type:  " + pipelineParams.ISPW_Container_Type +
+            "\nISPW_Src_Level:       " + pipelineParams.ISPW_Src_Level +
+            "\nISPW_Owner:           " + pipelineParams.ISPW_Owner +
+            "\nGit_Project:          " + pipelineParams.Git_Project +
+            "\nCES_Token:            " + pipelineParams.CES_Token +
+            "\nHCI_Conn_ID:          " + pipelineParams.HCI_Conn_ID +
+            "\nHCI_Token:            " + pipelineParams.HCI_Token +
+            "\nCC_repository:        " + pipelineParams.CC_repository
         */
 
         // PipelineConfig is a class storing constants independant from user used throuout the pipeline
@@ -355,8 +355,8 @@ def call(Map pipelineParams)
                 // Evaluate the status of the Quality Gate
                 if (qg.status != 'OK')
                 {
-                    echo "Sonar quality gate failure: ${qg.status}"
-                    echo "Pipeline will be aborted and ISPW Assignment(s) will be regressed"
+                    echo "Sonar quality gate failure: ${qg.status}" + 
+                        "\nPipeline will be aborted and ISPW Assignment(s) will be regressed"
 
                     for(int i = 0; i < assignmentList.size(); i++)
                     {
@@ -413,19 +413,13 @@ def call(Map pipelineParams)
                 // Set username and to ISPW Set Owner so GitHub tracks who promoted change            
                 bat(script: "git config --global user.name ${ISPW_Owner} \r\ngit config --global user.email ${mailRecipient}") 
 
-                TTTListOfScenarios.each
+                for(int i = 0; i < setTaskList.size(); i++)
                 {
+                    gitTag = Git_Branch + '_' + setTaskList[i].programName + '_' + setTaskList[i].targetVersion 
 
-                    TTTScenarioName     = it.name.trim().split("\\.")[0] 
-                    TTTScenarioTarget   = TTTScenarioName.split("\\_")[0]     
-                    if(ListOfPrograms.contains(TTTScenarioTarget))
-                    {  
-                        gitTag = assignmentList[0].toString() + '_' + TTTScenarioTarget
-
-                        // Create a tag for each program
-                        stdout = bat(returnStdout: true, script: "git tag --force -a ${gitTag} -m \"${gitTag}")
-                        echo "Created tag ${gitTag}: " + stdout
-                    }
+                    // Create a tag for each program
+                    stdout = bat(returnStdout: true, script: "git tag --force -a ${gitTag} -m \"${gitTag}")
+                    echo "Created tag ${gitTag}: " + stdout
                 }
 
                 // Checkout Target Branch from Git to merge current branch into
