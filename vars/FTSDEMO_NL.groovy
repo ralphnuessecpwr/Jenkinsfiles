@@ -179,7 +179,10 @@ def call(Map pipelineParams)
 
         stage("Retrieve Tests")
         {
-            Git_Branch = assignmentList[0].toString()
+            //Git_Branch = assignmentList[0].toString()
+            Git_Branch = "master"
+
+            echo "Checking out Branch " + Git_Branch
 
             //Retrieve the Tests from Github that match that ISPWW Stream and Application
             Git_URL = "${Git_URL}/${Git_TTT_Repo}"
