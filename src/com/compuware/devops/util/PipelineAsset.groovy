@@ -10,7 +10,7 @@ class PipelineAsset
     public String targetVersion
     public String ispwTaskId
 
-    PipelineAsset(steps) 
+    PipelineAsset() 
     {        
         this.programName    = ''
         this.baseVersion    = '0'
