@@ -248,7 +248,7 @@ def call(Map pipelineParams)
         {
             echo "Scenario " + ScenariosToExecute[i].tttScenarioFullName
             echo "Path " + ScenariosToExecute[i].tttScenarioPath
-            echo "Project " + tttProjectName
+            echo "Project " + ScenariosToExecute[i].tttProjectName
         }
 
         error "STOP HERE" 
