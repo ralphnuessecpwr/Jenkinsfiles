@@ -12,12 +12,14 @@ class PipelineAsset {
     public String ispwTaskId
 
     PipelineAsset(steps) 
-    {
+    {        
         this.steps          = steps
         this.programName    = ''
         this.baseVersion    = '0'
         this.targetVersion  = '0'
         this.ispwTaskId     = ''
+        
+        steps.echo "Instatiated"
     }
 
     def setProgramName(String name)

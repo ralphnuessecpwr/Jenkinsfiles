@@ -65,6 +65,7 @@ class IspwHelper implements Serializable
 @NonCPS
     def ArrayList getSetTaskList(ResponseContentSupplier response, String level)
     {
+        steps.echo "getSetTaskList"
         def jsonSlurper         = new JsonSlurper()
 
         def ispwTask            = new PipelineAsset()
@@ -87,8 +88,9 @@ class IspwHelper implements Serializable
                 if(it.moduleType == 'COB' && it.level == level)
                 {
                     steps.echo "Set ispwTask"
-                    steps.echo "Name" + it.moduleName
-                    steps.echo "taskId" + it.taskId
+                    steps.echo "Name    " + it.moduleName
+                    steps.echo "taskId  " + it.taskId
+
                     ispwTask.setProgramName(it.moduleName)
                     ispwTask.setIspwTaskId(it.taskId)
 
