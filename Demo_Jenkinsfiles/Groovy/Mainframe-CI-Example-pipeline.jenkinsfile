@@ -266,7 +266,7 @@ node{
     {
             //Retrieve the code from ISPW that has been promoted 
             checkout([$class: 'IspwContainerConfiguration', 
-            componentType: '',                          // optional filter for component types in ISPW
+            componentType: 'COB,COPY',                          // optional filter for component types in ISPW
             connectionId: "${HCI_Conn_ID}",     
             credentialsId: "${HCI_Token}",      
             containerName: "${ISPW_Container}",   
