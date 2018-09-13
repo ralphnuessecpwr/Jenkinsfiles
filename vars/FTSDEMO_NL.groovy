@@ -428,7 +428,7 @@ def call(Map pipelineParams)
                 stdout = bat(returnStdout: true, script: "git checkout ${Git_Target_Branch}") 
                 echo "Checkout Target Branch" + stdout            
 
-                stdout = bat(returnStdout: true, script: "git merge ${Git_Branch}") 
+                stdout = bat(returnStdout: true, script: "git merge origin/${Git_Branch}") 
                 echo "Merge assigment branch to CONS" + stdout            
 
                 /*
