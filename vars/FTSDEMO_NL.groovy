@@ -150,7 +150,9 @@ def call(Map pipelineParams)
             // If the Sonar Quality Gate fails, these Assignments will be regressed
             def assignmentList  = ispwHelper.getAssigmentList(setTaskIdList, response2)
 
-            ispwHelper.setTaskVersions(setTaskList, response2, ISPW_Target_Level)
+            setTaskList = ispwHelper.setTaskVersions(setTaskList, response2, ISPW_Target_Level)
+
+            echo "setTaskList size: " + setTaskList.size()
 
             for(int i = 0; i < setTaskList.size(); i++)
             {
