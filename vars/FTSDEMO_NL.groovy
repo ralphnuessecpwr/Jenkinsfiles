@@ -200,13 +200,12 @@ def call(Map pipelineParams)
         stage("Retrieve Tests")
         {
             // Use Assigment name as Git Branch Name
-            Git_Branch = assignmentList[0].toString()
+            Git_Branch      = assignmentList[0].toString()
 
             //Retrieve the Tests from Github that match that ISPWW Stream and Application
-            Git_URL = "${Git_URL}/${Git_TTT_Repo}"
-
+            Git_Full_URL    = "${Git_URL}/${Git_TTT_Repo}"        
             //call gitcheckout wrapper function
-            gitHelper.gitcheckout(Git_URL, Git_Branch, Git_Credentials, TTT_Folder)
+            gitHelper.gitcheckout(Git_Full_URL, Git_Branch, Git_Credentials, TTT_Folder)
         }
 
         // findFiles method requires the "Pipeline Utilities Plugin"

@@ -29,7 +29,6 @@ def call(Map pipelineParams)
         // Store parameter values in variables (easier to retrieve during code)
         def ISPW_Stream         = pipelineParams.ISPW_Stream
         def ISPW_Application    = pipelineParams.ISPW_Application
-        def ISPW_Release        = pipelineParams.ISPW_Release
         def ISPW_Container      = pipelineParams.ISPW_Container
         def ISPW_Container_Type = pipelineParams.ISPW_Container_Type
         def ISPW_Src_Level      = pipelineParams.ISPW_Src_Level
@@ -43,9 +42,8 @@ def call(Map pipelineParams)
         def HCI_Token           = pipelineParams.HCI_Token
         def CC_repository       = pipelineParams.CC_repository
 
-        def Git_Project         = "https://github.com/${Git_Project}"
+        def Git_URL             = "https://github.com/${Git_Project}"
         def Git_TTT_Repo        = "${ISPW_Stream}_${ISPW_Application}_Unit_Tests.git"
-        def Git_URL             = Git_Project + '/' + Git_TTT_Repo
 
         // PipelineConfig is a class storing constants independant from user used throuout the pipeline
         PipelineConfig  pConfig     = new PipelineConfig()
@@ -132,8 +130,10 @@ def call(Map pipelineParams)
 
         stage("Checkout TTT assets from GitHub")
         {
+            Git_Full_URL = Git_Project + '/' + Git_TTT_Repo
+
             //call gitcheckout wrapper function
-            gitcheckout(Git_URL, Git_Branch, Git_Credentials, TTT_Folder)
+            gitcheckout(Git_Full_URL, Git_Branch, Git_Credentials, TTT_Folder)
         }
 
         stage("Create and push new branch")
@@ -174,7 +174,7 @@ def call(Map pipelineParams)
                     ) 
                     {              
                         /*  
-                        stdout = bat(returnStdout: true, script: "git push https://${gitUsername}:${gitPassword}@github.com/${Git_Project}/${Git_TTT_Repo} HEAD:${gitNewBranch} -f --tags")
+                        stdout = bat(returnStdout: true, script: "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${Git_Project}/${Git_TTT_Repo} HEAD:${gitNewBranch} -f --tags")
                         echo "pushed " + stdout
                         */
                     }
