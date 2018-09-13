@@ -96,7 +96,7 @@ class IspwHelper implements Serializable
 
         steps.echo "ispwTask after Set" + ispwTask.toString()
         steps.echo "Name " + ispwTask.programName
-        steps.echo "BV " + ispwTask.baseVersion
+        steps.echo "BV " + ispwTask.ispwTaskId
 
                     steps.echo "Add ispwTask to return"
                     returnList.add(ispwTask)
