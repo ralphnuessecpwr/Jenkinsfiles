@@ -126,7 +126,7 @@ def call(Map pipelineParams)
         for(int i = 0; i < setTaskList.size(); i++)
         {
 
-            gitTag = gitNewBranch + '_' + setTaksList[i].programName + '_' + setTaskList[i].baseVersion
+            gitTag = gitNewBranch + '_' + setTaskList[i].programName + '_' + setTaskList[i].baseVersion
 
             gitTagList.add(gitTag)
 
