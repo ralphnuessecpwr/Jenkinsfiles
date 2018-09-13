@@ -207,7 +207,7 @@ node{
      This stage can be used is you want to clean out the workspace from any previously downloaded source from ISPW.  
      This stage shouldn't be necessary in the ordinary execution of the pipeline 
      */ 
-    /*
+    
     stage("clean previously downloaded source")
     {
         // Clean out any previously downloaded source
@@ -216,7 +216,7 @@ node{
             deleteDir()
         }
     }
-    */
+    
 
     def ResponseContentSupplier response1
     def ResponseContentSupplier response2
