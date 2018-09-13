@@ -426,6 +426,7 @@ def call(Map pipelineParams)
                 }
 
                 // Checkout Target Branch from Git to merge current branch into
+                echo "Checking out" + Git_Target_Branch
                 gitHelper.gitcheckout(Git_URL, Git_Target_Branch, Git_Credentials, TTT_Folder)
                 
                 stdout = bat(returnStdout: true, script: "git merge ${Git_Branch}") 

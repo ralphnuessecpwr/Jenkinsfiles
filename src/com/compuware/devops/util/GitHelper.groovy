@@ -18,11 +18,10 @@ class GitHelper implements Serializable {
 
     def gitcheckout(String gitUrl, String gitBranch, String gitCredentials, String tttFolder)
     {
-        println "Scenario " + gitUrl
-        println "Scenario " + gitBranch
-        println "Scenario " + gitCredentials
-
-    //To check out more branches: branches: [[name: '*/RXN3000007'], [name: '*/CONS']]
+        steps.echo "Checking out from Git"
+        steps.echo "Scenario " + gitUrl
+        steps.echo "Scenario " + gitBranch
+        steps.echo "Scenario " + gitCredentials
 
         steps.checkout(
             changelog:  false, 
