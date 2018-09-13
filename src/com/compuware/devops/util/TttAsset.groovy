@@ -1,5 +1,8 @@
 package com.compuware.devops.util
 
+import hudson.model.*
+import hudson.EnvVars
+
 /**
  Object to store information about a TTT Asset
 */
