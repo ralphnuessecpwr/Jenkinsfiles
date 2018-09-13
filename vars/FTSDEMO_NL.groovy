@@ -171,7 +171,7 @@ def call(Map pipelineParams)
                     credentialsId:      "${HCI_Token}",      
                     containerName:      "${ISPW_Container}",   
                     containerType:      "${ISPW_Container_Type}",    // 0-Assignment 1-Release 2-Set
-                    ispwDownloadAll:    false,                     // false will not download files that exist in the workspace and haven't previous changed
+                    ispwDownloadAll:    true,                     // false will not download files that exist in the workspace and haven't previous changed
                     serverConfig:       '',                           // ISPW runtime config.  if blank ISPW will use the default runtime config
                     serverLevel:        ''
             ])                           // level to download the components from
@@ -188,6 +188,7 @@ def call(Map pipelineParams)
             gitHelper.gitcheckout(Git_URL, Git_Branch, Git_Credentials, TTT_Folder)
         }
 
+        echo "Searching in ${TTT_Folder}"
         // findFiles method requires the "Pipeline Utilities Plugin"
         // Get all testscenario files in the current workspace into an array
         def TTTListOfScenarios  = findFiles(glob: "**/${TTT_Folder}/*.testscenario")
