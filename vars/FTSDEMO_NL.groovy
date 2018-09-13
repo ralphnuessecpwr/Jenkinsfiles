@@ -254,7 +254,7 @@ def call(Map pipelineParams)
         stage("Execute related Unit Tests")
         {
             // Loop through all downloaded Topaz for Total Test scenarios
-            for(int scenarioCounter = 0; scenarioCounter < ScenariosToExecute.size(); scenarioCounter++)
+            for(scenarioCounter = 0; scenarioCounter < ScenariosToExecute.size(); scenarioCounter++)
             {
 
                 // Log which 
