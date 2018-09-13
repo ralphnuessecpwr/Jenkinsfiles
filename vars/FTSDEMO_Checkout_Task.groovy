@@ -139,7 +139,7 @@ def call(Map pipelineParams)
             Git_Full_URL    = Git_Project + '/' + Git_TTT_Repo
 
             //call gitcheckout wrapper function
-            gitcheckout(Git_Full_URL, Git_Branch, Git_Credentials, TTT_Folder)
+            gitHelper.gitcheckout(Git_Full_URL, Git_Branch, Git_Credentials, TTT_Folder)
         }
 
         stage("Create and push new branch")
