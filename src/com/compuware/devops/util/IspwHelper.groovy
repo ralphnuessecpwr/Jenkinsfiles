@@ -2,7 +2,7 @@ package com.compuware.devops.util
 
 import groovy.json.JsonSlurper
 import jenkins.plugins.http_request.*
-import com.compuware.devops.util.PipelineAsset
+import com.compuware.devops.util.TaskInfo
 
 class IspwHelper implements Serializable 
 {
@@ -23,12 +23,13 @@ class IspwHelper implements Serializable
     }
 
 /* 
-    Receive a response from an "Get Tasks in Set"-httpRequest and build a list of task IDs
-*/
-/* 
     "@NonCPS" is required to tell Jenkins that the objects in the method do not need to survive a Jenkins re-start
     This is necessary because JsonSlurper uses non serializable classes, which will leed to exceptions when not used
     in methods in a @NonCPS section 
+*/
+
+/* 
+    Receive a response from an "Get Tasks in Set"-httpRequest and build and return a list of task IDs that belong to the desired level
 */
 @NonCPS
     def ArrayList getSetTaskIdList(ResponseContentSupplier response, String level)
@@ -61,7 +62,9 @@ class IspwHelper implements Serializable
     
     }
 
-
+/* 
+    Receive a response from an "Get Tasks in Set"-httpRequest and build and return a list of TaskAsset Objects that belong to the desired level
+*/
 @NonCPS
     def ArrayList getSetTaskList(ResponseContentSupplier response, String level)
     {
@@ -87,7 +90,7 @@ class IspwHelper implements Serializable
             {
                 if(it.moduleType == 'COB' && it.level == level)
                 {
-                    returnList[ispwTaskCounter]             = new PipelineAsset()                    
+                    returnList[ispwTaskCounter]             = new TaskInfo()                    
                     returnList[ispwTaskCounter].programName = it.moduleName
                     returnList[ispwTaskCounter].ispwTaskId  = it.taskId
 
@@ -103,13 +106,8 @@ class IspwHelper implements Serializable
 
 
 /* 
-    Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build a list of Assignments
+    Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build and return a list of Assignments
     that are contained in both the Task Id List and the List of Tasks in the Release 
-*/
-/* 
-    "@NonCPS" is required to tell Jenkins that the objects in the method do not need to survive a Jenkins re-start
-    This is necessary because JsonSlurper uses non serializable classes, which will leed to exceptions when not used
-    in methods in a @NonCPS section 
 */
 @NonCPS
     def ArrayList getAssigmentList(ArrayList taskIds, ResponseContentSupplier response)
@@ -145,12 +143,7 @@ class IspwHelper implements Serializable
     }
 
 /* 
-    Receive a response from an "Get Tasks in Set"-httpRequest and return the Release
-*/
-/* 
-    "@NonCPS" is required to tell Jenkins that the objects in the method do not need to survive a Jenkins re-start
-    This is necessary because JsonSlurper uses non serializable classes, which will leed to exceptions when not used
-    in methods in a @NonCPS section 
+    Receive a response from an "Get Tasks in Set"-httpRequest and return the List of Releases
 */
 @NonCPS
     def ArrayList getSetRelease(ResponseContentSupplier response)
@@ -184,11 +177,6 @@ class IspwHelper implements Serializable
 /* 
     Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build a Map of Programs and Base Versions
 */
-/* 
-    "@NonCPS" is required to tell Jenkins that the objects in the method do not need to survive a Jenkins re-start
-    This is necessary because JsonSlurper uses non serializable classes, which will leed to exceptions when not used
-    in methods in a @NonCPS section 
-*/
 @NonCPS
     def Map getProgramVersionMap(ArrayList taskIds, ResponseContentSupplier response)
     {
@@ -219,6 +207,10 @@ class IspwHelper implements Serializable
         return returnMap    
     }
 
+/*
+    Receive a list of TaskInfo Objects, the response of an "List tasks of a Release"-httpRequest to build and return a List of TaskInfo Objects
+    that contain the base and internal version
+*/
 @NonCPS
     def setTaskVersions(ArrayList tasks, ResponseContentSupplier response, String level)
     {
@@ -243,7 +235,7 @@ class IspwHelper implements Serializable
                 {
                     if(it.taskId == tasks[i].ispwTaskId && it.level == level)
                     {
-                        returnList[i]               = new PipelineAsset()
+                        returnList[i]               = new TaskInfo()
                         returnList[i].programName   = tasks[i].programName
                         returnList[i].baseVersion   = it.baseVersion
                         returnList[i].targetVersion = it.internalVersion
