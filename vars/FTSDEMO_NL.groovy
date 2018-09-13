@@ -251,11 +251,11 @@ def call(Map pipelineParams)
             {
 
                 // Log which 
-                echo "*************************"
-                echo "Scenario  " + ScenariosToExecute[scenarioCounter].tttScenarioFullName
-                echo "Path      " + ScenariosToExecute[scenarioCounter].tttScenarioPath
-                echo "Project   " + ScenariosToExecute[scenarioCounter].tttProjectName
-                echo "*************************"
+                echo "*************************" +
+                    "\nScenario  " + ScenariosToExecute[scenarioCounter].tttScenarioFullName + 
+                    "\nPath      " + ScenariosToExecute[scenarioCounter].tttScenarioPath +
+                    "\nProject   " + ScenariosToExecute[scenarioCounter].tttProjectName + 
+                    "\n*************************"
             
                 step([
                     $class:       'TotalTestBuilder', 
