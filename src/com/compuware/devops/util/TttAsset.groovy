@@ -14,7 +14,7 @@ class TttAsset
     String tttScenarioName
     String tttScenarioTarget
 
-    TttAsset(FileWrapper file) 
+    TttAsset(file) 
     {        
     this.tttScenarioPath        = file.path // Fully qualified name of the Total Test Scenario file
     this.tttProjectName         = file.path.trim().split("\\\\")[0] + "\\"+ it.path.trim().split("\\\\")[1]  // Total Test Project name is the root folder of the full path to the testscenario 
