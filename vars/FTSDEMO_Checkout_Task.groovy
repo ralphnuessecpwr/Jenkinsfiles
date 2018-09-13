@@ -136,7 +136,7 @@ def call(Map pipelineParams)
         stage("Checkout TTT assets from GitHub")
         {
             Git_Branch      = assignmentList[0].toString()
-            Git_Full_URL    = Git_Project + '/' + Git_TTT_Repo
+            Git_Full_URL    = Git_URL + '/' + Git_TTT_Repo
 
             //call gitcheckout wrapper function
             gitHelper.gitcheckout(Git_Full_URL, Git_Branch, Git_Credentials, TTT_Folder)
