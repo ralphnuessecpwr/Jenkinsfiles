@@ -233,7 +233,7 @@ def call(Map pipelineParams)
         
         TTTListOfScenarios.each
         {            
-            def tttAsset    = new TTTAsset(it)
+            def tttAsset    = new TttAsset(it)
 
             if(ListOfPrograms.contains(tttAsset.tttScenarioTarget))
             {
