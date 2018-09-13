@@ -3,7 +3,7 @@ package com.compuware.devops.util
 /**
  Object to store information about an ISPW program task
 */
-class PipelineAsset implements Serializable 
+class PipelineAsset
 {
 
     public String programName
