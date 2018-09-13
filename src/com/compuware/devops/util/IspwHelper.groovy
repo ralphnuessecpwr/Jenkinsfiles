@@ -177,6 +177,7 @@ class IspwHelper implements Serializable
 /* 
     Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build a Map of Programs and Base Versions
 */
+/*
 @NonCPS
     def Map getProgramVersionMap(ArrayList taskIds, ResponseContentSupplier response)
     {
@@ -207,6 +208,7 @@ class IspwHelper implements Serializable
         return returnMap    
     }
 
+*/
 /*
     Receive a list of TaskInfo Objects, the response of an "List tasks of a Release"-httpRequest to build and return a List of TaskInfo Objects
     that contain the base and internal version
