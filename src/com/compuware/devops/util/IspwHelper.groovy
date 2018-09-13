@@ -87,7 +87,8 @@ class IspwHelper implements Serializable
             {
                 if(it.moduleType == 'COB' && it.level == level)
                 {
-                    def returnList[ispwTaskCounter] = new PipelineAsset()
+                    returnList[ispwTaskCounter] = new PipelineAsset()
+                    
                     steps.echo "Set ispwTask"
                     steps.echo "Name    " + it.moduleName
                     steps.echo "taskId  " + it.taskId
