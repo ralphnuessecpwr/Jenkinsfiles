@@ -74,7 +74,7 @@ def call(Map pipelineParams)
         //def Git_Branch           = pConfig.Git_Branch
         def SQ_Scanner_Name      = pConfig.SQ_Scanner_Name
         def SQ_Server_Name       = pConfig.SQ_Server_Name
-        def SQ_Server_URL        = pCOnfig.SQ_Server_URL
+        def SQ_Server_URL        = pConfig.SQ_Server_URL
         def MF_Source            = pConfig.MF_Source
         def XLR_Template         = pConfig.XLR_Template
         def XLR_User             = pConfig.XLR_User
