@@ -197,7 +197,7 @@ def call(Map pipelineParams)
         // Get all Cobol Sources in the MF_Source folder into an array 
         def ListOfSources       = findFiles(glob: "**/${ISPW_Application}/${MF_Source}/*.cbl")
 
-        echo "Number of Programs Found: " + TTTListOfSources.size()
+        echo "Number of Programs Found: " + ListOfSources.size()
 
         // Define a empty array for the list of programs
         def ListOfPrograms      = []
