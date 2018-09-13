@@ -252,7 +252,7 @@ def call(Map pipelineParams)
             TTTListOfScenarios.each
             {
 
-                echo it.getClass()
+                echo it.getClass().toString()
 
                 // Get root node of the path, i.e. the name of the Total Test project
                 def TTTScenarioPath        = it.path // Fully qualified name of the Total Test Scenario file
