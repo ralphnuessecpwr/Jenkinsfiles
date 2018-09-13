@@ -190,10 +190,14 @@ def call(Map pipelineParams)
 
         // findFiles method requires the "Pipeline Utilities Plugin"
         // Get all testscenario files in the current workspace into an array
-        def TTTListOfScenarios  = findFiles(glob: '**/*.testscenario')
+        def TTTListOfScenarios  = findFiles(glob: "**/${TTT_Folder}/*.testscenario")
+
+        echo "Number of Scenarios Found: " + TTTListOfScenarios.size()
 
         // Get all Cobol Sources in the MF_Source folder into an array 
         def ListOfSources       = findFiles(glob: "**/${ISPW_Application}/${MF_Source}/*.cbl")
+
+        echo "Number of Programs Found: " + TTTListOfSources.size()
 
         // Define a empty array for the list of programs
         def ListOfPrograms      = []
