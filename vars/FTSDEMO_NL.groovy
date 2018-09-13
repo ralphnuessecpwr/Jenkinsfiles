@@ -160,21 +160,36 @@ def call(Map pipelineParams)
             }
         }
         
-
         stage("Retrieve Code From ISPW")
         {
-            //Retrieve the code from ISPW that has been promoted 
-            checkout([
-                $class:       'IspwContainerConfiguration', 
-                    componentType:      '',                          // optional filter for component types in ISPW
-                    connectionId:       "${HCI_Conn_ID}",     
-                    credentialsId:      "${HCI_Token}",      
-                    containerName:      "${ISPW_Container}",   
-                    containerType:      "${ISPW_Container_Type}",    // 0-Assignment 1-Release 2-Set
-                    ispwDownloadAll:    true,                       // false will not download files that exist in the workspace and haven't previous changed
-                    serverConfig:       '',                           // ISPW runtime config.  if blank ISPW will use the default runtime config
-                    serverLevel:        ''
-            ])                           // level to download the components from
+                //Retrieve the code from ISPW that has been promoted 
+                /*
+                checkout([$class: 'IspwContainerConfiguration', 
+                componentType: 'COB,COPY',                          // optional filter for component types in ISPW
+                connectionId: "${HCI_Conn_ID}",     
+                credentialsId: "${HCI_Token}",      
+                containerName: "${ISPW_Container}",   
+                containerType: "${ISPW_Container_Type}",    // 0-Assignment 1-Release 2-Set
+                ispwDownloadAll: true,                     // false will not download files that exist in the workspace and haven't previous changed
+                serverConfig: '',                           // ISPW runtime config.  if blank ISPW will use the default runtime config
+                serverLevel: "${ISPW_Target_Level"])        // level to download the components from
+                */
+                checkout(changelog: false, 
+                    poll:           false, 
+                    scm: [$class:           'IspwConfiguration', 
+                        componentType:      'COB,COPY', 
+                        connectionId:       "${HCI_Conn_ID}",
+                        credentialsId:      "${HCI_Token}", 
+                        folderName:         '', 
+                        ispwDownloadAll:    true, 
+                        levelOption:        '0', 
+                        serverApplication:  "${ISPW_Application}",
+                        serverConfig:       '', 
+                        serverLevel:        "${ISPW_Target_Level}",  
+                        serverStream:       "${ISPW_Stream}" 
+                    ]
+                )
+
         }
 
         stage("Retrieve Tests")
