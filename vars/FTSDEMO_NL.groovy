@@ -241,13 +241,6 @@ def call(Map pipelineParams)
 
         echo "Number of Scenarios to Execute: " + ScenariosToExecute.size()
 
-        for(int i = 0; i < ScenariosToExecute.size(); i++)
-        {
-            echo "Scenario " + ScenariosToExecute[i].tttScenarioFullName
-            echo "Path " + ScenariosToExecute[i].tttScenarioPath
-            echo "Project " + ScenariosToExecute[i].tttProjectName
-        }
-
         /* 
         This stage executes any Total Test Projects related to the mainframe source that was downloaded
         */ 
@@ -259,9 +252,9 @@ def call(Map pipelineParams)
 
                 // Log which 
                 echo "*************************"
-                echo "Scenario  " + ScenariosToExecute[i].tttScenarioFullName
-                echo "Path      " + ScenariosToExecute[i].tttScenarioPath
-                echo "Project   " + ScenariosToExecute[i].tttProjectName
+                echo "Scenario  " + ScenariosToExecute[scenarioCounter].tttScenarioFullName
+                echo "Path      " + ScenariosToExecute[scenarioCounter].tttScenarioPath
+                echo "Project   " + ScenariosToExecute[scenarioCounter].tttProjectName
                 echo "*************************"
             
                 step([
