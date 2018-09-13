@@ -40,8 +40,7 @@ def call(Map pipelineParams)
         def ISPW_Owner          = pipelineParams.ISPW_Owner
 
         def Git_Project         = pipelineParams.Git_Project
-        def Git_Credentials     = pipelineParams.Git_Credentials
-        def Git_Target_Branch   = pipelineParams.Git_Target_Branch
+        def Git_Credentials     = pipelineParams.Git_Credentials        
 
         def CES_Token           = pipelineParams.CES_Token
         def HCI_Conn_ID         = pipelineParams.HCI_Conn_ID
@@ -81,6 +80,7 @@ def call(Map pipelineParams)
         def TTT_Folder           = pConfig.TTT_Folder
         def ISPW_URL             = pConfig.ISPW_URL
         def ISPW_Runtime         = pConfig.ISPW_Runtime
+        def Git_Target_Branch    = pConfig.Git_Target_Branch
 
         GitHelper       gitHelper   = new GitHelper(steps)
         MailList        mailList    = new MailList()
@@ -195,10 +195,8 @@ def call(Map pipelineParams)
 
         stage("Retrieve Tests")
         {
+            // Use Assigment name as Git Branch Name
             Git_Branch = assignmentList[0].toString()
-            //Git_Branch = "master"
-
-            echo "Checking out Branch " + Git_Branch
 
             //Retrieve the Tests from Github that match that ISPWW Stream and Application
             Git_URL = "${Git_URL}/${Git_TTT_Repo}"
@@ -426,7 +424,6 @@ def call(Map pipelineParams)
                 }
 
                 // Checkout Target Branch from Git to merge current branch into
-                echo "Checking out" + Git_Target_Branch
                 gitHelper.gitcheckout(Git_URL, Git_Target_Branch, Git_Credentials, TTT_Folder)
                 
                 stdout = bat(returnStdout: true, script: "git merge ${Git_Branch}") 
