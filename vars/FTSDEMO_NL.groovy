@@ -441,6 +441,7 @@ def call(Map pipelineParams)
             /* 
             This stage triggers a XL Release Pipeline that will move code into the high levels in the ISPW Lifecycle  
             */ 
+            /*
             stage("Start release in XL Release")
             {
                 // Use the Path Number to determine what QA Path to Promote the code from in ISPW.  This example has seperate QA paths in ISPW Lifecycle (i.e. DEV1->QA1->STG->PRD / DEV2->QA2->STG->PRD)
@@ -459,6 +460,7 @@ def call(Map pipelineParams)
                                         ]
                 )
             }  
+            */
         }      
     }
 }
