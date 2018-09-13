@@ -213,12 +213,7 @@ def call(Map pipelineParams)
         // Get all testscenario files in the current workspace into an array
         def TTTListOfScenarios = findFiles(glob: '**/*.testscenario')
 
-        echo "Number of Scenarios Found: " + TTTListOfScenarios.size()
-
-        // Get all Cobol Sources in the MF_Source folder into an array 
-        //def ListOfSources       = findFiles(glob: "**/${ISPW_Application}/${MF_Source}/*.cbl")
-
-        //echo "Number of Programs Found: " + ListOfSources.size()
+        echo "Number of Scenarios downloaded from Git: " + TTTListOfScenarios.size()
 
         // Create a List of Program Names from the List of Program Tasks in the set
         def ListOfPrograms      = []
@@ -230,7 +225,9 @@ def call(Map pipelineParams)
 
         def ScenariosToExecute  = []
         int scenarioCounter     = 0
-        
+
+        // For each downloaded scenario, check if it's targeting one of the programs in the set
+        // In that case add a tttAsset to the list of Scenarios to Execute        
         TTTListOfScenarios.each
         {            
             def tttAsset    = new TttAsset(it)
@@ -242,7 +239,7 @@ def call(Map pipelineParams)
             }
         }
 
-        echo "Scenarios to Execute: " + ScenariosToExecute.size()
+        echo "Number of Scenarios to Execute: " + ScenariosToExecute.size()
 
         for(int i = 0; i < ScenariosToExecute.size(); i++)
         {
@@ -251,63 +248,37 @@ def call(Map pipelineParams)
             echo "Project " + ScenariosToExecute[i].tttProjectName
         }
 
-        error "STOP HERE" 
-
-        /*
-        // Determine program names for each source member
-        ListOfSources.each
-        {
-            // The split method uses regex to search for patterns, therefore
-            // Backslashes, Dots and Underscores which mean certain patterns in regex need to be escaped 
-            // The backslash in Windows paths is duplicated in Java, therefore it need to be escaped twice
-            // Trim ./cbl from the Source members to populate the array of program names
-            ListOfPrograms.add(it.name.trim().split("\\.")[0])
-        }
-        */
-
         /* 
         This stage executes any Total Test Projects related to the mainframe source that was downloaded
         */ 
         stage("Execute related Unit Tests")
         {
             // Loop through all downloaded Topaz for Total Test scenarios
-            TTTListOfScenarios.each
+            for(int scenarioCounter = 0; scenarioCounter < ScenariosToExecute.size(); scenarioCounter++)
             {
 
-                // Get root node of the path, i.e. the name of the Total Test project
-                def TTTScenarioPath        = it.path // Fully qualified name of the Total Test Scenario file
-                def TTTProjectName         = it.path.trim().split("\\\\")[0] + "\\"+ it.path.trim().split("\\\\")[1]  // Total Test Project name is the root folder of the full path to the testscenario 
-                def TTTScenarioFullName    = it.name  // Get the full name of the testscenario file i.e. "name.testscenario"
-                def TTTScenarioName        = it.name.trim().split("\\.")[0]  // Get the name of the scenario file without ".testscenario"
-                def TTTScenarioTarget      = TTTScenarioName.split("\\_")[0]  // Target Program will be the first part of the scenario name (convention)
-        
-                // For each of the scenarios walk through the list of source files and determine if the target matches one of the programs
-                // In that case, execute the unit test.  Determine if the program name matches the target of the Total Test scenario
-                if(ListOfPrograms.contains(TTTScenarioTarget))
-                {
-                    // Log which 
-                    println "*************************"
-                    println "Scenario " + TTTScenarioFullName
-                    println "Path " + TTTScenarioPath
-                    println "Project " + TTTProjectName
-                    println "*************************"
-                
-                    step([
-                        $class:       'TotalTestBuilder', 
-                            ccClearStats:   false,                // Clear out any existing Code Coverage stats for the given ccSystem and ccTestId
-                            ccRepo:         "${CC_repository}",
-                            ccSystem:       "${ISPW_Application}", 
-                            ccTestId:       "${BUILD_NUMBER}",        // Jenkins environment variable, resolves to build number, i.e. #177 
-                            credentialsId:  "${HCI_Token}", 
-                            deleteTemp:     true,                   // (true|false) Automatically delete any temp files created during the execution
-                            hlq:            '',                            // Optional - high level qualifier used when allocation datasets
-                            connectionId:   "${HCI_Conn_ID}",    
-                            jcl:            "${TTT_Jcl}",                  // Name of the JCL file in the Total Test Project to execute
-                            projectFolder:  "${TTTProjectName}", // Name of the Folder in the file system that contains the Total Test Project.  
-                            testSuite:      "${TTTScenarioFullName}",// Name of the Total Test Scenario to execute
-                            useStubs:       true
-                    ])                   // (true|false) - Execute with or without stubs
-                }
+                // Log which 
+                echo "*************************"
+                echo "Scenario  " + ScenariosToExecute[i].tttScenarioFullName
+                echo "Path      " + ScenariosToExecute[i].tttScenarioPath
+                echo "Project   " + ScenariosToExecute[i].tttProjectName
+                echo "*************************"
+            
+                step([
+                    $class:       'TotalTestBuilder', 
+                        ccClearStats:   false,                // Clear out any existing Code Coverage stats for the given ccSystem and ccTestId
+                        ccRepo:         "${CC_repository}",
+                        ccSystem:       "${ISPW_Application}", 
+                        ccTestId:       "${BUILD_NUMBER}",        // Jenkins environment variable, resolves to build number, i.e. #177 
+                        credentialsId:  "${HCI_Token}", 
+                        deleteTemp:     true,                   // (true|false) Automatically delete any temp files created during the execution
+                        hlq:            '',                            // Optional - high level qualifier used when allocation datasets
+                        connectionId:   "${HCI_Conn_ID}",    
+                        jcl:            "${TTT_Jcl}",                  // Name of the JCL file in the Total Test Project to execute
+                        projectFolder:  "${ScenariosToExecute[scenarioCounter].tttProjectName}", // Name of the Folder in the file system that contains the Total Test Project.  
+                        testSuite:      "${ScenariosToExecute[scenarioCounter].tttScenarioFullName}",// Name of the Total Test Scenario to execute
+                        useStubs:       true
+                ])                   // (true|false) - Execute with or without stubs
             }
 
             // Process the Total Test Junit result files into Jenkins
