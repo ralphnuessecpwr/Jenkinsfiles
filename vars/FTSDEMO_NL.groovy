@@ -425,7 +425,7 @@ def call(Map pipelineParams)
                 }
 
                 // Checkout Target Branch from Git to merge current branch into
-                stdout = bat(returnStdout: true, script: "git checkout origin/${Git_Target_Branch}") 
+                stdout = bat(returnStdout: true, script: "git checkout ${Git_Target_Branch}") 
                 echo "Checkout Target Branch" + stdout            
 
                 stdout = bat(returnStdout: true, script: "git merge ${Git_Branch}") 
