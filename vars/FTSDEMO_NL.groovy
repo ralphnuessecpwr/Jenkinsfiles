@@ -425,8 +425,9 @@ def call(Map pipelineParams)
                 }
 
                 // Checkout Target Branch from Git to merge current branch into
-                gitHelper.gitcheckout(Git_URL, Git_Target_Branch, Git_Credentials, TTT_Folder)
-                
+                stdout = bat(returnStdout: true, script: "git checkout origin/${Git_Target_Branch}") 
+                echo "Checkout Target Branch" + stdout            
+
                 stdout = bat(returnStdout: true, script: "git merge ${Git_Branch}") 
                 echo "Merge assigment branch to CONS" + stdout            
 
