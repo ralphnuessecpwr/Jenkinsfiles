@@ -41,6 +41,7 @@ def call(Map pipelineParams)
 
         def Git_Project         = pipelineParams.Git_Project
         def Git_Credentials     = pipelineParams.Git_Credentials
+        def Git_Target_Branch   = pipelineParams.Git_Target_Branch
 
         def CES_Token           = pipelineParams.CES_Token
         def HCI_Conn_ID         = pipelineParams.HCI_Conn_ID
@@ -424,9 +425,11 @@ def call(Map pipelineParams)
                     }
                 }
 
-                stdout = bat(returnStdout: true, script: "git merge origin/${Git_Target_Branch}") 
+                // Checkout Target Branch from Git to merge current branch into
+                gitHelper.gitcheckout(Git_URL, Git_Target_Branch, Git_Credentials, TTT_Folder)
+                
+                stdout = bat(returnStdout: true, script: "git merge ${Git_Branch}") 
                 echo "Merge assigment branch to CONS" + stdout            
-
 
                 /*
                 // Push changes and tag to the Remote Github repository 
