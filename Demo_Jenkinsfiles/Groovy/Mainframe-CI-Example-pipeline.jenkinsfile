@@ -293,8 +293,12 @@ node{
     // Get all testscenario files in the current workspace into an array
     def TTTListOfScenarios = findFiles(glob: '**/*.testscenario')
 
+    echo "Number of Scenarios Found: " + TTTListOfScenarios.size()
+
     // Get all Cobol Sources in the MF_Source folder into an array 
     def ListOfSources  = findFiles(glob: "**/${ISPW_Application}/${MF_Source}/*.cbl")
+
+    echo "Number of Programs Found: " + ListOfSources.size()
 
     // Define a empty array for the list of programs
     def ListOfPrograms = []
