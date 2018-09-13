@@ -194,8 +194,8 @@ def call(Map pipelineParams)
 
         stage("Retrieve Tests")
         {
-            //Git_Branch = assignmentList[0].toString()
-            Git_Branch = "master"
+            Git_Branch = assignmentList[0].toString()
+            //Git_Branch = "master"
 
             echo "Checking out Branch " + Git_Branch
 
@@ -209,7 +209,7 @@ def call(Map pipelineParams)
         echo "Searching in ${TTT_Folder}"
         // findFiles method requires the "Pipeline Utilities Plugin"
         // Get all testscenario files in the current workspace into an array
-        //def TTTListOfScenarios  = findFiles(glob: "**/${TTT_Folder}/*.testscenario")
+        
         def TTTListOfScenarios = findFiles(glob: '**/*.testscenario')
 
         echo "Number of Scenarios Found: " + TTTListOfScenarios.size()
