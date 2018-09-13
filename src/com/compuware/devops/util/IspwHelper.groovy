@@ -69,7 +69,7 @@ class IspwHelper implements Serializable
         def jsonSlurper         = new JsonSlurper()
 
         def ispwTask            = new PipelineAsset()
-
+        steps.echo "ispwTask" + ispwTask.toString()
         def returnList  = []
 
         def resp = jsonSlurper.parseText(response.getContent())
