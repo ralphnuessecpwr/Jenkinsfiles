@@ -64,6 +64,12 @@ def call(Map pipelineParams)
 
         def mailRecipient = mailList.getEmail(ISPW_Owner)
 
+        // Determine the current ISPW Path and Level that the code Promotion is from
+        def PathNum = getPathNum(ISPW_Src_Level)
+
+        // Also set the Level that the code currently resides in
+        def ISPW_Target_Level = "QA" + PathNum
+
         // Clean out any previously downloaded source
         dir(".\\") 
         {
