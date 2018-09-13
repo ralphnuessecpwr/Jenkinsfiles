@@ -209,7 +209,8 @@ def call(Map pipelineParams)
         echo "Searching in ${TTT_Folder}"
         // findFiles method requires the "Pipeline Utilities Plugin"
         // Get all testscenario files in the current workspace into an array
-        def TTTListOfScenarios  = findFiles(glob: "**/${TTT_Folder}/*.testscenario")
+        //def TTTListOfScenarios  = findFiles(glob: "**/${TTT_Folder}/*.testscenario")
+        def TTTListOfScenarios = findFiles(glob: '**/*.testscenario')
 
         echo "Number of Scenarios Found: " + TTTListOfScenarios.size()
 
