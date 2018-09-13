@@ -74,6 +74,7 @@ def call(Map pipelineParams)
         //def Git_Branch           = pConfig.Git_Branch
         def SQ_Scanner_Name      = pConfig.SQ_Scanner_Name
         def SQ_Server_Name       = pConfig.SQ_Server_Name
+        def SQ_Server_URL        = pCOnfig.SQ_Server_URL
         def MF_Source            = pConfig.MF_Source
         def XLR_Template         = pConfig.XLR_Template
         def XLR_User             = pConfig.XLR_User
@@ -392,8 +393,9 @@ def call(Map pipelineParams)
                     // Email
                     emailBody = "Jenkins Job ${JOB_NAME} was executed because you promoted tasks in ISPW assignment ${Git_Branch}." +
                                 "\n\nThe tasks failed the SonarQuality Quality Gate." + 
-                                "\nGoto the SonarQube server, Project ${JOB_NAME} to review the status." +
-                                "\nAll tasks in the assigment have been regressed from ${ISPW_Target_Level} to ${ISPW_Src_Level}."
+                                "\nGoto the SonarQube server, Project ${JOB_NAME} to review the status at:" +
+                                "\n${SQ_Server_URL}/dashboard?id=${JOB_NAME}'"
+                                "\n\nAll tasks in the assigment have been regressed from ${ISPW_Target_Level} to ${ISPW_Src_Level}."
 
                     emailext subject:       '$DEFAULT_SUBJECT',
                                 body:       emailBody + "\n\n" + '$DEFAULT_CONTENT',
@@ -448,10 +450,11 @@ def call(Map pipelineParams)
                 // Email
                 emailBody = "Jenkins Job ${JOB_NAME} was executed because you promoted tasks in ISPW assignment ${Git_Branch}." +
                             "\n\nThe tasks passed the SonarQuality Quality Gate." + 
-                            "\nGoto the SonarQube server, Project ${JOB_NAME} to review the status." +
-                            "\nAll tasks in the assigment have been promoted from ${ISPW_Src_Level} to ${ISPW_Target_Level}."
+                            "\nGoto the SonarQube server, Project ${JOB_NAME} to review the status at:" +
+                            "\n${SQ_Server_URL}/dashboard?id=${JOB_NAME}'"
+                            "\n\nAll tasks in the assigment have been promoted from ${ISPW_Src_Level} to ${ISPW_Target_Level}."
                             "\nThe TTT assets in Git branch ${Git_Branch} have been merged into ${Git_Target_Branch}."
-                            "\nMake sure to fetch all changes from upstream before you continue work."
+                            "\n\nMake sure to fetch all changes from upstream before you continue work."
 
                 emailext subject:       '$DEFAULT_SUBJECT',
                             body:       emailBody + "\n\n" + '$DEFAULT_CONTENT',
