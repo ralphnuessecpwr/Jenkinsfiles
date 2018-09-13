@@ -127,7 +127,11 @@ def call(Map pipelineParams)
             def setTaskIdList   = ispwHelper.getSetTaskIdList(response1, ISPW_Target_Level)
             def setTaskList     = ispwHelper.getSetTaskList(response1, ISPW_Target_Level)
 
-            echo "TaskList " + setTaskList.toString()
+            for(int i = 0; i < setTaskList.size(); i++)
+            {
+                echo "Task Name" + i + ":" + setTaskList[i].programName
+                echo "Task ID" + i + ":" + setTaskList[i].ispwTaskId
+            }
 
             // Use httpRequest to get all Assignments for the Release
             // Need to use two separate objects to store the responses for the httpRequests, 
