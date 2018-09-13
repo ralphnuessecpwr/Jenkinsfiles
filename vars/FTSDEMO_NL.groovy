@@ -231,6 +231,28 @@ def call(Map pipelineParams)
         def ScenariosToExecute  = []
         int scenarioCounter     = 0
         
+        TTTListOfScenarios.each
+        {            
+            def tttAsset    = new TTTAsset(it)
+
+            if(ListOfPrograms.contains(tttAsset.tttScenarioTarget))
+            {
+                ScenariosToExecute[scenarioCounter] = tttAsset
+                scenarioCounter++
+            }
+        }
+
+        echo "Scenarios to Execute: " + ScenariosToExecute.size()
+
+        for(int i = 0; i < ScenariosToExecute.size(); i++)
+        {
+            echo "Scenario " + ScenariosToExecute[i].tttScenarioFullName
+            echo "Path " + ScenariosToExecute[i].tttScenarioPath
+            echo "Project " + tttProjectName
+        }
+
+        error "STOP HERE" 
+
         /*
         // Determine program names for each source member
         ListOfSources.each
@@ -251,8 +273,6 @@ def call(Map pipelineParams)
             // Loop through all downloaded Topaz for Total Test scenarios
             TTTListOfScenarios.each
             {
-
-                echo it.getClass().toString()
 
                 // Get root node of the path, i.e. the name of the Total Test project
                 def TTTScenarioPath        = it.path // Fully qualified name of the Total Test Scenario file
