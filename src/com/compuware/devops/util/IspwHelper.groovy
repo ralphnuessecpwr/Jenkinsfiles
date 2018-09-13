@@ -86,14 +86,20 @@ class IspwHelper implements Serializable
             {
                 if(it.moduleType == 'COB' && it.level == level)
                 {
+                    steps.echo "Set ispwTask"
+                    steps.echo "Name" + it.moduleName
+                    steps.echo "taskId" + it.taskId
                     ispwTask.setProgramName(it.moduleName)
                     ispwTask.setIspwTaskId(it.taskId)
 
+                    steps.echo "ispwTask: " + ispwTask.toString()
+                    steps.echo "Add ispwTask to return"
                     returnList.add(ispwTask)
                 }
             }
         }
 
+        steps.echo "Return: " + returnList.toString()
         return returnList
     
     }
