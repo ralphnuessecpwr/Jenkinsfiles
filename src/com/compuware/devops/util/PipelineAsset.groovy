@@ -5,13 +5,15 @@ package com.compuware.devops.util
 */
 class PipelineAsset {
 
-    String programName
-    String baseVersion
-    String targetVersion
-    String ispwTaskId
+    def steps
+    public String programName
+    public String baseVersion
+    public String targetVersion
+    public String ispwTaskId
 
-    PipelineAsset() 
+    PipelineAsset(steps) 
     {
+        this.steps          = steps
         this.programName    = ''
         this.baseVersion    = '0'
         this.targetVersion  = '0'
@@ -20,6 +22,7 @@ class PipelineAsset {
 
     def setProgramName(String name)
     {
+        steps.echo "Set Name: " + name
         this.programName    = name
     }
 
@@ -35,6 +38,7 @@ class PipelineAsset {
 
     def setIspwTaskId(String id)
     {
+        steps.echo "Set taskId: " + id
         this.ispwTaskId    = id
     }
 
