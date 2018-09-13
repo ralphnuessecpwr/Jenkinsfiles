@@ -49,7 +49,6 @@ def call(Map pipelineParams)
         PipelineConfig  pConfig     = new PipelineConfig()
 
         // Store properties values in variables (easier to retrieve during code)
-        def Git_Branch           = pConfig.Git_Branch
         def SQ_Scanner_Name      = pConfig.SQ_Scanner_Name
         def SQ_Server_Name       = pConfig.SQ_Server_Name
         def MF_Source            = pConfig.MF_Source
@@ -130,7 +129,8 @@ def call(Map pipelineParams)
 
         stage("Checkout TTT assets from GitHub")
         {
-            Git_Full_URL = Git_Project + '/' + Git_TTT_Repo
+            Git_Branch      = assignmentList[0].toString()
+            Git_Full_URL    = Git_Project + '/' + Git_TTT_Repo
 
             //call gitcheckout wrapper function
             gitcheckout(Git_Full_URL, Git_Branch, Git_Credentials, TTT_Folder)
