@@ -87,14 +87,9 @@ class IspwHelper implements Serializable
             {
                 if(it.moduleType == 'COB' && it.level == level)
                 {
-                    returnList[ispwTaskCounter] = new PipelineAsset()
-                    
-                    steps.echo "Set ispwTask"
-                    steps.echo "Name    " + it.moduleName
-                    steps.echo "taskId  " + it.taskId
-
-                    returnList[ispwTaskCounter].programName    = it.moduleName
-                    returnList[ispwTaskCounter].ispwTaskId     = it.taskId
+                    returnList[ispwTaskCounter]             = new PipelineAsset()                    
+                    returnList[ispwTaskCounter].programName = it.moduleName
+                    returnList[ispwTaskCounter].ispwTaskId  = it.taskId
 
                     ispwTaskCounter++
                 }
@@ -224,4 +219,42 @@ class IspwHelper implements Serializable
         return returnMap    
     }
 
+@NonCPS
+    def setTaskVersions(ArrayList tasks, ResponseContentSupplier response, String level)
+    {
+        def jsonSlurper = new JsonSlurper()
+
+        def resp        = jsonSlurper.parseText(response.getContent())
+
+        def returnList  = []
+
+        if(resp.message != null)
+        {
+            echo "Resp: " + resp.message
+            error
+        }
+        else
+        {
+            def taskList = resp.tasks
+
+            for(int i = 0; i < tasks.size(); i++)
+            {
+                taskList.each
+                {
+                    if(it.taskId == tasks[i].ispwTaskId && it.level == level)
+                    {
+                        returnList[i]               = new PipelineAsset()
+                        returnList[i].programName   = tasks[i].programName
+                        returnList[i].baseVersion   = it.baseVersion
+                        returnList[i].targetVersion = it.internalVersion
+                        returnList[i].ispwTaskId    = tasks[i].ispwTaskId
+                    }
+                }
+            }
+        }
+
+        return returnList
+
+    }
 }
+

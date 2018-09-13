@@ -127,12 +127,6 @@ def call(Map pipelineParams)
             def setTaskIdList   = ispwHelper.getSetTaskIdList(response1, ISPW_Target_Level)
             def setTaskList     = ispwHelper.getSetTaskList(response1, ISPW_Target_Level)
 
-            for(int i = 0; i < setTaskList.size(); i++)
-            {
-                echo "Task Name" + i + ":" + setTaskList[i].programName
-                echo "Task ID" + i + ":" + setTaskList[i].ispwTaskId
-            }
-
             // Use httpRequest to get all Assignments for the Release
             // Need to use two separate objects to store the responses for the httpRequests, 
             // otherwise the script will fail with a NotSerializable Exception
@@ -155,6 +149,17 @@ def call(Map pipelineParams)
             // that belong to Tasks in the Set
             // If the Sonar Quality Gate fails, these Assignments will be regressed
             def assignmentList  = ispwHelper.getAssigmentList(setTaskIdList, response2)
+
+            ispwHelper.setTaskVersions(setTaskList, response2, ISPW_Target_Level)
+
+            for(int i = 0; i < setTaskList.size(); i++)
+            {
+                echo "Task " + i
+                echo "Name " setTaskList[i].programName
+                echo "BV " setTaskList[i].baseVersion
+                echo "TV " setTaskList[i].targetVersion
+                echo "ID " setTaskList[i].ispwTaskId
+            }
             /*************************************************************************************************************/
         }
     }
