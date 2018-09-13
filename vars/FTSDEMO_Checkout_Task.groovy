@@ -92,9 +92,10 @@ def call(Map pipelineParams)
         }
 
         // Use method getSetTaskIdList to extract the list of Task IDs from the response of the httpRequest
-        def setTaskIdList          = ispwHelper.getSetTaskIdList(response1, ISPW_Src_Level)
+        def setTaskIdList   = ispwHelper.getSetTaskIdList(response1, ISPW_Src_Level)
+        def setTaskList     = ispwHelper.getSetTaskList(response1, ISPW_Target_Level)
 
-        def ISPW_Release           = ispwHelper.getSetRelease(response1)[0].toString()
+        def ISPW_Release    = ispwHelper.getSetRelease(response1)[0].toString()
 
         // Use httpRequest to get all Assignments for the Release
         // Need to use two separate objects to store the responses for the httpRequests, 
@@ -113,17 +114,16 @@ def call(Map pipelineParams)
         // that belong to Tasks in the Set
         // If the Sonar Quality Gate fails, these Assignments will be regressed
         def assignmentList      = ispwHelper.getAssigmentList(setTaskIdList, response2)
-        def programVersionMap   = ispwHelper.getProgramVersionMap(setTaskIdList, response2)
-
-        def gitNewBranch        = assignmentList[0].toString()
+        setTaskList             = ispwHelper.setTaskVersions(setTaskList, response2, ISPW_Target_Level)
 
         // Build List of Tags to add to Git
-        def gitTagList = []
+        def gitNewBranch        = assignmentList[0].toString()
+        def gitTagList          = []
 
-        for(entry in programVersionMap)
+        for(int i = 0; i < setTaskList.size(); i++)
         {
 
-            gitTag = gitNewBranch + '_' + entry.key + '_' + entry.value
+            gitTag = gitNewBranch + '_' + setTaksList[i].programName + '_' + setTaskList[i].baseVersion
 
             gitTagList.add(gitTag)
 
@@ -172,9 +172,11 @@ def call(Map pipelineParams)
                     withCredentials(
                         [usernamePassword(credentialsId: "${Git_Credentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]
                     ) 
-                    {                
+                    {              
+                        /*  
                         stdout = bat(returnStdout: true, script: "git push https://${gitUsername}:${gitPassword}@github.com/${Git_Project}/${Git_TTT_Repo} HEAD:${gitNewBranch} -f --tags")
                         echo "pushed " + stdout
+                        */
                     }
 
                     emailBody = "Jenkins Job ${JOB_NAME} was executed because you checked out tasks to ISPW assignment ${gitNewBranch}." +
