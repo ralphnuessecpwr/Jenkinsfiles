@@ -157,10 +157,10 @@ def call(Map pipelineParams)
             for(int i = 0; i < setTaskList.size(); i++)
             {
                 echo "Task " + i
-                echo "Name " setTaskList[i].programName
-                echo "BV " setTaskList[i].baseVersion
-                echo "TV " setTaskList[i].targetVersion
-                echo "ID " setTaskList[i].ispwTaskId
+                echo "Name " + setTaskList[i].programName
+                echo "BV " + setTaskList[i].baseVersion
+                echo "TV " + setTaskList[i].targetVersion
+                echo "ID " + setTaskList[i].ispwTaskId
             }
             /*************************************************************************************************************/
         }
