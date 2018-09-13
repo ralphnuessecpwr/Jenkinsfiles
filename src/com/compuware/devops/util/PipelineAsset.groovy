@@ -19,22 +19,22 @@ class PipelineAsset
         this.ispwTaskId     = ''
     }
 
-    def setProgramName(String name)
+    public void setProgramName(String name)
     {
         this.programName    = name
     }
 
-    def setBaseVersion(String version)
+    public void setBaseVersion(String version)
     {
         this.baseVersion    = version
     }
 
-    def setTargetVersion(String version)
+    public void setTargetVersion(String version)
     {
         this.taregtVersion  = version
     }
 
-    def setIspwTaskId(String id)
+    public void setIspwTaskId(String id)
     {
         this.ispwTaskId    = id
     }
