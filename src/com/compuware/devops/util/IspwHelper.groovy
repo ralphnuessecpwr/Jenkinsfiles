@@ -2,6 +2,7 @@ package com.compuware.devops.util
 
 import groovy.json.JsonSlurper
 import jenkins.plugins.http_request.*
+import com.compuware.devops.util.PipelineAsset
 
 class IspwHelper implements Serializable 
 {
@@ -59,6 +60,44 @@ class IspwHelper implements Serializable
         return returnList
     
     }
+
+
+@NonCPS
+    def ArrayList getSetTaskList(ResponseContentSupplier response, String level)
+    {
+        def jsonSlurper         = new JsonSlurper()
+
+        def ispwTask            = new PipelineAsset()
+
+        def returnList  = []
+
+        def resp = jsonSlurper.parseText(response.getContent())
+
+        if(resp.message != null)
+        {
+            steps.echo "Resp: " + resp.message
+            error
+        }
+        else
+        {
+            def taskList = resp.tasks
+
+            taskList.each
+            {
+                if(it.moduleType == 'COB' && it.level == level)
+                {
+                    ispwTask.setProgramName(it.moduleName)
+                    ispwTask.setIspwTaskId(it.taskId)
+
+                    returnList.add(ispwTask)
+                }
+            }
+        }
+
+        return returnList
+    
+    }
+
 
 /* 
     Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build a list of Assignments
