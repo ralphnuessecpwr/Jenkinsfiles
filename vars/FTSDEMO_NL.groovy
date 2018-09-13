@@ -307,6 +307,7 @@ def call(Map pipelineParams)
         This stage pushes the Source Code, Test Metrics and Coverage metrics into SonarQube and then checks the status of the SonarQube Quality Gate.  
         If the SonarQube quality date fails, the Pipeline fails and stops
         */ 
+        /*
         stage("Check SonarQube Quality Gate") 
         {
             // Requires SonarQube Scanner 2.8+
@@ -398,7 +399,7 @@ def call(Map pipelineParams)
                 }
             }   
         }
-
+        */
         stage("Git Merge")
         {
 
