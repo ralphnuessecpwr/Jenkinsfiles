@@ -6,7 +6,6 @@ package com.compuware.devops.util
 class PipelineAsset implements Serializable 
 {
 
-    //def steps
     public String programName
     public String baseVersion
     public String targetVersion
@@ -14,7 +13,6 @@ class PipelineAsset implements Serializable
 
     PipelineAsset(steps) 
     {        
-        //this.steps          = steps
         this.programName    = ''
         this.baseVersion    = '0'
         this.targetVersion  = '0'
@@ -23,7 +21,6 @@ class PipelineAsset implements Serializable
 
     def setProgramName(String name)
     {
-        echo "Set Name: " + name
         this.programName    = name
     }
 
@@ -39,7 +36,6 @@ class PipelineAsset implements Serializable
 
     def setIspwTaskId(String id)
     {
-        echo "Set taskId: " + id
         this.ispwTaskId    = id
     }
 
