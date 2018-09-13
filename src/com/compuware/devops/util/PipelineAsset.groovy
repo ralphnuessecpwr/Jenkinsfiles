@@ -3,7 +3,8 @@ package com.compuware.devops.util
 /**
  Object to store information about an ISPW program task
 */
-class PipelineAsset {
+class PipelineAsset implements Serializable 
+{
 
     def steps
     public String programName
@@ -18,8 +19,6 @@ class PipelineAsset {
         this.baseVersion    = '0'
         this.targetVersion  = '0'
         this.ispwTaskId     = ''
-        
-        steps.echo "Instatiated"
     }
 
     def setProgramName(String name)
