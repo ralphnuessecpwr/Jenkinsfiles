@@ -304,7 +304,7 @@ def call(Map pipelineParams)
         This stage pushes the Source Code, Test Metrics and Coverage metrics into SonarQube and then checks the status of the SonarQube Quality Gate.  
         If the SonarQube quality date fails, the Pipeline fails and stops
         */ 
-        /*
+        
         stage("Check SonarQube Quality Gate") 
         {
             // Requires SonarQube Scanner 2.8+
@@ -402,7 +402,7 @@ def call(Map pipelineParams)
                 }
             }   
         }
-        */
+        
         stage("Git Merge")
         {
 
@@ -427,15 +427,13 @@ def call(Map pipelineParams)
 
                 stdout = bat(returnStdout: true, script: "git merge origin/${Git_Branch}") 
                 echo "Merge assigment branch to CONS" + stdout            
-
-                /*
+                
                 // Push changes and tag to the Remote Github repository 
                 withCredentials([usernamePassword(credentialsId: "${Git_Credentials}", passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                     stdout = bat(returnStdout: true, script: "git push  https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${Git_Project}/${Git_TTT_Repo} HEAD:${Git_Target_Branch} -f --tags")
                     echo "push " + stdout
 
-                }
-                */
+                }                
 
                 // Email
                 emailBody = "Jenkins Job ${JOB_NAME} was executed because you promoted tasks in ISPW assignment ${Git_Branch}." +
