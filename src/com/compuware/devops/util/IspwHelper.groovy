@@ -88,8 +88,13 @@ class IspwHelper implements Serializable
 
             taskList.each
             {
+                steps.echo "Check Task: " + it.moduleName +
+                "\nOf type:     " + it.moduleType +
+                "\nOn Level:    " + it.level
+
                 if(it.moduleType == 'COB' && it.level == level)
                 {
+                    steps.echo "Add Task"
                     returnList[ispwTaskCounter]             = new TaskInfo()                    
                     returnList[ispwTaskCounter].programName = it.moduleName
                     returnList[ispwTaskCounter].ispwTaskId  = it.taskId
