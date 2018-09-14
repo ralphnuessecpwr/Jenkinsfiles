@@ -120,6 +120,7 @@ def call(Map pipelineParams)
         setTaskList             = ispwHelper.setTaskVersions(setTaskList, response2, ISPW_Target_Level)
 
         // Build List of Tags to add to Git
+        // One Tag for each program and base version
         def gitNewBranch        = assignmentList[0].toString()
         def gitTagList          = []
 
@@ -166,7 +167,7 @@ def call(Map pipelineParams)
                     stdout = bat(returnStdout: true, script: "git checkout ${gitNewBranch}")
                     echo "Checkout branch " + stdout
 
-                    // Add Tags to Git 
+                    // Add Tags to Git                     
                     for(int i = 0; i < gitTagList.size(); i++)
                     {
                                                 
