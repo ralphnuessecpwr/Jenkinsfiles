@@ -89,7 +89,7 @@ def call(Map pipelineParams)
             response1 = steps.httpRequest(
                 url:                    "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
                 httpMode:               'GET',
-                consoleLogResponseBody: false,
+                consoleLogResponseBody: true,
                 customHeaders:          [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
             )
         }
@@ -108,7 +108,7 @@ def call(Map pipelineParams)
         ) 
         {
             response2 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/releases/${ISPW_Release}/tasks",
-                consoleLogResponseBody: false, 
+                consoleLogResponseBody: true, 
                 customHeaders: [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
             )
         }
