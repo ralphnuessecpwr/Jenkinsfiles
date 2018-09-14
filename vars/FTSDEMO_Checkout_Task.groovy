@@ -117,15 +117,13 @@ def call(Map pipelineParams)
         // that belong to Tasks in the Set
         // If the Sonar Quality Gate fails, these Assignments will be regressed
         def assignmentList      = ispwHelper.getAssigmentList(setTaskIdList, response2)
-        setTaskList             = ispwHelper.setTaskVersions(setTaskList, response2, ISPW_Target_Level)
+        setTaskList             = ispwHelper.setTaskVersions(setTaskList, response2, ISPW_Src_Level)
 
         // Build List of Tags to add to Git
         // One Tag for each program and base version
         def gitNewBranch        = assignmentList[0].toString()
         def gitTagList          = []
-
-        echo "Tasks identified: " + setTaskList.size()
-
+    
         for(int i = 0; i < setTaskList.size(); i++)
         {
 
