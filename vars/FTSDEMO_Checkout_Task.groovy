@@ -96,7 +96,7 @@ def call(Map pipelineParams)
 
         // Use method getSetTaskIdList to extract the list of Task IDs from the response of the httpRequest
         def setTaskIdList   = ispwHelper.getSetTaskIdList(response1, ISPW_Src_Level)
-        def setTaskList     = ispwHelper.getSetTaskList(response1, ISPW_Target_Level)
+        def setTaskList     = ispwHelper.getSetTaskList(response1, ISPW_Src_Level)
 
         def ISPW_Release    = ispwHelper.getSetRelease(response1)[0].toString()
 

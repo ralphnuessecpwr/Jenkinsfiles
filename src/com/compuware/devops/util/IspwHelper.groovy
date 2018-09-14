@@ -68,7 +68,7 @@ class IspwHelper implements Serializable
 @NonCPS
     def ArrayList getSetTaskList(ResponseContentSupplier response, String level)
     {
-        steps.echo "getSetTaskList"
+
         def jsonSlurper         = new JsonSlurper()
 
         int ispwTaskCounter     = 0
