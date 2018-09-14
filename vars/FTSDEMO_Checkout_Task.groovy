@@ -124,6 +124,8 @@ def call(Map pipelineParams)
         def gitNewBranch        = assignmentList[0].toString()
         def gitTagList          = []
 
+        echo "Tasks identified: " + setTaskList.size()
+
         for(int i = 0; i < setTaskList.size(); i++)
         {
 
