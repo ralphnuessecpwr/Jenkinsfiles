@@ -89,7 +89,7 @@ def call(Map pipelineParams)
             response1 = steps.httpRequest(
                 url:                    "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
                 httpMode:               'GET',
-                consoleLogResponseBody: true,
+                consoleLogResponseBody: false,
                 customHeaders:          [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
             )
         }
@@ -108,7 +108,7 @@ def call(Map pipelineParams)
         ) 
         {
             response2 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/releases/${ISPW_Release}/tasks",
-                consoleLogResponseBody: true, 
+                consoleLogResponseBody: false, 
                 customHeaders: [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
             )
         }
@@ -128,12 +128,10 @@ def call(Map pipelineParams)
         {
 
             gitTag = gitNewBranch + '_' + setTaskList[i].programName + '_' + setTaskList[i].baseVersion
-            echo "Create Tag: " + gitTag
             gitTagList.add(gitTag)
 
         }
 
-        echo "Created " + gitTagList.size() + " Tags"
         /*************************************************************************************************************/
 
         stage("Checkout TTT assets from GitHub")
