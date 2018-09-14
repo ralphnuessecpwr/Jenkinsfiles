@@ -398,7 +398,12 @@ def call(Map pipelineParams)
                                 replyTo:    '$DEFAULT_REPLYTO',
                                 to:         "${mailRecipient}"
                     
+                    currentBuild.result = 'FAILURE'
                     error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
+                }
+                else
+                {
+                    currentBuild.result = 'SUCCESS'
                 }
             }   
         }
@@ -448,6 +453,7 @@ def call(Map pipelineParams)
                             body:       emailBody + "\n\n" + '$DEFAULT_CONTENT',
                             replyTo:    '$DEFAULT_REPLYTO',
                             to:         "${mailRecipient}"
+
 
             }
 
