@@ -386,6 +386,8 @@ def call(Map pipelineParams)
                         }                    
                     }
                         
+                    currentBuild.result = 'FAILURE'
+
                     // Email
                     emailBody = "Jenkins Job ${JOB_NAME} was executed because you promoted tasks in ISPW assignment ${Git_Branch}." +
                                 "\n\nThe tasks failed the SonarQuality Quality Gate." + 
@@ -398,7 +400,7 @@ def call(Map pipelineParams)
                                 replyTo:    '$DEFAULT_REPLYTO',
                                 to:         "${mailRecipient}"
                     
-                    currentBuild.result = 'FAILURE'
+                    
                     error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
                 }
                 else
