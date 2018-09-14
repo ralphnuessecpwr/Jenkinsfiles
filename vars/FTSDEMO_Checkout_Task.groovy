@@ -175,7 +175,7 @@ def call(Map pipelineParams)
                         echo "Create Tag " + stdout
 
                     }
-                    /*
+                    
                     withCredentials(
                         [usernamePassword(credentialsId: "${Git_Credentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]
                     ) 
@@ -183,7 +183,7 @@ def call(Map pipelineParams)
                         stdout = bat(returnStdout: true, script: "git push https://${gitUsername}:${gitPassword}@github.com/${Git_Project}/${Git_TTT_Repo} HEAD:${gitNewBranch} -f --tags")
                         echo "pushed " + stdout
                     }
-                    */
+                    
                     emailBody = "Jenkins Job ${JOB_NAME} was executed because you checked out tasks to ISPW assignment ${gitNewBranch}." +
                                 "\n\nBranch ${gitNewBranch} was created. Fetch this branch from GitHub to start work on your Unit Tests:" + 
                                 "\n- Use 'Fetch from Upstream' to fetch the remote branch." +
