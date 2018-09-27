@@ -31,7 +31,7 @@ class IspwHelper implements Serializable
 /* 
     Receive a response from an "Get Tasks in Set"-httpRequest and build and return a list of task IDs that belong to the desired level
 */
-@NonCPS
+//@NonCPS
     def ArrayList getSetTaskIdList(ResponseContentSupplier response, String level)
     {
         def jsonSlurper         = new JsonSlurper()
@@ -65,7 +65,7 @@ class IspwHelper implements Serializable
 /* 
     Receive a response from an "Get Tasks in Set"-httpRequest and build and return a list of TaskAsset Objects that belong to the desired level
 */
-@NonCPS
+//@NonCPS
     def ArrayList getSetTaskList(ResponseContentSupplier response, String level)
     {
 
@@ -108,7 +108,7 @@ class IspwHelper implements Serializable
     Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build and return a list of Assignments
     that are contained in both the Task Id List and the List of Tasks in the Release 
 */
-@NonCPS
+//@NonCPS
     def ArrayList getAssigmentList(ArrayList taskIds, ResponseContentSupplier response)
     {
         def jsonSlurper = new JsonSlurper()
@@ -144,7 +144,7 @@ class IspwHelper implements Serializable
 /* 
     Receive a response from an "Get Tasks in Set"-httpRequest and return the List of Releases
 */
-@NonCPS
+//@NonCPS
     def ArrayList getSetRelease(ResponseContentSupplier response)
     {
         def jsonSlurper = new JsonSlurper()
@@ -173,46 +173,11 @@ class IspwHelper implements Serializable
     
     }
 
-/* 
-    Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build a Map of Programs and Base Versions
-*/
-/*
-@NonCPS
-    def Map getProgramVersionMap(ArrayList taskIds, ResponseContentSupplier response)
-    {
-        def jsonSlurper = new JsonSlurper()
-        def returnMap  = [:]
-
-        def resp        = jsonSlurper.parseText(response.getContent())
-
-        if(resp.message != null)
-        {
-            echo "Resp: " + resp.message
-            error
-        }
-        else
-        {
-            def taskList = resp.tasks
-
-            taskList.each
-            {
-                if(taskIds.contains(it.taskId))
-                {
-                    echo "Add to programVersionMap: " + it.moduleName + " : " + it.baseVersion
-                    returnMap.put(it.moduleName, it.baseVersion)
-                }
-            }
-        }
-
-        return returnMap    
-    }
-
-*/
 /*
     Receive a list of TaskInfo Objects, the response of an "List tasks of a Release"-httpRequest to build and return a List of TaskInfo Objects
     that contain the base and internal version
 */
-@NonCPS
+//@NonCPS
     def setTaskVersions(ArrayList tasks, ResponseContentSupplier response, String level)
     {
         def jsonSlurper = new JsonSlurper()
