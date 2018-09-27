@@ -63,6 +63,7 @@ class IspwHelper implements Serializable
         }
         else
         {
+            steps.echo "resp " + resp.toString()
             def taskList = resp.tasks
 
             taskList.each
@@ -89,8 +90,6 @@ class IspwHelper implements Serializable
     def ArrayList getSetTaskIdList(String cesToken, String level)
     {
         def returnList  = []
-
-        steps.echo "withCredentials"
 
         def response = steps.httpRequest(
             url:                        "${ispwUrl}/ispw/${ispwRuntime}/sets/${ispwContainer}/tasks",
@@ -121,13 +120,11 @@ class IspwHelper implements Serializable
             {
                 if(it.moduleType == 'COB' && it.level == level)
                 {
-                    steps.echo "Add " + it.taskId
                     returnList.add(it.taskId)
                 }
             }
         }
 
-        steps.echo "Return from getSetTaskIdList " + returnList.toString()
         return returnList
     
     }
