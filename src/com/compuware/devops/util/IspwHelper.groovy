@@ -52,7 +52,7 @@ class IspwHelper implements Serializable
             )
 
         def jsonSlurper = new JsonSlurper()
-        resp            = jsonSlurper.parseText(response.getContent())
+        def resp        = jsonSlurper.parseText(response.getContent())
         response        = null
         jsonSlurper     = null
 
