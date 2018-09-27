@@ -96,6 +96,8 @@ class IspwHelper implements Serializable
 
         def returnList  = []
 
+        steps.echo "withCredentials"
+
         steps.withCredentials(
             [string(credentialsId: "${cesToken}", variable: 'cesTokenVar')]
         ) 
