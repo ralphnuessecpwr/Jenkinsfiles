@@ -40,7 +40,7 @@ class IspwHelper implements Serializable
         def jsonSlurper = new JsonSlurper()
         def returnList  = []
 
-        def taskIds = ispwHelper.getSetTaskIdList(cesToken, ispwUrl, ispwRuntime, ispwContainer)
+        def taskIds = getSetTaskIdList(cesToken, ispwUrl, ispwRuntime, ispwContainer)
 
         withCredentials(
             [string(credentialsId: "${cesToken}", variable: 'cesTokenVar')]
