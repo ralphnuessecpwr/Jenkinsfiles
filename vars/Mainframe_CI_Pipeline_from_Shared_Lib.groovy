@@ -128,8 +128,6 @@ def call(Map pipelineParams)
 
         /**/
         response = null
-
-        def ResponseContentSupplier response
         /**/
 
         // Use httpRequest to get all Assignments for the Release
@@ -160,7 +158,7 @@ def call(Map pipelineParams)
         /**/
         response = null
         /**/
-        
+
         /*************************************************************************************************************/
 
         stage("Retrieve Code From ISPW")
