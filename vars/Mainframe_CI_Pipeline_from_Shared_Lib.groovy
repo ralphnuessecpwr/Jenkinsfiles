@@ -158,6 +158,15 @@ def call(Map pipelineParams)
         //def assignmentList  = ispwHelper.getAssigmentList(setTaskIdList, response2)
         //def assignmentList  = ispwHelper.getAssigmentList(setTaskIdList, response)
 
+        String TokenText = "Uninitialized"
+
+        withCredentials([string(credentialsId: 'Hddrxm0CES', variable: 'tokenVar')]) 
+        {
+            TokenText = "Token " + tokenVar
+        }
+
+        echo "Token " + TokenText
+
         def assignmentList = ispwHelper.getAssigmentList(CES_Token, ISPW_Target_Level)
 
         echo "Liste: " + assignmentList.toString()
