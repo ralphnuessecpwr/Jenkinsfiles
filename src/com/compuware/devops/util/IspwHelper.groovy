@@ -35,10 +35,11 @@ class IspwHelper implements Serializable
     that are contained in both the Task Id List and the List of Tasks in the Release 
 */
 //@NonCPS
-    def ArrayList getAssigmentList(String cesTokenVar)
+    def ArrayList getAssigmentList(String cesTokenVar, String level)
     {
         def returnList  = []
-        def taskIds     = getSetTaskIdList(cesTokenVar)
+
+        def taskIds     = getSetTaskIdList(cesTokenVar, level)
 
         def response = steps.httpRequest(
             url:                        "${ispwUrl}/ispw/${ispwRuntime}/releases/${ispwRelease}/tasks",
@@ -85,7 +86,7 @@ class IspwHelper implements Serializable
     Receive a response from an "Get Tasks in Set"-httpRequest and build and return a list of task IDs that belong to the desired level
 */
 //@NonCPS
-    def ArrayList getSetTaskIdList(String cesTokenVar)
+    def ArrayList getSetTaskIdList(String cesTokenVar, String level)
     {
         def returnList  = []
 
