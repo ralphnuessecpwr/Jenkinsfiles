@@ -40,7 +40,7 @@ class IspwHelper implements Serializable
         def returnList  = []
         def taskIds     = getSetTaskIdList(cesTokenVar)
 
-        response = steps.httpRequest(
+        def response = steps.httpRequest(
             url:                        "${ispwUrl}/ispw/${ispwRuntime}/releases/${ispwRelease}/tasks",
             consoleLogResponseBody:     false, 
             customHeaders:              [[
@@ -91,7 +91,7 @@ class IspwHelper implements Serializable
 
         steps.echo "withCredentials"
 
-        response = steps.httpRequest(
+        def response = steps.httpRequest(
             url:                        "${ispwUrl}/ispw/${ispwRuntime}/sets/${ispwContainer}/tasks",
             httpMode:                   'GET',
             consoleLogResponseBody:     false,
