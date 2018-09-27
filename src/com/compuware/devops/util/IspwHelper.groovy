@@ -121,11 +121,13 @@ class IspwHelper implements Serializable
             {
                 if(it.moduleType == 'COB' && it.level == level)
                 {
+                    steps.echo "Add " + it.taskId
                     returnList.add(it.taskId)
                 }
             }
         }
 
+        steps.echo "Return from getSetTaskIdList " + returnList.toString()
         return returnList
     
     }
