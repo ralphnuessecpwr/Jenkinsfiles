@@ -83,7 +83,7 @@ def call(Map pipelineParams)
 
         GitHelper       gitHelper   = new GitHelper(steps)
         MailList        mailList    = new MailList()
-        IspwHelper      ispwHelper  = new IspwHelper(steps, ISPW_URL, ISPW_Runtime, ISPW_Container)
+        IspwHelper      ispwHelper  = new IspwHelper(steps, ISPW_URL, ISPW_Runtime, ISPW_Release, ISPW_Container)
 
         def mailRecipient = mailList.getEmail(ISPW_Owner)
 
