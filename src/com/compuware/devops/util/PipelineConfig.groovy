@@ -8,6 +8,7 @@ Class to hold Jenkins server specific setup information
 */
 
 public String Git_Target_Branch    = "CONS"
+public String Git_Branch           = "master"
 public String SQ_Scanner_Name      = "scanner" //"Scanner" //"scanner" 
 public String SQ_Server_Name       = "localhost"  //"CWCC" //"localhost"  
 public String SQ_Server_URL        = 'http://sonarqube.nasa.cpwr.corp:9000'

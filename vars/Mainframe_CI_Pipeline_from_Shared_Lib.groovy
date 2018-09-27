@@ -99,15 +99,18 @@ def call(Map pipelineParams)
         // Build a list of Assignments based on a Set
         // Use httpRequest to get all Tasks for the Set
 
-        def ResponseContentSupplier response1
-        def ResponseContentSupplier response2
+        //def ResponseContentSupplier response1
+        //def ResponseContentSupplier response2
         def ResponseContentSupplier response3
+
+        def ResponseContentSupplier response
 
         withCredentials(
             [string(credentialsId: "${CES_Token}", variable: 'cesToken')]
         ) 
         {
-            response1 = steps.httpRequest(
+            //response1 = steps.httpRequest(
+            response = steps.httpRequest(
                 url:                        "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
                 httpMode:                   'GET',
                 consoleLogResponseBody:     false,
@@ -120,7 +123,14 @@ def call(Map pipelineParams)
         }
 
         // Use method getSetTaskIdList to extract the list of Task IDs from the response of the httpRequest
-        def setTaskIdList          = ispwHelper.getSetTaskIdList(response1, ISPW_Target_Level)
+        //def setTaskIdList          = ispwHelper.getSetTaskIdList(response1, ISPW_Target_Level)
+        def setTaskIdList          = ispwHelper.getSetTaskIdList(response, ISPW_Target_Level)
+
+        /**/
+        response = null
+
+        def ResponseContentSupplier response
+        /**/
 
         // Use httpRequest to get all Assignments for the Release
         // Need to use two separate objects to store the responses for the httpRequests, 
@@ -129,7 +139,8 @@ def call(Map pipelineParams)
             [string(credentialsId: "${CES_Token}", variable: 'cesToken')]
         ) 
         {
-            response2 = steps.httpRequest(
+            //response2 = steps.httpRequest(
+            response = steps.httpRequest(
                 url:                        "${ISPW_URL}/ispw/${ISPW_Runtime}/releases/${ISPW_Release}/tasks",
                 consoleLogResponseBody:     false, 
                 customHeaders:              [[
@@ -143,7 +154,13 @@ def call(Map pipelineParams)
         // Use method getAssigmentList to get all Assignments from the Release,
         // that belong to Tasks in the Set
         // If the Sonar Quality Gate fails, these Assignments will be regressed
-        def assignmentList  = ispwHelper.getAssigmentList(setTaskIdList, response2)
+        //def assignmentList  = ispwHelper.getAssigmentList(setTaskIdList, response2)
+        def assignmentList  = ispwHelper.getAssigmentList(setTaskIdList, response)
+
+        /**/
+        response = null
+        /**/
+        
         /*************************************************************************************************************/
 
         stage("Retrieve Code From ISPW")
