@@ -40,7 +40,7 @@ class IspwHelper implements Serializable
         def jsonSlurper = new JsonSlurper()
         def returnList  = []
 
-        def taskIds = getSetTaskIdList(cesToken)
+        def taskIds = getSetTaskIdList(cesTokenVar)
 
         response = steps.httpRequest(
             url:                        "${ispwUrl}/ispw/${ispwRuntime}/releases/${ispwRelease}/tasks",
