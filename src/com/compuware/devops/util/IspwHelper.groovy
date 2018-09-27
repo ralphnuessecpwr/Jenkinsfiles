@@ -42,7 +42,7 @@ class IspwHelper implements Serializable
 
         def taskIds = getSetTaskIdList(cesToken)
 
-        withCredentials(
+        steps.withCredentials(
             [string(credentialsId: "${cesToken}", variable: 'cesTokenVar')]
         ) 
         {
@@ -96,7 +96,7 @@ class IspwHelper implements Serializable
 
         def returnList  = []
 
-        withCredentials(
+        steps.withCredentials(
             [string(credentialsId: "${cesToken}", variable: 'cesTokenVar')]
         ) 
         {
