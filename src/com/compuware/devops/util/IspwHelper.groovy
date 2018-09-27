@@ -35,27 +35,22 @@ class IspwHelper implements Serializable
     that are contained in both the Task Id List and the List of Tasks in the Release 
 */
 //@NonCPS
-    def ArrayList getAssigmentList(String cesToken)
+    def ArrayList getAssigmentList(String cesTokenVar)
     {
         def jsonSlurper = new JsonSlurper()
         def returnList  = []
 
         def taskIds = getSetTaskIdList(cesToken)
 
-        steps.withCredentials(
-            [string(credentialsId: "${cesToken}", variable: 'cesTokenVar')]
-        ) 
-        {
-            response = steps.httpRequest(
-                url:                        "${ispwUrl}/ispw/${ispwRuntime}/releases/${ispwRelease}/tasks",
-                consoleLogResponseBody:     false, 
-                customHeaders:              [[
-                                            maskValue:  true, 
-                                            name:       'authorization', 
-                                            value:      "${cesTokenVar}"
-                                            ]]
-                )
-        }
+        response = steps.httpRequest(
+            url:                        "${ispwUrl}/ispw/${ispwRuntime}/releases/${ispwRelease}/tasks",
+            consoleLogResponseBody:     false, 
+            customHeaders:              [[
+                                        maskValue:  true, 
+                                        name:       'authorization', 
+                                        value:      "${cesTokenVar}"
+                                        ]]
+            )
 
         resp     = jsonSlurper.parseText(response.getContent())
         response = null
@@ -90,7 +85,7 @@ class IspwHelper implements Serializable
     Receive a response from an "Get Tasks in Set"-httpRequest and build and return a list of task IDs that belong to the desired level
 */
 //@NonCPS
-    def ArrayList getSetTaskIdList(String cesToken)
+    def ArrayList getSetTaskIdList(String cesTokenVar)
     {
         def jsonSlurper         = new JsonSlurper()
 
@@ -98,21 +93,16 @@ class IspwHelper implements Serializable
 
         steps.echo "withCredentials"
 
-        steps.withCredentials(
-            [string(credentialsId: "${cesToken}", variable: 'cesTokenVar')]
-        ) 
-        {
-            response = steps.httpRequest(
-                url:                        "${ispwUrl}/ispw/${ispwRuntime}/sets/${ispwContainer}/tasks",
-                httpMode:                   'GET',
-                consoleLogResponseBody:     false,
-                customHeaders:              [[
-                                            maskValue:  true, 
-                                            name:       'authorization', 
-                                            value:      "${cesTokenVar}"
-                                            ]]
+        response = steps.httpRequest(
+            url:                        "${ispwUrl}/ispw/${ispwRuntime}/sets/${ispwContainer}/tasks",
+            httpMode:                   'GET',
+            consoleLogResponseBody:     false,
+            customHeaders:              [[
+                                        maskValue:  true, 
+                                        name:       'authorization', 
+                                        value:      "${cesTokenVar}"
+                                        ]]
             )
-        }
 
         def resp = jsonSlurper.parseText(response.getContent())
         response = null
