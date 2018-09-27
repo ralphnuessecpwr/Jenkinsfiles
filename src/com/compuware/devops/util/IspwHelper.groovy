@@ -37,10 +37,8 @@ class IspwHelper implements Serializable
 //@NonCPS
     def ArrayList getAssigmentList(String cesTokenVar)
     {
-        def jsonSlurper = new JsonSlurper()
         def returnList  = []
-
-        def taskIds = getSetTaskIdList(cesTokenVar)
+        def taskIds     = getSetTaskIdList(cesTokenVar)
 
         response = steps.httpRequest(
             url:                        "${ispwUrl}/ispw/${ispwRuntime}/releases/${ispwRelease}/tasks",
@@ -52,8 +50,10 @@ class IspwHelper implements Serializable
                                         ]]
             )
 
-        resp     = jsonSlurper.parseText(response.getContent())
-        response = null
+        def jsonSlurper = new JsonSlurper()
+        resp            = jsonSlurper.parseText(response.getContent())
+        response        = null
+        jsonSlurper     = null
 
         if(resp.message != null)
         {
@@ -87,8 +87,6 @@ class IspwHelper implements Serializable
 //@NonCPS
     def ArrayList getSetTaskIdList(String cesTokenVar)
     {
-        def jsonSlurper         = new JsonSlurper()
-
         def returnList  = []
 
         steps.echo "withCredentials"
@@ -104,8 +102,10 @@ class IspwHelper implements Serializable
                                         ]]
             )
 
-        def resp = jsonSlurper.parseText(response.getContent())
-        response = null
+        def jsonSlurper = new JsonSlurper()
+        def resp        = jsonSlurper.parseText(response.getContent())
+        response        = null
+        jsonSlurper     = null
 
         if(resp.message != null)
         {
