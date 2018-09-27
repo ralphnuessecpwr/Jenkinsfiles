@@ -159,7 +159,6 @@ def call(Map pipelineParams)
         //def assignmentList  = ispwHelper.getAssigmentList(setTaskIdList, response)
 
         def assignmentList = ispwHelper.getAssigmentList(CES_Token, ISPW_Target_Level)
-        }
 
         echo "Liste: " + assignmentList.toString()
 
