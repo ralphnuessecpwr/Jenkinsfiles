@@ -103,8 +103,8 @@ def call(Map pipelineParams)
         //def ResponseContentSupplier response2
         def ResponseContentSupplier response3
 
-        def ResponseContentSupplier response
-
+        //def ResponseContentSupplier response
+        /*
         withCredentials(
             [string(credentialsId: "${CES_Token}", variable: 'cesToken')]
         ) 
@@ -121,18 +121,20 @@ def call(Map pipelineParams)
                                             ]]
             )
         }
-
+        */
         // Use method getSetTaskIdList to extract the list of Task IDs from the response of the httpRequest
         //def setTaskIdList          = ispwHelper.getSetTaskIdList(response1, ISPW_Target_Level)
-        def setTaskIdList          = ispwHelper.getSetTaskIdList(response, ISPW_Target_Level)
+        //def setTaskIdList          = ispwHelper.getSetTaskIdList(response, ISPW_Target_Level)
+        //def setTaskIdList          = ispwHelper.getSetTaskIdList(CES_Token, ISPW_URL, ISPW_Runtime, ISPW_Container)
 
         /**/
-        response = null
+        //response = null
         /**/
 
         // Use httpRequest to get all Assignments for the Release
         // Need to use two separate objects to store the responses for the httpRequests, 
         // otherwise the script will fail with a NotSerializable Exception
+        /*
         withCredentials(
             [string(credentialsId: "${CES_Token}", variable: 'cesToken')]
         ) 
@@ -148,15 +150,19 @@ def call(Map pipelineParams)
                                             ]]
                 )
         }
+        */
 
         // Use method getAssigmentList to get all Assignments from the Release,
         // that belong to Tasks in the Set
         // If the Sonar Quality Gate fails, these Assignments will be regressed
         //def assignmentList  = ispwHelper.getAssigmentList(setTaskIdList, response2)
-        def assignmentList  = ispwHelper.getAssigmentList(setTaskIdList, response)
+        //def assignmentList  = ispwHelper.getAssigmentList(setTaskIdList, response)
+        def assignmentList  = ispwHelper.getAssigmentList(CES_Token, ISPW_URL, ISPW_Runtime, ISPW_Release, ISPW_Container)
+
+        echo "Liste: " + assignmentList.toString()
 
         /**/
-        response = null
+        //response = null
         /**/
 
         /*************************************************************************************************************/

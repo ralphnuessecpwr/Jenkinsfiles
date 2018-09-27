@@ -11,14 +11,16 @@ class IspwHelper implements Serializable
     def String ispwUrl
     def String ispwRuntime
     def String ispwContainer
+    def String ispwRelease
     
-    IspwHelper(steps, String ispwUrl, String ispwRuntime, String ispwContainer)
+    IspwHelper(steps, String ispwUrl, String ispwRuntime, String ispwRelease, String ispwContainer)
     {
 
         this.steps          = steps
         this.ispwUrl        = ispwUrl
         this.ispwRuntime    = ispwRuntime
         this.ispwContainer  = ispwContainer
+        this.ispwRelease    = ispwRelease
 
     }
 
@@ -29,16 +31,89 @@ class IspwHelper implements Serializable
 */
 
 /* 
+    Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build and return a list of Assignments
+    that are contained in both the Task Id List and the List of Tasks in the Release 
+*/
+//@NonCPS
+    def ArrayList getAssigmentList(String cesToken)
+    {
+        def jsonSlurper = new JsonSlurper()
+        def returnList  = []
+
+        def taskIds = ispwHelper.getSetTaskIdList(cesToken, ispwUrl, ispwRuntime, ispwContainer)
+
+        withCredentials(
+            [string(credentialsId: "${cesToken}", variable: 'cesTokenVar')]
+        ) 
+        {
+            response = steps.httpRequest(
+                url:                        "${ispwUrl}/ispw/${ispwRuntime}/releases/${ispwRelease}/tasks",
+                consoleLogResponseBody:     false, 
+                customHeaders:              [[
+                                            maskValue:  true, 
+                                            name:       'authorization', 
+                                            value:      "${cesTokenVar}"
+                                            ]]
+                )
+        }
+
+        resp     = jsonSlurper.parseText(response.getContent())
+        response = null
+
+        if(resp.message != null)
+        {
+            steps.echo "Resp: " + resp.message
+            error
+        }
+        else
+        {
+            def taskList = resp.tasks
+
+            taskList.each
+            {
+                if(taskIds.contains(it.taskId))
+                {
+                    if(!(returnList.contains(it.container)))
+                    {
+                        returnList.add(it.container)        
+                    }
+                }
+            }
+        }
+
+        return returnList    
+
+    }
+
+
+/* 
     Receive a response from an "Get Tasks in Set"-httpRequest and build and return a list of task IDs that belong to the desired level
 */
 //@NonCPS
-    def ArrayList getSetTaskIdList(ResponseContentSupplier response, String level)
+    def ArrayList getSetTaskIdList(String cesToken)
     {
         def jsonSlurper         = new JsonSlurper()
 
         def returnList  = []
 
+        withCredentials(
+            [string(credentialsId: "${cesToken}", variable: 'cesTokenVar')]
+        ) 
+        {
+            response = steps.httpRequest(
+                url:                        "${ispwUrl}/ispw/${ispwRuntime}/sets/${ispwContainer}/tasks",
+                httpMode:                   'GET',
+                consoleLogResponseBody:     false,
+                customHeaders:              [[
+                                            maskValue:  true, 
+                                            name:       'authorization', 
+                                            value:      "${cesTokenVar}"
+                                            ]]
+            )
+        }
+
         def resp = jsonSlurper.parseText(response.getContent())
+        response = null
 
         if(resp.message != null)
         {
@@ -101,44 +176,6 @@ class IspwHelper implements Serializable
 
         return returnList
     
-    }
-
-
-/* 
-    Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build and return a list of Assignments
-    that are contained in both the Task Id List and the List of Tasks in the Release 
-*/
-//@NonCPS
-    def ArrayList getAssigmentList(ArrayList taskIds, ResponseContentSupplier response)
-    {
-        def jsonSlurper = new JsonSlurper()
-        def returnList  = []
-
-        def resp        = jsonSlurper.parseText(response.getContent())
-
-        if(resp.message != null)
-        {
-            steps.echo "Resp: " + resp.message
-            error
-        }
-        else
-        {
-            def taskList = resp.tasks
-
-            taskList.each
-            {
-                if(taskIds.contains(it.taskId))
-                {
-                    if(!(returnList.contains(it.container)))
-                    {
-                        returnList.add(it.container)        
-                    }
-                }
-            }
-        }
-
-        return returnList    
-
     }
 
 /* 
