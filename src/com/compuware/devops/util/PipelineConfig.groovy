@@ -7,7 +7,7 @@ class PipelineConfig implements Serializable
 {
     def steps
 
-    def mailListMap
+    def mailListMap = [:]
 
 /* Environment specific settings, which differ between Jenkins servers and applications, but not between runs */
     public String gitTargetBranch
@@ -216,7 +216,7 @@ class PipelineConfig implements Serializable
 
             steps.echo "Add TSO " + tsoUser + " email " + emailAddress
 
-            mailListMap."${tsoUser}" = "${emailAddress}"
+            this.mailListMap."${tsoUser}" = "${emailAddress}"
 
             steps.echo mailListMap.toString()
         }
