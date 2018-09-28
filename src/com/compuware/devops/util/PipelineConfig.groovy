@@ -46,6 +46,15 @@ class PipelineConfig implements Serializable
       
     public String mailRecipient 
 
+    /**
+    Determine the ISPW Path Number for use in Total Test
+    @param Level - Level Parameter is the Level returned in the ISPW Webhook
+    */
+    def String getPathNum(String level)
+    {
+        return level.charAt(level.length() - 1)
+    }
+
     def PipelineConfig(steps, params)
     {
         this.steps              = steps
@@ -60,9 +69,9 @@ class PipelineConfig implements Serializable
         this.ispwOwner          = params.ISPW_Owner        
         this.ispwSrcLevel       = params.ISPW_Src_Level
 
-        steps.echo "After ISPW"
+        steps.echo "After ISPW " + ispwStream
 
-        this.applicationPathNum = getPathNum(ispwSrcLevel)
+        this.applicationPathNum = ispwSrcLevel.charAt(ispwSrcLevel.length() - 1)
         this.ispwTargetLevel    = "QA" + applicationPathNum
         this.tttJcl             = "Runner_PATH" + PathNum + ".jcl"
 
@@ -86,15 +95,6 @@ class PipelineConfig implements Serializable
         MailList mailList       = new MailList()
         this.mailRecipient      = mailList.getEmail(ispwOwner)
 
-    }
-
-    /**
-    Determine the ISPW Path Number for use in Total Test
-    @param Level - Level Parameter is the Level returned in the ISPW Webhook
-    */
-    def String getPathNum(String level)
-    {
-        return level.charAt(level.length() - 1)
     }
 
 }
