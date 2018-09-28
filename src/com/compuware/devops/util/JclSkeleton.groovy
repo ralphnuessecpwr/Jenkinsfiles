@@ -13,18 +13,24 @@ class JclSkeleton implements Serializable {
     String ispwApplication
     String ispwPathNum
 
-    JclSkeleton(steps, String ispwApplication, String ispwPathNum, String workspace) 
+    JclSkeleton(steps, String ispwApplication, String ispwPathNum) 
     {
         this.steps              = steps
         this.ispwApplication    = ispwApplication
         this.ispwPathNum        = ispwPathNum
+    }
 
-        def lineToken
-        def parmName
-        def parmValue
+    def initialize(String workspace)
+    {
+        this.jobCardJcl                 = buildJobCard      (workspace)
+        this.iebcopyCopyBooksJclSkel    = buildIebcopySkel  (workspace)
+        this.cleanUpDatasetJclSkel      = buildDeleteSkel   (workspace)
+    }
 
-
-        def skelFilePath        = "${workspace}\\config\\JobCard.jcl"
+    def String buildJobCard(String workspace)
+    {
+        def skelFilePath    = "${workspace}\\config\\JobCard.jcl"
+        def jclStatements   = []
 
         File skelFile = new File(skelFilePath)
 
@@ -34,27 +40,31 @@ class JclSkeleton implements Serializable {
         }
 
         def lines           = skelFile.readLines()
-        def jclStatements   = []
 
         lines.each
         {
             jclStatements.add(it.toString())
         }
 
-        this.jobCardJcl     = jclStatements.join("\n")
+        return jclStatements.join("\n")
+    }
 
+    def String buildIebcopySkel(String workspace)
+    {
 
-        skelFilePath        = "${workspace}\\config\\iebcopy.skel"
+        def skelFilePath        = "${workspace}\\config\\iebcopy.skel"
+        def jclStatements       = []        
+        def inputDdStatements   = []        
+        def copyDdStatements    = []
 
-        File skelFile = new File(skelFilePath)
+        File skelFile1 = new File(skelFilePath)
 
-        if(!skelFile.exists())
+        if(!skelFile1.exists())
         {
             error "Skeleton not found for IEBCOPY Skeleton! \n Will abort Pipeline."
         }
 
-        lines                   = skelFile.readLines()
-        jclStatements           = []
+        def lines                   = skelFile1.readLines()
 
         lines.each
         {
@@ -63,38 +73,40 @@ class JclSkeleton implements Serializable {
 
         skelFilePath        = "${workspace}\\config\\iebcopyInDd.skel"
 
-        File skelFile = new File(skelFilePath)
+        File skelFile2 = new File(skelFilePath)
 
-        if(!skelFile.exists())
+        if(!skelFile2.exists())
         {
             error "Skeleton not found for IEBCOPY Input DD Skeleton! \n Will abort Pipeline."
         }
 
-        lines                   = skelFile.readLines()
-        def inputDdStatements   = []        
+        lines                   = skelFile2.readLines()
 
         lines.each
         {
             inputDdStatements.add(it.toString())
-        }
-
-        def copyDdStatements    = []
+        }        
 
         for(int i=0; i <= inputDdStatements.size(); i++)
         {                        
             copyDdStatements.add ("       INDD=IN${i+1}")
         }
 
-        this.iebcopyCopyBooksJclSkel    = jclStatements.join("\n")
+        def jclSkel         = jclStatements.join("\n")
+        def inputDdJcl      = inputDdStatements.join("\n")
+        def inputCopyJcl    = copyDdStatements.join("\n")
 
-        def inputDdJcl                  = inputDdStatements.join("\n")
-        def inputCopyJcl                = copyDdStatements.join("\n")
+        jclSkel             = jclSkel.replace("<source_copy_pds_list>", inputDdJcl)
+        jclSkel             = jclSkel.replace("<source_input_dd_list>", inputCopyJcl)
+        jclSkel             = jclSkel.replace("<ispw_application>", ispwApplication)
+        jclSkel             = jclSkel.replace("<ispw_path>", ispwPathNum)
 
-        iebcopyCopyBooksJclSkel         = iebcopyCopyBooksJclSkel.replace("<source_copy_pds_list>", inputDdJcl)
-        iebcopyCopyBooksJclSkel         = iebcopyCopyBooksJclSkel.replace("<source_input_dd_list>", inputCopyJcl)
-        iebcopyCopyBooksJclSkel         = iebcopyCopyBooksJclSkel.replace("<ispw_application>", ispwApplication)
-        iebcopyCopyBooksJclSkel         = iebcopyCopyBooksJclSkel.replace("<ispw_path>", ispwPathNum)
+        return jclSkel
 
+    }
+
+    def String buildDeleteSkel(workspace)
+    {
 
         skelFilePath        = "${workspace}\\config\\deleteDs.skel"
 
@@ -113,8 +125,8 @@ class JclSkeleton implements Serializable {
         {
             jclStatements.add(it)
         }
-
-        this.cleanUpDatasetJclSkel = jclStatements.join("\n")
+        
+        return jclStatements.join("\n")
 
     }
 
