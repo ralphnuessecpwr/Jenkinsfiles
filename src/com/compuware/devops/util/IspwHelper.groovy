@@ -45,7 +45,7 @@ class IspwHelper implements Serializable
         this.hciConnId          = config.hciConnId
         this.hciTokenId         = config.hciTokenId
 
-        this.jclSkeleton        = new JclSkeleton(steps, ispwApplication, ispwPathNum)
+        this.jclSkeleton        = new JclSkeleton(steps, ispwApplication, applicationPathNum)
     }
 
     def downloadSources()
