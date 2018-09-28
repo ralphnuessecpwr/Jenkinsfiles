@@ -63,7 +63,7 @@ class JclSkeleton implements Serializable {
         inputDdStatements.add("//IN2      DD DISP=SHR,DSN=SALESSUP.${ispwApplication}.STG.CPY")
         inputDdStatements.add("//IN3      DD DISP=SHR,DSN=SALESSUP.${ispwApplication}.PRD.CPY")
 
-        for(int i=0; i < 2; i++)
+        for(int i=0; i <= 2; i++)
         {                        
             copyDdStatements.add ("       INDD=IN${i+1}")
         }
