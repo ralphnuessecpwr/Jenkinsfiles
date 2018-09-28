@@ -5,7 +5,7 @@ package com.compuware.devops.util
 */
 class JclSkeleton implements Serializable {
 
-    steps
+    def steps
 
     String jobCardJcl
     String iebcopyCopyBooksJclSkel
