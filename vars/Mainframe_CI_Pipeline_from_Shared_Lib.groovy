@@ -40,10 +40,10 @@ def call(Map pipelineParams)
 
         //def assignmentList = []
 
-//        withCredentials([string(credentialsId: cesTokenId, variable: 'cesTokenVar')]) 
-//        {
-            def assignmentList = ispwHelper.getAssigmentList(pConfig.cesTokenClear, pConfig.ispwTargetLevel)
-//        }
+        withCredentials([string(credentialsId: cesTokenId, variable: 'cesTokenClear')]) 
+        {
+            def assignmentList = ispwHelper.getAssigmentList(cesTokenClear, pConfig.ispwTargetLevel)
+        }
 
         echo "Assignments " + assignmentList.toString()
 
