@@ -93,7 +93,7 @@ class PipelineConfigNew implements Serializable
                     doGenerateSubmoduleConfigurations: false, 
                     extensions: [[
                         $class: 'SparseCheckoutPaths', 
-                        sparseCheckoutPaths: [[path: './config']]
+                        sparseCheckoutPaths: [[path: 'config/*']]
                     ]], 
                     submoduleCfg: [], 
                     userRemoteConfigs: [[
