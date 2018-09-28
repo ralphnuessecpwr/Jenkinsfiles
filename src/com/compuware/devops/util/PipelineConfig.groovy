@@ -69,13 +69,7 @@ class PipelineConfig implements Serializable
         this.gitURL             = "https://github.com/${gitProject}"
         this.gitTttRepo         = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
 
-        this.cesTokenId         = params.CES_Token
-
-        withCredentials([string(credentialsId: cesTokenId, variable: 'credentialsVar')]) 
-        {
-            this.cesTokenClear  = credentialsVar
-        }
-       
+        this.cesTokenId         = params.CES_Token       
         this.hciConnId          = params.HCI_Conn_ID
         this.hciTokenId         = params.HCI_Token
         this.ccRepository       = params.CC_repository
