@@ -15,11 +15,15 @@ class JclSkeleton implements Serializable {
 
     JclSkeleton(steps, String ispwApplication, String ispwPathNum) 
     {
-        
+
         this.steps = steps
+
+        steps.echo "Inside Init"
 
         this.ispwApplication    = ispwApplication
         this.ispwPathNum        = ispwPathNum
+
+        steps.echo "Pre call"
 
         this.jobCardJcl                 = initJobCardJcl()
         this.iebcopyCopyBooksJclSkel    = initIebcopyJclSkel(ispwApplication, ispwPathNum)
