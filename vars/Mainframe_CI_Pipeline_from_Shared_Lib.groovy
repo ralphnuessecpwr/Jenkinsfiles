@@ -16,10 +16,12 @@ import com.compuware.devops.util.*
  Determine the ISPW Path Number for use in Total Test
  @param Level - Level Parameter is the Level returned in the ISPW Webhook
 */
+/*
 def String getPathNum(String level)
 {
     return level.charAt(level.length() - 1)
 }
+*/
 
 /**
 Call method to execute the pipeline from a shared library
@@ -30,147 +32,46 @@ def call(Map pipelineParams)
     node
     {
 
-        // Store parameter values in variables (easier to retrieve during code)
-        def ISPW_Stream         = pipelineParams.ISPW_Stream
-        def ISPW_Application    = pipelineParams.ISPW_Application
-        def ISPW_Release        = pipelineParams.ISPW_Release
-        def ISPW_Container      = pipelineParams.ISPW_Container
-        def ISPW_Container_Type = pipelineParams.ISPW_Container_Type
-        def ISPW_Src_Level      = pipelineParams.ISPW_Src_Level
-        def ISPW_Owner          = pipelineParams.ISPW_Owner
-
-        def Git_Project         = pipelineParams.Git_Project
-        def Git_Credentials     = pipelineParams.Git_Credentials
-
-        def CES_Token           = pipelineParams.CES_Token
-        def HCI_Conn_ID         = pipelineParams.HCI_Conn_ID
-        def HCI_Token           = pipelineParams.HCI_Token
-        def CC_repository       = pipelineParams.CC_repository
-
-        def Git_URL             = "https://github.com/${Git_Project}"
-        def Git_TTT_Repo        = "${ISPW_Stream}_${ISPW_Application}_Unit_Tests.git"
-
-        /*
-        echo "Parameters passed:"
-
-        echo "ISPW_Stream:          " + pipelineParams.ISPW_Stream
-        echo "ISPW_Application:     " + pipelineParams.ISPW_Application
-        echo "ISPW_Release:         " + pipelineParams.ISPW_Release
-        echo "ISPW_Container:       " + pipelineParams.ISPW_Container
-        echo "ISPW_Container_Type:  " + pipelineParams.ISPW_Container_Type
-        echo "ISPW_Src_Level:       " + pipelineParams.ISPW_Src_Level
-        echo "ISPW_Owner:           " + pipelineParams.ISPW_Owner
-        echo "Git_Project:          " + pipelineParams.Git_Project
-        echo "CES_Token:            " + pipelineParams.CES_Token
-        echo "HCI_Conn_ID:          " + pipelineParams.HCI_Conn_ID
-        echo "HCI_Token:            " + pipelineParams.HCI_Token
-        echo "CC_repository:        " + pipelineParams.CC_repository
-        */
-
         // PipelineConfig is a class storing constants independant from user used throuout the pipeline
-        PipelineConfig  pConfig     = new PipelineConfig()
+        PipelineConfig  pConfig     = new PipelineConfig(pipelineParams)
 
         // Store properties values in variables (easier to retrieve during code)
-        def Git_Branch           = pConfig.Git_Branch
-        def SQ_Scanner_Name      = pConfig.SQ_Scanner_Name
-        def SQ_Server_Name       = pConfig.SQ_Server_Name
-        def MF_Source            = pConfig.MF_Source
-        def XLR_Template         = pConfig.XLR_Template
-        def XLR_User             = pConfig.XLR_User
-        def TTT_Folder           = pConfig.TTT_Folder
-        def ISPW_URL             = pConfig.ISPW_URL
-        def ISPW_Runtime         = pConfig.ISPW_Runtime
-
+        /*
+        def gitBranch           = pConfig.gitBranch
+        def sqScannerName      = pConfig.sqScannerName
+        def sqServerName       = pConfig.sqServerName
+        def mfSourceFolder            = pConfig.mfSourceFolder
+        def xlrTemplate         = pConfig.xlrTemplate
+        def xlrUser             = pConfig.xlrUser
+        def tttFolder           = pConfig.tttFolder
+        def ispwUrl             = pConfig.ispwUrl
+        def ispwRuntime         = pConfig.ispwRuntime
+        */
         GitHelper       gitHelper   = new GitHelper(steps)
-        MailList        mailList    = new MailList()
-        IspwHelper      ispwHelper  = new IspwHelper(steps, ISPW_URL, ISPW_Runtime, ISPW_Release, ISPW_Container)
+        //MailList        mailList    = new MailList()
+        IspwHelper      ispwHelper  = new IspwHelper(steps, ispwUrl, ispwRuntime, ispwRelease, ispwContainer)
 
+        /*
         def mailRecipient = mailList.getEmail(ISPW_Owner)
 
         // Determine the current ISPW Path and Level that the code Promotion is from
         def PathNum = getPathNum(ISPW_Src_Level)
 
         // Use the Path Number to determine the right Runner JCL to use (different STEPLIB concatenations)
-        def TTT_Jcl = "Runner_PATH" + PathNum + ".jcl"
+        def tttJcl = "Runner_PATH" + PathNum + ".jcl"
         // Also set the Level that the code currently resides in
-        def ISPW_Target_Level = "QA" + PathNum
+        def ispwTargetLevel = "QA" + PathNum
+        */
 
-        /*************************************************************************************************************/
-        // Build a list of Assignments based on a Set
-        // Use httpRequest to get all Tasks for the Set
-
-        //def ResponseContentSupplier response1
-        //def ResponseContentSupplier response2
         def ResponseContentSupplier response3
 
-        //def ResponseContentSupplier response
-        /*
-        withCredentials(
-            [string(credentialsId: "${CES_Token}", variable: 'cesToken')]
-        ) 
-        {
-            //response1 = steps.httpRequest(
-            response = steps.httpRequest(
-                url:                        "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
-                httpMode:                   'GET',
-                consoleLogResponseBody:     false,
-                customHeaders:              [[
-                                            maskValue:  true, 
-                                            name:       'authorization', 
-                                            value:      "${cesToken}"
-                                            ]]
-            )
-        }
-        */
-        // Use method getSetTaskIdList to extract the list of Task IDs from the response of the httpRequest
-        //def setTaskIdList          = ispwHelper.getSetTaskIdList(response1, ISPW_Target_Level)
-        //def setTaskIdList          = ispwHelper.getSetTaskIdList(response, ISPW_Target_Level)
-        //def setTaskIdList          = ispwHelper.getSetTaskIdList(CES_Token, ISPW_URL, ISPW_Runtime, ISPW_Container)
-
-        /**/
-        //response = null
-        /**/
-
-        // Use httpRequest to get all Assignments for the Release
-        // Need to use two separate objects to store the responses for the httpRequests, 
-        // otherwise the script will fail with a NotSerializable Exception
-        /*
-        withCredentials(
-            [string(credentialsId: "${CES_Token}", variable: 'cesToken')]
-        ) 
-        {
-            //response2 = steps.httpRequest(
-            response = steps.httpRequest(
-                url:                        "${ISPW_URL}/ispw/${ISPW_Runtime}/releases/${ISPW_Release}/tasks",
-                consoleLogResponseBody:     false, 
-                customHeaders:              [[
-                                            maskValue:  true, 
-                                            name:       'authorization', 
-                                            value:      "${cesToken}"
-                                            ]]
-                )
-        }
-        */
-
-        // Use method getAssigmentList to get all Assignments from the Release,
-        // that belong to Tasks in the Set
-        // If the Sonar Quality Gate fails, these Assignments will be regressed
-        //def assignmentList  = ispwHelper.getAssigmentList(setTaskIdList, response2)
-        //def assignmentList  = ispwHelper.getAssigmentList(setTaskIdList, response)
 
         def assignmentList = []
 
-        withCredentials([string(credentialsId: CES_Token, variable: 'cesTokenVar')]) 
+        withCredentials([string(credentialsId: cesTokenId, variable: 'cesTokenVar')]) 
         {
-            assignmentList = ispwHelper.getAssigmentList(cesTokenVar, ISPW_Target_Level)
-            echo "Liste inside " + assignmentList.toString()
+            assignmentList = ispwHelper.getAssigmentList(cesTokenVar, ispwTargetLevel)
         }
-
-        echo "Liste outside " + assignmentList.toString()
-
-        /**/
-        //response = null
-        /**/
 
         /*************************************************************************************************************/
 
@@ -180,10 +81,10 @@ def call(Map pipelineParams)
             checkout([
                 $class:       'IspwContainerConfiguration', 
                     componentType:      '',                          // optional filter for component types in ISPW
-                    connectionId:       "${HCI_Conn_ID}",     
-                    credentialsId:      "${HCI_Token}",      
-                    containerName:      "${ISPW_Container}",   
-                    containerType:      "${ISPW_Container_Type}",    // 0-Assignment 1-Release 2-Set
+                    connectionId:       "${hciConnId}",     
+                    credentialsId:      "${hciTokenId}",      
+                    containerName:      "${ispwContainer}",   
+                    containerType:      "${ispwContainerType}",    // 0-Assignment 1-Release 2-Set
                     ispwDownloadAll:    false,                     // false will not download files that exist in the workspace and haven't previous changed
                     serverConfig:       '',                           // ISPW runtime config.  if blank ISPW will use the default runtime config
                     serverLevel:        ''
@@ -193,10 +94,10 @@ def call(Map pipelineParams)
         stage("Retrieve Tests")
         {
             //Retrieve the Tests from Github that match that ISPWW Stream and Application
-            Git_URL = "${Git_URL}/${Git_TTT_Repo}"
+            gitUrl = "${gitUrl}/${gitTttRepo}"
 
             //call gitcheckout wrapper function
-            gitHelper.gitcheckout(Git_URL, Git_Branch, Git_Credentials, TTT_Folder)
+            gitHelper.gitcheckout(gitUrl, gitBranch, gitCredentials, tttFolder)
         }
 
         // findFiles method requires the "Pipeline Utilities Plugin"
@@ -204,7 +105,7 @@ def call(Map pipelineParams)
         def TTTListOfScenarios  = findFiles(glob: '**/*.testscenario')
 
         // Get all Cobol Sources in the MF_Source folder into an array 
-        def ListOfSources       = findFiles(glob: "**/${ISPW_Application}/${MF_Source}/*.cbl")
+        def ListOfSources       = findFiles(glob: "**/${ispwApplication}/${mfSourceFolder}/*.cbl")
 
         // Define a empty array for the list of programs
         def ListOfPrograms      = []
@@ -249,14 +150,14 @@ def call(Map pipelineParams)
                     step([
                         $class:       'TotalTestBuilder', 
                             ccClearStats:   false,                // Clear out any existing Code Coverage stats for the given ccSystem and ccTestId
-                            ccRepo:         "${CC_repository}",
-                            ccSystem:       "${ISPW_Application}", 
+                            ccRepo:         "${ccRepository}",
+                            ccSystem:       "${ispwApplication}", 
                             ccTestId:       "${BUILD_NUMBER}",        // Jenkins environment variable, resolves to build number, i.e. #177 
-                            credentialsId:  "${HCI_Token}", 
+                            credentialsId:  "${hciTokenId}", 
                             deleteTemp:     true,                   // (true|false) Automatically delete any temp files created during the execution
                             hlq:            '',                            // Optional - high level qualifier used when allocation datasets
-                            connectionId:   "${HCI_Conn_ID}",    
-                            jcl:            "${TTT_Jcl}",                  // Name of the JCL file in the Total Test Project to execute
+                            connectionId:   "${hciConnId}",    
+                            jcl:            "${tttJcl}",                  // Name of the JCL file in the Total Test Project to execute
                             projectFolder:  "${TTTProjectName}", // Name of the Folder in the file system that contains the Total Test Project.  
                             testSuite:      "${TTTScenarioFullName}",// Name of the Total Test Scenario to execute
                             useStubs:       true
@@ -277,17 +178,17 @@ def call(Map pipelineParams)
         {
             // Code Coverage needs to match the code coverage metrics back to the source code in order for them to be loaded in SonarQube
             // The source variable is the location of the source that was downloaded from ISPW
-            def String sources="${ISPW_Application}\\${MF_Source}"
+            def String sources="${ispwApplication}\\${mfSourceFolder}"
 
             // The Code Coverage Plugin passes it's primary configuration in the string or a file
-            def ccproperties = 'cc.sources=' + sources + '\rcc.repos=' + CC_repository + '\rcc.system=' + ISPW_Application  + '\rcc.test=' + BUILD_NUMBER
+            def ccproperties = 'cc.sources=' + sources + '\rcc.repos=' + ccRepository + '\rcc.system=' + ispwApplication  + '\rcc.test=' + BUILD_NUMBER
 
             step([
                 $class:                   'CodeCoverageBuilder',
                     analysisProperties:         ccproperties,       // Pass in the analysisProperties as a string
                     analysisPropertiesPath:     '',             // Pass in the analysisProperties as a file.  Not used in this example
-                    connectionId:               "${HCI_Conn_ID}", 
-                    credentialsId:              "${HCI_Token}"
+                    connectionId:               "${hciConnId}", 
+                    credentialsId:              "${hciTokenId}"
             ])
         }
 
@@ -299,9 +200,9 @@ def call(Map pipelineParams)
         {
             // Requires SonarQube Scanner 2.8+
             // Retrieve the location of the SonarQube Scanner.  
-            def scannerHome = tool "${SQ_Scanner_Name}";
+            def scannerHome = tool "${sqScannerName}";
 
-            withSonarQubeEnv("${SQ_Server_Name}")       // 'localhost' is the name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section
+            withSonarQubeEnv("${sqServerName}")       // 'localhost' is the name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section
             {
                 // Finds all of the Total Test results files that will be submitted to SonarQube
                 def TTTListOfResults    = findFiles(glob: 'TTTSonar/*.xml')   // Total Test SonarQube result files are stored in TTTSonar directory
@@ -324,9 +225,9 @@ def call(Map pipelineParams)
                 // SonarQube project to load results into
                 SQ_Scanner_Properties       = SQ_Scanner_Properties + " -Dsonar.projectKey=${JOB_NAME} -Dsonar.projectName=${JOB_NAME} -Dsonar.projectVersion=1.0"
                 // Location of the Cobol Source Code to scan
-                SQ_Scanner_Properties       = SQ_Scanner_Properties + " -Dsonar.sources=${ISPW_Application}\\MF_Source"
+                SQ_Scanner_Properties       = SQ_Scanner_Properties + " -Dsonar.sources=${ispwApplication}\\${mfSourceFolder}"
                 // Location of the Cobol copybooks to scan
-                SQ_Scanner_Properties       = SQ_Scanner_Properties + " -Dsonar.cobol.copy.directories=${ISPW_Application}\\MF_Source"  
+                SQ_Scanner_Properties       = SQ_Scanner_Properties + " -Dsonar.cobol.copy.directories=${ispwApplication}\\${mfSourceFolder}"  
                 // File extensions for Cobol and Copybook files.  The Total Test files need that contain tests need to be defined as cobol for SonarQube to process the results
                 SQ_Scanner_Properties       = SQ_Scanner_Properties + " -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub -Dsonar.cobol.copy.suffixes=cpy -Dsonar.sourceEncoding=UTF-8"
                 
@@ -349,19 +250,19 @@ def call(Map pipelineParams)
                     for(int i = 0; i < assignmentList.size(); i++)
                     {
 
-                        echo "Regress Assignment ${assignmentList[0].toString()}, Level ${ISPW_Target_Level}"
+                        echo "Regress Assignment ${assignmentList[0].toString()}, Level ${ispwTargetLevel}"
                         
                         def requestBodyParm = '''{
-                            "runtimeConfiguration": "''' + ISPW_Runtime + '''"
+                            "runtimeConfiguration": "''' + ispwRuntime + '''"
                         }'''
 
                         withCredentials(
-                            [string(credentialsId: "${CES_Token}", variable: 'cesToken')]
+                            [string(credentialsId: "${cesTokenId}", variable: 'cesToken')]
                         ) 
                         {
 
                             response3 = steps.httpRequest(
-                                url:                    "${ISPW_URL}/ispw/${ISPW_Runtime}/assignments/${assignmentList[i].toString()}/tasks/regress?level=${ISPW_Target_Level}",
+                                url:                    "${ispwUrl}/ispw/${ispwRuntime}/assignments/${assignmentList[i].toString()}/tasks/regress?level=${ispwTargetLevel}",
                                 httpMode:               'POST',
                                 consoleLogResponseBody: true,
                                 contentType:            'APPLICATION_JSON',
@@ -397,13 +298,13 @@ def call(Map pipelineParams)
             // Trigger XL Release Jenkins Plugin to kickoff a Release
             xlrCreateRelease(
                 releaseTitle:       'A Release for $BUILD_TAG',
-                serverCredentials:  "${XLR_User}",
+                serverCredentials:  "${xlrUser}",
                 startRelease:       true,
-                template:           "${XLR_Template}",
+                template:           "${xlrTemplate}",
                 variables:          [
-                                        [propertyName:  'ISPW_Dev_level',   propertyValue: "${ISPW_Target_Level}"], // Level in ISPW that the Code resides currently
-                                        [propertyName:  'ISPW_RELEASE_ID',  propertyValue: "${ISPW_Release}"],     // ISPW Release value from the ISPW Webhook
-                                        [propertyName:  'CES_Token',        propertyValue: "${CES_Token}"]
+                                        [propertyName:  'ISPW_Dev_level',   propertyValue: "${ispwTargetLevel}"], // Level in ISPW that the Code resides currently
+                                        [propertyName:  'ISPW_RELEASE_ID',  propertyValue: "${ispwRelease}"],     // ISPW Release value from the ISPW Webhook
+                                        [propertyName:  'CES_Token',        propertyValue: "${cesTokenId}"]
                                     ]
             )
         }        
