@@ -36,7 +36,7 @@ class JclSkeleton implements Serializable {
         jclStatements.add("<source_input_dd_list>")
         jclStatements.add("<select_list>")
 
-        this.iebcopyCopyBooksJcl = jclStatements.join("\n")
+        this.iebcopyCopyBooksJclSkel = jclStatements.join("\n")
 
         jclStatements = []
 
@@ -46,17 +46,19 @@ class JclSkeleton implements Serializable {
         this.cleanUpDatasetJcl = jclStatements.join("\n")
 
     }
-
-    def createCopyBookCopyJcl(String targetDsn, List copyMembers, String ispwApplication, String ispwPathNum)
+               
+    def String createCopyBookCopyJcl(String targetDsn, List copyMembers, String ispwApplication, String ispwPathNum)
     {
-        
+
+        def iebcopyCopyBooksJcl = jobCardJcl
+
         def inputDdStatements   = []
         def copyDdStatements    = []
         def selectStatements    = []
 
         for(int i=0; i < 2; i++)
         {            
-            inputDdStatements.add   ("//IN${i}       DD DISP=SHR,DSN=SALESSUP.${ispwApplication}.QA{$ispwPathNum}")
+            inputDdStatements.add("//IN${i}       DD DISP=SHR,DSN=SALESSUP.${ispwApplication}.QA{$ispwPathNum}")
             copyDdStatements.add ("       INDD=IN${i}")
         }
 
@@ -64,14 +66,17 @@ class JclSkeleton implements Serializable {
             selectStatements.add("  SELECT MEMBER=${it}")
         }
 
-        inputDdJcl          = inputDdStatements.join("\n")
-        inputCopyJcl        = copyDdStatements.join("\n")
-        selectJcl           = selectStatements.join("\n")  
+        def inputDdJcl          = inputDdStatements.join("\n")
+        def inputCopyJcl        = copyDdStatements.join("\n")
+        def selectJcl           = selectStatements.join("\n")  
 
+        iebcopyCopyBooksJcl + "\n" + iebcopyCopyBooksJclSkel
         iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<source_copy_pds_list>", inputDdJcl)
         iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<target_dsn>", targetDsn)
         iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<source_input_dd_list>", inputCopyJcl)
         iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<select_list>", selectJcl)
+
+        return iebcopyCopyBooksJcl
 
     }
 }
