@@ -66,7 +66,7 @@ class IspwHelper implements Serializable
         // Submit the JCL created to create a PDS with Copybooks
         steps.topazSubmitFreeFormJcl( 
             connectionId:       "${hciConnId}", 
-            credentialsId:      "${hciToken}", 
+            credentialsId:      "${hciTokenId}", 
             jcl:                processJcl, 
             maxConditionCode:   '4'
         )
@@ -75,7 +75,7 @@ class IspwHelper implements Serializable
         steps.checkout([
             $class:         'PdsConfiguration', 
             connectionId:   "${hciConnId}",
-            credentialsId:  "${hciToken}",
+            credentialsId:  "${hciTokenId}",
             fileExtension:  'cpy',
             filterPattern:  "${pdsDatasetName}",
             targetFolder:   "${ispwApplication}/${mfSourceFolder}"
