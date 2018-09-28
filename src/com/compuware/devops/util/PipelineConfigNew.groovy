@@ -102,7 +102,11 @@ class PipelineConfigNew implements Serializable
                 ]
         )
 
-        File pipelineConfigFile = new File("${workspace}\\config\\pipeline.config")
+        def filePath = "${workspace}\\config\\pipeline.config"
+
+        steps.echo "Search for File " + filePath
+
+        File pipelineConfigFile = new File(filePath)
 
         steps.echo "File exists " + pipelineConfigFile.exists()
 
