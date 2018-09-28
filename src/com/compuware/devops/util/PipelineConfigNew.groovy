@@ -14,6 +14,7 @@ class PipelineConfigNew implements Serializable
 /* Environment specific settings, which differ between Jenkins servers and applications, but not between runs */
     public String gitTargetBranch   = "CONS"
     public String gitBranch         = "master"
+    /*
     public String sqScannerName     = "scanner" //"Scanner" //"scanner" 
     public String sqServerName      = "localhost"  //"CWCC" //"localhost"  
     public String sqServerUrl       = 'http://sonarqube.nasa.cpwr.corp:9000'
@@ -23,7 +24,8 @@ class PipelineConfigNew implements Serializable
     public String tttFolder         = "tests"	
     public String ispwUrl           = "http://cwcc.compuware.com:2020"
     public String ispwRuntime       = "ispw"		 
-
+    */
+    
 /* Runtime specific settings, which differ runs and get passed as parameters or determined during execution */
     public String ispwStream
     public String ispwApplication
@@ -83,6 +85,7 @@ class PipelineConfigNew implements Serializable
 
     def initialize(String workspace)
     {
+        /* Get configuration files from github */
         steps.checkout(
             changelog: false, 
             poll: false, 
@@ -102,6 +105,7 @@ class PipelineConfigNew implements Serializable
                 ]
         )
 
+        /* Read Pipeline and environment specific parms */
         def filePath = "${workspace}\\config\\pipeline.config"
 
         File pipelineConfigFile = new File(filePath)
@@ -125,25 +129,36 @@ class PipelineConfigNew implements Serializable
             switch(parmValue)
             {
                 case "SQ_SCANNER_NAME":
-                    steps.echo "found SQ_SCANNER_NAME " + parmValue
+                    sqScannerName   = parmValue
                     break;
                 case "SQ_SERVER_NAME": 
-                    steps.echo "found SQ_SERVER_NAME " + parmValue
+                    sqServerName    = parmValue
+                    break;
+                case "SQ_SERVER_URL":
+                    sqServerUrl     = parmValue
+                    break;
+                case "MF_SOURCE_FOLDER":
+                    mfSourceFolder  = parmValue
+                    break;
+                case "XLR_TEMPLATE":
+                    xlrTemplate     = parmValue
+                    break;
+                case "XLR_USER":
+                    xlrUser         = parmValue
+                    break;
+                case "TTT_FOLDER":
+                    tttFolder       = parmValue
+                    break;
+                case "ISPW_URL":
+                    ispwUrl         = parmValue
+                    break;
+                case "ISPW_RUNTIME":
+                    ispwRuntime     = parmValue
                     break;
                 default:
-                    steps.echo "found " + parmName + " " + parmValue
-/*                    
-SQ_SERVER_URL=http://sonarqube.nasa.cpwr.corp:9000
-MF_SOURCE_FOLDER=MF_Source
-XLR_TEMPLATE=A Release from Jenkins - RNU
-XLR_USER=xebialabs                           
-TTT_FOLDER=tests   
-ISPW_URL=http://cwcc.compuware.com:2020
-ISPW_RUNTIME=ispw         
-*/
+                    steps.echo "Found unknown Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
+                    break;
             }
         }
-
     }
-
 }
