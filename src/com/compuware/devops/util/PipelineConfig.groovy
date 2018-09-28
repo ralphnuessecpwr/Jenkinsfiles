@@ -48,8 +48,9 @@ class PipelineConfig implements Serializable
 
     def PipelineConfig(steps, params)
     {
-        echo "Instancialisation"
         this.steps              = steps
+
+        steps.echo "Instancialisation"
 
         this.ispwStream         = params.ISPW_Stream
         this.ispwApplication    = params.ISPW_Application
