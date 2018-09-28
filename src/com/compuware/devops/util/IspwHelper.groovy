@@ -359,7 +359,7 @@ class IspwHelper implements Serializable
         
         // findFiles method requires the "Pipeline Utilities Plugin"
         // Get all Cobol Sources in the MF_Source folder into an array 
-        def listOfSources   = findFiles(glob: "**/${ispwApplication}/${mfSourceFolder}/*.cbl")
+        def listOfSources   = steps.findFiles(glob: "**/${ispwApplication}/${mfSourceFolder}/*.cbl")
         def listOfCopybooks = []
         def lines           = []
         def cbook           = /\bCOPY\b/
