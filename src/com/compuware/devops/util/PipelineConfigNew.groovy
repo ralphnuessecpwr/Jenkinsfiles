@@ -6,8 +6,7 @@ package com.compuware.devops.util
 class PipelineConfigNew implements Serializable
 {
     def steps
-
-    File pipelineConfigFile
+    
     File gitConfigFile
 
     def mailListMap                 = ["HDDRXM0":"ralph.nuesse@compuware.com"]
@@ -102,6 +101,10 @@ class PipelineConfigNew implements Serializable
                     ]]
                 ]
         )
+
+        File pipelineConfigFile = new File('.\\config\\pipeline.config')
+
+        steps.echo "File exists " + pipelineConfigFile.exists()
 
     }
 
