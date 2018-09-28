@@ -79,7 +79,7 @@ def call(Map pipelineParams)
         stage("Retrieve Tests")
         {
             //Retrieve the Tests from Github that match that ISPWW Stream and Application
-            gitUrl = "${pConfig.gitUrl}/${pConfig.gitTttRepo}"
+            def gitUrl = "${pConfig.gitUrl}/${pConfig.gitTttRepo}"
 
             //call gitcheckout wrapper function
             gitHelper.gitcheckout(pConfig.gitUrl, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
