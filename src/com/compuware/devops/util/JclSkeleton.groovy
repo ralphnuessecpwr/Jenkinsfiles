@@ -13,7 +13,7 @@ class JclSkeleton implements Serializable {
     String ispwApplication
     String ispwPathNum
 
-    def String initCleanupJclSkel()
+    static String initCleanupJclSkel()
     {
         def jclSkel         = ''
         def jclStatements   = []
@@ -26,7 +26,7 @@ class JclSkeleton implements Serializable {
         return jclSkel
     }
 
-    def String initJobCardJcl()
+    static String initJobCardJcl()
     {
         def jclStatements = []
 
@@ -36,7 +36,7 @@ class JclSkeleton implements Serializable {
         return jclStatements.join("\n")
     }
 
-    def String initIebcopyJclSkel(String ispwApplication, String ispwPathNum)
+    static String initIebcopyJclSkel(String ispwApplication, String ispwPathNum)
     {
         def jclSkel             = ''
         def jclStatements       = []
