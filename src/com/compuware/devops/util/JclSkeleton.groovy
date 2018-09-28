@@ -11,18 +11,45 @@ class JclSkeleton implements Serializable {
     String iebcopyCopyBooksJclSkel
     String cleanUpDatasetJclSkel
 
-    JclSkeleton(steps) 
+    JclSkeleton(steps, String ispwApplication, String ispwPathNum) 
     {
         this.steps = steps
 
+        this.jobCardJcl                 = initJobCardJcl()
+        this.iebcopyCopyBooksJclSkel    = initIebcopyJclSkel(ispwApplication, ispwPathNum)
+        this.cleanUpDatasetJclSkel      = initCleanupJclSkel()
+
+    }
+
+    def String initCleanupJclSkel()
+    {
+        def jclSkel         = ''
+        def jclStatements   = []
+
+        jclStatements.add("//CLEAN   EXEC PGM=IEFBR14")
+        jclStatements.add("//DELETE   DD DISP=(SHR,DELETE,DELETE),DSN=<clean_dsn>")
+
+        jclSkel = jclStatements.join("\n")
+
+        return jclSkel
+    }
+
+    def String initJobCardJcl()
+    {
         def jclStatements = []
 
-        jclStatements.add("//HDDRXM0X JOB ('EUDD,INTL'),'NUESSE',NOTIFY=&SYSUID,")
+        jclStatements.add("//HDDRXM0J JOB ('EUDD,INTL'),'NUESSE',NOTIFY=&SYSUID,")
         jclStatements.add("//             MSGLEVEL=(1,1),MSGCLASS=X,CLASS=A,REGION=0M")
 
-        this.jobCardJcl = jclStatements.join("\n")
+        return jclStatements.join("\n")
+    }
 
-        jclStatements = []
+    def String initIebcopyJclSkel(String ispwApplication, String ispwPathNum)
+    {
+        def jclSkel             = ''
+        def jclStatements       = []
+        def inputDdStatements   = []
+        def copyDdStatements    = []
 
         jclStatements.add("//COPY    EXEC PGM=IEBCOPY")
         jclStatements.add("//SYSPRINT DD SYSOUT=*")
@@ -39,25 +66,7 @@ class JclSkeleton implements Serializable {
         jclStatements.add("<source_input_dd_list>")
         jclStatements.add("<select_list>")
 
-        this.iebcopyCopyBooksJclSkel = jclStatements.join("\n")
-
-        jclStatements = []
-
-        jclStatements.add("//CLEAN   EXEC PGM=IEFBR14")
-        jclStatements.add("//DELETE   DD DISP=(SHR,DELETE,DELETE),DSN=<clean_dsn>")
-
-        this.cleanUpDatasetJclSkel = jclStatements.join("\n")
-
-    }
-               
-    def String createCopyBookCopyJcl(String targetDsn, List copyMembers, String ispwApplication, String ispwPathNum)
-    {
-
-        def iebcopyCopyBooksJcl = jobCardJcl
-
-        def inputDdStatements   = []
-        def copyDdStatements    = []
-        def selectStatements    = []
+        jclSkel = jclStatements.join("\n")
 
         inputDdStatements.add("//IN1      DD DISP=SHR,DSN=SALESSUP.${ispwApplication}.QA${ispwPathNum}.CPY")
         inputDdStatements.add("//IN2      DD DISP=SHR,DSN=SALESSUP.${ispwApplication}.STG.CPY")
@@ -68,23 +77,42 @@ class JclSkeleton implements Serializable {
             copyDdStatements.add ("       INDD=IN${i+1}")
         }
 
+        def inputDdJcl          = inputDdStatements.join("\n")
+        def inputCopyJcl        = copyDdStatements.join("\n")
+
+        jclSkel = jclSkel.replace("<source_copy_pds_list>", inputDdJcl)
+        jclSekl = jclSkel.replace("<source_input_dd_list>", inputCopyJcl)
+
+        return jclSkel
+
+    }
+
+    def String createIebcopyCopyBooksJcl(String targetDsn, List copyMembers)
+    {
+
+        def iebcopyCopyBooksJcl = jobCardJcl
+
+        def selectStatements    = []
+
         copyMembers.each {
             selectStatements.add("  SELECT MEMBER=${it}")
         }
 
-        def inputDdJcl          = inputDdStatements.join("\n")
-        def inputCopyJcl        = copyDdStatements.join("\n")
         def selectJcl           = selectStatements.join("\n")  
 
         iebcopyCopyBooksJcl = iebcopyCopyBooksJcl + "\n" + iebcopyCopyBooksJclSkel
-        iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<source_copy_pds_list>", inputDdJcl)
         iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<target_dsn>", targetDsn)
-        iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<source_input_dd_list>", inputCopyJcl)
-        iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<select_list>", selectJcl)
-
-        steps.echo "JCL created \n" + iebcopyCopyBooksJcl
 
         return iebcopyCopyBooksJcl
 
+    }
+
+    def String createDeleteTempDsn(String targetDsn)
+    {
+        def deleteJcl   = jobCardJcl
+
+        deleteJcl       = deleteJcl.replace(<clean_dsn>, targetDsn)
+
+        return deleteJcl
     }
 }
