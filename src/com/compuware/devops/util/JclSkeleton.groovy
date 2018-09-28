@@ -15,44 +15,72 @@ class JclSkeleton implements Serializable {
 
     JclSkeleton(steps, String ispwApplication, String ispwPathNum, String workspace) 
     {
-
-        this.steps = steps
-
+        this.steps              = steps
         this.ispwApplication    = ispwApplication
         this.ispwPathNum        = ispwPathNum
 
-        def jclStatements       = []
-
-        jclStatements.add("//HDDRXM0J JOB ('EUDD,INTL'),'NUESSE',NOTIFY=&SYSUID,")
-        jclStatements.add("//             MSGLEVEL=(1,1),MSGCLASS=X,CLASS=A,REGION=0M")
-
-        this.jobCardJcl         = jclStatements.join("\n")
+        def lineToken
+        def parmName
+        def parmValue
 
 
+        def skelFilePath        = "${workspace}\\config\\JobCard.jcl"
+
+        File skelFile = new File(skelFilePath)
+
+        if(!skelFile.exists())
+        {
+            error "Skeleton not found for Job Card! \n Will abort Pipeline."
+        }
+
+        def lines           = skelFile.readLines()
+        def jclStatements   = []
+
+        lines.each
+        {
+            jclStatements.add(it.toString())
+        }
+
+        this.jobCardJcl     = jclStatements.join("\n")
+
+
+        skelFilePath        = "${workspace}\\config\\iebcopy.skel"
+
+        File skelFile = new File(skelFilePath)
+
+        if(!skelFile.exists())
+        {
+            error "Skeleton not found for IEBCOPY Skeleton! \n Will abort Pipeline."
+        }
+
+        lines                   = skelFile.readLines()
         jclStatements           = []
-        def inputDdStatements   = []
+
+        lines.each
+        {
+            jclStatements.add(it.toString())
+        }
+
+        skelFilePath        = "${workspace}\\config\\iebcopyInDd.skel"
+
+        File skelFile = new File(skelFilePath)
+
+        if(!skelFile.exists())
+        {
+            error "Skeleton not found for IEBCOPY Input DD Skeleton! \n Will abort Pipeline."
+        }
+
+        lines                   = skelFile.readLines()
+        def inputDdStatements   = []        
+
+        lines.each
+        {
+            inputDdStatements.add(it.toString())
+        }
+
         def copyDdStatements    = []
 
-        jclStatements.add("//COPY    EXEC PGM=IEBCOPY")
-        jclStatements.add("//SYSPRINT DD SYSOUT=*")
-        jclStatements.add("//SYSUT3   DD UNIT=SYSDA,SPACE=(TRK,(10,10))")
-        jclStatements.add("//SYSUT4   DD UNIT=SYSDA,SPACE=(TRK,(10,10))")
-        jclStatements.add("<source_copy_pds_list>")
-        jclStatements.add("//OUT      DD DISP=(,CATLG,DELETE),")
-        jclStatements.add("//            DSN=<target_dsn>,")
-        jclStatements.add("//            UNIT=SYSDA,")
-        jclStatements.add("//            SPACE=(TRK,(10,20,130)),")
-        jclStatements.add("//            DCB=(RECFM=FB,LRECL=80)")
-        jclStatements.add("//SYSIN DD *")
-        jclStatements.add("  COPY OUTDD=OUT")
-        jclStatements.add("<source_input_dd_list>")
-        jclStatements.add("<select_list>")
-
-        inputDdStatements.add("//IN1      DD DISP=SHR,DSN=SALESSUP.${ispwApplication}.QA${ispwPathNum}.CPY")
-        inputDdStatements.add("//IN2      DD DISP=SHR,DSN=SALESSUP.${ispwApplication}.STG.CPY")
-        inputDdStatements.add("//IN3      DD DISP=SHR,DSN=SALESSUP.${ispwApplication}.PRD.CPY")
-
-        for(int i=0; i <= 2; i++)
+        for(int i=0; i <= inputDdStatements.size(); i++)
         {                        
             copyDdStatements.add ("       INDD=IN${i+1}")
         }
@@ -64,12 +92,27 @@ class JclSkeleton implements Serializable {
 
         iebcopyCopyBooksJclSkel         = iebcopyCopyBooksJclSkel.replace("<source_copy_pds_list>", inputDdJcl)
         iebcopyCopyBooksJclSkel         = iebcopyCopyBooksJclSkel.replace("<source_input_dd_list>", inputCopyJcl)
+        iebcopyCopyBooksJclSkel         = iebcopyCopyBooksJclSkel.replace("<ispw_application>", ispwApplication)
+        iebcopyCopyBooksJclSkel         = iebcopyCopyBooksJclSkel.replace("<ispw_path>", ispwPathNum)
 
+
+        skelFilePath        = "${workspace}\\config\\deleteDs.skel"
+
+        File skelFile = new File(skelFilePath)
+
+        if(!skelFile.exists())
+        {
+            error "Skeleton not found for DELETE Skeleton! \n Will abort Pipeline."
+        }
+
+        lines = skelFile.readLines()
 
         jclStatements   = []
 
-        jclStatements.add("//CLEAN   EXEC PGM=IEFBR14")
-        jclStatements.add("//DELETE   DD DISP=(SHR,DELETE,DELETE),DSN=<clean_dsn>")
+        lines.each
+        {
+            jclStatements.add(it)
+        }
 
         this.cleanUpDatasetJclSkel = jclStatements.join("\n")
 
