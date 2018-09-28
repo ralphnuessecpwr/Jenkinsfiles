@@ -134,7 +134,7 @@ class JclSkeleton implements Serializable {
 
         def iebcopyCopyBooksJcl = jobCardJcl
 
-        steps.echo "BUILD JCL"
+        steps.echo "BUILD JCL using JC " + jobCardJcl
         steps.echo iebcopyCopyBooksJcl
 
 
