@@ -75,7 +75,7 @@ def call(Map pipelineParams)
             //Retrieve the Tests from Github that match that ISPWW Stream and Application            
             def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttRepo}"
             
-            gitHelper.gitcheckout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
+            gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
         }
 
         // findFiles method requires the "Pipeline Utilities Plugin"

@@ -6,7 +6,7 @@ package com.compuware.devops.util
 class PipelineConfigNew implements Serializable
 {
     def steps
-    
+
     File gitConfigFile
 
     def mailListMap                 = ["HDDRXM0":"ralph.nuesse@compuware.com"]
@@ -55,8 +55,6 @@ class PipelineConfigNew implements Serializable
     {
         this.steps              = steps
 
-        steps.echo"After steps"
-
         this.ispwStream         = params.ISPW_Stream
         this.ispwApplication    = params.ISPW_Application
         this.ispwRelease        = params.ISPW_Release
@@ -84,26 +82,20 @@ class PipelineConfigNew implements Serializable
 
     def initialize(String workspace)
     {
-        /* Get configuration files from github */
-        steps.checkout(
-            changelog: false, 
-            poll: false, 
-            scm: [
-                    $class: 'GitSCM', 
-                    branches: [[name: '*/Dev']], 
-                    doGenerateSubmoduleConfigurations: false, 
-                    extensions: [[
-                        $class: 'SparseCheckoutPaths', 
-                        sparseCheckoutPaths: [[path: 'config/*']]
-                    ]], 
-                    submoduleCfg: [], 
-                    userRemoteConfigs: [[
-                        credentialsId: '87763671-db9a-47e1-80e7-33c1aba803b1', 
-                        url: 'https://github.com/ralphnuessecpwr/Jenkinsfiles.git'
-                    ]]
-                ]
-        )
+        def configGitBranch     = "Dev"
+        def configGitProject    = "Jenkinsfiles"
+        def configGitPath       = "config"
 
+        GitHelper gitHelper     = new GitHelper(steps)
+
+        gitHelper.checkoutPath(gitUrl, configGitBranch, configGitPath, gitCredentials, configGitProject)
+
+        setPipelineConfig(workspace)
+    
+    }
+
+    def setPipelineConfig(String workspace)
+    {
         /* Read Pipeline and environment specific parms */
         def filePath = "${workspace}\\config\\pipeline.config"
 
@@ -141,7 +133,6 @@ class PipelineConfigNew implements Serializable
                     break;
                 case "XLR_TEMPLATE":
                     xlrTemplate     = parmValue
-                    steps.echo "XLR_TEMPLATE = " + parmValue
                     break;
                 case "XLR_USER":
                     xlrUser         = parmValue
