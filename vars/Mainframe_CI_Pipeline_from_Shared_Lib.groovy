@@ -41,11 +41,11 @@ def call(Map pipelineParams)
 
         def ResponseContentSupplier response3
 
-        //def assignmentList = []
+        def assignmentList = []
 
         withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
         {
-            def assignmentList = ispwHelper.getAssigmentList(cesTokenClear, pConfig.ispwTargetLevel)
+            assignmentList = ispwHelper.getAssigmentList(cesTokenClear, pConfig.ispwTargetLevel)
         }
 
         echo "Assignments " + assignmentList.toString()
