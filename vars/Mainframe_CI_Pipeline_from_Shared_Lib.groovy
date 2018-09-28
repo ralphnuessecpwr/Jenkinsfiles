@@ -32,9 +32,12 @@ def call(Map pipelineParams)
     node
     {
 
-        PipelineConfig  pConfig     = new PipelineConfig(steps, pipelineParams)
+        PipelineConfig  pConfig     = new   PipelineConfig(
+                                                steps, 
+                                                pipelineParams
+                                            )
         GitHelper       gitHelper   = new GitHelper(steps)
-        IspwHelper      ispwHelper  = new IspwHelper(steps, ispwUrl, ispwRuntime, ispwRelease, ispwContainer)
+        IspwHelper      ispwHelper  = new IspwHelper(steps, pConfig.ispwUrl, pConfig.ispwRuntime, pConfig.ispwRelease, pConfig.ispwContainer)
 
         def ResponseContentSupplier response3
 
