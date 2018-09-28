@@ -372,6 +372,7 @@ class IspwHelper implements Serializable
         def cbook           = /\bCOPY\b/
         def tokenItem       = ''
         def seventhChar     = ''
+        def lineToken       = ''
 
         // Define a empty array for the list of programs
         listOfSources.each 
@@ -387,8 +388,9 @@ class IspwHelper implements Serializable
 
                 lines.each 
                 {
-                    lineToken  = it.toString().tokenize()
+                    lineToken   = it.toString().tokenize()
                     seventhChar = ""
+                    
                     if (lineToken.get(0).toString().length() >= 7) 
                     {
                         seventhChar = lineToken.get(0).toString()[6]
