@@ -385,6 +385,8 @@ class IspwHelper implements Serializable
             {
                 lines = file.readLines().findAll({book -> book =~ /$cbook/})
 
+                steps.echo "Lines " + lines.toString()
+
                 lines.each 
                 {
                     lineToken  = it.toString().tokenize()
@@ -418,8 +420,7 @@ class IspwHelper implements Serializable
                 }
             }
         }
-
-        steps.echo "Copy Books " + listOfCopybooks.toString()
+        
         return listOfCopybooks
 
     }    
