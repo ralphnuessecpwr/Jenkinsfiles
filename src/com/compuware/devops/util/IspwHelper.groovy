@@ -10,9 +10,12 @@ class IspwHelper implements Serializable
     def steps
     def String ispwUrl
     def String ispwRuntime
+    def String ispwApplication
     def String ispwRelease
     def String ispwContainer
     def String ispwContainerType    
+
+    def String mfSourceFolder
 
     def String hciConnId
     def String hciTokenId
@@ -25,9 +28,12 @@ class IspwHelper implements Serializable
         this.steps              = steps
         this.ispwUrl            = config.ispwUrl
         this.ispwRuntime        = config.ispwRuntime
+        this.ispwApplication    = config.ispwApplication
         this.ispwRelease        = config.ispwRelease        
         this.ispwContainer      = config.ispwContainer
         this.ispwContainerType  = config.ispwContainerType
+
+        this.mfSourceFolder     = config.mfSourceFolder
 
         this.hciConnId          = config.hciConnId
         this.hciTokenId         = config.hciTokenId
@@ -48,6 +54,43 @@ class IspwHelper implements Serializable
             serverLevel:        ''                                  // level to download the components from
         ])                           
     }
+
+    def downloadCopyBooks()
+    {
+        def copyBookList = referencedCopyBooks()  
+       
+        // Get a string with JCL to create a PDS with referenced Copybooks
+        pdsDatasetName = 'HDDRXN0.DEVOPS.ISPW.COPY.PDS'
+        def processJcl = createCopyPds(copyBookList, pdsDatasetName)
+                
+        // Submit the JCL created to create a PDS with Copybooks
+        topazSubmitFreeFormJcl( 
+            connectionId:       "${hciConnId}", 
+            credentialsId:      "${hciToken}", 
+            jcl:                processJcl, 
+            maxConditionCode:   '4'
+        )
+                       
+        // Download the PDS generated
+        checkout([
+            $class:         'PdsConfiguration', 
+            connectionId:   "${hciConnId}",
+            credentialsId:  "${hciToken}",
+            fileExtension:  'cpy',
+            filterPattern:  "${pdsDatasetName}",
+            targetFolder:   "${ispwApplication}/${mfSourceFolder}"
+        ])
+                                              
+                       
+        // Delete the downloaded Dataset
+        processJcl = deleteDataset(pdsDatasetName)
+        topazSubmitFreeFormJcl(
+            connectionId:       "${HCI_Conn_ID}",
+            credentialsId:      "${HCI_Token}",
+            jcl:                processJcl,
+            maxConditionCode:   '4'
+    }
+
 
 /* 
     Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build and return a list of Assignments
@@ -256,5 +299,118 @@ class IspwHelper implements Serializable
         return returnList
 
     }
-}
 
+    def String createCopyPds(List copyMembers, String pdsName) 
+    {
+        def JCLStatements = []
+
+        JCLStatements << "//HDDRXN0N  JOB CLASS=A,NOTIFY=&SYSUID,MSGCLASS=X,REGION=0M"
+        JCLStatements << "//*"
+        JCLStatements << "//COPY    EXEC PGM=IEBCOPY"
+        JCLStatements << "//SYSPRINT DD SYSOUT=*"
+        JCLStatements << "//SYSUT3   DD UNIT=SYSDA,SPACE=(TRK,(10,10))"
+        JCLStatements << "//SYSUT4   DD UNIT=SYSDA,SPACE=(TRK,(10,10))"
+        JCLStatements << "//IN1      DD DISP=SHR,DSN=SALESSUP.RXN3.DEV1.CPY"
+        JCLStatements << "//IN2      DD DISP=SHR,DSN=SALESSUP.RXN3.QA1.CPY"
+        JCLStatements << "//IN3      DD DISP=SHR,DSN=SALESSUP.RXN3.STG.CPY"
+        JCLStatements << "//IN4      DD DISP=SHR,DSN=SALESSUP.RXN3.PRD.CPY"
+        JCLStatements << "//OUT      DD DISP=(,CATLG,DELETE),"
+        JCLStatements << "//            DSN=${pdsName},"
+        JCLStatements << "//            UNIT=SYSDA,"
+        JCLStatements << "//            SPACE=(TRK,(10,20,130)),"
+        JCLStatements << "//            DCB=(RECFM=FB,LRECL=80)"
+        JCLStatements << "//SYSIN DD *"
+        JCLStatements << "  COPY OUTDD=OUT"
+        JCLStatements << "       INDD=IN1"
+        JCLStatements << "       INDD=IN2"
+        JCLStatements << "       INDD=IN3"
+        JCLStatements << "       INDD=IN4"
+
+        copyMembers.each {
+            JCLStatements << "  SELECT MEMBER=${it}"
+        }
+    
+        JCLStatements << "/*"
+        JCLStatements << "//"   
+
+        return JCLStatements.join("\n")
+    }
+
+    def String deleteDataset(String datasetName) 
+    {
+
+        def JCLStatements = []
+
+        JCLStatements << "//HDDRXN0N  JOB CLASS=A,NOTIFY=&SYSUID,MSGCLASS=X,REGION=0M"
+        JCLStatements << "//*"
+        JCLStatements << "//CLEAN   EXEC PGM=IEFBR14"
+        JCLStatements << "//DELETE   DD DISP=(SHR,DELETE,DELETE),DSN=${datasetName}"
+        JCLStatements << "//"   
+
+        return JCLStatements.join("\n")
+    }
+
+    def List referencedCopyBooks() 
+    {
+
+        steps.echo "Get all .cbl in current workspace"
+        
+        // findFiles method requires the "Pipeline Utilities Plugin"
+        // Get all Cobol Sources in the MF_Source folder into an array 
+        def listOfSources   = findFiles(glob: "**/${ispwApplication}/${mfSourceFolder}/*.cbl")
+        def listOfCopybooks = []
+        def lines           = []
+        def cbook           = /\bCOPY\b/
+        def tokenItem       = ''
+        def seventhChar     = ''
+
+        // Define a empty array for the list of programs
+        listOfSources.each 
+        {
+            steps.echo "Scanning Program: ${it}"
+            def cpyfile = "${workspace}\\${it}"
+            
+            File file = new File(cpyfile)
+                
+            if (file.exists()) 
+            {
+                lines = file.readLines().findAll({book -> book =~ /$cbook/})
+
+                lines.each 
+                {
+                    lineToken  = it.toString().tokenize()
+                    seventhChar = ""
+                    if (lineToken.get(0).toString().length() >= 7) 
+                    {
+                        seventhChar = lineToken.get(0).toString()[6]
+                    }
+                        
+                    for(i=0;i<lineToken.size();i++) 
+                    {
+                        tokenItem = lineToken.get(i).toString()
+
+                        if (tokenItem == "COPY" && seventhChar != "*" ) 
+                        {
+                            steps.echo "Copybook: ${LineToken.get(i+1)}"
+                            tokenItem = lineToken.get(i+1).toString()
+        
+                            if (tokenItem.endsWith(".")) 
+                            {
+                                listOfCopybooks.add(tokenItem.substring(0,tokenItem.size()-1))
+                            }
+                            else 
+                            {
+                                listOfCopybooks.add(tokenItem)
+                            }
+                                
+                        i = lineToken.size()
+                        }
+                    }    
+                }
+            }
+        }
+
+        return listOfCopybooks
+
+    }    
+}

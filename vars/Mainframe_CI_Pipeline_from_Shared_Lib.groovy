@@ -45,12 +45,6 @@ def call(Map pipelineParams)
                                                 steps, 
                                                 pConfig
                                                 )
-                                                /*
-                                                pConfig.ispwUrl, 
-                                                pConfig.ispwRuntime, 
-                                                pConfig.ispwRelease, 
-                                                pConfig.ispwContainer
-                                                */
 
         def ResponseContentSupplier response3
 
@@ -65,18 +59,12 @@ def call(Map pipelineParams)
 
         stage("Retrieve Code From ISPW")
         {
-            //Retrieve the code from ISPW that has been promoted 
-            checkout([
-                $class:       'IspwContainerConfiguration', 
-                    componentType:      '',                          // optional filter for component types in ISPW
-                    connectionId:       "${pConfig.hciConnId}",     
-                    credentialsId:      "${pConfig.hciTokenId}",      
-                    containerName:      "${pConfig.ispwContainer}",   
-                    containerType:      "${pConfig.ispwContainerType}",    // 0-Assignment 1-Release 2-Set
-                    ispwDownloadAll:    false,                     // false will not download files that exist in the workspace and haven't previous changed
-                    serverConfig:       '',                           // ISPW runtime config.  if blank ISPW will use the default runtime config
-                    serverLevel:        ''
-            ])                           // level to download the components from
+            ispwHelper.downloadSources()
+        }
+
+        stage("Retrieve Copy Books From ISPW")
+        {
+            ispwHelper.downloadCopyBooks()
         }
 
         stage("Retrieve Tests")
