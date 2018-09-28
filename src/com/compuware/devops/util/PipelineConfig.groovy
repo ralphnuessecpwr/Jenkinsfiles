@@ -3,8 +3,9 @@ package com.compuware.devops.util
 /* 
     Pipeline execution specific and server specific parameters which are use throughout the pipeline
 */
-class PipelineConfig
+class PipelineConfig implements Serializable
 {
+    def steps
 
 /* Environment specific settings, which differ between Jenkins servers and applications, but not between runs */
     public String gitTargetBranch   = "CONS"
@@ -45,8 +46,10 @@ class PipelineConfig
       
     public String mailRecipient 
 
-    def PipelineConfig(params)
+    def PipelineConfig(steps, params)
     {
+        echo "Instancialisation"
+        this.steps              = steps
 
         this.ispwStream         = params.ISPW_Stream
         this.ispwApplication    = params.ISPW_Application
