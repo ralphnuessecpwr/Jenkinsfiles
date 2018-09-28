@@ -73,7 +73,7 @@ class JclSkeleton implements Serializable {
         def inputCopyJcl        = copyDdStatements.join("\n")
 
         jclSkel = jclSkel.replace("<source_copy_pds_list>", inputDdJcl)
-        jclSekl = jclSkel.replace("<source_input_dd_list>", inputCopyJcl)
+        jclSkel = jclSkel.replace("<source_input_dd_list>", inputCopyJcl)
 
         return jclSkel
 
