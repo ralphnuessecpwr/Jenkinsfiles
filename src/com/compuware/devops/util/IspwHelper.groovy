@@ -55,9 +55,9 @@ class IspwHelper implements Serializable
         ])                           
     }
 
-    def downloadCopyBooks()
+    def downloadCopyBooks(String workspace)
     {
-        def copyBookList = referencedCopyBooks()  
+        def copyBookList = referencedCopyBooks(workspace)  
 
         if(copyBookList.size() > 0)       
         {
