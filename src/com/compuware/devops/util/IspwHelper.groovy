@@ -64,7 +64,7 @@ class IspwHelper implements Serializable
         def processJcl = createCopyPds(copyBookList, pdsDatasetName)
                 
         // Submit the JCL created to create a PDS with Copybooks
-        topazSubmitFreeFormJcl( 
+        steps.topazSubmitFreeFormJcl( 
             connectionId:       "${hciConnId}", 
             credentialsId:      "${hciToken}", 
             jcl:                processJcl, 
@@ -72,7 +72,7 @@ class IspwHelper implements Serializable
         )
                        
         // Download the PDS generated
-        checkout([
+        steps.checkout([
             $class:         'PdsConfiguration', 
             connectionId:   "${hciConnId}",
             credentialsId:  "${hciToken}",
@@ -84,11 +84,13 @@ class IspwHelper implements Serializable
                        
         // Delete the downloaded Dataset
         processJcl = deleteDataset(pdsDatasetName)
-        topazSubmitFreeFormJcl(
+
+        steps.topazSubmitFreeFormJcl(
             connectionId:       "${HCI_Conn_ID}",
             credentialsId:      "${HCI_Token}",
             jcl:                processJcl,
             maxConditionCode:   '4'
+        )
     }
 
 
