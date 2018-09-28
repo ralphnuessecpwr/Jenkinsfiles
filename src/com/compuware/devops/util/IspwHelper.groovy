@@ -390,13 +390,13 @@ class IspwHelper implements Serializable
                 {
                     lineToken   = it.toString().tokenize()
                     seventhChar = ""
-                    
+
                     if (lineToken.get(0).toString().length() >= 7) 
                     {
                         seventhChar = lineToken.get(0).toString()[6]
                     }
                         
-                    for(i=0;i<lineToken.size();i++) 
+                    for(int i=0;i<lineToken.size();i++) 
                     {
                         tokenItem = lineToken.get(i).toString()
 
