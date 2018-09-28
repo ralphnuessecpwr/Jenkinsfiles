@@ -125,7 +125,7 @@ class PipelineConfigNew implements Serializable
             parmName    = lineToken.get(0).toString()
             parmValue   = lineToken.get(1).toString()
 
-            switch(parmValue)
+            switch(parmName)
             {
                 case "SQ_SCANNER_NAME":
                     sqScannerName   = parmValue
