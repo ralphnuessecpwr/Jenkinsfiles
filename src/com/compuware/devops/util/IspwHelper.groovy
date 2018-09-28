@@ -88,8 +88,8 @@ class IspwHelper implements Serializable
             processJcl = deleteDataset(pdsDatasetName)
 
             steps.topazSubmitFreeFormJcl(
-                connectionId:       "${HCI_Conn_ID}",
-                credentialsId:      "${HCI_Token}",
+                connectionId:       "${hciConnId}",
+                credentialsId:      "${hciTokenId}",
                 jcl:                processJcl,
                 maxConditionCode:   '4'
             )
