@@ -70,7 +70,12 @@ class PipelineConfig implements Serializable
         this.gitTttRepo         = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
 
         this.cesTokenId         = params.CES_Token
-        this.cesTokenClear      = params.CES_Token
+
+        withCredentials([string(credentialsId: cesTokenId, variable: 'credentialsVar')]) 
+        {
+            this.cesTokenClear  = credentialsVar
+        }
+       
         this.hciConnId          = params.HCI_Conn_ID
         this.hciTokenId         = params.HCI_Token
         this.ccRepository       = params.CC_repository

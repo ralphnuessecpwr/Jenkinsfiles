@@ -32,49 +32,20 @@ def call(Map pipelineParams)
     node
     {
 
-        // PipelineConfig is a class storing constants independant from user used throuout the pipeline
-        echo "Call PipelineConfig"
         PipelineConfig  pConfig     = new PipelineConfig(steps, pipelineParams)
-
-        echo "Test " + pConfig.gitBranch
-
-        // Store properties values in variables (easier to retrieve during code)
-        /*
-        def gitBranch           = pConfig.gitBranch
-        def sqScannerName      = pConfig.sqScannerName
-        def sqServerName       = pConfig.sqServerName
-        def mfSourceFolder            = pConfig.mfSourceFolder
-        def xlrTemplate         = pConfig.xlrTemplate
-        def xlrUser             = pConfig.xlrUser
-        def tttFolder           = pConfig.tttFolder
-        def ispwUrl             = pConfig.ispwUrl
-        def ispwRuntime         = pConfig.ispwRuntime
-        */
         GitHelper       gitHelper   = new GitHelper(steps)
-        //MailList        mailList    = new MailList()
         IspwHelper      ispwHelper  = new IspwHelper(steps, ispwUrl, ispwRuntime, ispwRelease, ispwContainer)
-
-        /*
-        def mailRecipient = mailList.getEmail(ISPW_Owner)
-
-        // Determine the current ISPW Path and Level that the code Promotion is from
-        def PathNum = getPathNum(ISPW_Src_Level)
-
-        // Use the Path Number to determine the right Runner JCL to use (different STEPLIB concatenations)
-        def tttJcl = "Runner_PATH" + PathNum + ".jcl"
-        // Also set the Level that the code currently resides in
-        def ispwTargetLevel = "QA" + PathNum
-        */
 
         def ResponseContentSupplier response3
 
+        //def assignmentList = []
 
-        def assignmentList = []
+//        withCredentials([string(credentialsId: cesTokenId, variable: 'cesTokenVar')]) 
+//        {
+            def assignmentList = ispwHelper.getAssigmentList(pConfig.cesTokenClear, pConfig.ispwTargetLevel)
+//        }
 
-        withCredentials([string(credentialsId: cesTokenId, variable: 'cesTokenVar')]) 
-        {
-            assignmentList = ispwHelper.getAssigmentList(cesTokenVar, ispwTargetLevel)
-        }
+        echo "Assignments " + assignmentList.toString()
 
         /*************************************************************************************************************/
 
