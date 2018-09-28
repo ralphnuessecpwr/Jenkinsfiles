@@ -29,7 +29,7 @@ class IspwHelper implements Serializable
 
     IspwHelper(steps, config) 
     {
-        this.jclSkeleton        = new JclSkeleton()
+        this.jclSkeleton        = new JclSkeleton(steps)
 
         this.steps              = steps
         this.ispwUrl            = config.ispwUrl
