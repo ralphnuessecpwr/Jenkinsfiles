@@ -60,20 +60,28 @@ class PipelineConfig implements Serializable
         this.ispwOwner          = params.ISPW_Owner        
         this.ispwSrcLevel       = params.ISPW_Src_Level
 
+        steps.echo "After ISPW"
+
         this.applicationPathNum = getPathNum(ispwSrcLevel)
         this.ispwTargetLevel    = "QA" + applicationPathNum
         this.tttJcl             = "Runner_PATH" + PathNum + ".jcl"
+
+        steps.echo "After PathNum"
 
         this.gitProject         = params.Git_Project
         this.gitCredentials     = params.Git_Credentials
         this.gitURL             = "https://github.com/${gitProject}"
         this.gitTttRepo         = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
 
+        steps.echo "After Git"
+
         this.cesTokenId         = params.CES_Token
         this.cesTokenClear      = params.CES_Token
         this.hciConnId          = params.HCI_Conn_ID
         this.hciTokenId         = params.HCI_Token
         this.ccRepository       = params.CC_repository
+
+        steps.echo "After Tokens"
 
         MailList mailList       = new MailList()
         this.mailRecipient      = mailList.getEmail(ispwOwner)
