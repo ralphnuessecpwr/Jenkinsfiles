@@ -12,9 +12,10 @@ class IspwHelper implements Serializable
     def String ispwRuntime
     def String ispwContainer
     def String ispwRelease
-    
-    IspwHelper(steps, config) 
+
     //String ispwUrl, String ispwRuntime, String ispwRelease, String ispwContainer)
+
+    IspwHelper(steps, config) 
     {
 
         this.steps          = steps

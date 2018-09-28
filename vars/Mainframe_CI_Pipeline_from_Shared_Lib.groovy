@@ -43,11 +43,14 @@ def call(Map pipelineParams)
 
         IspwHelper      ispwHelper  = new   IspwHelper(
                                                 steps, 
+                                                pConfig
+                                                )
+                                                /*
                                                 pConfig.ispwUrl, 
                                                 pConfig.ispwRuntime, 
                                                 pConfig.ispwRelease, 
                                                 pConfig.ispwContainer
-                                                )
+                                                */
 
         def ResponseContentSupplier response3
 
