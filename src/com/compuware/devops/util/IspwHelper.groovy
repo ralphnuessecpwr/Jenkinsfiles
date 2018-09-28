@@ -10,13 +10,12 @@ class IspwHelper implements Serializable
     def steps
     def String ispwUrl
     def String ispwRuntime
-    def String ispwContainer
     def String ispwRelease
+    def String ispwContainer
+    def String ispwContainerType    
 
     def String hciConnId
     def String hciTokenId
-    def String ispwContainer
-    def String ispwContainerType
 
     //String ispwUrl, String ispwRuntime, String ispwRelease, String ispwContainer)
 
