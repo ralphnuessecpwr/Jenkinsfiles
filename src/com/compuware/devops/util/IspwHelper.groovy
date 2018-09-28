@@ -419,6 +419,7 @@ class IspwHelper implements Serializable
             }
         }
 
+        steps.cho "Copy Books " + listOfCopybooks.toString()
         return listOfCopybooks
 
     }    
