@@ -359,7 +359,7 @@ class IspwHelper implements Serializable
         return JCLStatements.join("\n")
     }
 
-    def List referencedCopyBooks() 
+    def List referencedCopyBooks(String workspace) 
     {
 
         steps.echo "Get all .cbl in current workspace"
@@ -377,7 +377,7 @@ class IspwHelper implements Serializable
         listOfSources.each 
         {
             steps.echo "Scanning Program: ${it}"
-            def cpyFile = ".\\${it}"
+            def cpyFile = "${workspace}\\${it}"
 
             steps.echo "File " + cpyFile
             

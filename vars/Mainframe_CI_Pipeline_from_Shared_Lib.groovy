@@ -64,7 +64,7 @@ def call(Map pipelineParams)
 
         stage("Retrieve Copy Books From ISPW")
         {
-            ispwHelper.downloadCopyBooks()
+            ispwHelper.downloadCopyBooks("${workspace}")
         }
 
         stage("Retrieve Tests")
