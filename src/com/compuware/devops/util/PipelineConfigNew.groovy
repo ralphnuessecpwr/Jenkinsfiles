@@ -81,7 +81,7 @@ class PipelineConfigNew implements Serializable
         this.mailRecipient      = mailListMap[(ispwOwner.toUpperCase())]
     }
 
-    def initialize()
+    def initialize(String workspace)
     {
         steps.checkout(
             changelog: false, 
@@ -102,7 +102,7 @@ class PipelineConfigNew implements Serializable
                 ]
         )
 
-        File pipelineConfigFile = new File('.\\config\\pipeline.config')
+        File pipelineConfigFile = new File("${workspace}\\config\\pipeline.config")
 
         steps.echo "File exists " + pipelineConfigFile.exists()
 
