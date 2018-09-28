@@ -73,13 +73,13 @@ class JclSkeleton implements Serializable {
         def inputCopyJcl        = copyDdStatements.join("\n")
         def selectJcl           = selectStatements.join("\n")  
 
-        iebcopyCopyBooksJcl + "\n" + iebcopyCopyBooksJclSkel
+        iebcopyCopyBooksJcl = iebcopyCopyBooksJcl + "\n" + iebcopyCopyBooksJclSkel
         iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<source_copy_pds_list>", inputDdJcl)
         iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<target_dsn>", targetDsn)
         iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<source_input_dd_list>", inputCopyJcl)
         iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<select_list>", selectJcl)
 
-        println "JCL created \n" + iebcopyCopyBooksJcl
+        steps.echo "JCL created \n" + iebcopyCopyBooksJcl
 
         return iebcopyCopyBooksJcl
 
