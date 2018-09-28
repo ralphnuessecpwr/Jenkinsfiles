@@ -39,10 +39,10 @@ class IspwHelper implements Serializable
         steps.checkout([
             $class:             'IspwContainerConfiguration', 
             componentType:      '',                                 // optional filter for component types in ISPW
-            connectionId:       "${pConfig.hciConnId}",     
-            credentialsId:      "${pConfig.hciTokenId}",      
-            containerName:      "${pConfig.ispwContainer}",   
-            containerType:      "${pConfig.ispwContainerType}",     // 0-Assignment 1-Release 2-Set
+            connectionId:       "${hciConnId}",     
+            credentialsId:      "${hciTokenId}",      
+            containerName:      "${ispwContainer}",   
+            containerType:      "${ispwContainerType}",     // 0-Assignment 1-Release 2-Set
             ispwDownloadAll:    false,                              // false will not download files that exist in the workspace and haven't previous changed
             serverConfig:       '',                                 // ISPW runtime config.  if blank ISPW will use the default runtime config
             serverLevel:        ''                                  // level to download the components from
