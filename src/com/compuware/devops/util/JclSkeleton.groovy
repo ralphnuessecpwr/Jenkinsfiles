@@ -80,7 +80,7 @@ class JclSkeleton implements Serializable {
             error "Skeleton not found for IEBCOPY Input DD Skeleton! \n Will abort Pipeline."
         }
 
-        lines                   = skelFile2.readLines()
+        def lines           = skelFile2.readLines()
 
         lines.each
         {
