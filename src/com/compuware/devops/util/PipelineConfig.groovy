@@ -214,11 +214,7 @@ class PipelineConfig implements Serializable
             tsoUser         = lineToken.get(0).toString()
             emailAddress    = lineToken.get(1).toString().trim()
 
-            steps.echo "Add TSO " + tsoUser + " email " + emailAddress
-
             this.mailListMap."${tsoUser}" = "${emailAddress}"
-
-            steps.echo mailListMap.toString()
         }
 
         this.mailRecipient  = mailListMap[(ispwOwner.toUpperCase())]

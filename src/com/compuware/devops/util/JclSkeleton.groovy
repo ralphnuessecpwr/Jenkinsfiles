@@ -13,7 +13,7 @@ class JclSkeleton implements Serializable {
     String ispwApplication
     String ispwPathNum
 
-    JclSkeleton(steps, String ispwApplication, String ispwPathNum) 
+    JclSkeleton(steps, String ispwApplication, String ispwPathNum, String workspace) 
     {
 
         this.steps = steps
