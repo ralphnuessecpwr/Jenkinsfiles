@@ -6,27 +6,26 @@ package com.compuware.devops.util
 class JclSkeleton implements Serializable {
 
     String jobCardJcl
-    String copyCopyBooksJcl
+    String iebcopyCopyBooksJcl
     String cleanUpDatasetJcl
 
     JclSkeleton() 
     {
 
-        jclStatements = []
+        def jclStatements = []
 
         jclStatements.add("//HDDRXM0X JOB ('EUDD,INTL'),'NUESSE',NOTIFY=&SYSUID,")
         jclStatements.add("//             MSGLEVEL=(1,1),MSGCLASS=X,CLASS=A,REGION=0M")
 
         this.jobCardJcl = jclStatements.join("\n")
 
+        jclStatements = []
+
         jclStatements.add("//COPY    EXEC PGM=IEBCOPY")
         jclStatements.add("//SYSPRINT DD SYSOUT=*")
         jclStatements.add("//SYSUT3   DD UNIT=SYSDA,SPACE=(TRK,(10,10))")
         jclStatements.add("//SYSUT4   DD UNIT=SYSDA,SPACE=(TRK,(10,10))")
-        jclStatements.add("//IN1      DD DISP=SHR,DSN=SALESSUP.RXN3.DEV1.CPY")
-        jclStatements.add("//IN2      DD DISP=SHR,DSN=SALESSUP.RXN3.QA1.CPY")
-        jclStatements.add("//IN3      DD DISP=SHR,DSN=SALESSUP.RXN3.STG.CPY")
-        jclStatements.add("//IN4      DD DISP=SHR,DSN=SALESSUP.RXN3.PRD.CPY")
+        jclStatements.add("<source_copy_pds_list>")
         jclStatements.add("//OUT      DD DISP=(,CATLG,DELETE),")
         jclStatements.add("//            DSN=<target_dsn>,")
         jclStatements.add("//            UNIT=SYSDA,")
@@ -34,21 +33,45 @@ class JclSkeleton implements Serializable {
         jclStatements.add("//            DCB=(RECFM=FB,LRECL=80)")
         jclStatements.add("//SYSIN DD *")
         jclStatements.add("  COPY OUTDD=OUT")
-        jclStatements.add("       INDD=IN<source_dd_num>")
+        jclStatements.add("<source_input_dd_list>")
+        jclStatements.add("<select_list>")
 
-        this.copyCopyBooksJcl = jclStatements.join("\n")
+        this.iebcopyCopyBooksJcl = jclStatements.join("\n")
 
         jclStatements = []
 
-        jclStatements.add("////CLEAN   EXEC PGM=IEFBR14")
+        jclStatements.add("//CLEAN   EXEC PGM=IEFBR14")
         jclStatements.add("//DELETE   DD DISP=(SHR,DELETE,DELETE),DSN=<clean_dsn>")
 
         this.cleanUpDatasetJcl = jclStatements.join("\n")
 
     }
 
-    def createCopyBookCopyJcl(String targetDsn, List copyMembers, String gitCredentials, String tttFolder)
+    def createCopyBookCopyJcl(String targetDsn, List copyMembers, String ispwApplication, String ispwPathNum)
     {
+        
+        def inputDdStatements   = []
+        def copyDdStatements    = []
+        def selectStatements    = []
+
+        for(int i=0; i < 2; i++)
+        {            
+            inputDdStatements.add   ("//IN${i}       DD DISP=SHR,DSN=SALESSUP.${ispwApplication}.QA{$ispwPathNum}")
+            copyDdStatements.add ("       INDD=IN${i}")
+        }
+
+        copyMembers.each {
+            selectStatements.add("  SELECT MEMBER=${it}")
+        }
+
+        inputDdJcl          = inputDdStatements.join("\n")
+        inputCopyJcl        = copyDdStatements.join("\n")
+        selectJcl           = selectStatements.join("\n")  
+
+        iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<source_copy_pds_list>", inputDdJcl)
+        iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<target_dsn>", targetDsn)
+        iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<source_input_dd_list>", inputCopyJcl)
+        iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<select_list>", selectJcl)
 
     }
 }

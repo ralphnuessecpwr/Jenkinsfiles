@@ -7,13 +7,18 @@ import com.compuware.devops.util.TaskInfo
 class IspwHelper implements Serializable 
 {
 
+    JclSkeleton jclSkeleton
+
     def steps
+
     def String ispwUrl
     def String ispwRuntime
     def String ispwApplication
     def String ispwRelease
     def String ispwContainer
     def String ispwContainerType    
+    def String applicationPathNum
+    def String ispwOwner
 
     def String mfSourceFolder
 
@@ -24,6 +29,7 @@ class IspwHelper implements Serializable
 
     IspwHelper(steps, config) 
     {
+        this.jclSkeleton        = new JclSkeleton()
 
         this.steps              = steps
         this.ispwUrl            = config.ispwUrl
@@ -32,6 +38,8 @@ class IspwHelper implements Serializable
         this.ispwRelease        = config.ispwRelease        
         this.ispwContainer      = config.ispwContainer
         this.ispwContainerType  = config.ispwContainerType
+        this.ispwOwner          = config.ispwOwner
+        this.applicationPathNum = config.applicationPathNum
 
         this.mfSourceFolder     = config.mfSourceFolder
 
@@ -63,7 +71,10 @@ class IspwHelper implements Serializable
         {
             // Get a string with JCL to create a PDS with referenced Copybooks
             def pdsDatasetName = 'HDDRXM0.DEVOPS.ISPW.COPY.PDS'
-            def processJcl = createCopyPds(copyBookList, pdsDatasetName)
+
+            processJcl = jclSkeleton.createCopyBookCopyJcl(copyBookList, pdsDatasetName, ispwApplication, applicationPathNum)
+
+            //def processJcl = createCopyPds(copyBookList, pdsDatasetName)
                     
             // Submit the JCL created to create a PDS with Copybooks
             steps.topazSubmitFreeFormJcl( 
