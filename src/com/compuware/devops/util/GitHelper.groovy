@@ -16,13 +16,8 @@ class GitHelper implements Serializable {
         this.steps = steps
     }
 
-    def gitcheckout(String gitUrl, String gitBranch, String gitCredentials, String tttFolder)
+    def checkout(String gitUrl, String gitBranch, String gitCredentials, String tttFolder)
     {
-        steps.echo "Checking out from Git"
-        steps.echo "Scenario " + gitUrl
-        steps.echo "Scenario " + gitBranch
-        steps.echo "Scenario " + gitCredentials
-
         steps.checkout(
             changelog:  false, 
             poll:       false, 
@@ -34,6 +29,28 @@ class GitHelper implements Serializable {
                             submoduleCfg:                       [], 
                             userRemoteConfigs:                  [[credentialsId: "${gitCredentials}", name: 'origin', url: "${gitUrl}"]]
                         ]
+        )
+    }
+
+    def checkoutPath(String gitUrl, String gitBranch, String path, String gitCredentials, String gitProject)
+    {
+        steps.checkout(
+        changelog: false, 
+        poll: false, 
+        scm: [
+                $class: 'GitSCM', 
+                branches: [[name: "*/${gitBranch}"]], 
+                doGenerateSubmoduleConfigurations: false, 
+                extensions: [[
+                    $class: 'SparseCheckoutPaths', 
+                    sparseCheckoutPaths: [[path: "${path}/*"]]
+                ]], 
+                submoduleCfg: [], 
+                userRemoteConfigs: [[
+                    credentialsId: "${gitCredentials}", 
+                    url: "${gitUrl}/${gitProject}.git"
+                ]]
+            ]
         )
     }
 }
