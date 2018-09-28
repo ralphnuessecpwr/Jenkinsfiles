@@ -49,22 +49,6 @@ class JclSkeleton implements Serializable {
 
     def createCopyBookCopyJcl(String targetDsn, List copyMembers, String gitCredentials, String tttFolder)
     {
-        steps.echo "Checking out from Git"
-        steps.echo "Scenario " + gitUrl
-        steps.echo "Scenario " + gitBranch
-        steps.echo "Scenario " + gitCredentials
 
-        steps.checkout(
-            changelog:  false, 
-            poll:       false, 
-            scm:        [
-                        $class:                                 'GitSCM', 
-                            branches:                           [[name: "*/${gitBranch}"]], 
-                            doGenerateSubmoduleConfigurations:  false, 
-                            extensions:                         [[$class: 'RelativeTargetDirectory', relativeTargetDir: "${tttFolder}"]], 
-                            submoduleCfg:                       [], 
-                            userRemoteConfigs:                  [[credentialsId: "${gitCredentials}", name: 'origin', url: "${gitUrl}"]]
-                        ]
-        )
     }
 }

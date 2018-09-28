@@ -63,7 +63,6 @@ class IspwHelper implements Serializable
         }
         else
         {
-            steps.echo "resp " + resp.toString()
             def taskList = resp.tasks
 
             taskList.each
