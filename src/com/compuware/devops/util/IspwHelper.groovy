@@ -370,7 +370,7 @@ class IspwHelper implements Serializable
         listOfSources.each 
         {
             steps.echo "Scanning Program: ${it}"
-            def cpyfile = "${workspace}\\${it}"
+            def cpyfile = "./${it}"
             
             File file = new File(cpyfile)
                 
