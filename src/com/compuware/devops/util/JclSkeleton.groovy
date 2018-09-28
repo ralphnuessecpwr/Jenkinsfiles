@@ -133,11 +133,6 @@ class JclSkeleton implements Serializable {
     {
 
         def iebcopyCopyBooksJcl = this.jobCardJcl
-
-        steps.echo "BUILD JCL using JC " + this.jobCardJcl
-        steps.echo iebcopyCopyBooksJcl
-
-
         def selectStatements    = []
 
         copyMembers.each {
@@ -147,16 +142,8 @@ class JclSkeleton implements Serializable {
         def selectJcl           = selectStatements.join("\n")  
 
         iebcopyCopyBooksJcl = iebcopyCopyBooksJcl + "\n" + iebcopyCopyBooksJclSkel
-
-        steps.echo iebcopyCopyBooksJcl
-
         iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<target_dsn>", targetDsn)
-
-        steps.echo iebcopyCopyBooksJcl
-
         iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<select_list>",selectJcl)
-
-        steps.echo iebcopyCopyBooksJcl
 
         return iebcopyCopyBooksJcl
 
