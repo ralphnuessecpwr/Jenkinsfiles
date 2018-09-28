@@ -13,33 +13,23 @@ class JclSkeleton implements Serializable {
     String ispwApplication
     String ispwPathNum
 
-    static String initCleanupJclSkel()
+    JclSkeleton(steps, String ispwApplication, String ispwPathNum) 
     {
-        def jclSkel         = ''
-        def jclStatements   = []
 
-        jclStatements.add("//CLEAN   EXEC PGM=IEFBR14")
-        jclStatements.add("//DELETE   DD DISP=(SHR,DELETE,DELETE),DSN=<clean_dsn>")
+        this.steps = steps
 
-        jclSkel = jclStatements.join("\n")
+        this.ispwApplication    = ispwApplication
+        this.ispwPathNum        = ispwPathNum
 
-        return jclSkel
-    }
-
-    static String initJobCardJcl()
-    {
-        def jclStatements = []
+        def jclStatements       = []
 
         jclStatements.add("//HDDRXM0J JOB ('EUDD,INTL'),'NUESSE',NOTIFY=&SYSUID,")
         jclStatements.add("//             MSGLEVEL=(1,1),MSGCLASS=X,CLASS=A,REGION=0M")
 
-        return jclStatements.join("\n")
-    }
+        this.jobCardJcl         = jclStatements.join("\n")
 
-    static String initIebcopyJclSkel(String ispwApplication, String ispwPathNum)
-    {
-        def jclSkel             = ''
-        def jclStatements       = []
+
+        jclStatements           = []
         def inputDdStatements   = []
         def copyDdStatements    = []
 
@@ -58,7 +48,7 @@ class JclSkeleton implements Serializable {
         jclStatements.add("<source_input_dd_list>")
         jclStatements.add("<select_list>")
 
-        jclSkel = jclStatements.join("\n")
+        jclSkel = 
 
         inputDdStatements.add("//IN1      DD DISP=SHR,DSN=SALESSUP.${ispwApplication}.QA${ispwPathNum}.CPY")
         inputDdStatements.add("//IN2      DD DISP=SHR,DSN=SALESSUP.${ispwApplication}.STG.CPY")
@@ -69,31 +59,21 @@ class JclSkeleton implements Serializable {
             copyDdStatements.add ("       INDD=IN${i+1}")
         }
 
-        def inputDdJcl          = inputDdStatements.join("\n")
-        def inputCopyJcl        = copyDdStatements.join("\n")
+        this.iebcopyCopyBooksJclSkel    = jclStatements.join("\n")
 
-        jclSkel = jclSkel.replace("<source_copy_pds_list>", inputDdJcl)
-        jclSkel = jclSkel.replace("<source_input_dd_list>", inputCopyJcl)
+        def inputDdJcl                  = inputDdStatements.join("\n")
+        def inputCopyJcl                = copyDdStatements.join("\n")
 
-        return jclSkel
+        iebcopyCopyBooksJclSkel         = iebcopyCopyBooksJclSkel.replace("<source_copy_pds_list>", inputDdJcl)
+        iebcopyCopyBooksJclSkel         = iebcopyCopyBooksJclSkel.replace("<source_input_dd_list>", inputCopyJcl)
 
-    }
 
-    JclSkeleton(steps, String ispwApplication, String ispwPathNum) 
-    {
+        jclStatements   = []
 
-        this.steps = steps
+        jclStatements.add("//CLEAN   EXEC PGM=IEFBR14")
+        jclStatements.add("//DELETE   DD DISP=(SHR,DELETE,DELETE),DSN=<clean_dsn>")
 
-        steps.echo "Inside Init"
-
-        this.ispwApplication    = ispwApplication
-        this.ispwPathNum        = ispwPathNum
-
-        steps.echo "Pre call"
-
-        this.jobCardJcl                 = initJobCardJcl()
-        this.iebcopyCopyBooksJclSkel    = initIebcopyJclSkel(ispwApplication, ispwPathNum)
-        this.cleanUpDatasetJclSkel      = initCleanupJclSkel()
+        this.cleanUpDatasetJclSkel = jclStatements.join("\n")
 
     }
 
