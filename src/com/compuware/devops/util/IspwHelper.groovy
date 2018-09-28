@@ -6,9 +6,6 @@ import com.compuware.devops.util.TaskInfo
 
 class IspwHelper implements Serializable 
 {
-
-    JclSkeleton jclSkeleton
-
     def steps
 
     def String ispwUrl
@@ -44,10 +41,6 @@ class IspwHelper implements Serializable
 
         this.hciConnId          = config.hciConnId
         this.hciTokenId         = config.hciTokenId
-
-        steps.echo "Pre initialize JclSkeleton"
-
-        this.jclSkeleton        = new JclSkeleton(steps, ispwApplication, applicationPathNum)
     }
 
     def downloadSources()
@@ -67,6 +60,8 @@ class IspwHelper implements Serializable
 
     def downloadCopyBooks(String workspace)
     {
+        JclSkeleton jclSkeleton = new JclSkeleton(steps, ispwApplication, applicationPathNum, workspace)
+
         def copyBookList = referencedCopyBooks(workspace)  
 
         if(copyBookList.size() > 0)       
