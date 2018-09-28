@@ -57,7 +57,7 @@ class JclSkeleton implements Serializable {
         def inputDdStatements   = []        
         def copyDdStatements    = []
 
-        File skelFile1 = new File(skelFilePath)
+        File skelFile1          = new File(skelFilePath)
 
         if(!skelFile1.exists())
         {
@@ -73,7 +73,7 @@ class JclSkeleton implements Serializable {
 
         skelFilePath        = "${workspace}\\config\\iebcopyInDd.skel"
 
-        File skelFile2 = new File(skelFilePath)
+        File skelFile2      = new File(skelFilePath)
 
         if(!skelFile2.exists())
         {
@@ -108,9 +108,9 @@ class JclSkeleton implements Serializable {
     def String buildDeleteSkel(workspace)
     {
 
-        skelFilePath        = "${workspace}\\config\\deleteDs.skel"
+        def skelFilePath    = "${workspace}\\config\\deleteDs.skel"
 
-        File skelFile = new File(skelFilePath)
+        File skelFile       = new File(skelFilePath)
 
         if(!skelFile.exists())
         {
