@@ -31,7 +31,7 @@ def call(Map pipelineParams)
 {
     node
     {
-
+        /* Initialization */
         PipelineConfig  pConfig     = new   PipelineConfig(
                                                 steps, 
                                                 pipelineParams
@@ -55,8 +55,7 @@ def call(Map pipelineParams)
             assignmentList = ispwHelper.getAssigmentList(cesTokenClear, pConfig.ispwTargetLevel)
         }
 
-        /*************************************************************************************************************/
-
+        /* Execution */
         stage("Retrieve Code From ISPW")
         {
             ispwHelper.downloadSources()

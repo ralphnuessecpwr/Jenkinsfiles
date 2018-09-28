@@ -112,15 +112,16 @@ class IspwHelper implements Serializable
 
 
 /* 
-    Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build and return a list of Assignments
-    that are contained in both the Task Id List and the List of Tasks in the Release 
+    Determine all assignments in the current container 
 */
     def ArrayList getAssigmentList(String cesToken, String level)
     {
         def returnList  = []
 
+        /* Get the list of taskIds in the current set */
         def taskIds     = getSetTaskIdList(cesToken, level)
 
+        /* Get all tasks in the corresponding release */
         def response = steps.httpRequest(
             url:                        "${ispwUrl}/ispw/${ispwRuntime}/releases/${ispwRelease}/tasks",
             consoleLogResponseBody:     false, 
@@ -143,12 +144,15 @@ class IspwHelper implements Serializable
         }
         else
         {
+            /* Compare the taskIds from the set to all tasks in the release */
+            /* Where they match, determine the assignment and add it to the list of assignments */
             def taskList = resp.tasks
 
             taskList.each
             {
                 if(taskIds.contains(it.taskId))
                 {
+                    /* Add assignment only if it not already in the list */
                     if(!(returnList.contains(it.container)))
                     {
                         returnList.add(it.container)        
@@ -161,9 +165,8 @@ class IspwHelper implements Serializable
 
     }
 
-
 /* 
-    Receive a response from an "Get Tasks in Set"-httpRequest and build and return a list of task IDs that belong to the desired level
+    Build and return a list of taskIds in the current container, that belong to the desired level
 */
     def ArrayList getSetTaskIdList(String cesToken, String level)
     {
@@ -196,6 +199,7 @@ class IspwHelper implements Serializable
 
             taskList.each
             {
+                /* Add taskId only if the component is a COBOL program and is on the desired level */
                 if(it.moduleType == 'COB' && it.level == level)
                 {
                     returnList.add(it.taskId)
@@ -318,120 +322,4 @@ class IspwHelper implements Serializable
         return returnList
 
     }
-
-    def String createCopyPds(List copyMembers, String pdsName) 
-    {
-        def JCLStatements = []
-
-        JCLStatements << "//HDDRXM0J  JOB CLASS=A,NOTIFY=&SYSUID,MSGCLASS=X,REGION=0M"
-        JCLStatements << "//*"
-        JCLStatements << "//COPY    EXEC PGM=IEBCOPY"
-        JCLStatements << "//SYSPRINT DD SYSOUT=*"
-        JCLStatements << "//SYSUT3   DD UNIT=SYSDA,SPACE=(TRK,(10,10))"
-        JCLStatements << "//SYSUT4   DD UNIT=SYSDA,SPACE=(TRK,(10,10))"
-        JCLStatements << "//IN1      DD DISP=SHR,DSN=SALESSUP.RXN3.DEV1.CPY"
-        JCLStatements << "//IN2      DD DISP=SHR,DSN=SALESSUP.RXN3.QA1.CPY"
-        JCLStatements << "//IN3      DD DISP=SHR,DSN=SALESSUP.RXN3.STG.CPY"
-        JCLStatements << "//IN4      DD DISP=SHR,DSN=SALESSUP.RXN3.PRD.CPY"
-        JCLStatements << "//OUT      DD DISP=(,CATLG,DELETE),"
-        JCLStatements << "//            DSN=${pdsName},"
-        JCLStatements << "//            UNIT=SYSDA,"
-        JCLStatements << "//            SPACE=(TRK,(10,20,130)),"
-        JCLStatements << "//            DCB=(RECFM=FB,LRECL=80)"
-        JCLStatements << "//SYSIN DD *"
-        JCLStatements << "  COPY OUTDD=OUT"
-        JCLStatements << "       INDD=IN1"
-        JCLStatements << "       INDD=IN2"
-        JCLStatements << "       INDD=IN3"
-        JCLStatements << "       INDD=IN4"
-
-        copyMembers.each {
-            JCLStatements << "  SELECT MEMBER=${it}"
-        }
-    
-        JCLStatements << "/*"
-        JCLStatements << "//"   
-
-        return JCLStatements.join("\n")
-    }
-
-    def String deleteDataset(String datasetName) 
-    {
-
-        def JCLStatements = []
-
-        JCLStatements << "//HDDRXM0J  JOB CLASS=A,NOTIFY=&SYSUID,MSGCLASS=X,REGION=0M"
-        JCLStatements << "//*"
-        JCLStatements << "//CLEAN   EXEC PGM=IEFBR14"
-        JCLStatements << "//DELETE   DD DISP=(SHR,DELETE,DELETE),DSN=${datasetName}"
-        JCLStatements << "//"   
-
-        return JCLStatements.join("\n")
-    }
-
-    def List referencedCopyBooks(String workspace) 
-    {
-
-        steps.echo "Get all .cbl in current workspace"
-        
-        // findFiles method requires the "Pipeline Utilities Plugin"
-        // Get all Cobol Sources in the MF_Source folder into an array 
-        def listOfSources   = steps.findFiles(glob: "**/${ispwApplication}/${mfSourceFolder}/*.cbl")
-        def listOfCopybooks = []
-        def lines           = []
-        def cbook           = /\bCOPY\b/
-        def tokenItem       = ''
-        def seventhChar     = ''
-        def lineToken       = ''
-
-        // Define a empty array for the list of programs
-        listOfSources.each 
-        {
-            steps.echo "Scanning Program: ${it}"
-            def cpyFile = "${workspace}\\${it}"
-
-            File file = new File(cpyFile)
-
-            if (file.exists()) 
-            {
-                lines = file.readLines().findAll({book -> book =~ /$cbook/})
-
-                lines.each 
-                {
-                    lineToken   = it.toString().tokenize()
-                    seventhChar = ""
-
-                    if (lineToken.get(0).toString().length() >= 7) 
-                    {
-                        seventhChar = lineToken.get(0).toString()[6]
-                    }
-                        
-                    for(int i=0;i<lineToken.size();i++) 
-                    {
-                        tokenItem = lineToken.get(i).toString()
-
-                        if (tokenItem == "COPY" && seventhChar != "*" ) 
-                        {
-                            steps.echo "Copybook: ${lineToken.get(i+1)}"
-                            tokenItem = lineToken.get(i+1).toString()
-        
-                            if (tokenItem.endsWith(".")) 
-                            {
-                                listOfCopybooks.add(tokenItem.substring(0,tokenItem.size()-1))
-                            }
-                            else 
-                            {
-                                listOfCopybooks.add(tokenItem)
-                            }
-                                
-                        i = lineToken.size()
-                        }
-                    }    
-                }
-            }
-        }
-
-        return listOfCopybooks
-
-    }    
 }
