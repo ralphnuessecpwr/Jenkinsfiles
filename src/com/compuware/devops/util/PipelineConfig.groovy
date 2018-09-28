@@ -7,20 +7,23 @@ class PipelineConfig implements Serializable
 {
     def steps
 
+    File gitConfigFile
+
     def mailListMap                 = ["HDDRXM0":"ralph.nuesse@compuware.com"]
 
 /* Environment specific settings, which differ between Jenkins servers and applications, but not between runs */
     public String gitTargetBranch   = "CONS"
     public String gitBranch         = "master"
-    public String sqScannerName     = "scanner" //"Scanner" //"scanner" 
-    public String sqServerName      = "localhost"  //"CWCC" //"localhost"  
-    public String sqServerUrl       = 'http://sonarqube.nasa.cpwr.corp:9000'
-    public String mfSourceFolder    = "MF_Source"
-    public String xlrTemplate       = "A Release from Jenkins" //"A Release from Jenkins - RNU" //"A Release from Jenkins"
-    public String xlrUser           = "admin"    //"xebialabs" //"admin"                           
-    public String tttFolder         = "tests"	
-    public String ispwUrl           = "http://cwcc.compuware.com:2020"
-    public String ispwRuntime       = "ispw"		 
+    
+    public String sqScannerName  //     = "scanner" //"Scanner" //"scanner" 
+    public String sqServerName   //     = "localhost"  //"CWCC" //"localhost"  
+    public String sqServerUrl    //     = 'http://sonarqube.nasa.cpwr.corp:9000'
+    public String mfSourceFolder //    = "MF_Source"
+    public String xlrTemplate    //     = "A Release from Jenkins" //"A Release from Jenkins - RNU" //"A Release from Jenkins"
+    public String xlrUser        //     = "admin"    //"xebialabs" //"admin"                           
+    public String tttFolder      //     = "tests"	
+    public String ispwUrl        //     = "http://cwcc.compuware.com:2020"
+    public String ispwRuntime    //     = "ispw"		 
 
 /* Runtime specific settings, which differ runs and get passed as parameters or determined during execution */
     public String ispwStream
@@ -77,4 +80,76 @@ class PipelineConfig implements Serializable
         this.mailRecipient      = mailListMap[(ispwOwner.toUpperCase())]
     }
 
+    def initialize(String workspace)
+    {
+        def configGitBranch     = "Dev"
+        def configGitProject    = "Jenkinsfiles"
+        def configGitPath       = "config"
+
+        GitHelper gitHelper     = new GitHelper(steps)
+
+        gitHelper.checkoutPath(gitUrl, configGitBranch, configGitPath, gitCredentials, configGitProject)
+
+        setServerConfig(workspace)
+    
+    }
+
+    def setServerConfig(String workspace)
+    {
+        /* Read Pipeline and environment specific parms */
+        def filePath = "${workspace}\\config\\pipeline.config"
+
+        File pipelineConfigFile = new File(filePath)
+
+        if(!pipelineConfigFile.exists())
+        {
+            steps.error "Pipeline Configuration File not found! \n Aborting Pipeline"
+        }
+
+        def lineToken
+        def parmName
+        def parmValue
+        def lines       = pipelineConfigFile.readLines()
+
+        lines.each
+        {
+            lineToken   = it.toString().tokenize("=")
+            parmName    = lineToken.get(0).toString()
+            parmValue   = lineToken.get(1).toString().trim()
+
+            switch(parmName)
+            {
+                case "SQ_SCANNER_NAME":
+                    sqScannerName   = parmValue
+                    break;
+                case "SQ_SERVER_NAME": 
+                    sqServerName    = parmValue
+                    break;
+                case "SQ_SERVER_URL":
+                    sqServerUrl     = parmValue
+                    break;
+                case "MF_SOURCE_FOLDER":
+                    mfSourceFolder  = parmValue
+                    break;
+                case "XLR_TEMPLATE":
+                    xlrTemplate     = parmValue
+                    break;
+                case "XLR_USER":
+                    xlrUser         = parmValue
+                    break;
+                case "TTT_FOLDER":
+                    tttFolder       = parmValue
+                    break;
+                case "ISPW_URL":
+                    ispwUrl         = parmValue
+                    break;
+                case "ISPW_RUNTIME":
+                    ispwRuntime     = parmValue
+                    break;
+                default:
+                    steps.echo "Found unknown Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
+                    break;
+            }
+        }
+    }
 }

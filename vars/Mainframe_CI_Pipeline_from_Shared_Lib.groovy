@@ -32,7 +32,7 @@ def call(Map pipelineParams)
     node
     {
         /* Initialization */
-        PipelineConfigNew  pConfig     = new   PipelineConfigNew(
+        PipelineConfig  pConfig     = new   PipelineConfig(
                                                 steps, 
                                                 pipelineParams
                                             )
