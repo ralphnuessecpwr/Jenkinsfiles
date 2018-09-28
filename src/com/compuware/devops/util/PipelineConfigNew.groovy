@@ -58,14 +58,21 @@ class PipelineConfigNew implements Serializable
         steps.checkout(
             changelog: false, 
             poll: false, 
-            scm: [$class: 'GitSCM', 
-                branches: [[name: '*/Dev']], 
-                doGenerateSubmoduleConfigurations: false, 
-                extensions: [[$class: 'SparseCheckoutPaths', 
-                    sparseCheckoutPaths: [[path: './config']]
+            scm: [
+                    $class: 'GitSCM', 
+                    branches: [[name: '*/Dev']], 
+                    doGenerateSubmoduleConfigurations: false, 
+                    extensions: [[
+                        $class: 'SparseCheckoutPaths', 
+                        sparseCheckoutPaths: [[path: './config']]
                     ]], 
-                submoduleCfg: [], 
-                userRemoteConfigs: [[credentialsId: '87763671-db9a-47e1-80e7-33c1aba803b1', url: 'https://github.com/ralphnuessecpwr/Jenkinsfiles.git']]]
+                    submoduleCfg: [], 
+                    userRemoteConfigs: [[
+                        credentialsId: '87763671-db9a-47e1-80e7-33c1aba803b1', 
+                        url: 'https://github.com/ralphnuessecpwr/Jenkinsfiles.git'
+                    ]]
+                ]
+        )
 
         this.ispwStream         = params.ISPW_Stream
         this.ispwApplication    = params.ISPW_Application

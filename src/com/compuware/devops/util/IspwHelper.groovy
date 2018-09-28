@@ -322,4 +322,70 @@ class IspwHelper implements Serializable
         return returnList
 
     }
+
+    def List referencedCopyBooks(String workspace) 
+    {
+
+        steps.echo "Get all .cbl in current workspace"
+        
+        // findFiles method requires the "Pipeline Utilities Plugin"
+        // Get all Cobol Sources in the MF_Source folder into an array 
+        def listOfSources   = steps.findFiles(glob: "**/${ispwApplication}/${mfSourceFolder}/*.cbl")
+        def listOfCopybooks = []
+        def lines           = []
+        def cbook           = /\bCOPY\b/
+        def tokenItem       = ''
+        def seventhChar     = ''
+        def lineToken       = ''
+
+        // Define a empty array for the list of programs
+        listOfSources.each 
+        {
+            steps.echo "Scanning Program: ${it}"
+            def cpyFile = "${workspace}\\${it}"
+
+            File file = new File(cpyFile)
+
+            if (file.exists()) 
+            {
+                lines = file.readLines().findAll({book -> book =~ /$cbook/})
+
+                lines.each 
+                {
+                    lineToken   = it.toString().tokenize()
+                    seventhChar = ""
+
+                    if (lineToken.get(0).toString().length() >= 7) 
+                    {
+                        seventhChar = lineToken.get(0).toString()[6]
+                    }
+                        
+                    for(int i=0;i<lineToken.size();i++) 
+                    {
+                        tokenItem = lineToken.get(i).toString()
+
+                        if (tokenItem == "COPY" && seventhChar != "*" ) 
+                        {
+                            steps.echo "Copybook: ${lineToken.get(i+1)}"
+                            tokenItem = lineToken.get(i+1).toString()
+        
+                            if (tokenItem.endsWith(".")) 
+                            {
+                                listOfCopybooks.add(tokenItem.substring(0,tokenItem.size()-1))
+                            }
+                            else 
+                            {
+                                listOfCopybooks.add(tokenItem)
+                            }
+                                
+                        i = lineToken.size()
+                        }
+                    }    
+                }
+            }
+        }
+
+        return listOfCopybooks
+
+    }        
 }
