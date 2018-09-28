@@ -114,7 +114,7 @@ class PipelineConfigNew implements Serializable
         def lineToken
         def parmName
         def parmValue
-        def lines       = file.readLines()
+        def lines       = pipelineConfigFile.readLines()
 
         lines.each
         {
