@@ -124,13 +124,13 @@ class PipelineConfigNew implements Serializable
 
             switch(parmValue)
             {
-                case "SQ_SCANNER_NAME"
+                case "SQ_SCANNER_NAME":
                     steps.echo "found SQ_SCANNER_NAME " + parmValue
                     break;
-                case "SQ_SERVER_NAME" 
+                case "SQ_SERVER_NAME": 
                     steps.echo "found SQ_SERVER_NAME " + parmValue
                     break;
-                default
+                default:
                     steps.echo "found " + parmName + " " + parmValue
 /*                    
 SQ_SERVER_URL=http://sonarqube.nasa.cpwr.corp:9000
