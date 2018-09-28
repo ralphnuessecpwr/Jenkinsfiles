@@ -3,7 +3,7 @@ package com.compuware.devops.util
 /* 
     Pipeline execution specific and server specific parameters which are use throughout the pipeline
 */
-class PipelineConfig implements Serializable
+class PipelineConfigNew implements Serializable
 {
     def steps
 
@@ -51,7 +51,7 @@ class PipelineConfig implements Serializable
       
     public String mailRecipient 
 
-    def PipelineConfig(steps, params)
+    def PipelineConfigNew(steps, params)
     {
         this.steps              = steps
 
