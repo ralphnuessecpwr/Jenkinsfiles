@@ -3,7 +3,7 @@ package com.compuware.devops.util
 /* 
     Pipeline execution specific and server specific parameters which are use throughout the pipeline
 */
-class PipelineConfig implements Serializable
+class PipelineConfig
 {
 
 /* Environment specific settings, which differ between Jenkins servers and applications, but not between runs */
