@@ -34,7 +34,7 @@ def call(Map pipelineParams)
 
         // PipelineConfig is a class storing constants independant from user used throuout the pipeline
         echo "Call PipelineConfig"
-        PipelineConfig  pConfig     = new PipelineConfig(pipelineParams)
+        PipelineConfig  pConfig     = new PipelineConfig(steps, pipelineParams)
 
         echo "Test " + pConfig.gitBranch
 
