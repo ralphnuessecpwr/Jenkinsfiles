@@ -7,23 +7,21 @@ class PipelineConfig implements Serializable
 {
     def steps
 
-    File gitConfigFile
-
-    def mailListMap                 = ["HDDRXM0":"ralph.nuesse@compuware.com"]
+    def mailListMap
 
 /* Environment specific settings, which differ between Jenkins servers and applications, but not between runs */
-    public String gitTargetBranch   = "CONS"
-    public String gitBranch         = "master"
+    public String gitTargetBranch
+    public String gitBranch      
     
-    public String sqScannerName  //     = "scanner" //"Scanner" //"scanner" 
-    public String sqServerName   //     = "localhost"  //"CWCC" //"localhost"  
-    public String sqServerUrl    //     = 'http://sonarqube.nasa.cpwr.corp:9000'
-    public String mfSourceFolder //    = "MF_Source"
-    public String xlrTemplate    //     = "A Release from Jenkins" //"A Release from Jenkins - RNU" //"A Release from Jenkins"
-    public String xlrUser        //     = "admin"    //"xebialabs" //"admin"                           
-    public String tttFolder      //     = "tests"	
-    public String ispwUrl        //     = "http://cwcc.compuware.com:2020"
-    public String ispwRuntime    //     = "ispw"		 
+    public String sqScannerName  
+    public String sqServerName   
+    public String sqServerUrl    
+    public String mfSourceFolder 
+    public String xlrTemplate    
+    public String xlrUser        
+    public String tttFolder      
+    public String ispwUrl        
+    public String ispwRuntime    
 
 /* Runtime specific settings, which differ runs and get passed as parameters or determined during execution */
     public String ispwStream
@@ -76,8 +74,6 @@ class PipelineConfig implements Serializable
         this.hciConnId          = params.HCI_Conn_ID
         this.hciTokenId         = params.HCI_Token
         this.ccRepository       = params.CC_repository
-
-        this.mailRecipient      = mailListMap[(ispwOwner.toUpperCase())]
     }
 
     def initialize(String workspace)
@@ -99,9 +95,9 @@ class PipelineConfig implements Serializable
         /* Read Pipeline and environment specific parms */
         def filePath = "${workspace}\\config\\pipeline.config"
 
-        File pipelineConfigFile = new File(filePath)
+        File configFile = new File(filePath)
 
-        if(!pipelineConfigFile.exists())
+        if(!configFile.exists())
         {
             steps.error "Pipeline Configuration File not found! \n Aborting Pipeline"
         }
@@ -109,7 +105,7 @@ class PipelineConfig implements Serializable
         def lineToken
         def parmName
         def parmValue
-        def lines       = pipelineConfigFile.readLines()
+        def lines       = configFile.readLines()
 
         lines.each
         {
@@ -152,4 +148,73 @@ class PipelineConfig implements Serializable
             }
         }
     }
+
+    def setTttGitConfig(String workspace)
+    {
+        /* Read Pipeline and environment specific parms */
+        def filePath = "${workspace}\\config\\tttgit.config"
+
+        File configFile = new File(filePath)
+
+        if(!configFile.exists())
+        {
+            steps.error "TTT Git Configuration File not found! \n Aborting Pipeline"
+        }
+
+        def lineToken
+        def parmName
+        def parmValue
+        def lines       = configFile.readLines()
+
+        lines.each
+        {
+            lineToken   = it.toString().tokenize("=")
+            parmName    = lineToken.get(0).toString()
+            parmValue   = lineToken.get(1).toString().trim()
+
+            switch(parmName)
+            {
+                case "TTT_GIT_TARGET_BRANCH":
+                    gitTargetBranch   = parmValue
+                    break;
+                case "TTT_GIT_BRANCH": 
+                    gitBranch    = parmValue
+                    break;
+                default:
+                    steps.echo "Found unknown Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
+                    break;
+            }
+        }
+    }
+
+    def setMailConfig(String workspace)
+    {
+        /* Read Pipeline and environment specific parms */
+        def filePath = "${workspace}\\config\\mail.config"
+
+        File configFile = new File(filePath)
+
+        if(!configFile.exists())
+        {
+            steps.error "Mail Configuration File not found! \n Aborting Pipeline"
+        }
+
+        def lineToken
+        def tsoUser
+        def emailAddress
+        def lines       = configFile.readLines()
+
+        lines.each
+        {
+            lineToken       = it.toString().tokenize("=")
+            tsoUser         = lineToken.get(0).toString()
+            emailAddress    = lineToken.get(1).toString().trim()
+
+            mailListMap.(tsoUser) = "${emailAddress}"
+        }
+
+        this.mailRecipient  = mailListMap[(ispwOwner.toUpperCase())]
+
+    }
+
 }

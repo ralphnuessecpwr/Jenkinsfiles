@@ -37,9 +37,9 @@ def call(Map pipelineParams)
                                                 pipelineParams
                                             )
 
-        echo "After pConfig Instance"
-
         pConfig.initialize("${workspace}")                                            
+
+        echo "Mail Address " + pConfig.mailRecipient
 
         GitHelper       gitHelper   = new   GitHelper(
                                                 steps
