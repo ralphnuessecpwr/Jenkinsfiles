@@ -123,7 +123,7 @@ class PipelineConfigNew implements Serializable
         {
             lineToken   = it.toString().tokenize("=")
             parmName    = lineToken.get(0).toString()
-            parmValue   = lineToken.get(1).toString()
+            parmValue   = lineToken.get(1).toString().trim()
 
             switch(parmName)
             {
@@ -141,6 +141,7 @@ class PipelineConfigNew implements Serializable
                     break;
                 case "XLR_TEMPLATE":
                     xlrTemplate     = parmValue
+                    steps.echo "XLR_TEMPLATE = " + parmValue
                     break;
                 case "XLR_USER":
                     xlrUser         = parmValue
