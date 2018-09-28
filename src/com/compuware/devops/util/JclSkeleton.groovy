@@ -76,7 +76,7 @@ class JclSkeleton implements Serializable {
         iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<source_input_dd_list>", inputCopyJcl)
         iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<select_list>", selectJcl)
 
-        steps.echo"JCL created \n" + iebcopyCopyBooksJcl
+        echo "JCL created \n" + iebcopyCopyBooksJcl
 
         return iebcopyCopyBooksJcl
 
