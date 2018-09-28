@@ -48,8 +48,6 @@ class JclSkeleton implements Serializable {
         jclStatements.add("<source_input_dd_list>")
         jclStatements.add("<select_list>")
 
-        jclSkel = 
-
         inputDdStatements.add("//IN1      DD DISP=SHR,DSN=SALESSUP.${ispwApplication}.QA${ispwPathNum}.CPY")
         inputDdStatements.add("//IN2      DD DISP=SHR,DSN=SALESSUP.${ispwApplication}.STG.CPY")
         inputDdStatements.add("//IN3      DD DISP=SHR,DSN=SALESSUP.${ispwApplication}.PRD.CPY")
