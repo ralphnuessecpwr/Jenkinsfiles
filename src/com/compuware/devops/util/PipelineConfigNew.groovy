@@ -104,11 +104,45 @@ class PipelineConfigNew implements Serializable
 
         def filePath = "${workspace}\\config\\pipeline.config"
 
-        steps.echo "Search for File " + filePath
-
         File pipelineConfigFile = new File(filePath)
 
-        steps.echo "File exists " + pipelineConfigFile.exists()
+        if(!pipelineConfigFile.exists())
+        {
+            steps.error "Pipeline Configuration File not found! \n Aborting Pipeline"
+        }
+
+        def lineToken
+        def parmName
+        def parmValue
+        def lines       = file.readLines()
+
+        lines.each
+        {
+            lineToken   = it.toString().tokenize("=")
+            parmName    = lineToken.get(0).toString()
+            parmValue   = lineToken.get(1).toString()
+
+            switch(parmValue)
+            {
+                case "SQ_SCANNER_NAME"
+                    steps.echo "found SQ_SCANNER_NAME " + parmValue
+                    break;
+                case "SQ_SERVER_NAME" 
+                    steps.echo "found SQ_SERVER_NAME " + parmValue
+                    break;
+                default
+                    steps.echo "found " + parmName + " " + parmValue
+/*                    
+SQ_SERVER_URL=http://sonarqube.nasa.cpwr.corp:9000
+MF_SOURCE_FOLDER=MF_Source
+XLR_TEMPLATE=A Release from Jenkins - RNU
+XLR_USER=xebialabs                           
+TTT_FOLDER=tests   
+ISPW_URL=http://cwcc.compuware.com:2020
+ISPW_RUNTIME=ispw         
+*/
+            }
+        }
 
     }
 
