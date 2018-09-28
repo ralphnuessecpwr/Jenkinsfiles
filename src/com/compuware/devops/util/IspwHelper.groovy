@@ -58,39 +58,46 @@ class IspwHelper implements Serializable
     def downloadCopyBooks()
     {
         def copyBookList = referencedCopyBooks()  
-       
-        // Get a string with JCL to create a PDS with referenced Copybooks
-        def pdsDatasetName = 'HDDRXM0.DEVOPS.ISPW.COPY.PDS'
-        def processJcl = createCopyPds(copyBookList, pdsDatasetName)
-                
-        // Submit the JCL created to create a PDS with Copybooks
-        steps.topazSubmitFreeFormJcl( 
-            connectionId:       "${hciConnId}", 
-            credentialsId:      "${hciTokenId}", 
-            jcl:                processJcl, 
-            maxConditionCode:   '4'
-        )
-                       
-        // Download the PDS generated
-        steps.checkout([
-            $class:         'PdsConfiguration', 
-            connectionId:   "${hciConnId}",
-            credentialsId:  "${hciTokenId}",
-            fileExtension:  'cpy',
-            filterPattern:  "${pdsDatasetName}",
-            targetFolder:   "${ispwApplication}/${mfSourceFolder}"
-        ])
-                                              
-                       
-        // Delete the downloaded Dataset
-        processJcl = deleteDataset(pdsDatasetName)
 
-        steps.topazSubmitFreeFormJcl(
-            connectionId:       "${HCI_Conn_ID}",
-            credentialsId:      "${HCI_Token}",
-            jcl:                processJcl,
-            maxConditionCode:   '4'
-        )
+        if(copyBookList.size() > 0)       
+        {
+            // Get a string with JCL to create a PDS with referenced Copybooks
+            def pdsDatasetName = 'HDDRXM0.DEVOPS.ISPW.COPY.PDS'
+            def processJcl = createCopyPds(copyBookList, pdsDatasetName)
+                    
+            // Submit the JCL created to create a PDS with Copybooks
+            steps.topazSubmitFreeFormJcl( 
+                connectionId:       "${hciConnId}", 
+                credentialsId:      "${hciTokenId}", 
+                jcl:                processJcl, 
+                maxConditionCode:   '4'
+            )
+                        
+            // Download the PDS generated
+            steps.checkout([
+                $class:         'PdsConfiguration', 
+                connectionId:   "${hciConnId}",
+                credentialsId:  "${hciTokenId}",
+                fileExtension:  'cpy',
+                filterPattern:  "${pdsDatasetName}",
+                targetFolder:   "${ispwApplication}/${mfSourceFolder}"
+            ])
+                                                
+                        
+            // Delete the downloaded Dataset
+            processJcl = deleteDataset(pdsDatasetName)
+
+            steps.topazSubmitFreeFormJcl(
+                connectionId:       "${HCI_Conn_ID}",
+                credentialsId:      "${HCI_Token}",
+                jcl:                processJcl,
+                maxConditionCode:   '4'
+            )
+        }
+        else
+        {
+            steps.echo "No Copy Books to download"
+        }
     }
 
 
@@ -306,7 +313,7 @@ class IspwHelper implements Serializable
     {
         def JCLStatements = []
 
-        JCLStatements << "//HDDRXN0N  JOB CLASS=A,NOTIFY=&SYSUID,MSGCLASS=X,REGION=0M"
+        JCLStatements << "//HDDRXM0J  JOB CLASS=A,NOTIFY=&SYSUID,MSGCLASS=X,REGION=0M"
         JCLStatements << "//*"
         JCLStatements << "//COPY    EXEC PGM=IEBCOPY"
         JCLStatements << "//SYSPRINT DD SYSOUT=*"
@@ -343,7 +350,7 @@ class IspwHelper implements Serializable
 
         def JCLStatements = []
 
-        JCLStatements << "//HDDRXN0N  JOB CLASS=A,NOTIFY=&SYSUID,MSGCLASS=X,REGION=0M"
+        JCLStatements << "//HDDRXM0J  JOB CLASS=A,NOTIFY=&SYSUID,MSGCLASS=X,REGION=0M"
         JCLStatements << "//*"
         JCLStatements << "//CLEAN   EXEC PGM=IEFBR14"
         JCLStatements << "//DELETE   DD DISP=(SHR,DELETE,DELETE),DSN=${datasetName}"
