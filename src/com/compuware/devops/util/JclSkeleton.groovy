@@ -6,8 +6,8 @@ package com.compuware.devops.util
 class JclSkeleton implements Serializable {
 
     String jobCardJcl
-    String iebcopyCopyBooksJcl
-    String cleanUpDatasetJcl
+    String iebcopyCopyBooksJclSkel
+    String cleanUpDatasetJclSkel
 
     JclSkeleton() 
     {
@@ -43,7 +43,7 @@ class JclSkeleton implements Serializable {
         jclStatements.add("//CLEAN   EXEC PGM=IEFBR14")
         jclStatements.add("//DELETE   DD DISP=(SHR,DELETE,DELETE),DSN=<clean_dsn>")
 
-        this.cleanUpDatasetJcl = jclStatements.join("\n")
+        this.cleanUpDatasetJclSkel = jclStatements.join("\n")
 
     }
                
