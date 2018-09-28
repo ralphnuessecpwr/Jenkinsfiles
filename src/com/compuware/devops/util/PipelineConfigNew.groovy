@@ -14,18 +14,17 @@ class PipelineConfigNew implements Serializable
 /* Environment specific settings, which differ between Jenkins servers and applications, but not between runs */
     public String gitTargetBranch   = "CONS"
     public String gitBranch         = "master"
-    /*
-    public String sqScannerName     = "scanner" //"Scanner" //"scanner" 
-    public String sqServerName      = "localhost"  //"CWCC" //"localhost"  
-    public String sqServerUrl       = 'http://sonarqube.nasa.cpwr.corp:9000'
-    public String mfSourceFolder    = "MF_Source"
-    public String xlrTemplate       = "A Release from Jenkins" //"A Release from Jenkins - RNU" //"A Release from Jenkins"
-    public String xlrUser           = "admin"    //"xebialabs" //"admin"                           
-    public String tttFolder         = "tests"	
-    public String ispwUrl           = "http://cwcc.compuware.com:2020"
-    public String ispwRuntime       = "ispw"		 
-    */
     
+    public String sqScannerName  //     = "scanner" //"Scanner" //"scanner" 
+    public String sqServerName   //     = "localhost"  //"CWCC" //"localhost"  
+    public String sqServerUrl    //     = 'http://sonarqube.nasa.cpwr.corp:9000'
+    public String mfSourceFolder //    = "MF_Source"
+    public String xlrTemplate    //     = "A Release from Jenkins" //"A Release from Jenkins - RNU" //"A Release from Jenkins"
+    public String xlrUser        //     = "admin"    //"xebialabs" //"admin"                           
+    public String tttFolder      //     = "tests"	
+    public String ispwUrl        //     = "http://cwcc.compuware.com:2020"
+    public String ispwRuntime    //     = "ispw"		 
+
 /* Runtime specific settings, which differ runs and get passed as parameters or determined during execution */
     public String ispwStream
     public String ispwApplication
