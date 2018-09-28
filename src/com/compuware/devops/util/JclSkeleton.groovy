@@ -5,12 +5,15 @@ package com.compuware.devops.util
 */
 class JclSkeleton implements Serializable {
 
+    steps
+
     String jobCardJcl
     String iebcopyCopyBooksJclSkel
     String cleanUpDatasetJclSkel
 
-    JclSkeleton() 
+    JclSkeleton(steps) 
     {
+        this.steps = steps
 
         def jclStatements = []
 
@@ -76,7 +79,7 @@ class JclSkeleton implements Serializable {
         iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<source_input_dd_list>", inputCopyJcl)
         iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<select_list>", selectJcl)
 
-        echo "JCL created \n" + iebcopyCopyBooksJcl
+        println "JCL created \n" + iebcopyCopyBooksJcl
 
         return iebcopyCopyBooksJcl
 
