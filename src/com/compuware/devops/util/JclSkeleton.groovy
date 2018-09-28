@@ -109,6 +109,7 @@ class JclSkeleton implements Serializable {
     {
 
         def skelFilePath    = "${workspace}\\config\\deleteDs.skel"
+        def jclStatements   = []        
 
         File skelFile       = new File(skelFilePath)
 
@@ -118,8 +119,6 @@ class JclSkeleton implements Serializable {
         }
 
         def lines = skelFile.readLines()
-
-        jclStatements   = []
 
         lines.each
         {
