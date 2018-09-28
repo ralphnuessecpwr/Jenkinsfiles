@@ -60,7 +60,7 @@ class IspwHelper implements Serializable
 
     def downloadCopyBooks(String workspace)
     {
-        JclSkeleton jclSkeleton = new JclSkeleton(steps, ispwApplication, applicationPathNum, workspace)
+        JclSkeleton jclSkeleton = new JclSkeleton(steps, ispwApplication, applicationPathNum)
 
         def copyBookList = referencedCopyBooks(workspace)  
 
