@@ -59,10 +59,13 @@ class JclSkeleton implements Serializable {
         def copyDdStatements    = []
         def selectStatements    = []
 
+        inputDdStatements.add("//IN1      DD DISP=SHR,DSN=SALESSUP.${ispwApplication}.QA${ispwPathNum}.CPY")
+        inputDdStatements.add("//IN2      DD DISP=SHR,DSN=SALESSUP.${ispwApplication}.STG.CPY")
+        inputDdStatements.add("//IN3      DD DISP=SHR,DSN=SALESSUP.${ispwApplication}.PRD.CPY")
+
         for(int i=0; i < 2; i++)
-        {            
-            inputDdStatements.add("//IN${i}       DD DISP=SHR,DSN=SALESSUP.${ispwApplication}.QA{$ispwPathNum}")
-            copyDdStatements.add ("       INDD=IN${i}")
+        {                        
+            copyDdStatements.add ("       INDD=IN${i+1}")
         }
 
         copyMembers.each {
