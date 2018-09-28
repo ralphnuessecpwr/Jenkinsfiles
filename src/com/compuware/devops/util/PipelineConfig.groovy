@@ -35,7 +35,7 @@ class PipelineConfig implements Serializable
 
     public String gitProject        
     public String gitCredentials    
-    public String gitURL            
+    public String gitUrl            
     public String gitTttRepo        
 
     public String cesTokenId        
@@ -66,7 +66,7 @@ class PipelineConfig implements Serializable
 
         this.gitProject         = params.Git_Project
         this.gitCredentials     = params.Git_Credentials
-        this.gitURL             = "https://github.com/${gitProject}"
+        this.gitUrl             = "https://github.com/${gitProject}"
         this.gitTttRepo         = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
 
         this.cesTokenId         = params.CES_Token       
