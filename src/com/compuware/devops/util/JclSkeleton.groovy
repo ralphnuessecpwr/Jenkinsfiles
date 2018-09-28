@@ -132,9 +132,9 @@ class JclSkeleton implements Serializable {
     def String createIebcopyCopyBooksJcl(String targetDsn, List copyMembers)
     {
 
-        def iebcopyCopyBooksJcl = jobCardJcl
+        def iebcopyCopyBooksJcl = this.jobCardJcl
 
-        steps.echo "BUILD JCL using JC " + jobCardJcl
+        steps.echo "BUILD JCL using JC " + this.jobCardJcl
         steps.echo iebcopyCopyBooksJcl
 
 
