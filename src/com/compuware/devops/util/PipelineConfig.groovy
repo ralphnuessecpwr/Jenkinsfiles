@@ -216,7 +216,9 @@ class PipelineConfig implements Serializable
 
             steps.echo "Add TSO " + tsoUser + " email " + emailAddress
 
-            mailListMap.(tsoUser) = "${emailAddress}"
+            mailListMap."${tsoUser}" = "${emailAddress}"
+
+            steps.echo mailListMap.toString()
         }
 
         this.mailRecipient  = mailListMap[(ispwOwner.toUpperCase())]
