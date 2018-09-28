@@ -37,6 +37,8 @@ def call(Map pipelineParams)
                                                 pipelineParams
                                             )
 
+        pConfig.initialize()                                            
+
         GitHelper       gitHelper   = new   GitHelper(
                                                 steps
                                             )
