@@ -100,6 +100,7 @@ class JclSkeleton implements Serializable {
     {
         def deleteJcl   = jobCardJcl
 
+        deleteJcl       = deleteJcl + "\n" + cleanUpDatasetJclSkel
         deleteJcl       = deleteJcl.replace("<clean_dsn>", targetDsn)
 
         return deleteJcl
