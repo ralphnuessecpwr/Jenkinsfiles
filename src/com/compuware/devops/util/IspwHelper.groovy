@@ -379,19 +379,11 @@ class IspwHelper implements Serializable
             steps.echo "Scanning Program: ${it}"
             def cpyFile = "${workspace}\\${it}"
 
-            steps.echo "File " + cpyFile
-            
             File file = new File(cpyFile)
-
-            steps.echo "Files exists " + file.exists()
 
             if (file.exists()) 
             {
                 lines = file.readLines().findAll({book -> book =~ /$cbook/})
-
-                steps.echo "readLines " + file.readLines().toString()
-
-                steps.echo "Lines " + lines.toString()
 
                 lines.each 
                 {
