@@ -13,24 +13,6 @@ class JclSkeleton implements Serializable {
     String ispwApplication
     String ispwPathNum
 
-    JclSkeleton(steps, String ispwApplication, String ispwPathNum) 
-    {
-
-        this.steps = steps
-
-        steps.echo "Inside Init"
-
-        this.ispwApplication    = ispwApplication
-        this.ispwPathNum        = ispwPathNum
-
-        steps.echo "Pre call"
-
-        this.jobCardJcl                 = initJobCardJcl()
-        this.iebcopyCopyBooksJclSkel    = initIebcopyJclSkel(ispwApplication, ispwPathNum)
-        this.cleanUpDatasetJclSkel      = initCleanupJclSkel()
-
-    }
-
     def String initCleanupJclSkel()
     {
         def jclSkel         = ''
@@ -94,6 +76,24 @@ class JclSkeleton implements Serializable {
         jclSekl = jclSkel.replace("<source_input_dd_list>", inputCopyJcl)
 
         return jclSkel
+
+    }
+
+    JclSkeleton(steps, String ispwApplication, String ispwPathNum) 
+    {
+
+        this.steps = steps
+
+        steps.echo "Inside Init"
+
+        this.ispwApplication    = ispwApplication
+        this.ispwPathNum        = ispwPathNum
+
+        steps.echo "Pre call"
+
+        this.jobCardJcl                 = initJobCardJcl()
+        this.iebcopyCopyBooksJclSkel    = initIebcopyJclSkel(ispwApplication, ispwPathNum)
+        this.cleanUpDatasetJclSkel      = initCleanupJclSkel()
 
     }
 
