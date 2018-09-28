@@ -210,7 +210,7 @@ class PipelineConfig implements Serializable
 
         lines.each
         {
-            lineToken       = it.toString().tokenize("=")
+            lineToken       = it.toString().tokenize(":")
             tsoUser         = lineToken.get(0).toString()
             emailAddress    = lineToken.get(1).toString().trim()
 
