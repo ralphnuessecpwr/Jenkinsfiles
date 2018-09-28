@@ -10,10 +10,16 @@ class JclSkeleton implements Serializable {
     String jobCardJcl
     String iebcopyCopyBooksJclSkel
     String cleanUpDatasetJclSkel
+    String ispwApplication
+    String ispwPathNum
 
     JclSkeleton(steps, String ispwApplication, String ispwPathNum) 
     {
+        
         this.steps = steps
+
+        this.ispwApplication    = ispwApplication
+        this.ispwPathNum        = ispwPathNum
 
         this.jobCardJcl                 = initJobCardJcl()
         this.iebcopyCopyBooksJclSkel    = initIebcopyJclSkel(ispwApplication, ispwPathNum)
