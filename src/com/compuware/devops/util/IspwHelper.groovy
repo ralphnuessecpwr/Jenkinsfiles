@@ -45,6 +45,8 @@ class IspwHelper implements Serializable
         this.hciConnId          = config.hciConnId
         this.hciTokenId         = config.hciTokenId
 
+        steps.echo "Pre initialize JclSkeleton"
+
         this.jclSkeleton        = new JclSkeleton(steps, ispwApplication, applicationPathNum)
     }
 
