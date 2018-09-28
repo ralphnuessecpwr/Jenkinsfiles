@@ -377,10 +377,14 @@ class IspwHelper implements Serializable
         listOfSources.each 
         {
             steps.echo "Scanning Program: ${it}"
-            def cpyfile = "./${it}"
+            def cpyFile = "./${it}"
+
+            steps.echo "File " + cpyFile
             
-            File file = new File(cpyfile)
-                
+            File file = new File(cpyFile)
+
+            steps.echo "Files exists " + file.exists()
+
             if (file.exists()) 
             {
                 lines = file.readLines().findAll({book -> book =~ /$cbook/})
