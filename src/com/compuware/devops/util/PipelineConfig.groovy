@@ -7,6 +7,8 @@ class PipelineConfig implements Serializable
 {
     def steps
 
+    def mailListMap                 = ["HDDRXM0":"ralph.nuesse@compuware.com"]
+
 /* Environment specific settings, which differ between Jenkins servers and applications, but not between runs */
     public String gitTargetBranch   = "CONS"
     public String gitBranch         = "master"
@@ -73,14 +75,7 @@ class PipelineConfig implements Serializable
         this.hciTokenId         = params.HCI_Token
         this.ccRepository       = params.CC_repository
 
-        steps.echo "After Tokens"
-
-        MailList mailList       = new MailList()
-
-        steps.echo "After MailList"
-
-        this.mailRecipient      = mailList.getEmail(ispwOwner)
-
+        this.mailRecipient      = mailListMap[(ispwOwner.toUpperCase())]
     }
 
 }
