@@ -25,6 +25,10 @@ class JclSkeleton implements Serializable {
         this.jobCardJcl                 = buildJobCard      (workspace)
         this.iebcopyCopyBooksJclSkel    = buildIebcopySkel  (workspace)
         this.cleanUpDatasetJclSkel      = buildDeleteSkel   (workspace)
+
+        steps.echo "JC  " + jobCardJcl
+        steps.echo "IEB " + iebcopyCopyBooksJclSkel
+        steps.echo "DEL " + cleanUpDatasetJclSkel
     }
 
     def String buildJobCard(String workspace)
