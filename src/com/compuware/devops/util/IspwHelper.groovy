@@ -13,14 +13,15 @@ class IspwHelper implements Serializable
     def String ispwContainer
     def String ispwRelease
     
-    IspwHelper(steps, String ispwUrl, String ispwRuntime, String ispwRelease, String ispwContainer)
+    IspwHelper(steps, config) 
+    //String ispwUrl, String ispwRuntime, String ispwRelease, String ispwContainer)
     {
 
         this.steps          = steps
-        this.ispwUrl        = ispwUrl
-        this.ispwRuntime    = ispwRuntime
-        this.ispwContainer  = ispwContainer
-        this.ispwRelease    = ispwRelease
+        this.ispwUrl        = config.ispwUrl
+        this.ispwRuntime    = config.ispwRuntime
+        this.ispwContainer  = config.ispwContainer
+        this.ispwRelease    = config.ispwRelease
 
     }
 
