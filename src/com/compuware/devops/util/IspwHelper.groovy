@@ -402,7 +402,7 @@ class IspwHelper implements Serializable
 
                         if (tokenItem == "COPY" && seventhChar != "*" ) 
                         {
-                            steps.echo "Copybook: ${LineToken.get(i+1)}"
+                            steps.echo "Copybook: ${lineToken.get(i+1)}"
                             tokenItem = lineToken.get(i+1).toString()
         
                             if (tokenItem.endsWith(".")) 
