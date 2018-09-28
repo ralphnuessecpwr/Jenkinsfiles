@@ -87,7 +87,7 @@ class JclSkeleton implements Serializable {
             inputDdStatements.add(it.toString())
         }        
 
-        for(int i=0; i <= inputDdStatements.size(); i++)
+        for(int i=0; i < inputDdStatements.size(); i++)
         {                        
             copyDdStatements.add ("       INDD=IN${i+1}")
         }
