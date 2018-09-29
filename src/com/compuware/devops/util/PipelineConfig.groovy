@@ -196,7 +196,7 @@ class PipelineConfig implements Serializable
         /* Read Pipeline and environment specific parms */
         configFileProvider([configFile(fileId: 'MailList', variable: 'mailConfigPath')]) 
         {
-            File configFile = new File(filePath)
+            File configFile = new File(mailConfigPath)
 
             if(!configFile.exists())
             {
@@ -209,7 +209,7 @@ class PipelineConfig implements Serializable
             def lines       = configFile.readLines()
 
         }
-        
+
         /*
         def filePath = "${workspace}\\config\\mail.config"
 
