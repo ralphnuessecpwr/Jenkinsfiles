@@ -192,8 +192,25 @@ class PipelineConfig implements Serializable
     }
 
     def setMailConfig(String workspace)
-    {
+    {        
         /* Read Pipeline and environment specific parms */
+        configFileProvider([configFile(fileId: 'MailList', variable: 'mailConfigPath')]) 
+        {
+            File configFile = new File(filePath)
+
+            if(!configFile.exists())
+            {
+                steps.error "Mail Configuration File not found! \n Aborting Pipeline"
+            }
+
+            def lineToken
+            def tsoUser
+            def emailAddress
+            def lines       = configFile.readLines()
+
+        }
+        
+        /*
         def filePath = "${workspace}\\config\\mail.config"
 
         File configFile = new File(filePath)
@@ -207,6 +224,7 @@ class PipelineConfig implements Serializable
         def tsoUser
         def emailAddress
         def lines       = configFile.readLines()
+        */
 
         lines.each
         {
