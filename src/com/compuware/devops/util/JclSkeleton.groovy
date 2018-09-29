@@ -18,6 +18,8 @@ class JclSkeleton implements Serializable {
         this.steps              = steps
         this.ispwApplication    = ispwApplication
         this.ispwPathNum        = ispwPathNum
+
+        initialize("TEST")
     }
 
     def initialize(String workspace)
