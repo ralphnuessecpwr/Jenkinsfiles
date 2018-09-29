@@ -194,7 +194,7 @@ class PipelineConfig implements Serializable
     def setMailConfig(String workspace)
     {        
         /* Read Pipeline and environment specific parms */
-        configFileProvider([configFile(fileId: 'MailList', variable: 'mailConfigPath')]) 
+        steps.configFileProvider([configFile(fileId: 'MailList', variable: 'mailConfigPath')]) 
         {
             File configFile = new File(mailConfigPath)
 
