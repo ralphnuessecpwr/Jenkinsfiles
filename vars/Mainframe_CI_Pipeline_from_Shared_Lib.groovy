@@ -12,16 +12,6 @@ import com.compuware.devops.util.*
  Helper Methods for the Pipeline Script
 */
 
-/**
- Determine the ISPW Path Number for use in Total Test
- @param Level - Level Parameter is the Level returned in the ISPW Webhook
-*/
-/*
-def String getPathNum(String level)
-{
-    return level.charAt(level.length() - 1)
-}
-*/
 
 /**
 Call method to execute the pipeline from a shared library
@@ -85,79 +75,13 @@ def call(Map pipelineParams)
             gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
         }
 
-        // findFiles method requires the "Pipeline Utilities Plugin"
-        // Get all testscenario files in the current workspace into an array
-        def TTTListOfScenarios  = findFiles(glob: '**/*.testscenario')
-
-        // Get all Cobol Sources in the MF_Source folder into an array 
-        def ListOfSources       = findFiles(glob: "**/${pConfig.ispwApplication}/${pConfig.mfSourceFolder}/*.cbl")
-
-        // Define a empty array for the list of programs
-        def ListOfPrograms      = []
-        
-        // Determine program names for each source member
-        ListOfSources.each
-        {
-            // The split method uses regex to search for patterns, therefore
-            // Backslashes, Dots and Underscores which mean certain patterns in regex need to be escaped 
-            // The backslash in Windows paths is duplicated in Java, therefore it need to be escaped twice
-            // Trim ./cbl from the Source members to populate the array of program names
-            ListOfPrograms.add(it.name.trim().split("\\.")[0])
-        }
-
         /* 
         This stage executes any Total Test Projects related to the mainframe source that was downloaded
         */ 
         stage("Execute related Unit Tests")
         {
-        /*
-            // Loop through all downloaded Topaz for Total Test scenarios
-            TTTListOfScenarios.each
-            {
-
-                // Get root node of the path, i.e. the name of the Total Test project
-                def TTTScenarioPath        = it.path // Fully qualified name of the Total Test Scenario file
-                def TTTProjectName         = it.path.trim().split("\\\\")[0] + "\\"+ it.path.trim().split("\\\\")[1]  // Total Test Project name is the root folder of the full path to the testscenario 
-                def TTTScenarioFullName    = it.name  // Get the full name of the testscenario file i.e. "name.testscenario"
-                def TTTScenarioName        = it.name.trim().split("\\.")[0]  // Get the name of the scenario file without ".testscenario"
-                def TTTScenarioTarget      = TTTScenarioName.split("\\_")[0]  // Target Program will be the first part of the scenario name (convention)
-        
-                // For each of the scenarios walk through the list of source files and determine if the target matches one of the programs
-                // In that case, execute the unit test.  Determine if the program name matches the target of the Total Test scenario
-                if(ListOfPrograms.contains(TTTScenarioTarget))
-                {
-                    // Log which 
-                    println "*************************"
-                    println "Scenario " + TTTScenarioFullName
-                    println "Path " + TTTScenarioPath
-                    println "Project " + TTTProjectName
-                    println "*************************"
-                
-                    step([
-                        $class:       'TotalTestBuilder', 
-                            ccClearStats:   false,                // Clear out any existing Code Coverage stats for the given ccSystem and ccTestId
-                            ccRepo:         "${pConfig.ccRepository}",
-                            ccSystem:       "${pConfig.ispwApplication}", 
-                            ccTestId:       "${BUILD_NUMBER}",        // Jenkins environment variable, resolves to build number, i.e. #177 
-                            credentialsId:  "${pConfig.hciTokenId}", 
-                            deleteTemp:     true,                   // (true|false) Automatically delete any temp files created during the execution
-                            hlq:            '',                            // Optional - high level qualifier used when allocation datasets
-                            connectionId:   "${pConfig.hciConnId}",    
-                            jcl:            "${pConfig.tttJcl}",                  // Name of the JCL file in the Total Test Project to execute
-                            projectFolder:  "${TTTProjectName}", // Name of the Folder in the file system that contains the Total Test Project.  
-                            testSuite:      "${TTTScenarioFullName}",// Name of the Total Test Scenario to execute
-                            useStubs:       true
-                    ])                   // (true|false) - Execute with or without stubs
-                }
-            }
-
-            // Process the Total Test Junit result files into Jenkins
-            junit allowEmptyResults:    true, 
-                keepLongStdio:          true, 
-                testResults:            "TTTUnit/*.xml"
-            */
             tttHelper.loopThruScenarios()
-
+            tttHelper.passResultsToJunit()
         }
 
         /* 
@@ -165,20 +89,7 @@ def call(Map pipelineParams)
         */ 
         stage("Collect Coverage Metrics")
         {
-            // Code Coverage needs to match the code coverage metrics back to the source code in order for them to be loaded in SonarQube
-            // The source variable is the location of the source that was downloaded from ISPW
-            def String sources="${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}"
-
-            // The Code Coverage Plugin passes it's primary configuration in the string or a file
-            def ccproperties = 'cc.sources=' + sources + '\rcc.repos=' + pConfig.ccRepository + '\rcc.system=' + pConfig.ispwApplication  + '\rcc.test=' + BUILD_NUMBER
-
-            step([
-                $class:                   'CodeCoverageBuilder',
-                    analysisProperties:         ccproperties,       // Pass in the analysisProperties as a string
-                    analysisPropertiesPath:     '',             // Pass in the analysisProperties as a file.  Not used in this example
-                    connectionId:               "${pConfig.hciConnId}", 
-                    credentialsId:              "${pConfig.hciTokenId}"
-            ])
+            tttHelper.collectCodeCoverageResults()
         }
 
         /* 

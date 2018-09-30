@@ -87,9 +87,28 @@ class TttHelper implements Serializable {
     def passResultsToJunit()
     {
         // Process the Total Test Junit result files into Jenkins
-        junit allowEmptyResults:    true, 
-            keepLongStdio:          true, 
-            testResults:            "TTTUnit/*.xml"
+        steps.junit allowEmptyResults:    true, 
+            keepLongStdio:                true, 
+            testResults:                  "TTTUnit/*.xml"
+    }
+
+    def collectCodeCoverageResults()
+    {
+        // Code Coverage needs to match the code coverage metrics back to the source code in order for them to be loaded in SonarQube
+        // The source variable is the location of the source that was downloaded from ISPW
+        def sources="${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}"
+
+        // The Code Coverage Plugin passes it's primary configuration in the string or a file
+        def ccproperties = 'cc.sources=' + sources + '\rcc.repos=' + pConfig.ccRepository + '\rcc.system=' + pConfig.ispwApplication  + '\rcc.test=' + script.BUILD_NUMBER
+
+        steps.step([
+            $class:                   'CodeCoverageBuilder',
+                analysisProperties:         ccproperties,           // Pass in the analysisProperties as a string
+                analysisPropertiesPath:     '',                     // Pass in the analysisProperties as a file.  Not used in this example
+                connectionId:               "${pConfig.hciConnId}", 
+                credentialsId:              "${pConfig.hciTokenId}"
+        ])
+
     }
 
 }
