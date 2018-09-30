@@ -59,8 +59,8 @@ def call(Map pipelineParams)
 
         def ResponseContentSupplier response3
 
-        intialize() 
-        
+        initialize() 
+
         /*
         def assignmentList = []
 
