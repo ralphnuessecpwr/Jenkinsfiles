@@ -50,6 +50,7 @@ def call(Map pipelineParams)
                                                 )
 
         TttHelper       tttHelper   = new   TttHelper(
+                                                this,
                                                 steps,
                                                 pConfig
                                             )

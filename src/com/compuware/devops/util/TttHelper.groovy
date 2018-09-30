@@ -2,6 +2,7 @@ package com.compuware.devops.util
 
 class TttHelper implements Serializable {
 
+    def script
     def steps
     def pConfig
 
@@ -9,8 +10,9 @@ class TttHelper implements Serializable {
     def listOfSources
     def listOfPrograms 
 
-    TttHelper(steps, pConfig) 
+    TttHelper(script, steps, pConfig) 
     {
+        this.script     = script
         this.steps      = steps
         this.pConfig    = pConfig
     }
@@ -68,7 +70,7 @@ class TttHelper implements Serializable {
                         ccClearStats:   false,                          // Clear out any existing Code Coverage stats for the given ccSystem and ccTestId
                         ccRepo:         "${pConfig.ccRepository}",
                         ccSystem:       "${pConfig.ispwApplication}", 
-                        ccTestId:       "${steps.BUILD_NUMBER}",              // Jenkins environment variable, resolves to build number, i.e. #177 
+                        ccTestId:       "${script.BUILD_NUMBER}",              // Jenkins environment variable, resolves to build number, i.e. #177 
                         credentialsId:  "${pConfig.hciTokenId}", 
                         deleteTemp:     true,                           // (true|false) Automatically delete any temp files created during the execution
                         hlq:            '',                             // Optional - high level qualifier used when allocation datasets
