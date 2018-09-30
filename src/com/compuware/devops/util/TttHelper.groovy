@@ -13,7 +13,10 @@ class TttHelper implements Serializable {
     {
         this.steps      = steps
         this.pConfig    = pConfig
+    }
 
+    def initialize()
+    {
         // findFiles method requires the "Pipeline Utilities Plugin"
         // Get all testscenario files in the current workspace into an array
         this.tttListOfScenarios  = steps.findFiles(glob: '**/*.testscenario')
