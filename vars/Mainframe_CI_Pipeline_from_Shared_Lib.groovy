@@ -21,6 +21,7 @@ def assignmentList = []
 
 def initialize(pipelineParams)
 {
+    def mailListlines
     /* Read list of mailaddresses from "private" Config File */
     configFileProvider(
         [
@@ -38,7 +39,7 @@ def initialize(pipelineParams)
             steps.error "File - ${mailListFilePath} - not found! \n Aborting Pipeline"
         }
 
-        def mailListlines = mailConfigFile.readLines()
+        mailListlines = mailConfigFile.readLines()
 
     }
 
