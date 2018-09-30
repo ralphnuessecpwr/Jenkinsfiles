@@ -17,6 +17,10 @@ class SonarHelper implements Serializable {
     {
         this.script         = script
         this.steps          = steps
+    }
+
+    def initialize()
+    {
         this.scannerHome    = steps.tool "${pConfig.sqScannerName}";
     }
 

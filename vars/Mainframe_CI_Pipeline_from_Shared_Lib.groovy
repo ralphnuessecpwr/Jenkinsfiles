@@ -73,6 +73,8 @@ def initialize(pipelineParams)
     tttHelper.initialize()                                            
 
     sonarHelper = new SonarHelper(this, steps, pConfig)
+    
+    sonarHelper.initialize()
 
     withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
     {
