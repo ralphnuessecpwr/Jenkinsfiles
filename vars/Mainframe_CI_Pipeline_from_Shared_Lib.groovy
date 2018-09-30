@@ -14,7 +14,7 @@ import com.compuware.devops.util.*
 
 def assignmentList = []
 
-def initialize(pConfig)
+def initialize(pConfig, ispwHelper)
 {
     withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
     {
@@ -59,7 +59,7 @@ def call(Map pipelineParams)
 
         def ResponseContentSupplier response3
 
-        initialize(pConfig) 
+        initialize(pConfig, ispwHelper) 
 
         /*
         def assignmentList = []
