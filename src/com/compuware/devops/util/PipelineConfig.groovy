@@ -185,7 +185,6 @@ class PipelineConfig implements Serializable
         def lineToken
         def tsoUser
         def emailAddress
-        //def lines = readConfigFile("${mailConfigFile}")
 
         mailListLines.each
         {
@@ -197,9 +196,6 @@ class PipelineConfig implements Serializable
         }
 
         this.mailRecipient  = mailListMap[(ispwOwner.toUpperCase())]
-
-        steps.echo "Mail Recipient " + mailRecipient
-
     }
 
     def readConfigFile(String fileName)

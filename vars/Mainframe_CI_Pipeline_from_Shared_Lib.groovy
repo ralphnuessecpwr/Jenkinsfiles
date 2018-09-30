@@ -15,6 +15,7 @@ PipelineConfig  pConfig
 GitHelper       gitHelper
 IspwHelper      ispwHelper
 TttHelper       tttHelper
+SonarHelper     sonarHelper 
 
 def ResponseContentSupplier response3
 def assignmentList = []
@@ -23,6 +24,7 @@ def initialize(pipelineParams)
 {
     def mailListlines
     /* Read list of mailaddresses from "private" Config File */
+    /* The configFileProvider creates a temporary file on disk and returns its path as variable */
     configFileProvider(
         [
             configFile(
@@ -40,7 +42,6 @@ def initialize(pipelineParams)
         }
 
         mailListlines = mailConfigFile.readLines()
-
     }
 
     pConfig     = new   PipelineConfig(
@@ -70,6 +71,8 @@ def initialize(pipelineParams)
                         )
 
     tttHelper.initialize()                                            
+
+    sonarHelper = new SonarHelper(this, steps, pConfig)
 
     withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
     {
@@ -130,10 +133,13 @@ def call(Map pipelineParams)
         */ 
         stage("Check SonarQube Quality Gate") 
         {
+            sonarHelper.scan()
+            /*
             // Requires SonarQube Scanner 2.8+
             // Retrieve the location of the SonarQube Scanner.  
             def scannerHome = tool "${pConfig.sqScannerName}";
-
+            */
+            /*
             withSonarQubeEnv("${pConfig.sqServerName}")       // 'localhost' is the name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section
             {
                 // Finds all of the Total Test results files that will be submitted to SonarQube
