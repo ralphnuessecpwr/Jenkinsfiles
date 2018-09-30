@@ -198,6 +198,8 @@ class PipelineConfig implements Serializable
 
         this.mailRecipient  = mailListMap[(ispwOwner.toUpperCase())]
 
+        steps.echo "Mail Recipient " + mailRecipient
+
     }
 
     def readConfigFile(String fileName)

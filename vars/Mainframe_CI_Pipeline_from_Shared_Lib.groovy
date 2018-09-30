@@ -21,6 +21,7 @@ def assignmentList = []
 
 def initialize(pipelineParams)
 {
+    /* Read list of mailaddresses from "private" Config File */
     configFileProvider(
         [configFile(
             fileId: 'MailList', 
@@ -36,7 +37,8 @@ def initialize(pipelineParams)
     pConfig     = new   PipelineConfig(
                             steps, 
                             workspace,
-                            pipelineParams
+                            pipelineParams,
+                            mailListlines
                         )
 
     pConfig.initialize()                                            
