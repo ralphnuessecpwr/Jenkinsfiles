@@ -16,10 +16,10 @@ class TttHelper implements Serializable {
 
         // findFiles method requires the "Pipeline Utilities Plugin"
         // Get all testscenario files in the current workspace into an array
-        this.tttListOfScenarios  = findFiles(glob: '**/*.testscenario')
+        this.tttListOfScenarios  = steps.findFiles(glob: '**/*.testscenario')
 
         // Get all Cobol Sources in the MF_Source folder into an array 
-        this.listOfSources       = findFiles(glob: "**/${pConfig.ispwApplication}/${pConfig.mfSourceFolder}/*.cbl")
+        this.listOfSources       = steps.findFiles(glob: "**/${pConfig.ispwApplication}/${pConfig.mfSourceFolder}/*.cbl")
 
         // Define a empty array for the list of programs
         this.listOfPrograms      = []
