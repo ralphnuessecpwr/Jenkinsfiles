@@ -69,8 +69,11 @@ class IspwHelper implements Serializable
         if(copyBookList.size() > 0)       
         {
             // Get a string with JCL to create a PDS with referenced Copybooks
-            def pdsDatasetName  = 'HDDRXM0.DEVOPS.ISPW.COPY.PDS'                        
+            def pdsDatasetName  = 'HDDRXM0.DEVOPS.ISPW.COPY.PDS'   
+
             def processJcl      = jclSkeleton.createIebcopyCopyBooksJcl(pdsDatasetName, copyBookList)
+
+            steps.echo "Will Submit \n" + processJcl
 
             // Submit the JCL created to create a PDS with Copybooks
             steps.topazSubmitFreeFormJcl( 
