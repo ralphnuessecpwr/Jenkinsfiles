@@ -34,6 +34,7 @@ def call(Map pipelineParams)
         /* Initialization */
         PipelineConfig  pConfig     = new   PipelineConfig(
                                                 steps, 
+                                                ${workspace},
                                                 pipelineParams
                                             )
 

@@ -12,6 +12,8 @@ class PipelineConfig implements Serializable
     private String tttGitConfigFile     = 'tttgit.config'
     private String mailConfigFile       = 'mail.config'
 
+    private String workspace
+
 /* Environment specific settings, which differ between Jenkins servers and applications, but not between runs */
     public String gitTargetBranch
     public String gitBranch      
@@ -52,9 +54,11 @@ class PipelineConfig implements Serializable
       
     public String mailRecipient 
 
-    def PipelineConfig(steps, params)
+    def PipelineConfig(steps, workspace, params)
     {
         this.steps              = steps
+
+        this.workspace          = workspace
 
         this.ispwStream         = params.ISPW_Stream
         this.ispwApplication    = params.ISPW_Application
@@ -79,7 +83,7 @@ class PipelineConfig implements Serializable
         this.ccRepository       = params.CC_repository
     }
 
-    def initialize(String workspace)
+    def initialize()
     {
         def configGitBranch     = "Dev"
         def configGitProject    = "Jenkinsfiles"
@@ -97,7 +101,7 @@ class PipelineConfig implements Serializable
     
     }
 
-    def setServerConfig(String workspace)
+    def setServerConfig()
     {
         def lineToken
         def parmName
@@ -147,7 +151,7 @@ class PipelineConfig implements Serializable
         }
     }
 
-    def setTttGitConfig(String workspace)
+    def setTttGitConfig()
     {
         def lineToken
         def parmName
@@ -175,7 +179,7 @@ class PipelineConfig implements Serializable
         }
     }
 
-    def setMailConfig(String workspace)
+    def setMailConfig()
     {        
         def lineToken
         def tsoUser
