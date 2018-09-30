@@ -98,7 +98,7 @@ def call(Map pipelineParams)
             assignmentList = ispwHelper.getAssigmentList(cesTokenClear, pConfig.ispwTargetLevel)
         }
         */
-        initialize() 
+        initialize(pipelineParams) 
         echo assignmentList.toString()
         /* Execution */
         stage("Retrieve Code From ISPW")
