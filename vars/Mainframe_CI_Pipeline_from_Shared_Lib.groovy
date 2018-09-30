@@ -23,14 +23,22 @@ def initialize(pipelineParams)
 {
     /* Read list of mailaddresses from "private" Config File */
     configFileProvider(
-        [configFile(
-            fileId: 'MailList', 
-            variable: 'mailListFile'
-            )]
-        ) 
+        [
+            configFile(
+                fileId: 'MailList', 
+                variable: 'mailListFilePath'
+            )
+        ]
+    ) 
     {
+        File mailConfigFile = new File(mailListFilePath)
 
-        def mailListlines = readConfigFile("${mailListFile}")
+        if(!mailConfigFile.exists())
+        {
+            steps.error "File - ${mailListFilePath} - not found! \n Aborting Pipeline"
+        }
+
+        def mailListlines = mailConfigFile.readLines()
 
     }
 
