@@ -12,11 +12,13 @@ class SonarHelper implements Serializable {
     def script
     def steps
     def scannerHome
+    def pConfig
 
     SonarHelper(script, steps, pConfig) 
     {
-        this.script         = script
-        this.steps          = steps
+        this.script     = script
+        this.steps      = steps
+        this.pConfig    = pConfig
     }
 
     def initialize()
