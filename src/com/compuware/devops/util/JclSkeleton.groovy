@@ -9,7 +9,7 @@ class JclSkeleton implements Serializable {
 
     private String skeletonPath     = 'config\\skels'
     private String jobCardSkel      = 'JobCard.jcl'
-    private String iebcopySkel      = 'iebcopy.skels'
+    private String iebcopySkel      = 'iebcopy.skel'
     private String iebcopyInDdSkel  = 'iebcopyInDd.skel'
     private String deleteDsSkel     = 'deleteDs.skel'
 
