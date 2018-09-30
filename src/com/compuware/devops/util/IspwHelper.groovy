@@ -73,8 +73,6 @@ class IspwHelper implements Serializable
 
             def processJcl      = jclSkeleton.createIebcopyCopyBooksJcl(pdsDatasetName, copyBookList)
 
-            steps.echo "Will Submit \n" + processJcl
-
             // Submit the JCL created to create a PDS with Copybooks
             steps.topazSubmitFreeFormJcl( 
                 connectionId:       "${hciConnId}", 
