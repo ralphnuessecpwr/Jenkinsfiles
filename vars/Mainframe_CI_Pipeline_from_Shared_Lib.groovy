@@ -54,6 +54,8 @@ def call(Map pipelineParams)
                                                 pConfig
                                             )
 
+        tttHelper.initialize()                                            
+
         def ResponseContentSupplier response3
 
         def assignmentList = []
@@ -154,7 +156,7 @@ def call(Map pipelineParams)
                 testResults:            "TTTUnit/*.xml"
             */
             tttHelper.loopThruScenarios()
-            
+
         }
 
         /* 
