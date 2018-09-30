@@ -140,6 +140,6 @@ class JclSkeleton implements Serializable {
             jclStatements.add(it.toString())
         }
 
-        return jclStatements.join("\n")
+        return jclStatements
     }
 }
