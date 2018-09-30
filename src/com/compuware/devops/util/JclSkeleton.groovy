@@ -32,9 +32,13 @@ class JclSkeleton implements Serializable {
     def initialize()
     {
         this.jobCardJcl                 = readSkelFile(jobCardSkel).join("\n")
+        echo.steps "Read JobCard \n" + jobCardJcl
+
         this.cleanUpDatasetJclSkel      = readSkelFile(deleteDsSkel).join("\n")
+        echo.steps "Read Delete JCL \n" + cleanUpDatasetJclSkel
 
         this.iebcopyCopyBooksJclSkel    = buildIebcopySkel()
+        echo.steps "Read IEBCOPY JCL \n" + iebcopyCopyBooksJclSkel
     }
 
     def String buildIebcopySkel()
