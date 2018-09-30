@@ -45,7 +45,7 @@ class JclSkeleton implements Serializable {
         def tempInputDdStatements   = readSkelFile(iebcopyInDdSkel)
         def copyDdStatements        = []
 
-        for(int i=0; i < inputDdStatements.size(); i++)
+        for(int i=0; i < tempInputDdStatements.size(); i++)
         {                        
             copyDdStatements.add ("       INDD=IN${i+1}")
         }
