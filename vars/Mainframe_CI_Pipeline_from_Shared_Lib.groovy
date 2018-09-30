@@ -11,11 +11,41 @@ import com.compuware.devops.util.*
 /**
  Helper Methods for the Pipeline Script
 */
+PipelineConfig  pConfig
+GitHelper       gitHelper
+IspwHelper      ispwHelper
+TttHelper       tttHelper
 
+def ResponseContentSupplier response3
 def assignmentList = []
 
 def initialize(pConfig, ispwHelper)
 {
+    pConfig     = new   PipelineConfig(
+                                            steps, 
+                                            "${workspace}",
+                                            pipelineParams
+                                        )
+
+    pConfig.initialize()                                            
+
+    gitHelper   = new   GitHelper(
+                                            steps
+                                        )
+
+    ispwHelper  = new   IspwHelper(
+                                            steps, 
+                                            pConfig
+                                            )
+
+    tttHelper   = new   TttHelper(
+                                            this,
+                                            steps,
+                                            pConfig
+                                        )
+
+    tttHelper.initialize()                                            
+
     withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
     {
         assignmentList = ispwHelper.getAssigmentList(cesTokenClear, pConfig.ispwTargetLevel)
@@ -31,7 +61,9 @@ def call(Map pipelineParams)
 {
     node
     {
+        
         /* Initialization */
+        /*
         PipelineConfig  pConfig     = new   PipelineConfig(
                                                 steps, 
                                                 "${workspace}",
@@ -59,9 +91,8 @@ def call(Map pipelineParams)
 
         def ResponseContentSupplier response3
 
-        initialize(pConfig, ispwHelper) 
+        // initialize(pConfig, ispwHelper) 
 
-        /*
         def assignmentList = []
 
         withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
