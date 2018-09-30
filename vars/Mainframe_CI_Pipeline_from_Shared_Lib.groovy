@@ -19,30 +19,30 @@ TttHelper       tttHelper
 def ResponseContentSupplier response3
 def assignmentList = []
 
-def initialize()
+def initialize(pipelineParams)
 {
     pConfig     = new   PipelineConfig(
-                                            steps, 
-                                            "${workspace}",
-                                            pipelineParams
-                                        )
+                            steps, 
+                            workspace,
+                            pipelineParams
+                        )
 
     pConfig.initialize()                                            
 
     gitHelper   = new   GitHelper(
-                                            steps
-                                        )
+                            steps
+                        )
 
     ispwHelper  = new   IspwHelper(
-                                            steps, 
-                                            pConfig
-                                            )
+                            steps, 
+                            pConfig
+                        )
 
     tttHelper   = new   TttHelper(
-                                            this,
-                                            steps,
-                                            pConfig
-                                        )
+                            this,
+                            steps,
+                            pConfig
+                        )
 
     tttHelper.initialize()                                            
 
