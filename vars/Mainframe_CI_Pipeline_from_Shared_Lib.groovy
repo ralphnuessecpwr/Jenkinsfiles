@@ -34,11 +34,11 @@ def call(Map pipelineParams)
         /* Initialization */
         PipelineConfig  pConfig     = new   PipelineConfig(
                                                 steps, 
-                                                ${workspace},
+                                                "${workspace}",
                                                 pipelineParams
                                             )
 
-        pConfig.initialize("${workspace}")                                            
+        pConfig.initialize()                                            
 
         GitHelper       gitHelper   = new   GitHelper(
                                                 steps
