@@ -36,7 +36,7 @@ class JclSkeleton implements Serializable {
 
         if(!skelFile.exists())
         {
-            error "Skeleton not found for Job Card! \n Will abort Pipeline."
+            steps.error "Skeleton not found for Job Card! \n Will abort Pipeline."
         }
 
         def lines           = skelFile.readLines()
@@ -61,7 +61,7 @@ class JclSkeleton implements Serializable {
 
         if(!skelFile1.exists())
         {
-            error "Skeleton not found for IEBCOPY Skeleton! \n Will abort Pipeline."
+            steps.error "Skeleton not found for IEBCOPY Skeleton! \n Will abort Pipeline."
         }
 
         def lines                   = skelFile1.readLines()
@@ -77,7 +77,7 @@ class JclSkeleton implements Serializable {
 
         if(!skelFile2.exists())
         {
-            error "Skeleton not found for IEBCOPY Input DD Skeleton! \n Will abort Pipeline."
+            steps.error "Skeleton not found for IEBCOPY Input DD Skeleton! \n Will abort Pipeline."
         }
 
         lines               = skelFile2.readLines()
@@ -115,7 +115,7 @@ class JclSkeleton implements Serializable {
 
         if(!skelFile.exists())
         {
-            error "Skeleton not found for DELETE Skeleton! \n Will abort Pipeline."
+            steps.error "Skeleton not found for DELETE Skeleton! \n Will abort Pipeline."
         }
 
         def lines = skelFile.readLines()
