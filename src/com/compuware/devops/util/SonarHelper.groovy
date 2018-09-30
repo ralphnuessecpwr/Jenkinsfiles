@@ -9,6 +9,7 @@ package com.compuware.devops.util
 */
 class SonarHelper implements Serializable {
 
+    def script
     def steps
     def scannerHome
 
