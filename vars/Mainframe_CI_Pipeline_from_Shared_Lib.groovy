@@ -63,12 +63,12 @@ def call(Map pipelineParams)
         {
             ispwHelper.downloadSources()
         }
-
+        /*
         stage("Retrieve Copy Books From ISPW")
         {
             ispwHelper.downloadCopyBooks("${workspace}")
         }
-
+        */
         stage("Retrieve Tests")
         {
             //Retrieve the Tests from Github that match that ISPWW Stream and Application            
