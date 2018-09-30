@@ -7,93 +7,50 @@ class JclSkeleton implements Serializable {
 
     def steps
 
+    private String skeletonPath     = 'config\\skels'
+    private String jobCardSkel      = 'JobCard.jcl'
+    private String iebcopySkel      = 'iebcopy.skels'
+    private String iebcopyInDdSkel  = 'iebcopyInDd.skel'
+    private String deleteDsSkel     = 'deleteDs.skel'
+
+    private String workspace
+
     String jobCardJcl
     String iebcopyCopyBooksJclSkel
     String cleanUpDatasetJclSkel
     String ispwApplication
     String ispwPathNum
 
-    JclSkeleton(steps, String ispwApplication, String ispwPathNum) 
+    JclSkeleton(steps, String workspace, String ispwApplication, String ispwPathNum) 
     {
         this.steps              = steps
+        this.workspace          = workspace
         this.ispwApplication    = ispwApplication
         this.ispwPathNum        = ispwPathNum
     }
 
-    def initialize(String workspace)
+    def initialize()
     {
-        this.jobCardJcl                 = buildJobCard      (workspace)
-        this.iebcopyCopyBooksJclSkel    = buildIebcopySkel  (workspace)
-        this.cleanUpDatasetJclSkel      = buildDeleteSkel   (workspace)
+        this.jobCardJcl                 = readSkelFile(jobCardSkel).join("\n")
+        this.cleanUpDatasetJclSkel      = readSkelFile(deleteDsSkel).join("\n")
+
+        this.iebcopyCopyBooksJclSkel    = buildIebcopySkel()
     }
 
-    def String buildJobCard(String workspace)
-    {
-        def skelFilePath    = "${workspace}\\config\\skels\\JobCard.jcl"
-        def jclStatements   = []
-
-        File skelFile = new File(skelFilePath)
-
-        if(!skelFile.exists())
-        {
-            steps.error "Skeleton not found for Job Card! \n Will abort Pipeline."
-        }
-
-        def lines           = skelFile.readLines()
-
-        lines.each
-        {
-            jclStatements.add(it.toString())
-        }
-
-        return jclStatements.join("\n")
-    }
-
-    def String buildIebcopySkel(String workspace)
+    def String buildIebcopySkel()
     {
 
-        def skelFilePath        = "${workspace}\\config\\skels\\iebcopy.skel"
-        def jclStatements       = []        
-        def inputDdStatements   = []        
-        def copyDdStatements    = []
-
-        File skelFile1          = new File(skelFilePath)
-
-        if(!skelFile1.exists())
-        {
-            steps.error "Skeleton not found for IEBCOPY Skeleton! \n Will abort Pipeline."
-        }
-
-        def lines                   = skelFile1.readLines()
-
-        lines.each
-        {
-            jclStatements.add(it.toString())
-        }
-
-        skelFilePath        = "${workspace}\\config\\skels\\iebcopyInDd.skel"
-
-        File skelFile2      = new File(skelFilePath)
-
-        if(!skelFile2.exists())
-        {
-            steps.error "Skeleton not found for IEBCOPY Input DD Skeleton! \n Will abort Pipeline."
-        }
-
-        lines               = skelFile2.readLines()
-
-        lines.each
-        {
-            inputDdStatements.add(it.toString())
-        }        
+        def tempSkel                = readSkelFile(iebcopySkel).join("\n")
+        
+        def tempInputDdStatements   = readSkelFile(iebcopyInDdSkel)
+        def copyDdStatements        = []
 
         for(int i=0; i < inputDdStatements.size(); i++)
         {                        
             copyDdStatements.add ("       INDD=IN${i+1}")
         }
 
-        def jclSkel         = jclStatements.join("\n")
-        def inputDdJcl      = inputDdStatements.join("\n")
+        def inputDdJcl      = tempInputDdStatements.join("\n")
         def inputCopyJcl    = copyDdStatements.join("\n")
 
         jclSkel             = jclSkel.replace("<source_copy_pds_list>", inputDdJcl)
@@ -105,10 +62,10 @@ class JclSkeleton implements Serializable {
 
     }
 
-    def String buildDeleteSkel(workspace)
+    def String buildDeleteSkel()
     {
 
-        def skelFilePath    = "${workspace}\\config\\deleteDs.skel"
+        def skelFilePath    = "${workspace}\\${skeletonPath}\\${deleteDsSkel}"
         def jclStatements   = []        
 
         File skelFile       = new File(skelFilePath)
@@ -125,7 +82,7 @@ class JclSkeleton implements Serializable {
             jclStatements.add(it)
         }
         
-        return jclStatements.join("\n")
+        return jclStatements
 
     }
 
@@ -157,5 +114,28 @@ class JclSkeleton implements Serializable {
         deleteJcl       = deleteJcl.replace("<clean_dsn>", targetDsn)
 
         return deleteJcl
+    }
+
+    def readSkelFile(String fileName)
+    {
+        def jclStatements   = []
+        
+        def skelFilePath    = "${workspace}\\${skeletonPath}\\${fileName}"
+
+        File skelFile = new File(skelFilePath)
+
+        if(!skelFile.exists())
+        {
+            steps.error "Skeleton - ${skelFilePath} - not found! \n Will abort Pipeline."
+        }
+
+        def lines           = skelFile.readLines()
+
+        lines.each
+        {
+            jclStatements.add(it.toString())
+        }
+
+        return jclStatements.join("\n")
     }
 }
