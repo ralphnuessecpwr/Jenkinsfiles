@@ -93,11 +93,11 @@ class PipelineConfig implements Serializable
 
         gitHelper.checkoutPath(gitUrl, configGitBranch, configGitPath, gitCredentials, configGitProject)
 
-        setServerConfig(workspace)
+        setServerConfig()
 
-        setTttGitConfig(workspace)
+        setTttGitConfig()
 
-        setMailConfig(workspace)
+        setMailConfig()
     
     }
 
