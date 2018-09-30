@@ -29,7 +29,7 @@ class JclSkeleton implements Serializable {
 
     def String buildJobCard(String workspace)
     {
-        def skelFilePath    = "${workspace}\\config\\JobCard.jcl"
+        def skelFilePath    = "${workspace}\\config\\skels\\JobCard.jcl"
         def jclStatements   = []
 
         File skelFile = new File(skelFilePath)
@@ -52,7 +52,7 @@ class JclSkeleton implements Serializable {
     def String buildIebcopySkel(String workspace)
     {
 
-        def skelFilePath        = "${workspace}\\config\\iebcopy.skel"
+        def skelFilePath        = "${workspace}\\config\\skels\\iebcopy.skel"
         def jclStatements       = []        
         def inputDdStatements   = []        
         def copyDdStatements    = []
@@ -71,7 +71,7 @@ class JclSkeleton implements Serializable {
             jclStatements.add(it.toString())
         }
 
-        skelFilePath        = "${workspace}\\config\\iebcopyInDd.skel"
+        skelFilePath        = "${workspace}\\config\\skels\\iebcopyInDd.skel"
 
         File skelFile2      = new File(skelFilePath)
 

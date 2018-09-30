@@ -6,8 +6,11 @@ package com.compuware.devops.util
 class PipelineConfig implements Serializable
 {
     def steps
-
     def mailListMap = [:]
+    private String configPath           = 'config\\pipeline'
+    private String pipelineConfigFile   = 'pipeline.config'
+    private String tttGitConfigFile     = 'tttgit.config'
+    private String mailConfigFile       = 'mail.config'
 
 /* Environment specific settings, which differ between Jenkins servers and applications, but not between runs */
     public String gitTargetBranch
@@ -96,20 +99,11 @@ class PipelineConfig implements Serializable
 
     def setServerConfig(String workspace)
     {
-        /* Read Pipeline and environment specific parms */
-        def filePath = "${workspace}\\config\\pipeline.config"
-
-        File configFile = new File(filePath)
-
-        if(!configFile.exists())
-        {
-            steps.error "Pipeline Configuration File not found! \n Aborting Pipeline"
-        }
-
         def lineToken
         def parmName
         def parmValue
-        def lines       = configFile.readLines()
+
+        def lines = readConfigFile("${pipelineConfigFile}")
 
         lines.each
         {
@@ -155,20 +149,10 @@ class PipelineConfig implements Serializable
 
     def setTttGitConfig(String workspace)
     {
-        /* Read Pipeline and environment specific parms */
-        def filePath = "${workspace}\\config\\tttgit.config"
-
-        File configFile = new File(filePath)
-
-        if(!configFile.exists())
-        {
-            steps.error "TTT Git Configuration File not found! \n Aborting Pipeline"
-        }
-
         def lineToken
         def parmName
         def parmValue
-        def lines       = configFile.readLines()
+        def lines = readConfigFile.readLines("${tttGitConfigFile}")
 
         lines.each
         {
@@ -193,20 +177,10 @@ class PipelineConfig implements Serializable
 
     def setMailConfig(String workspace)
     {        
-        /* Read Pipeline and environment specific parms */
-        def filePath = "${workspace}\\config\\mail.config"
-
-        File configFile = new File(filePath)
-
-        if(!configFile.exists())
-        {
-            steps.error "Mail Configuration File not found! \n Aborting Pipeline"
-        }
-
         def lineToken
         def tsoUser
         def emailAddress
-        def lines       = configFile.readLines()
+        def lines = readConfigFile.readLines("${mailConfigFile}")
 
         lines.each
         {
@@ -221,4 +195,17 @@ class PipelineConfig implements Serializable
 
     }
 
+    def String readConfigFile(String fileName)
+    {
+        def filePath = "${workspace}\\${configPath}\\${fileName}"
+
+        File configFile = new File(filePath)
+
+        if(!configFile.exists())
+        {
+            steps.error "File - ${filePath} - not found! \n Aborting Pipeline"
+        }
+
+        return configFile.readLines()
+    }
 }
