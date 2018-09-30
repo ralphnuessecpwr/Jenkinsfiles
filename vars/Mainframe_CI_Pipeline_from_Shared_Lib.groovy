@@ -49,6 +49,11 @@ def call(Map pipelineParams)
                                                 pConfig
                                                 )
 
+        TttHelper       tttHelper   = new   TttHelper(
+                                                steps,
+                                                pConfig
+                                            )
+
         def ResponseContentSupplier response3
 
         def assignmentList = []
@@ -102,6 +107,7 @@ def call(Map pipelineParams)
         */ 
         stage("Execute related Unit Tests")
         {
+        /*
             // Loop through all downloaded Topaz for Total Test scenarios
             TTTListOfScenarios.each
             {
@@ -146,6 +152,9 @@ def call(Map pipelineParams)
             junit allowEmptyResults:    true, 
                 keepLongStdio:          true, 
                 testResults:            "TTTUnit/*.xml"
+            */
+            tttHelper.loopThruScenarios()
+            
         }
 
         /* 
