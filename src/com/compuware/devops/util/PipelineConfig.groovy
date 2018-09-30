@@ -156,7 +156,7 @@ class PipelineConfig implements Serializable
         def lineToken
         def parmName
         def parmValue
-        def lines = readConfigFile.readLines("${tttGitConfigFile}")
+        def lines = readConfigFile("${tttGitConfigFile}")
 
         lines.each
         {
@@ -184,7 +184,7 @@ class PipelineConfig implements Serializable
         def lineToken
         def tsoUser
         def emailAddress
-        def lines = readConfigFile.readLines("${mailConfigFile}")
+        def lines = readConfigFile("${mailConfigFile}")
 
         lines.each
         {
@@ -199,7 +199,7 @@ class PipelineConfig implements Serializable
 
     }
 
-    def String readConfigFile(String fileName)
+    def readConfigFile(String fileName)
     {
         def filePath = "${workspace}\\${configPath}\\${fileName}"
 
