@@ -194,6 +194,7 @@ class PipelineConfig implements Serializable
     def setMailConfig(String workspace)
     {        
         /* Read Pipeline and environment specific parms */
+        /*https://stackoverflow.com/questions/15619216/groovy-scope-how-to-access-script-variable-in-a-method*/
         steps.configFileProvider([steps.configFile(fileId: 'MailList', variable: 'mailConfigPath')]) 
         {
             File configFile = new File(mailConfigPath)
