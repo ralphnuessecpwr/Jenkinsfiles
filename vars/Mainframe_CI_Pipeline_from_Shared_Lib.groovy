@@ -12,6 +12,16 @@ import com.compuware.devops.util.*
  Helper Methods for the Pipeline Script
 */
 
+def assignmentList = []
+
+def initialize()
+{
+    withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
+    {
+        assignmentList = ispwHelper.getAssigmentList(cesTokenClear, pConfig.ispwTargetLevel)
+    }
+
+}
 
 /**
 Call method to execute the pipeline from a shared library
@@ -49,13 +59,17 @@ def call(Map pipelineParams)
 
         def ResponseContentSupplier response3
 
+        intialize() 
+        
+        /*
         def assignmentList = []
 
         withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
         {
             assignmentList = ispwHelper.getAssigmentList(cesTokenClear, pConfig.ispwTargetLevel)
         }
-
+        */
+        echo assignmentList.toString()
         /* Execution */
         stage("Retrieve Code From ISPW")
         {
