@@ -40,7 +40,7 @@ class JclSkeleton implements Serializable {
     def String buildIebcopySkel()
     {
 
-        def tempSkel                = readSkelFile(iebcopySkel).join("\n")
+        def jclSkel                 = readSkelFile(iebcopySkel).join("\n")
         
         def tempInputDdStatements   = readSkelFile(iebcopyInDdSkel)
         def copyDdStatements        = []
