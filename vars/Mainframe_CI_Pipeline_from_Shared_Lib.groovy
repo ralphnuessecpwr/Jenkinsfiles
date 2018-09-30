@@ -29,6 +29,17 @@ def initialize(pipelineParams)
 
     pConfig.initialize()                                            
 
+    configFileProvider(
+        [configFile(
+            fileId: 'MailList', 
+            variable: 'mailListFile'
+            )]
+        ) 
+    {
+        echo mailListFile
+    }
+
+
     gitHelper   = new   GitHelper(
                             steps
                         )
@@ -61,45 +72,8 @@ def call(Map pipelineParams)
 {
     node
     {
-        
-        /* Initialization */
-        /*
-        PipelineConfig  pConfig     = new   PipelineConfig(
-                                                steps, 
-                                                "${workspace}",
-                                                pipelineParams
-                                            )
-
-        pConfig.initialize()                                            
-
-        GitHelper       gitHelper   = new   GitHelper(
-                                                steps
-                                            )
-
-        IspwHelper      ispwHelper  = new   IspwHelper(
-                                                steps, 
-                                                pConfig
-                                                )
-
-        TttHelper       tttHelper   = new   TttHelper(
-                                                this,
-                                                steps,
-                                                pConfig
-                                            )
-
-        tttHelper.initialize()                                            
-
-        def ResponseContentSupplier response3
-
-        def assignmentList = []
-
-        withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
-        {
-            assignmentList = ispwHelper.getAssigmentList(cesTokenClear, pConfig.ispwTargetLevel)
-        }
-        */
         initialize(pipelineParams) 
-        echo assignmentList.toString()
+        
         /* Execution */
         stage("Retrieve Code From ISPW")
         {
