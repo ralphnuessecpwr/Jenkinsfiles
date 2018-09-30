@@ -172,7 +172,7 @@ def call(Map pipelineParams)
                 // Call the SonarQube Scanner with properties defined above
                 bat "${scannerHome}/bin/sonar-scanner" + SQ_Scanner_Properties
             }
-        
+            */
             // Wait for the results of the SonarQube Quality Gate
             timeout(time: 2, unit: 'MINUTES') {
                 
