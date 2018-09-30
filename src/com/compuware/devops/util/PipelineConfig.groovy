@@ -6,6 +6,7 @@ package com.compuware.devops.util
 class PipelineConfig implements Serializable
 {
     def steps
+    def mailListLines
     def mailListMap = [:]
     private String configPath           = 'config\\pipeline'
     private String pipelineConfigFile   = 'pipeline.config'
@@ -54,11 +55,11 @@ class PipelineConfig implements Serializable
       
     public String mailRecipient 
 
-    def PipelineConfig(steps, workspace, params)
+    def PipelineConfig(steps, workspace, params, mailListLines)
     {
         this.steps              = steps
-
         this.workspace          = workspace
+        this.mailListLines      = mailListLines
 
         this.ispwStream         = params.ISPW_Stream
         this.ispwApplication    = params.ISPW_Application
@@ -184,9 +185,9 @@ class PipelineConfig implements Serializable
         def lineToken
         def tsoUser
         def emailAddress
-        def lines = readConfigFile("${mailConfigFile}")
+        //def lines = readConfigFile("${mailConfigFile}")
 
-        lines.each
+        mailListLines.each
         {
             lineToken       = it.toString().tokenize(":")
             tsoUser         = lineToken.get(0).toString()

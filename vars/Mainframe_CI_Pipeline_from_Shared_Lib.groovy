@@ -21,6 +21,18 @@ def assignmentList = []
 
 def initialize(pipelineParams)
 {
+    configFileProvider(
+        [configFile(
+            fileId: 'MailList', 
+            variable: 'mailListFile'
+            )]
+        ) 
+    {
+
+        def mailListlines = readConfigFile("${mailConfigFile}")
+
+    }
+
     pConfig     = new   PipelineConfig(
                             steps, 
                             workspace,
@@ -29,15 +41,6 @@ def initialize(pipelineParams)
 
     pConfig.initialize()                                            
 
-    configFileProvider(
-        [configFile(
-            fileId: 'MailList', 
-            variable: 'mailListFile'
-            )]
-        ) 
-    {
-        echo mailListFile
-    }
 
 
     gitHelper   = new   GitHelper(
