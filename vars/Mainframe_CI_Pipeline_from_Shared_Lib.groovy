@@ -19,7 +19,7 @@ TttHelper       tttHelper
 def ResponseContentSupplier response3
 def assignmentList = []
 
-def initialize(pConfig, ispwHelper)
+def initialize()
 {
     pConfig     = new   PipelineConfig(
                                             steps, 
@@ -91,8 +91,6 @@ def call(Map pipelineParams)
 
         def ResponseContentSupplier response3
 
-        // initialize(pConfig, ispwHelper) 
-
         def assignmentList = []
 
         withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
@@ -100,6 +98,7 @@ def call(Map pipelineParams)
             assignmentList = ispwHelper.getAssigmentList(cesTokenClear, pConfig.ispwTargetLevel)
         }
         */
+        initialize() 
         echo assignmentList.toString()
         /* Execution */
         stage("Retrieve Code From ISPW")
