@@ -5,7 +5,6 @@ package com.compuware.devops.util
 */
 class PipelineConfig implements Serializable
 {
-    def script
     def steps
 
     def mailListMap = [:]
@@ -50,9 +49,8 @@ class PipelineConfig implements Serializable
       
     public String mailRecipient 
 
-    def PipelineConfig(script, steps, params)
+    def PipelineConfig(steps, params)
     {
-        this.script             = script
         this.steps              = steps
 
         this.ispwStream         = params.ISPW_Stream
@@ -196,24 +194,6 @@ class PipelineConfig implements Serializable
     def setMailConfig(String workspace)
     {        
         /* Read Pipeline and environment specific parms */
-        /*https://stackoverflow.com/questions/15619216/groovy-scope-how-to-access-script-variable-in-a-method*/
-        script.steps.configFileProvider([script.steps.configFile(fileId: 'MailList', variable: 'mailConfigPath')]) 
-        {
-            File configFile = new File(mailConfigPath)
-
-            if(!configFile.exists())
-            {
-                steps.error "Mail Configuration File not found! \n Aborting Pipeline"
-            }
-
-            def lineToken
-            def tsoUser
-            def emailAddress
-            def lines       = configFile.readLines()
-
-        }
-
-        /*
         def filePath = "${workspace}\\config\\mail.config"
 
         File configFile = new File(filePath)
@@ -227,7 +207,6 @@ class PipelineConfig implements Serializable
         def tsoUser
         def emailAddress
         def lines       = configFile.readLines()
-        */
 
         lines.each
         {
