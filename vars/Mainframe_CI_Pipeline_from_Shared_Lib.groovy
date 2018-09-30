@@ -30,7 +30,7 @@ def initialize(pipelineParams)
         ) 
     {
 
-        def mailListlines = readConfigFile("${mailConfigFile}")
+        def mailListlines = readConfigFile("${mailListFile}")
 
     }
 
