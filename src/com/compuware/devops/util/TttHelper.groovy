@@ -58,6 +58,7 @@ class TttHelper implements Serializable {
             // Get root node of the path, i.e. the name of the Total Test project
             def scenarioPath        = it.path // Fully qualified name of the Total Test Scenario file
             def projectName         = it.path.trim().split("\\\\")[0] + "\\"+ it.path.trim().split("\\\\")[1]  // Total Test Project name is the root folder of the full path to the testscenario 
+            def jclFolder           = projectName + '\\Unit Test\JCL'   // Path containing Runner.jcl
             def scenarioFullName    = it.name  // Get the full name of the testscenario file i.e. "name.testscenario"
             def scenarioName        = it.name.trim().split("\\.")[0]  // Get the name of the scenario file without ".testscenario"
             def scenarioTarget      = scenarioName.split("\\_")[0]  // Target Program will be the first part of the scenario name (convention)
@@ -73,6 +74,10 @@ class TttHelper implements Serializable {
                     "Project " + projectName + '\n' +
                     "*************************"
             
+                jclJobCardPath = jclFolder + 'JobCard.jcl' 
+
+                steps.writeFile(file: jclJobCardPath, text: jclSkeleton.jobCardJcl)
+
                 steps.step([
                     $class:       'TotalTestBuilder', 
                         ccClearStats:   false,                          // Clear out any existing Code Coverage stats for the given ccSystem and ccTestId
