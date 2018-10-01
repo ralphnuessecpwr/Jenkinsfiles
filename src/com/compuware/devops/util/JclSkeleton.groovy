@@ -63,30 +63,6 @@ class JclSkeleton implements Serializable {
 
     }
 
-    def String buildDeleteSkel()
-    {
-
-        def skelFilePath    = "${workspace}\\${skeletonPath}\\${deleteDsSkel}"
-        def jclStatements   = []        
-
-        File skelFile       = new File(skelFilePath)
-
-        if(!skelFile.exists())
-        {
-            steps.error "Skeleton not found for DELETE Skeleton! \n Will abort Pipeline."
-        }
-
-        def lines = skelFile.readLines()
-
-        lines.each
-        {
-            jclStatements.add(it)
-        }
-        
-        return jclStatements
-
-    }
-
     def String createIebcopyCopyBooksJcl(String targetDsn, List copyMembers)
     {
 
@@ -97,7 +73,7 @@ class JclSkeleton implements Serializable {
             selectStatements.add("  SELECT MEMBER=${it}")
         }
 
-        def selectJcl           = selectStatements.join("\n")  
+        def selectJcl       = selectStatements.join("\n")  
 
         iebcopyCopyBooksJcl = iebcopyCopyBooksJcl + "\n" + iebcopyCopyBooksJclSkel
         iebcopyCopyBooksJcl = iebcopyCopyBooksJcl.replace("<target_dsn>", targetDsn)
@@ -119,10 +95,14 @@ class JclSkeleton implements Serializable {
 
     def readSkelFile(String fileName)
     {
-        def jclStatements   = []
-        
+        def jclStatements       = []
+        FileHelper fileHelper   = new FileHelper()
+
         def skelFilePath    = "${workspace}\\${skeletonPath}\\${fileName}"
 
+        def lines           = fileHelper.readLines(skelFilePath)
+
+        /*
         File skelFile = new File(skelFilePath)
 
         if(!skelFile.exists())
@@ -131,7 +111,8 @@ class JclSkeleton implements Serializable {
         }
 
         def lines           = skelFile.readLines()
-
+        */
+        
         lines.each
         {
             jclStatements.add(it.toString())

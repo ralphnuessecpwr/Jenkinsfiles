@@ -11,7 +11,6 @@ class PipelineConfig implements Serializable
     private String configPath           = 'config\\pipeline'
     private String pipelineConfigFile   = 'pipeline.config'
     private String tttGitConfigFile     = 'tttgit.config'
-    private String mailConfigFile       = 'mail.config'
 
     private String workspace
 
@@ -202,6 +201,10 @@ class PipelineConfig implements Serializable
     {
         def filePath = "${workspace}\\${configPath}\\${fileName}"
 
+        FileHelper fileHelper = new FileHelper()
+
+        return fileHelper.readLines(filePath)
+        /*   
         File configFile = new File(filePath)
 
         if(!configFile.exists())
@@ -210,5 +213,6 @@ class PipelineConfig implements Serializable
         }
 
         return configFile.readLines()
+        */
     }
 }

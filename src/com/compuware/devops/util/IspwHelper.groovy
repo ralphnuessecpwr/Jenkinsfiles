@@ -384,5 +384,38 @@ class IspwHelper implements Serializable
 
         return listOfCopybooks
 
-    }        
+    }      
+
+    def regressAssignmentList(assignmentList)
+    {
+        for(int i = 0; i < assignmentList.size(); i++)
+        {
+
+            echo "Regress Assignment ${assignmentList[0].toString()}, Level ${pConfig.ispwTargetLevel}"
+
+            regressAssignment(assignmentList[i])
+
+        }
+            
+    }
+
+    def regressAssignment(assignment)
+    {
+        def requestBodyParm = '''{
+            "runtimeConfiguration": "''' + pConfig.ispwRuntime + '''"
+        }'''
+
+        steps.httpRequest(
+                url:                    "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${assignmentList[i].toString()}/tasks/regress?level=${pConfig.ispwTargetLevel}",
+                httpMode:               'POST',
+                consoleLogResponseBody: true,
+                contentType:            'APPLICATION_JSON',
+                requestBody:            requestBodyParm,
+                customHeaders:          [[
+                                        maskValue:  true, 
+                                        name:       'authorization', 
+                                        value:      "${cesTokenClear}"
+                                        ]]
+            )
+    }
 }
