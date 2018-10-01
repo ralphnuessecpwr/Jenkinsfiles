@@ -68,7 +68,7 @@ class TttHelper implements Serializable {
             if(listOfPrograms.contains(scenarioTarget))
             {
                 // Log which 
-                println "*************************\n" +
+                steps.echo "*************************\n" +
                     "Scenario " + scenarioFullName + '\n' +
                     "Path " + scenarioPath + '\n' +
                     "Project " + projectName + '\n' +
