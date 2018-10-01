@@ -74,8 +74,9 @@ class TttHelper implements Serializable {
                     "Project " + projectName + '\n' +
                     "*************************"
             
-                jclJobCardPath = jclFolder + 'JobCard.jcl' 
+                def jclJobCardPath = jclFolder + 'JobCard.jcl' 
 
+                steps.echo "Trying to write file"
                 steps.writeFile(file: jclJobCardPath, text: jclSkeleton.jobCardJcl)
 
                 steps.step([
