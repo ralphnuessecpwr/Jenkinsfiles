@@ -6,6 +6,8 @@ class TttHelper implements Serializable {
     def steps
     def pConfig
 
+    JclSkeleton jclSkeleton 
+
     def listOfScenarios
     def listOfSources
     def listOfPrograms 
@@ -15,6 +17,11 @@ class TttHelper implements Serializable {
         this.script     = script
         this.steps      = steps
         this.pConfig    = pConfig
+        jclSkeleton     = new JclSkeleton
+
+        jclSkeleton.initialize()
+
+        steps.echo "Job Card " + jclSkeleton.jobCardJcl
     }
 
     def initialize()

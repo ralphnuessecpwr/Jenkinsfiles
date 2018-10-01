@@ -137,7 +137,7 @@ class IspwHelper implements Serializable
         if(resp.message != null)
         {
             steps.echo "Resp: " + resp.message
-            error
+            steps.error
         }
         else
         {
@@ -188,7 +188,7 @@ class IspwHelper implements Serializable
         if(resp.message != null)
         {
             steps.echo "Resp: " + resp.message
-            error
+            steps.error
         }
         else
         {
@@ -260,7 +260,7 @@ class IspwHelper implements Serializable
         if(resp.message != null)
         {
             echo "Resp: " + resp.message
-            error
+            steps.error
         }
         else
         {
@@ -294,7 +294,7 @@ class IspwHelper implements Serializable
         if(resp.message != null)
         {
             echo "Resp: " + resp.message
-            error
+            steps.error
         }
         else
         {
