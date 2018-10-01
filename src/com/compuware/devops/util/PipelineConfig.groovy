@@ -204,15 +204,5 @@ class PipelineConfig implements Serializable
         FileHelper fileHelper = new FileHelper()
 
         return fileHelper.readLines(filePath)
-        /*   
-        File configFile = new File(filePath)
-
-        if(!configFile.exists())
-        {
-            steps.error "File - ${filePath} - not found! \n Aborting Pipeline"
-        }
-
-        return configFile.readLines()
-        */
     }
 }

@@ -101,17 +101,6 @@ class JclSkeleton implements Serializable {
         def skelFilePath    = "${workspace}\\${skeletonPath}\\${fileName}"
 
         def lines           = fileHelper.readLines(skelFilePath)
-
-        /*
-        File skelFile = new File(skelFilePath)
-
-        if(!skelFile.exists())
-        {
-            steps.error "Skeleton - ${skelFilePath} - not found! \n Will abort Pipeline."
-        }
-
-        def lines           = skelFile.readLines()
-        */
         
         lines.each
         {
