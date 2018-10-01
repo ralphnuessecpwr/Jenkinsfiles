@@ -17,7 +17,16 @@ class FileHelper implements Serializable {
     }
 
     def readLines(String path)
-    {
+    {        
+        
+        File configFile = new File(path)
+
+        if(!configFile.exists())
+        {
+            steps.error "File - ${path} - not found! \n Aborting Pipeline"
+        }
+
+        return configFile.readLines()
 
     }
 }
