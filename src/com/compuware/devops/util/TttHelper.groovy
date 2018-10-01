@@ -18,7 +18,7 @@ class TttHelper implements Serializable {
         this.steps      = steps
         this.pConfig    = pConfig
 
-        jclSkeleton     = new JclSkeleton(steps, script.workspace, pConfig.ispwApplication, pConfig.ispwPathNum)
+        jclSkeleton     = new JclSkeleton(steps, script.workspace, pConfig.ispwApplication, pConfig.applicationPathNum)
 
         jclSkeleton.initialize()
 
