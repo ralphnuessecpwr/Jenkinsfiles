@@ -153,7 +153,7 @@ def call(Map pipelineParams)
                     withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
                     {
                         //ispwHelper.regressAssignmentList(assignmentList, cesTokenClear)
-                        ispwHelper.regressAssignment(assignmentList, cesTokenClear)
+                        ispwHelper.regressAssignment(pConfig.ispwAssignment, cesTokenClear)
                     }
 
                     currentBuild.result = "FAILURE"
