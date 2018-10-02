@@ -6,44 +6,189 @@ import com.compuware.devops.util.TaskInfo
 
 class IspwHelper implements Serializable 
 {
-
     def steps
+
     def String ispwUrl
     def String ispwRuntime
+    def String ispwApplication
+    def String ispwRelease
     def String ispwContainer
-    
-    IspwHelper(steps, String ispwUrl, String ispwRuntime, String ispwContainer)
+    def String ispwContainerType    
+    def String applicationPathNum
+    def String ispwOwner
+
+    def String mfSourceFolder
+
+    def String hciConnId
+    def String hciTokenId
+
+    //String ispwUrl, String ispwRuntime, String ispwRelease, String ispwContainer)
+
+    IspwHelper(steps, config) 
     {
 
-        this.steps          = steps
-        this.ispwUrl        = ispwUrl
-        this.ispwRuntime    = ispwRuntime
-        this.ispwContainer  = ispwContainer
+        this.steps              = steps
+        this.ispwUrl            = config.ispwUrl
+        this.ispwRuntime        = config.ispwRuntime
+        this.ispwApplication    = config.ispwApplication
+        this.ispwRelease        = config.ispwRelease        
+        this.ispwContainer      = config.ispwContainer
+        this.ispwContainerType  = config.ispwContainerType
+        this.ispwOwner          = config.ispwOwner
+        this.applicationPathNum = config.applicationPathNum
 
+        this.mfSourceFolder     = config.mfSourceFolder
+
+        this.hciConnId          = config.hciConnId
+        this.hciTokenId         = config.hciTokenId
     }
 
-/* 
-    "@NonCPS" is required to tell Jenkins that the objects in the method do not need to survive a Jenkins re-start
-    This is necessary because JsonSlurper uses non serializable classes, which will leed to exceptions when not used
-    in methods in a @NonCPS section 
-*/
-
-/* 
-    Receive a response from an "Get Tasks in Set"-httpRequest and build and return a list of task IDs that belong to the desired level
-*/
-@NonCPS
-    def ArrayList getSetTaskIdList(ResponseContentSupplier response, String level)
+    def downloadSources()
     {
-        def jsonSlurper         = new JsonSlurper()
+        steps.checkout([
+            $class:             'IspwContainerConfiguration', 
+            componentType:      '',                                 // optional filter for component types in ISPW
+            connectionId:       "${hciConnId}",     
+            credentialsId:      "${hciTokenId}",      
+            containerName:      "${ispwContainer}",   
+            containerType:      "${ispwContainerType}",     // 0-Assignment 1-Release 2-Set
+            ispwDownloadAll:    true,                              // false will not download files that exist in the workspace and haven't previous changed
+            serverConfig:       '',                                 // ISPW runtime config.  if blank ISPW will use the default runtime config
+            serverLevel:        ''                                  // level to download the components from
+        ])
+    }
 
+    def downloadCopyBooks(String workspace)
+    {
+        JclSkeleton jclSkeleton = new JclSkeleton(steps, workspace, ispwApplication, applicationPathNum)
+
+        jclSkeleton.initialize()
+
+        def copyBookList = referencedCopyBooks(workspace)  
+
+        if(copyBookList.size() > 0)       
+        {
+            // Get a string with JCL to create a PDS with referenced Copybooks
+            def pdsDatasetName  = 'HDDRXM0.DEVOPS.ISPW.COPY.PDS'   
+
+            def processJcl      = jclSkeleton.createIebcopyCopyBooksJcl(pdsDatasetName, copyBookList)
+
+            // Submit the JCL created to create a PDS with Copybooks
+            steps.topazSubmitFreeFormJcl( 
+                connectionId:       "${hciConnId}", 
+                credentialsId:      "${hciTokenId}", 
+                jcl:                processJcl, 
+                maxConditionCode:   '4'
+            )
+                        
+            // Download the PDS generated
+            steps.checkout([
+                $class:         'PdsConfiguration', 
+                connectionId:   "${hciConnId}",
+                credentialsId:  "${hciTokenId}",
+                fileExtension:  'cpy',
+                filterPattern:  "${pdsDatasetName}",
+                targetFolder:   "${ispwApplication}/${mfSourceFolder}"
+            ])
+                                                                        
+            // Delete the downloaded Dataset
+            processJcl = jclSkeleton.createDeleteTempDsn(pdsDatasetName)
+
+            steps.topazSubmitFreeFormJcl(
+                connectionId:       "${hciConnId}",
+                credentialsId:      "${hciTokenId}",
+                jcl:                processJcl,
+                maxConditionCode:   '4'
+            )
+        }
+        else
+        {
+            steps.echo "No Copy Books to download"
+        }
+    }
+
+
+/* 
+    Determine all assignments in the current container 
+*/
+    def ArrayList getAssigmentList(String cesToken, String level)
+    {
         def returnList  = []
 
-        def resp = jsonSlurper.parseText(response.getContent())
+        /* Get the list of taskIds in the current set */
+        def taskIds     = getSetTaskIdList(cesToken, level)
+
+        /* Get all tasks in the corresponding release */
+        def response = steps.httpRequest(
+            url:                        "${ispwUrl}/ispw/${ispwRuntime}/releases/${ispwRelease}/tasks",
+            consoleLogResponseBody:     false, 
+            customHeaders:              [[
+                                        maskValue:  true, 
+                                        name:       'authorization', 
+                                        value:      "${cesToken}"
+                                        ]]
+            )
+
+        def jsonSlurper = new JsonSlurper()
+        def resp        = jsonSlurper.parseText(response.getContent())
+        response        = null
+        jsonSlurper     = null
 
         if(resp.message != null)
         {
             steps.echo "Resp: " + resp.message
-            error
+            steps.error
+        }
+        else
+        {
+            /* Compare the taskIds from the set to all tasks in the release */
+            /* Where they match, determine the assignment and add it to the list of assignments */
+            def taskList = resp.tasks
+
+            taskList.each
+            {
+                if(taskIds.contains(it.taskId))
+                {
+                    /* Add assignment only if it not already in the list */
+                    if(!(returnList.contains(it.container)))
+                    {
+                        returnList.add(it.container)        
+                    }
+                }
+            }
+        }
+
+        return returnList    
+
+    }
+
+/* 
+    Build and return a list of taskIds in the current container, that belong to the desired level
+*/
+    def ArrayList getSetTaskIdList(String cesToken, String level)
+    {
+        def returnList  = []
+
+        def response = steps.httpRequest(
+            url:                        "${ispwUrl}/ispw/${ispwRuntime}/sets/${ispwContainer}/tasks",
+            httpMode:                   'GET',
+            consoleLogResponseBody:     false,
+            customHeaders:              [[
+                                        maskValue:  true, 
+                                        name:       'authorization', 
+                                        value:      "${cesToken}"
+                                        ]]
+            )
+
+        def jsonSlurper = new JsonSlurper()
+        def resp        = jsonSlurper.parseText(response.getContent())
+        response        = null
+        jsonSlurper     = null
+
+        if(resp.message != null)
+        {
+            steps.echo "Resp: " + resp.message
+            steps.error
         }
         else
         {
@@ -51,6 +196,7 @@ class IspwHelper implements Serializable
 
             taskList.each
             {
+                /* Add taskId only if the component is a COBOL program and is on the desired level */
                 if(it.moduleType == 'COB' && it.level == level)
                 {
                     returnList.add(it.taskId)
@@ -65,7 +211,6 @@ class IspwHelper implements Serializable
 /* 
     Receive a response from an "Get Tasks in Set"-httpRequest and build and return a list of TaskAsset Objects that belong to the desired level
 */
-@NonCPS
     def ArrayList getSetTaskList(ResponseContentSupplier response, String level)
     {
 
@@ -103,48 +248,9 @@ class IspwHelper implements Serializable
     
     }
 
-
-/* 
-    Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build and return a list of Assignments
-    that are contained in both the Task Id List and the List of Tasks in the Release 
-*/
-@NonCPS
-    def ArrayList getAssigmentList(ArrayList taskIds, ResponseContentSupplier response)
-    {
-        def jsonSlurper = new JsonSlurper()
-        def returnList  = []
-
-        def resp        = jsonSlurper.parseText(response.getContent())
-
-        if(resp.message != null)
-        {
-            steps.echo "Resp: " + resp.message
-            error
-        }
-        else
-        {
-            def taskList = resp.tasks
-
-            taskList.each
-            {
-                if(taskIds.contains(it.taskId))
-                {
-                    if(!(returnList.contains(it.container)))
-                    {
-                        returnList.add(it.container)        
-                    }
-                }
-            }
-        }
-
-        return returnList    
-
-    }
-
 /* 
     Receive a response from an "Get Tasks in Set"-httpRequest and return the List of Releases
 */
-@NonCPS
     def ArrayList getSetRelease(ResponseContentSupplier response)
     {
         def jsonSlurper = new JsonSlurper()
@@ -154,7 +260,7 @@ class IspwHelper implements Serializable
         if(resp.message != null)
         {
             echo "Resp: " + resp.message
-            error
+            steps.error
         }
         else
         {
@@ -173,46 +279,10 @@ class IspwHelper implements Serializable
     
     }
 
-/* 
-    Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build a Map of Programs and Base Versions
-*/
-/*
-@NonCPS
-    def Map getProgramVersionMap(ArrayList taskIds, ResponseContentSupplier response)
-    {
-        def jsonSlurper = new JsonSlurper()
-        def returnMap  = [:]
-
-        def resp        = jsonSlurper.parseText(response.getContent())
-
-        if(resp.message != null)
-        {
-            echo "Resp: " + resp.message
-            error
-        }
-        else
-        {
-            def taskList = resp.tasks
-
-            taskList.each
-            {
-                if(taskIds.contains(it.taskId))
-                {
-                    echo "Add to programVersionMap: " + it.moduleName + " : " + it.baseVersion
-                    returnMap.put(it.moduleName, it.baseVersion)
-                }
-            }
-        }
-
-        return returnMap    
-    }
-
-*/
 /*
     Receive a list of TaskInfo Objects, the response of an "List tasks of a Release"-httpRequest to build and return a List of TaskInfo Objects
     that contain the base and internal version
 */
-@NonCPS
     def setTaskVersions(ArrayList tasks, ResponseContentSupplier response, String level)
     {
         def jsonSlurper = new JsonSlurper()
@@ -224,7 +294,7 @@ class IspwHelper implements Serializable
         if(resp.message != null)
         {
             echo "Resp: " + resp.message
-            error
+            steps.error
         }
         else
         {
@@ -249,5 +319,103 @@ class IspwHelper implements Serializable
         return returnList
 
     }
-}
 
+    def List referencedCopyBooks(String workspace) 
+    {
+
+        steps.echo "Get all .cbl in current workspace"
+        
+        // findFiles method requires the "Pipeline Utilities Plugin"
+        // Get all Cobol Sources in the MF_Source folder into an array 
+        def listOfSources   = steps.findFiles(glob: "**/${ispwApplication}/${mfSourceFolder}/*.cbl")
+        def listOfCopybooks = []
+        def lines           = []
+        def cbook           = /\bCOPY\b/
+        def tokenItem       = ''
+        def seventhChar     = ''
+        def lineToken       = ''
+
+        // Define a empty array for the list of programs
+        listOfSources.each 
+        {
+            steps.echo "Scanning Program: ${it}"
+            def cpyFile = "${workspace}\\${it}"
+
+            File file = new File(cpyFile)
+
+            if (file.exists()) 
+            {
+                lines = file.readLines().findAll({book -> book =~ /$cbook/})
+
+                lines.each 
+                {
+                    lineToken   = it.toString().tokenize()
+                    seventhChar = ""
+
+                    if (lineToken.get(0).toString().length() >= 7) 
+                    {
+                        seventhChar = lineToken.get(0).toString()[6]
+                    }
+                        
+                    for(int i=0;i<lineToken.size();i++) 
+                    {
+                        tokenItem = lineToken.get(i).toString()
+
+                        if (tokenItem == "COPY" && seventhChar != "*" ) 
+                        {
+                            steps.echo "Copybook: ${lineToken.get(i+1)}"
+                            tokenItem = lineToken.get(i+1).toString()
+        
+                            if (tokenItem.endsWith(".")) 
+                            {
+                                listOfCopybooks.add(tokenItem.substring(0,tokenItem.size()-1))
+                            }
+                            else 
+                            {
+                                listOfCopybooks.add(tokenItem)
+                            }
+                                
+                        i = lineToken.size()
+                        }
+                    }    
+                }
+            }
+        }
+
+        return listOfCopybooks
+
+    }      
+
+    def regressAssignmentList(assignmentList)
+    {
+        for(int i = 0; i < assignmentList.size(); i++)
+        {
+
+            echo "Regress Assignment ${assignmentList[0].toString()}, Level ${pConfig.ispwTargetLevel}"
+
+            regressAssignment(assignmentList[i])
+
+        }
+            
+    }
+
+    def regressAssignment(assignment)
+    {
+        def requestBodyParm = '''{
+            "runtimeConfiguration": "''' + pConfig.ispwRuntime + '''"
+        }'''
+
+        steps.httpRequest(
+                url:                    "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${assignmentList[i].toString()}/tasks/regress?level=${pConfig.ispwTargetLevel}",
+                httpMode:               'POST',
+                consoleLogResponseBody: true,
+                contentType:            'APPLICATION_JSON',
+                requestBody:            requestBodyParm,
+                customHeaders:          [[
+                                        maskValue:  true, 
+                                        name:       'authorization', 
+                                        value:      "${cesTokenClear}"
+                                        ]]
+            )
+    }
+}
