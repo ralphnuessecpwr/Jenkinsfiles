@@ -417,7 +417,7 @@ class IspwHelper implements Serializable
                 customHeaders:          [[
                                         maskValue:  true, 
                                         name:       'authorization', 
-                                        value:      "${cesTokenClear}"
+                                        value:      "${cesToken}"
                                         ]]
             )
     }
