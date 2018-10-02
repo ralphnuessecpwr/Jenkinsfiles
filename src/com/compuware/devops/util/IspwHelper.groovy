@@ -45,6 +45,22 @@ class IspwHelper implements Serializable
 
     def downloadSources()
     {
+        steps.checkout(
+            changelog: false, 
+            poll: false, 
+            scm: [
+                $class: 'IspwContainerConfiguration', 
+                componentType: '', 
+                connectionId: "${hciConnId}", 
+                credentialsId: "${hciTokenId}", 
+                containerName: "${ispwContainer}", 
+                containerType: "${ispwContainerType}",                 
+                ispwDownloadAll: true, 
+                serverConfig: '', 
+                serverLevel: ''
+            ]
+        )
+        /*
         steps.checkout([
             $class:             'IspwContainerConfiguration', 
             componentType:      '',                                 // optional filter for component types in ISPW
@@ -55,7 +71,8 @@ class IspwHelper implements Serializable
             ispwDownloadAll:    true,                              // false will not download files that exist in the workspace and haven't previous changed
             serverConfig:       '',                                 // ISPW runtime config.  if blank ISPW will use the default runtime config
             serverLevel:        ''                                  // level to download the components from
-        ])                           
+        ])
+        */                           
     }
 
     def downloadCopyBooks(String workspace)
