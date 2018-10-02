@@ -18,7 +18,7 @@ TttHelper       tttHelper
 SonarHelper     sonarHelper 
 
 def ResponseContentSupplier response3
-def assignmentList = []
+//def assignmentList = []
 
 def initialize(pipelineParams)
 {
@@ -53,8 +53,6 @@ def initialize(pipelineParams)
 
     pConfig.initialize()                                            
 
-
-
     gitHelper   = new   GitHelper(
                             steps
                         )
@@ -76,11 +74,12 @@ def initialize(pipelineParams)
 
     sonarHelper.initialize()
 
+    /*
     withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
     {
         assignmentList = ispwHelper.getAssigmentList(cesTokenClear, pConfig.ispwTargetLevel)
     }
-
+    */
 }
 
 /**
@@ -148,11 +147,12 @@ def call(Map pipelineParams)
                 if (sonarGate.status != 'OK')
                 {
                     echo "Sonar quality gate failure: ${sonarGate.status}"
-                    echo "Pipeline will be aborted and ISPW Assignment(s) will be regressed"
+                    echo "Pipeline will be aborted and ISPW Assignment will be regressed"
 
                     withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
                     {
-                        ispwHelper.regressAssignmentList(assignmentList, cesTokenClear)
+                        //ispwHelper.regressAssignmentList(assignmentList, cesTokenClear)
+                        ispwHelper.regressAssignment(assignmentList, cesTokenClear)
                     }
 
                     currentBuild.result = "FAILURE"

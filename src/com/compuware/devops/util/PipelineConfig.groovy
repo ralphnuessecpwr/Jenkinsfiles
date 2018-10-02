@@ -32,6 +32,7 @@ class PipelineConfig implements Serializable
     public String ispwStream
     public String ispwApplication
     public String ispwRelease
+    public String ispwAssignment
     public String ispwContainer
     public String ispwContainerType
     public String ispwSrcLevel
@@ -62,6 +63,7 @@ class PipelineConfig implements Serializable
         this.ispwStream         = params.ISPW_Stream
         this.ispwApplication    = params.ISPW_Application
         this.ispwRelease        = params.ISPW_Release
+        this.ispwAssignment     = params.ISPW_Assignment
         this.ispwContainer      = params.ISPW_Container
         this.ispwContainerType  = params.ISPW_Container_Type
         this.ispwOwner          = params.ISPW_Owner        
