@@ -16,6 +16,8 @@ class IspwHelper implements Serializable
     def String ispwContainerType    
     def String applicationPathNum
     def String ispwOwner
+    def String ispwTargetLevel
+
 
     def String mfSourceFolder
 
@@ -35,6 +37,7 @@ class IspwHelper implements Serializable
         this.ispwContainer      = pConfig.ispwContainer
         this.ispwContainerType  = pConfig.ispwContainerType
         this.ispwOwner          = pConfig.ispwOwner
+        this.ispwTargetLevel    = pConfig.ispwTargetLevel
         this.applicationPathNum = pConfig.applicationPathNum
 
         this.mfSourceFolder     = pConfig.mfSourceFolder
@@ -391,7 +394,7 @@ class IspwHelper implements Serializable
         for(int i = 0; i < assignmentList.size(); i++)
         {
 
-            echo "Regress Assignment ${assignmentList[0].toString()}, Level ${pConfig.ispwTargetLevel}"
+            echo "Regress Assignment ${assignmentList[0].toString()}, Level ${ispwTargetLevel}"
 
             regressAssignment(assignmentList[i])
 
@@ -402,11 +405,11 @@ class IspwHelper implements Serializable
     def regressAssignment(assignment)
     {
         def requestBodyParm = '''{
-            "runtimeConfiguration": "''' + pConfig.ispwRuntime + '''"
+            "runtimeConfiguration": "''' + ispwRuntime + '''"
         }'''
 
         steps.httpRequest(
-                url:                    "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${assignmentList[i].toString()}/tasks/regress?level=${pConfig.ispwTargetLevel}",
+                url:                    "${ispwUrl}/ispw/${ispwRuntime}/assignments/${assignment}/tasks/regress?level=${ispwTargetLevel}",
                 httpMode:               'POST',
                 consoleLogResponseBody: true,
                 contentType:            'APPLICATION_JSON',
