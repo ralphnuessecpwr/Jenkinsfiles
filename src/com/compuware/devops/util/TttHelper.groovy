@@ -25,8 +25,6 @@ class TttHelper implements Serializable {
     {
         jclSkeleton.initialize()
 
-        steps.echo "Job Card " + jclSkeleton.jobCardJcl
-
         // findFiles method requires the "Pipeline Utilities Plugin"
         // Get all testscenario files in the current workspace into an array
         this.listOfScenarios  = steps.findFiles(glob: '**/*.testscenario')
