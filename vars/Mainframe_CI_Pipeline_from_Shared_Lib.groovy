@@ -74,6 +74,7 @@ def initialize(pipelineParams)
 
     sonarHelper.initialize()
 
+    echo "Found Assignment " + pConfig.ispwAssignment
     /*
     withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
     {
