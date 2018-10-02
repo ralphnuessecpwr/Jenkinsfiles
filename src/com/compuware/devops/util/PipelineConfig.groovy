@@ -96,7 +96,7 @@ class PipelineConfig implements Serializable
     {
         steps.dir(".\\") 
         {
-            deleteDir()
+            steps.deleteDir()
         }
 
         GitHelper gitHelper     = new GitHelper(steps)
