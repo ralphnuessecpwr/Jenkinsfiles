@@ -1,0 +1,394 @@
+#!/usr/bin/env groovy
+import hudson.model.*
+import hudson.EnvVars
+import groovy.json.JsonSlurper
+import groovy.json.JsonBuilder
+import groovy.json.JsonOutput
+import jenkins.plugins.http_request.*
+import java.net.URL
+/**
+ This is an example Jenkins Pipeline Script that runs a CI process against COBOL Code.  This pipeline is designed to be triggered from ISPW 
+ on the promotion of code from a Test level in a controlled level.  The pipeline runs a series of quality checks on the 
+ promoted code to ensure that it meets the quality standards that an organization defined in SonarQube.
+ 
+ This Pipeline uses the following Jenkins Plugins
+ Compuware Common Configuration Plugin - https://plugins.jenkins.io/compuware-common-configuration
+ Compuware Source Code Download for Endevor, PDS, and ISPW Plugin - https://plugins.jenkins.io/compuware-scm-downloader
+ Compuware Topaz for Total Test Plugin - https://plugins.jenkins.io/compuware-topaz-for-total-test
+ Compuware Xpediter Code Coverage Plugin - https://plugins.jenkins.io/compuware-xpediter-code-coverage
+ Pipeline Utilities Plugin - https://plugins.jenkins.io/pipeline-utility-steps
+ SonarQube Scanner Plugin - https://plugins.jenkins.io/sonar
+ XebiaLabs XL Release Plugin - https://plugins.jenkins.io/xlrelease-plugin
+ 
+ This Pipeline Requires the below Parameters to be defined in the Jenkins Job
+ The Jenkins Parameters can be supplied by a ISPW webhook by defining a webhook like the example below.  
+ Please note that the assignment is not currently available in the webhook, but will be added in a future release.
+ http://<<your jenkins server>>/job/<<you jenkins job>>/buildWithParameters?ISPW_Stream=$$stream$$&ISPW_Container=$$release$$&ISPW_Src_Level=$$level$$&SetId=$$setID$$&ISPW_Release=$$release$$&Owner=$$owner$$
+ 
+ ISPW Webhook Parameter List below
+ @param ISPW_Stream - ISPW Stream that had the code promotion
+ @param ISPW_Application - ISPW application that had the code promotion 
+ @param ISPW_Container - ISPW Container that had the code promotion
+ @param ISPW_Src_Level - ISPW Level that code was promoted from
+ @param ISPW_Owner - The ISPW Owner value from the ISPW Set that was created for the promotion
+
+ The Pipeline also takes the following parameters from the Jenkins Job
+ @param CES_Token - CES Personal Access Token.  These are configured in Compuware Enterprise Services / Security / Personal Access Tokens 
+ @param Git_Project - Github project/user used to store the Topaz for Total Test Projects
+ 
+*/
+/**
+ Below is a list of parameters that is hardcoded into the Pipeline
+ @param Git_Credentials - Jenkins credentials for logging into git
+ @param Git_URL - Url that will be used in various git commands
+ @param Git_TTT_Repo - Git repo that contains Topaz for Total Test Projects
+ @param Git_Branch - Git branch to be used by the pipeline
+ @param SQ_Scanner_Name - Name of SonarQube Scanner installation in "Manage Jenkins" -> "Global Tool Configuration" -> "SonarQube Scanner Installations"
+ @param SQ_Server_Name - Name of SonarQube Server in "Manage Jenkins" -> "Configure System" -> "Sonar Qube servers"
+ @param MF_Source - directory that contains cobol source downloaded from ISPW
+ @param XLR_Template - XL Release template to trigger at the end of the Jenkins workflow
+ @param XLR_User - XL Release user ID. Configured in Jenkins/Manage Jenkins/Configure System/XL Release credentials
+ @param TTT_Folder - Folder to download TTT projects from GitHub into, i.e. store all TTT projects into one folder
+ @param ISPW_URL - URL to the ISPW Rest API
+ @param ISPW_Runtime - ISPW Runtime configuration
+*/
+
+ String Git_Credentials      = "67a3fb18-073f-498b-adee-1a3c75192745" //"github"
+ String Git_URL              = "https://github.com/${Git_Project}"
+ String Git_TTT_Repo         = "${ISPW_Stream}_${ISPW_Application}_Unit_Tests.git"
+ String Git_Branch           = "master"
+ String SQ_Scanner_Name      = "scanner" 
+ String SQ_Server_Name       = "localhost"  
+ String SQ_Project           = "${JOB_NAME}" 
+ String MF_Source            = "MF_Source"
+ String XLR_Template         = "A Release from Jenkins"
+ String XLR_User             = "admin"                           
+ String TTT_Folder           = "github"	
+ String ISPW_URL             = "http://cwcc.compuware.com:2020"
+ String ISPW_Runtime         = "ispw"		 
+ 
+/*
+    Map containing ISPW Owners (TSO Users) to eMail addresses
+    For sending mail when the Quality Gate fails
+*/
+
+ Map    mailRecipientMap     = ["HDDRXM0":"ralph.nuesse@compuware.com"]
+ 
+/**
+ Helper Methods for the Pipeline Script
+*/
+
+/**
+ Determine the ISPW Path Number for use in Total Test
+ @param Level - Level Parameter is the Level returned in the ISPW Webhook
+*/
+ def String getPathNum(String Level)
+ {
+    return Level.charAt(Level.length() - 1)
+ }
+
+/**
+ Wrapper around the Git Plugin's Checkout Method
+ @param URL - URL for the git server
+ @param Branch - The branch that will be checked out of git
+ @param Credentials - Jenkins credentials for logging into git
+ @param Folder - Folder relative to the workspace that git will check out files into
+*/
+ def gitcheckout(String URL, String Branch, String Credentials, String Folder)
+ {
+    println "Scenario " + URL
+    println "Scenario " + Branch
+    println "Scenario " + Credentials
+
+    checkout changelog: false, poll: false, 
+        scm: [$class: 'GitSCM', 
+        branches: [[name: "*/${Branch}"]], 
+        doGenerateSubmoduleConfigurations: false, 
+        extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "${Folder}"]], 
+        submoduleCfg: [], 
+        userRemoteConfigs: [[credentialsId: "${Credentials}", name: 'origin', url: "${URL}"]]]
+ }
+
+/* 
+    Receive a response from an "Get Tasks in Set"-httpRequest and build a list of task IDs
+*/
+/* 
+    "@NonCPS" is required to tell Jenkins that the objects in the method do not need to survive a Jenkins re-start
+    This is necessary because JsonSlurper uses non serializable classes, which will leed to exceptions when not used
+    in methods in a @NonCPS section 
+*/
+@NonCPS
+ def ArrayList getSetTaskIdList(ResponseContentSupplier response, String level)
+ {
+    def jsonSlurper = new JsonSlurper()
+    def returnList  = []
+    def resp        = jsonSlurper.parseText(response.getContent())
+
+    if(resp.message != null)
+    {
+        echo "Resp: " + resp.message
+        error
+    }
+    else
+    {
+        def taskList = resp.tasks
+
+        taskList.each
+        {
+            if(it.moduleType == 'COB' && it.level == level)
+            {
+                returnList.add(it.taskId)
+            }
+        }
+    }
+
+    return returnList
+ 
+ }
+
+/* 
+    Receive a response from an "Get Tasks in Set"-httpRequest and return the Release
+*/
+/* 
+    "@NonCPS" is required to tell Jenkins that the objects in the method do not need to survive a Jenkins re-start
+    This is necessary because JsonSlurper uses non serializable classes, which will leed to exceptions when not used
+    in methods in a @NonCPS section 
+*/
+@NonCPS
+ def ArrayList getSetRelease(ResponseContentSupplier response)
+ {
+    def jsonSlurper = new JsonSlurper()
+    def returnList  = []
+    def resp        = jsonSlurper.parseText(response.getContent())
+
+    if(resp.message != null)
+    {
+        echo "Resp: " + resp.message
+        error
+    }
+    else
+    {
+        def taskList = resp.tasks
+
+        taskList.each
+        {
+            if(it.moduleType == 'COB')
+            {
+                returnList.add(it.release)
+            }
+        }
+    }
+
+    return returnList
+ 
+ }
+
+/* 
+    Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build a list of Assignments
+    that are contained in both the Task Id List and the List of Tasks in the Release 
+*/
+/* 
+    "@NonCPS" is required to tell Jenkins that the objects in the method do not need to survive a Jenkins re-start
+    This is necessary because JsonSlurper uses non serializable classes, which will leed to exceptions when not used
+    in methods in a @NonCPS section 
+*/
+@NonCPS
+ def ArrayList getAssigmentList(ArrayList taskIds, ResponseContentSupplier response)
+ {
+    def jsonSlurper = new JsonSlurper()
+    def returnList  = []
+
+    def resp        = jsonSlurper.parseText(response.getContent())
+
+    if(resp.message != null)
+    {
+        echo "Resp: " + resp.message
+        error
+    }
+    else
+    {
+        def taskList = resp.tasks
+
+        taskList.each
+        {
+            if(taskIds.contains(it.taskId))
+            {
+                if(!(returnList.contains(it.container)))
+                {
+                    returnList.add(it.container)        
+                }
+            }
+        }
+    }
+    return returnList    
+}
+
+/* 
+    Receive a list of task IDs and the response of an "List tasks of a Release"-httpRequest to build a Map of Programs and Base Versions
+*/
+/* 
+    "@NonCPS" is required to tell Jenkins that the objects in the method do not need to survive a Jenkins re-start
+    This is necessary because JsonSlurper uses non serializable classes, which will leed to exceptions when not used
+    in methods in a @NonCPS section 
+*/
+@NonCPS
+ def Map getProgramVersionMap(ArrayList taskIds, ResponseContentSupplier response)
+ {
+    def jsonSlurper = new JsonSlurper()
+    def returnMap  = [:]
+
+    def resp        = jsonSlurper.parseText(response.getContent())
+
+    if(resp.message != null)
+    {
+        echo "Resp: " + resp.message
+        error
+    }
+    else
+    {
+        def taskList = resp.tasks
+
+        taskList.each
+        {
+            if(taskIds.contains(it.taskId))
+            {
+                echo "Add to programVersionMap: " + it.moduleName + " : " + it.baseVersion
+                returnMap.put(it.moduleName, it.baseVersion)
+            }
+        }
+    }
+
+    return returnMap    
+ }
+
+// One node with several stages => All variables are local to the node and available to all stages
+node{
+
+    // Clean out any previously downloaded source
+    dir(".\\") 
+    {
+        deleteDir()
+    }
+
+    def mailRecipient = mailRecipientMap[(ISPW_Owner.toUpperCase())]
+
+    def ResponseContentSupplier response1
+    def ResponseContentSupplier response2
+
+    /*************************************************************************************************************/
+    // Build a list of Assignments based on a Set
+    // Use httpRequest to get all Tasks for the Set
+    withCredentials(
+        [string(credentialsId: "${CES_Token}", variable: 'cesToken')]
+    ) 
+    {
+        response1 = steps.httpRequest(
+            url:                    "${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks",
+            httpMode:               'GET',
+            consoleLogResponseBody: false,
+            customHeaders:          [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
+        )
+    }
+
+    // Use method getSetTaskIdList to extract the list of Task IDs from the response of the httpRequest
+    def setTaskIdList          = getSetTaskIdList(response1, ISPW_Src_Level)
+
+    def ISPW_Release           = getSetRelease(response1)[0].toString()
+
+    // Use httpRequest to get all Assignments for the Release
+    // Need to use two separate objects to store the responses for the httpRequests, 
+    // otherwise the script will fail with a NotSerializable Exception
+    withCredentials(
+        [string(credentialsId: "${CES_Token}", variable: 'cesToken')]
+    ) 
+    {
+        response2 = steps.httpRequest(url: "${ISPW_URL}/ispw/${ISPW_Runtime}/releases/${ISPW_Release}/tasks",
+            consoleLogResponseBody: false, 
+            customHeaders: [[maskValue: true, name: 'authorization', value: "${cesToken}"]]
+        )
+    }
+
+    // Use method getAssigmentList to get all Assignments from the Release,
+    // that belong to Tasks in the Set
+    // If the Sonar Quality Gate fails, these Assignments will be regressed
+    def assignmentList  = getAssigmentList(setTaskIdList, response2)
+    def programVersionMap   = getProgramVersionMap(setTaskIdList, response2)
+    /*************************************************************************************************************/
+
+    stage("Checkout TTT assets from GitHub")
+    {
+        //Retrieve the Tests from Github that match that ISPWW Stream and Application
+        Git_URL = "${Git_URL}/${Git_TTT_Repo}"
+
+        //call gitcheckout wrapper function
+        gitcheckout(Git_URL, Git_Branch, Git_Credentials, TTT_Folder)
+    }
+
+    stage("Create and push new branch")
+    {
+        dir("${TTT_Folder}")
+        {
+            echo "within Dir"
+            def gitNewBranch = assignmentList[0].toString()
+
+            bat(script: "git config --global user.name ${ISPW_Owner} \r\ngit config --global user.email ${mailRecipient}")
+
+            stdstatus = bat(returnStatus: true, script: "git branch ${gitNewBranch}")
+
+            if(stdstatus > 0)
+            {
+                echo "Branch ${gitNewBranch} already exists - nothing to create"
+
+                emailBody = "Jenkins Job ${JOB_NAME} was executed because you checked out tasks to ISPW assignment ${gitNewBranch}." +
+                            "\n\nBranch ${gitNewBranch} already existed. Make sure you fetched the latest changes for this branch from GitHub."
+            }
+            else
+            {
+                echo "Branch ${gitNewBranch} created"
+
+                stdout = bat(returnStdout: true, script: "git checkout ${gitNewBranch}")
+                echo "Checkout branch " + stdout
+
+                def gitTagList = []
+
+                // Build List of Tags to add to Git
+                for(entry in programVersionMap)
+                {
+
+                    gitTag = gitNewBranch + '_' + entry.key + '_' + entry.value
+                    gitTagList.add(gitTag)
+
+                }
+
+                // Add Tags to Git (using a Map entry would not work when using in a loop that calls bat, since the entry object is non serializable)
+                for(int i = 0; i < gitTagList.size(); i++)
+                {
+                    echo "Build Tag " + gitTagList[i].toString()
+                    
+                    stdout = bat(returnStdout: true, script: "git tag --force -a ${gitTagList[i].toString()} -m ${gitTagList[i].toString()}")
+                    echo "Create Tag " + stdout
+
+                }
+
+                withCredentials(
+                    [usernamePassword(credentialsId: "${Git_Credentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]
+                ) 
+                {                
+                    stdout = bat(returnStdout: true, script: "git push https://${gitUsername}:${gitPassword}@github.com/${Git_Project}/${Git_TTT_Repo} HEAD:${gitNewBranch} -f --tags")
+                    echo "pushed " + stdout
+                }
+
+                emailBody = "Jenkins Job ${JOB_NAME} was executed because you checked out tasks to ISPW assignment ${gitNewBranch}." +
+                            "\n\nBranch ${gitNewBranch} was created. Fetch this branch from GitHub to start work on your Unit Tests:" + 
+                            "\n\n- Use 'Fetch from Upstream' to fetch the remote branch." +
+                            "\n- And 'Checkout' the remote branch 'origin/${gitNewBranch}' as local branch."
+
+            }
+
+            emailext subject:   "Git assignment branch ${gitNewBranch}",
+                body:           emailBody + "\n\n" + '$DEFAULT_CONTENT',
+                replyTo:        '$DEFAULT_REPLYTO',
+                to:             "${mailRecipient}"
+        }
+    }
+}
