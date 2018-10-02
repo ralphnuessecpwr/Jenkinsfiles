@@ -8,6 +8,11 @@ class PipelineConfig implements Serializable
     def steps
     def mailListLines
     def mailListMap = [:]
+
+    private String configGitBranch     = "Dev"
+    private String configGitProject    = "Jenkinsfiles"
+    private String configGitPath       = "config"
+
     private String configPath           = 'config\\pipeline'
     private String pipelineConfigFile   = 'pipeline.config'
     private String tttGitConfigFile     = 'tttgit.config'
@@ -86,10 +91,6 @@ class PipelineConfig implements Serializable
 
     def initialize()
     {
-        def configGitBranch     = "JenkinsFTS"
-        def configGitProject    = "Jenkinsfiles"
-        def configGitPath       = "config"
-
         GitHelper gitHelper     = new GitHelper(steps)
 
         gitHelper.checkoutPath(gitUrl, configGitBranch, configGitPath, gitCredentials, configGitProject)
