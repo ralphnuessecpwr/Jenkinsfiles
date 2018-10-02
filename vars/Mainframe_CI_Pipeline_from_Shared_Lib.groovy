@@ -150,12 +150,6 @@ def call(Map pipelineParams)
                     echo "Sonar quality gate failure: ${sonarGate.status}"
                     echo "Pipeline will be aborted and ISPW Assignment will be regressed"
 
-                    withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
-                    {
-                        //ispwHelper.regressAssignmentList(assignmentList, cesTokenClear)
-                        ispwHelper.regressAssignment(pConfig.ispwAssignment, cesTokenClear)
-                    }
-
                     currentBuild.result = "FAILURE"
 
                     // Send Standard Email
@@ -164,6 +158,12 @@ def call(Map pipelineParams)
                                 replyTo:    '$DEFAULT_REPLYTO',
                                 to:         "${pConfig.mailRecipient}"
                     
+                    withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
+                    {
+                        //ispwHelper.regressAssignmentList(assignmentList, cesTokenClear)
+                        ispwHelper.regressAssignment(pConfig.ispwAssignment, cesTokenClear)
+                    }
+
                     error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
                 }
             }   
