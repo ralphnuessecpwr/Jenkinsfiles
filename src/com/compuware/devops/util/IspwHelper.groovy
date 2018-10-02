@@ -24,23 +24,23 @@ class IspwHelper implements Serializable
 
     //String ispwUrl, String ispwRuntime, String ispwRelease, String ispwContainer)
 
-    IspwHelper(steps, config) 
+    IspwHelper(steps, pConfig) 
     {
 
         this.steps              = steps
-        this.ispwUrl            = config.ispwUrl
-        this.ispwRuntime        = config.ispwRuntime
-        this.ispwApplication    = config.ispwApplication
-        this.ispwRelease        = config.ispwRelease        
-        this.ispwContainer      = config.ispwContainer
-        this.ispwContainerType  = config.ispwContainerType
-        this.ispwOwner          = config.ispwOwner
-        this.applicationPathNum = config.applicationPathNum
+        this.ispwUrl            = pConfig.ispwUrl
+        this.ispwRuntime        = pConfig.ispwRuntime
+        this.ispwApplication    = pConfig.ispwApplication
+        this.ispwRelease        = pConfig.ispwRelease        
+        this.ispwContainer      = pConfig.ispwContainer
+        this.ispwContainerType  = pConfig.ispwContainerType
+        this.ispwOwner          = pConfig.ispwOwner
+        this.applicationPathNum = pConfig.applicationPathNum
 
-        this.mfSourceFolder     = config.mfSourceFolder
+        this.mfSourceFolder     = pConfig.mfSourceFolder
 
-        this.hciConnId          = config.hciConnId
-        this.hciTokenId         = config.hciTokenId
+        this.hciConnId          = pConfig.hciConnId
+        this.hciTokenId         = pConfig.hciTokenId
     }
 
     def downloadSources()
