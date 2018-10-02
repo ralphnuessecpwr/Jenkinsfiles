@@ -150,7 +150,10 @@ def call(Map pipelineParams)
                     echo "Sonar quality gate failure: ${sonarGate.status}"
                     echo "Pipeline will be aborted and ISPW Assignment(s) will be regressed"
 
-                    ispwHelper.regressAssignmentList(assignmentList)
+                    withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
+                    {
+                        ispwHelper.regressAssignmentList(assignmentList, cesTokenClear)
+                    }
 
                     currentBuild.result = "FAILURE"
 

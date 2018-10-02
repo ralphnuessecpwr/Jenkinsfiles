@@ -389,20 +389,20 @@ class IspwHelper implements Serializable
 
     }      
 
-    def regressAssignmentList(assignmentList)
+    def regressAssignmentList(assignmentList, cesToken)
     {
         for(int i = 0; i < assignmentList.size(); i++)
         {
 
             steps.echo "Regress Assignment ${assignmentList[0].toString()}, Level ${ispwTargetLevel}"
 
-            regressAssignment(assignmentList[i])
+            regressAssignment(assignmentList[i], cesToken)
 
         }
             
     }
 
-    def regressAssignment(assignment)
+    def regressAssignment(assignment, cesToken)
     {
         def requestBodyParm = '''{
             "runtimeConfiguration": "''' + ispwRuntime + '''"
