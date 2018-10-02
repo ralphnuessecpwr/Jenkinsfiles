@@ -185,6 +185,13 @@ def call(Map pipelineParams)
                                         [propertyName:  'CES_Token',        propertyValue: "${pConfig.cesTokenId}"]
                                     ]
             )
+
+            // Send Standard Email
+            emailext subject:       '$DEFAULT_SUBJECT',
+                        body:       '$DEFAULT_CONTENT \n' + 'Promote passed the Quality gate and a new XL Release was started.',
+                        replyTo:    '$DEFAULT_REPLYTO',
+                        to:         "${pConfig.mailRecipient}"
+
         }        
     }
 }
