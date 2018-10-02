@@ -93,20 +93,21 @@ def call(Map pipelineParams)
     {
         initialize(pipelineParams) 
         
-        /* Execution */
+        /* Download all sources that are part of the container  */
         stage("Retrieve Code From ISPW")
         {
             ispwHelper.downloadSources()
         }
-        /*
+        
+        /* Download all copybooks in case, not all copybook are part of the container  */
         stage("Retrieve Copy Books From ISPW")
         {
             ispwHelper.downloadCopyBooks("${workspace}")
         }
-        */
+        
+        /* Retrieve the Tests from Github that match that ISPWW Stream and Application */
         stage("Retrieve Tests")
-        {
-            //Retrieve the Tests from Github that match that ISPWW Stream and Application            
+        {            
             def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttRepo}"
             
             gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
