@@ -85,7 +85,7 @@ class PipelineConfig implements Serializable
 
     def initialize()
     {
-        def configGitBranch     = "Dev"
+        def configGitBranch     = "JenkinsFTS"
         def configGitProject    = "Jenkinsfiles"
         def configGitPath       = "config"
 
