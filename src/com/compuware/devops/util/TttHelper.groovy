@@ -21,6 +21,7 @@ class TttHelper implements Serializable {
         jclSkeleton     = new JclSkeleton(steps, script.workspace, pConfig.ispwApplication, pConfig.applicationPathNum)
     }
 
+    /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
     def initialize()
     {
         jclSkeleton.initialize()

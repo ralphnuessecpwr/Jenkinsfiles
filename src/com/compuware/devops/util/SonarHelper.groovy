@@ -21,6 +21,7 @@ class SonarHelper implements Serializable {
         this.pConfig    = pConfig
     }
 
+    /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
     def initialize()
     {
         this.scannerHome    = steps.tool "${pConfig.sqScannerName}";

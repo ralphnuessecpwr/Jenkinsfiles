@@ -7,11 +7,11 @@ class JclSkeleton implements Serializable {
 
     def steps
 
-    private String skeletonPath     = 'config\\skels'
-    private String jobCardSkel      = 'JobCard.jcl'
-    private String iebcopySkel      = 'iebcopy.skel'
-    private String iebcopyInDdSkel  = 'iebcopyInDd.skel'
-    private String deleteDsSkel     = 'deleteDs.skel'
+    private String skeletonPath     = 'config\\skels'       // Path containing JCL "skeletons" after downloading them from Git Hub Repository
+    private String jobCardSkel      = 'JobCard.jcl'         // Skeleton for job cards
+    private String iebcopySkel      = 'iebcopy.skel'        // Skeleton for IEBCOPY job
+    private String iebcopyInDdSkel  = 'iebcopyInDd.skel'    // Skeleton for input DDs for IEBCOPY job
+    private String deleteDsSkel     = 'deleteDs.skel'       // Skeleton for deleting the PDS after downloading copy books
 
     private String workspace
 
@@ -29,6 +29,7 @@ class JclSkeleton implements Serializable {
         this.ispwPathNum        = ispwPathNum
     }
 
+    /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
     def initialize()
     {
         this.jobCardJcl                 = readSkelFile(jobCardSkel).join("\n")

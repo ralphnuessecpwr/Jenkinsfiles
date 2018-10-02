@@ -4,6 +4,7 @@ import groovy.json.JsonSlurper
 import jenkins.plugins.http_request.*
 import com.compuware.devops.util.TaskInfo
 
+/* Wrapper class to simplify use of ISPW functions */
 class IspwHelper implements Serializable 
 {
     def steps
@@ -23,8 +24,6 @@ class IspwHelper implements Serializable
 
     def String hciConnId
     def String hciTokenId
-
-    //String ispwUrl, String ispwRuntime, String ispwRelease, String ispwContainer)
 
     IspwHelper(steps, pConfig) 
     {
@@ -46,6 +45,7 @@ class IspwHelper implements Serializable
         this.hciTokenId         = pConfig.hciTokenId
     }
 
+    /* Download sources for the ISPW Set which triggered the current pipeline */
     def downloadSources()
     {
         steps.checkout([
@@ -61,12 +61,20 @@ class IspwHelper implements Serializable
         ])
     }
 
+    /* Download copy books used in the downloaded sources  */
+    /* Since copy books do not have to be part of the current set, the downloaded programs need to be parsed to determine copy books */
+    /* Since the SCM downloader plugin does not provide the option to download specific members, */
+    /* the required copy books will be copied from the ISPW libraries to a single PDS using an IEBCOPY job */
+    /* Then this PDS will be downloaded */
     def downloadCopyBooks(String workspace)
     {
+        /* Class JclSkeleton will allow using "JCL Skeletons" to generate the requires JCL */
         JclSkeleton jclSkeleton = new JclSkeleton(steps, workspace, ispwApplication, applicationPathNum)
 
+        /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
         jclSkeleton.initialize()
 
+        /* Method referencedCopyBooks will parse the downloaded sources and generate a list of required copy books */
         def copyBookList = referencedCopyBooks(workspace)  
 
         if(copyBookList.size() > 0)       
@@ -74,6 +82,7 @@ class IspwHelper implements Serializable
             // Get a string with JCL to create a PDS with referenced Copybooks
             def pdsDatasetName  = 'HDDRXM0.DEVOPS.ISPW.COPY.PDS'   
 
+            // The createIebcopyCopyBooksJcl will create the JCL for the IEBCOPY job */
             def processJcl      = jclSkeleton.createIebcopyCopyBooksJcl(pdsDatasetName, copyBookList)
 
             // Submit the JCL created to create a PDS with Copybooks
@@ -84,7 +93,7 @@ class IspwHelper implements Serializable
                 maxConditionCode:   '4'
             )
                         
-            // Download the PDS generated
+            // Download the generated PDS
             steps.checkout([
                 $class:         'PdsConfiguration', 
                 connectionId:   "${hciConnId}",
@@ -114,14 +123,16 @@ class IspwHelper implements Serializable
 /* 
     Determine all assignments in the current container 
 */
+/* This method is not required anymore since ISPW webhooks now pass assignment ids */
+/*
     def ArrayList getAssigmentList(String cesToken, String level)
     {
         def returnList  = []
 
-        /* Get the list of taskIds in the current set */
+        // Get the list of taskIds in the current set 
         def taskIds     = getSetTaskIdList(cesToken, level)
 
-        /* Get all tasks in the corresponding release */
+        // Get all tasks in the corresponding release 
         def response = steps.httpRequest(
             url:                        "${ispwUrl}/ispw/${ispwRuntime}/releases/${ispwRelease}/tasks",
             consoleLogResponseBody:     false, 
@@ -144,15 +155,15 @@ class IspwHelper implements Serializable
         }
         else
         {
-            /* Compare the taskIds from the set to all tasks in the release */
-            /* Where they match, determine the assignment and add it to the list of assignments */
+            // Compare the taskIds from the set to all tasks in the release 
+            // Where they match, determine the assignment and add it to the list of assignments 
             def taskList = resp.tasks
 
             taskList.each
             {
                 if(taskIds.contains(it.taskId))
                 {
-                    /* Add assignment only if it not already in the list */
+                    // Add assignment only if it not already in the list 
                     if(!(returnList.contains(it.container)))
                     {
                         returnList.add(it.container)        
@@ -168,6 +179,8 @@ class IspwHelper implements Serializable
 /* 
     Build and return a list of taskIds in the current container, that belong to the desired level
 */
+/* This method is not required anymore since ISPW webhooks now pass assignment ids */
+/*
     def ArrayList getSetTaskIdList(String cesToken, String level)
     {
         def returnList  = []
@@ -199,7 +212,7 @@ class IspwHelper implements Serializable
 
             taskList.each
             {
-                /* Add taskId only if the component is a COBOL program and is on the desired level */
+                // Add taskId only if the component is a COBOL program and is on the desired level 
                 if(it.moduleType == 'COB' && it.level == level)
                 {
                     returnList.add(it.taskId)
@@ -210,10 +223,12 @@ class IspwHelper implements Serializable
         return returnList
     
     }
-
+*/
 /* 
     Receive a response from an "Get Tasks in Set"-httpRequest and build and return a list of TaskAsset Objects that belong to the desired level
 */
+/* This method is not required anymore since ISPW webhooks now pass assignment ids */
+/*
     def ArrayList getSetTaskList(ResponseContentSupplier response, String level)
     {
 
@@ -250,10 +265,12 @@ class IspwHelper implements Serializable
         return returnList
     
     }
-
+*/
 /* 
     Receive a response from an "Get Tasks in Set"-httpRequest and return the List of Releases
 */
+/* This method is not required anymore since ISPW webhooks now pass assignment ids */
+/*
     def ArrayList getSetRelease(ResponseContentSupplier response)
     {
         def jsonSlurper = new JsonSlurper()
@@ -281,11 +298,13 @@ class IspwHelper implements Serializable
         return returnList
     
     }
-
+*/
 /*
     Receive a list of TaskInfo Objects, the response of an "List tasks of a Release"-httpRequest to build and return a List of TaskInfo Objects
     that contain the base and internal version
 */
+/* This method is not required anymore since ISPW webhooks now pass assignment ids */
+/*
     def setTaskVersions(ArrayList tasks, ResponseContentSupplier response, String level)
     {
         def jsonSlurper = new JsonSlurper()
@@ -322,7 +341,8 @@ class IspwHelper implements Serializable
         return returnList
 
     }
-
+*/
+    /* Parse downloaded sources and get a list of copy books */
     def List referencedCopyBooks(String workspace) 
     {
 
@@ -389,6 +409,7 @@ class IspwHelper implements Serializable
 
     }      
 
+    /* Regress a list of assignments */
     def regressAssignmentList(assignmentList, cesToken)
     {
         for(int i = 0; i < assignmentList.size(); i++)
@@ -402,6 +423,7 @@ class IspwHelper implements Serializable
             
     }
 
+    /* Regress one assigment */
     def regressAssignment(assignment, cesToken)
     {
         def requestBodyParm = '''{

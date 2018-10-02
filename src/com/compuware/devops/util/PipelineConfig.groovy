@@ -9,29 +9,29 @@ class PipelineConfig implements Serializable
     def mailListLines
     def mailListMap = [:]
 
-    private String configGitBranch
-    private String configGitProject    = "Jenkinsfiles"
-    private String configGitPath       = "config"
+    private String configGitProject    = "Jenkinsfiles"         // Git Hub Repository containing the configuration files for the pipeline
+    private String configGitBranch                              // Branch in Git Hub Repository containing the configuration files for the pipeline    
+    private String configGitPath       = "config"               // Folder in Git Hub Repository containing the configuration files for the pipeline    
 
-    private String configPath           = 'config\\pipeline'
-    private String pipelineConfigFile   = 'pipeline.config'
-    private String tttGitConfigFile     = 'tttgit.config'
+    private String configPath           = 'config\\pipeline'    // Path containing config files after downloading them from Git Hub Repository
+    private String pipelineConfigFile   = 'pipeline.config'     // Config file containing pipeline configuration
+    private String tttGitConfigFile     = 'tttgit.config'       // Config gile containing for TTT projects stroed in Git Hub
 
     private String workspace
 
 /* Environment specific settings, which differ between Jenkins servers and applications, but not between runs */
-    public String gitTargetBranch
-    public String gitBranch      
+    public String gitTargetBranch                               // Used for synchronizing TTT project stored in Git with programs stored in ISPW
+    public String gitBranch                                     // Used for synchronizing TTT project stored in Git with programs stored in ISPW
     
-    public String sqScannerName  
-    public String sqServerName   
-    public String sqServerUrl    
-    public String mfSourceFolder 
-    public String xlrTemplate    
-    public String xlrUser        
-    public String tttFolder      
-    public String ispwUrl        
-    public String ispwRuntime    
+    public String sqScannerName                                 // Sonar Qube Scanner Tool name as defined in "Manage Jenkins" -> "Global Tool Configuration" -> "SonarQube scanner"
+    public String sqServerName                                  // Sonar Qube Scanner Server name as defined in "Manage Jenkins" -> "Configure System" -> "SonarQube servers"
+    public String sqServerUrl                                   // URL to the SonarQube server
+    public String mfSourceFolder                                // Folder containing sources after downloading from ISPW
+    public String xlrTemplate                                   // XL Release template to start
+    public String xlrUser                                       // XL Release user to use
+    public String tttFolder                                     // Folder containing TTT projects after downloading from Git Hub
+    public String ispwUrl                                       // ISPW/CES URL for native REST API calls
+    public String ispwRuntime                                   // ISPW Runtime
 
 /* Runtime specific settings, which differ runs and get passed as parameters or determined during execution */
     public String ispwStream
@@ -91,6 +91,7 @@ class PipelineConfig implements Serializable
         this.ccRepository       = params.CC_repository
     }
 
+    /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
     def initialize()
     {
         GitHelper gitHelper     = new GitHelper(steps)
@@ -105,6 +106,7 @@ class PipelineConfig implements Serializable
     
     }
 
+    /* Read configuration values from pipeline.config file */
     def setServerConfig()
     {
         def lineToken
@@ -155,6 +157,7 @@ class PipelineConfig implements Serializable
         }
     }
 
+    /* Read configuration values from tttgit.config file */
     def setTttGitConfig()
     {
         def lineToken
@@ -183,6 +186,7 @@ class PipelineConfig implements Serializable
         }
     }
 
+    /* Read list of email addresses from config file */
     def setMailConfig()
     {        
         def lineToken
@@ -200,7 +204,7 @@ class PipelineConfig implements Serializable
 
         this.mailRecipient  = mailListMap[(ispwOwner.toUpperCase())]
     }
-
+    
     def readConfigFile(String fileName)
     {
         def filePath = "${workspace}\\${configPath}\\${fileName}"
