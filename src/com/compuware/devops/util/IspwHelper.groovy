@@ -262,7 +262,7 @@ class IspwHelper implements Serializable
 
         if(resp.message != null)
         {
-            echo "Resp: " + resp.message
+            steps.echo "Resp: " + resp.message
             steps.error
         }
         else
@@ -296,7 +296,7 @@ class IspwHelper implements Serializable
 
         if(resp.message != null)
         {
-            echo "Resp: " + resp.message
+            steps.echo "Resp: " + resp.message
             steps.error
         }
         else
@@ -394,7 +394,7 @@ class IspwHelper implements Serializable
         for(int i = 0; i < assignmentList.size(); i++)
         {
 
-            echo "Regress Assignment ${assignmentList[0].toString()}, Level ${ispwTargetLevel}"
+            steps.echo "Regress Assignment ${assignmentList[0].toString()}, Level ${ispwTargetLevel}"
 
             regressAssignment(assignmentList[i])
 
