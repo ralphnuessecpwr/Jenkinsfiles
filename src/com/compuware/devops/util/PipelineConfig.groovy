@@ -9,7 +9,7 @@ class PipelineConfig implements Serializable
     def mailListLines
     def mailListMap = [:]
 
-    private String configGitBranch     = "Dev"
+    private String configGitBranch
     private String configGitProject    = "Jenkinsfiles"
     private String configGitPath       = "config"
 
@@ -61,6 +61,7 @@ class PipelineConfig implements Serializable
 
     def PipelineConfig(steps, workspace, params, mailListLines)
     {
+        this.configGitBranch    = params.Config_Git_Branch
         this.steps              = steps
         this.workspace          = workspace
         this.mailListLines      = mailListLines
@@ -80,6 +81,7 @@ class PipelineConfig implements Serializable
 
         this.gitProject         = params.Git_Project
         this.gitCredentials     = params.Git_Credentials
+        
         this.gitUrl             = "https://github.com/${gitProject}"
         this.gitTttRepo         = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
 
