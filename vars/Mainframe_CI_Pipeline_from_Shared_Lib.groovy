@@ -68,8 +68,6 @@ def initialize(pipelineParams)
                             pConfig
                         )
 
-    tttHelper.initialize()                                            
-
     sonarHelper = new SonarHelper(this, steps, pConfig)
 
     sonarHelper.initialize()
@@ -118,6 +116,7 @@ def call(Map pipelineParams)
         */ 
         stage("Execute related Unit Tests")
         {
+            tttHelper.initialize()                                            
             tttHelper.loopThruScenarios()
             tttHelper.passResultsToJunit()
         }
