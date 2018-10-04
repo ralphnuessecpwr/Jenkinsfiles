@@ -50,6 +50,7 @@ class TttHelper implements Serializable {
     def loopThruScenarios()
     {
         steps.echo "Start TTT Loop"
+        steps.echo "Scenarios " + listOfScenarios.toString()
         // Loop through all downloaded Topaz for Total Test scenarios
         listOfScenarios.each
         {
