@@ -54,6 +54,9 @@ class TttHelper implements Serializable {
         listOfScenarios.each
         {
 
+            steps.echo "Test Scenario " + it
+            steps.echo "Against " + listOfPrograms.toString()
+
             // Get root node of the path, i.e. the name of the Total Test project
             def scenarioPath        = it.path // Fully qualified name of the Total Test Scenario file
             def projectName         = it.path.trim().split("\\\\")[0] + "\\"+ it.path.trim().split("\\\\")[1]  // Total Test Project name is the root folder of the full path to the testscenario 
