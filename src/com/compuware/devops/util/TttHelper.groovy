@@ -35,6 +35,8 @@ class TttHelper implements Serializable {
         // Get all Cobol Sources in the MF_Source folder into an array 
         this.listOfSources       = steps.findFiles(glob: "**/${pConfig.ispwApplication}/${pConfig.mfSourceFolder}/*.cbl")
 
+        steps.echo "Found Sources " + listOfSources.toString()
+
         // Define a empty array for the list of programs
         this.listOfPrograms      = []
 
