@@ -30,6 +30,8 @@ class TttHelper implements Serializable {
         // Get all testscenario files in the current workspace into an array
         this.listOfScenarios  = steps.findFiles(glob: '**/*.testscenario')
 
+        steps.echo "Found Scenarios " + listOfScenarios.toString()
+
         // Get all Cobol Sources in the MF_Source folder into an array 
         this.listOfSources       = steps.findFiles(glob: "**/${pConfig.ispwApplication}/${pConfig.mfSourceFolder}/*.cbl")
 
@@ -49,15 +51,9 @@ class TttHelper implements Serializable {
 
     def loopThruScenarios()
     {
-        steps.echo "Start TTT Loop"
-        steps.echo "Scenarios " + listOfScenarios.toString()
         // Loop through all downloaded Topaz for Total Test scenarios
         listOfScenarios.each
         {
-
-            steps.echo "Test Scenario " + it
-            steps.echo "Against " + listOfPrograms.toString()
-
             // Get root node of the path, i.e. the name of the Total Test project
             def scenarioPath        = it.path // Fully qualified name of the Total Test Scenario file
             def projectName         = it.path.trim().split("\\\\")[0] + "\\"+ it.path.trim().split("\\\\")[1]  // Total Test Project name is the root folder of the full path to the testscenario 
