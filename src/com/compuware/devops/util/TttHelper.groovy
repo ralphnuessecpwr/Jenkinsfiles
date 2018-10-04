@@ -49,6 +49,8 @@ class TttHelper implements Serializable {
             // Trim ./cbl from the Source members to populate the array of program names
             listOfPrograms.add(it.name.trim().split("\\.")[0])
         }
+
+        error
     }
 
     def loopThruScenarios()
