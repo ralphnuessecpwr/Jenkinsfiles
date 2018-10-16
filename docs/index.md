@@ -13,8 +13,10 @@ Some pieces of code already show how to use the underlying APIs rather than the 
 ## People wanting to contribute
 Everyone perusing these pages is welcome to provide feedback, input and suggestions for improvement; as well as asking for specific topics to be covered in the future.
 
-## Examples and the underlying folder structure of the repository
-Currently, we have published two examples of "complete" pipelines which show partly different process steps and different techniques in Jenkins. The first one [Mainframe-CI-Example-pipeline.jenkinsfile](./Mainframe-CI-Example-pipeline.md) - [code](https://github.com/cpwr-devops/DevOps-Examples/blob/suggest/Jenkinsfile/Mainframe-CI-Example-pipeline.jenkinsfile) - is a scripted pipeline using parameters, the second one [Mainframe_CI_Pipeline_from_Shared_Lib.groovy](./Mainframe_CI_Pipeline_from_Shared_Lib.md) - [code](https://github.com/cpwr-devops/DevOps-Examples/blob/suggest/vars/Mainframe_CI_Pipeline_from_Shared_Lib.groovy) - is a pipeline loaded from a Jenkins shared library.
+## The primary examples
+Currently, we have published two examples of "complete" pipelines which show partly different process steps and different techniques in Jenkins. 
+- [Mainframe-CI-Example-pipeline.jenkinsfile](./Mainframe-CI-Example-pipeline.md) - ([code](https://github.com/cpwr-devops/DevOps-Examples/blob/suggest/Jenkinsfile/Mainframe-CI-Example-pipeline.jenkinsfile)) - is a scripted pipeline using parameters
+- [Mainframe_CI_Pipeline_from_Shared_Lib.groovy](./Mainframe_CI_Pipeline_from_Shared_Lib.md) - ([code](https://github.com/cpwr-devops/DevOps-Examples/blob/suggest/vars/Mainframe_CI_Pipeline_from_Shared_Lib.groovy)) - is a pipeline loaded from a Jenkins shared library.
 
 Currently, both examples use a development scenario based on
 - [ISPW](https://compuware.com/ispw-source-code-management/) as SCM to store and govern mainframe sources
@@ -24,8 +26,29 @@ Currently, both examples use a development scenario based on
 - [SonarQube](https://www.sonarsource.com/) as server for code analysis and setting up quality gates
 - [XLRelease](https://xebialabs.com/) as CD server for release steps following the initial CI process Jenkins
 
+## Other code examples
 Code snippets and examples related to Jenkins/Groovy will be stored alongside the *Mainframe-CI-Example-pipeline* in the [Jenkinsfile folder](https://github.com/cpwr-devops/DevOps-Examples/tree/suggest/Jenkinsfile) of the repository.
 
-Code snippets and examples not directly related are stored in separate folders in the root directory of the repository.
+Code snippets and examples not directly related are stored in separate folders in the root directory of the repository. Currently these are
+- [ISPW-REST-API-Examples](https://github.com/cpwr-devops/DevOps-Examples/tree/suggest/ISPW-REST-API-Examples) containing a Windows powershell script that demonstrates the use of ISPW's REST APIs. This code may be used a starting point if Jenkins is not the CI server of choice.
 
-### Mainframe-CI-Example-pipeline
+## Folder structure
+Based on the descritpion above and due to the requirements for the use of [Pipeline Shared Libraries](https://jenkins.io/doc/book/pipeline/shared-libraries/) in Jenkins the folder structure of the DevOps-Examples repository is as follows:
+    (root)
+    +- src                                                  # Groovy source files 
+    |   +- com
+    |       +- compuware
+    |           +- devops
+    |               +- util                                 # classes used by the pipelines
+    +- vars
+    |   +- Mainframe_CI_Pipeline_from_Shared_Lib.groovy     # primary example pipeline (Shared Library)
+    +- config                                               # configuration and other files used by the pipelines
+    |   +- pipeline                                          
+    |       +- pipeline.config                              # environment specific configuration
+    |       +- tttgit.config                                # configuration for the GitHub repository storing unit test assets
+    |   +- skels                                            # mainframe JCL "skeleton" files
+    +- Jenkinsfile                                          # scripted pipeline code and groovy example code
+    |   +- Mainframe-CI-Example-pipeline.jenkinsfile        # primary example pipeline (Scripted Pipeline)
+    +- ISPW-REST-API-Examples                               # Code examples using the ISPW REST API
+    |   +- ISPW_Operations.ps1                              # Windows powershell script as wrapper for all available ISPW API calls
+    +- docs                                                 # GitHub pages
