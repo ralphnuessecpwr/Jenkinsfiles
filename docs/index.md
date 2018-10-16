@@ -34,6 +34,7 @@ Code snippets and examples not directly related are stored in separate folders i
 
 ## Folder structure
 Based on the descritpion above and due to the requirements for the use of [Pipeline Shared Libraries](https://jenkins.io/doc/book/pipeline/shared-libraries/) in Jenkins the folder structure of the DevOps-Examples repository is as follows:
+
     (root)
     +- src                                                  # Groovy source files 
     |   +- com
