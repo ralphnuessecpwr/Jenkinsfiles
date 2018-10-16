@@ -63,21 +63,7 @@ Based on the descritpion above and due to the requirements for the use of [Pipel
 
 ## Next pages
 
-<table>
-    <tr>
-        <td>[Plugins](./plugins/plugins.md)</td> 
-        <td>for a list and description of "non standard" plugins that are used within the examples</td>
-    </tr>
-    <tr>
-        <td>[Tool Configurations](./tool_configuration/tool_configuration.md)</td>
-        <td>for descriptions of setting up the different tools (inside and outside of Jenkins) in play</td>
-    </tr>
-    <tr>
-        <td>[Primary Pipelines](./pipelines/pipelines.md)</td>
-        <td>for detailed descriptions of the primary pipelines</td>
-    </tr>
-    <tr>
-        <td>[Code examples](./code_examples/code_examples.md)</td>
-        <td>for descriptions of Groovy and non-Groovy code examples outside the primary pipelines</td>
-    </tr>
-</table>
+- [Plugins](./plugins/plugins.md) for a list and description of "non standard" plugins that are used within the examples
+- [Tool Configurations](./tool_configuration/tool_configuration.md) for descriptions of setting up the different tools (inside and outside of Jenkins) in play
+- [Primary Pipelines](./pipelines/pipelines.md) for detailed descriptions of the primary pipelines
+- [Code examples](./code_examples/code_examples.md) for descriptions of Groovy and non-Groovy code examples outside the primary pipelines
