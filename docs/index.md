@@ -74,3 +74,6 @@ for detailed descriptions of the *primary* pipelines
 
 - [Code examples](./code_examples/code_examples.md) 
 for descriptions of Groovy and non-Groovy code examples outside the *primary* pipelines
+
+- [Helper classes](./helper_classes/helper_classes.md)
+for descriptions of the classes in `src/com/compuware/devops/util` that are being used by the [Mainframe_CI_Pipeline_from_Shared_Lib.groovy](./Mainframe_CI_Pipeline_from_Shared_Lib.md) and other code examples.
