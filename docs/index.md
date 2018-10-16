@@ -1,4 +1,4 @@
 # Jenkinsfiles
 Test Text.
 ## Sub Header
-Go to [Next Page] (/NextPage/)
+Go to [Next Page](/NextPage/)
