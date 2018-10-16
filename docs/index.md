@@ -13,7 +13,9 @@ Some pieces of code already show how to use the underlying APIs rather than the 
 ## People wanting to contribute
 Everyone perusing these pages is welcome to provide feedback, input and suggestions for improvement; as well as asking for specific topics to be covered in the future.
 
-## The primary examples
+## The repository structure and content
+
+### Primary examples
 Currently, we have published two examples of "complete" pipelines which show partly different process steps and different techniques in Jenkins. 
 - [Mainframe-CI-Example-pipeline.jenkinsfile](./Mainframe-CI-Example-pipeline.md) - ([code](https://github.com/cpwr-devops/DevOps-Examples/blob/suggest/Jenkinsfile/Mainframe-CI-Example-pipeline.jenkinsfile)) - is a scripted pipeline using parameters
 - [Mainframe_CI_Pipeline_from_Shared_Lib.groovy](./Mainframe_CI_Pipeline_from_Shared_Lib.md) - ([code](https://github.com/cpwr-devops/DevOps-Examples/blob/suggest/vars/Mainframe_CI_Pipeline_from_Shared_Lib.groovy)) - is a pipeline loaded from a Jenkins shared library.
@@ -26,13 +28,13 @@ Currently, both examples use a development scenario based on
 - [SonarQube](https://www.sonarsource.com/) as server for code analysis and setting up quality gates
 - [XLRelease](https://xebialabs.com/) as CD server for release steps following the initial CI process Jenkins
 
-## Other code examples
+### Other code examples
 Code snippets and examples related to Jenkins/Groovy will be stored alongside the *Mainframe-CI-Example-pipeline* in the [Jenkinsfile folder](https://github.com/cpwr-devops/DevOps-Examples/tree/suggest/Jenkinsfile) of the repository.
 
 Code snippets and examples not directly related are stored in separate folders in the root directory of the repository. Currently these are
 - [ISPW-REST-API-Examples](https://github.com/cpwr-devops/DevOps-Examples/tree/suggest/ISPW-REST-API-Examples) containing a Windows powershell script that demonstrates the use of ISPW's REST APIs. This code may be used a starting point if Jenkins is not the CI server of choice.
 
-## Folder structure
+### Folder structure
 Based on the descritpion above and due to the requirements for the use of [Pipeline Shared Libraries](https://jenkins.io/doc/book/pipeline/shared-libraries/) in Jenkins the folder structure of the DevOps-Examples repository is as follows:
 
     (root)
