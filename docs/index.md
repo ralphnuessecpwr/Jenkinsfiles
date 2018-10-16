@@ -34,7 +34,7 @@ Code snippets and examples related to Jenkins/Groovy will be stored alongside th
 Code snippets and examples not directly related are stored in separate folders in the root directory of the repository. Currently these are
 - [ISPW-REST-API-Examples](https://github.com/cpwr-devops/DevOps-Examples/tree/suggest/ISPW-REST-API-Examples) containing a Windows powershell script that demonstrates the use of ISPW's REST APIs. This code may be used a starting point if Jenkins is not the CI server of choice.
 
-### Folder structure
+### The complete folder structure
 Based on the descritpion above and due to the requirements for the use of [Pipeline Shared Libraries](https://jenkins.io/doc/book/pipeline/shared-libraries/) in Jenkins the folder structure of the DevOps-Examples repository is as follows:
 
     (root)
@@ -43,15 +43,41 @@ Based on the descritpion above and due to the requirements for the use of [Pipel
     |       +- compuware
     |           +- devops
     |               +- util                                 # classes used by the pipelines
+    |
     +- vars
     |   +- Mainframe_CI_Pipeline_from_Shared_Lib.groovy     # primary example pipeline (Shared Library)
+    |
     +- config                                               # configuration and other files used by the pipelines
     |   +- pipeline                                          
     |       +- pipeline.config                              # environment specific configuration
     |       +- tttgit.config                                # configuration for the GitHub repository storing unit test assets
     |   +- skels                                            # mainframe JCL "skeleton" files
+    |
     +- Jenkinsfile                                          # scripted pipeline code and groovy example code
     |   +- Mainframe-CI-Example-pipeline.jenkinsfile        # primary example pipeline (Scripted Pipeline)
+    |
     +- ISPW-REST-API-Examples                               # Code examples using the ISPW REST API
     |   +- ISPW_Operations.ps1                              # Windows powershell script as wrapper for all available ISPW API calls
+    |
     +- docs                                                 # GitHub pages
+
+## Next pages
+
+<table>
+    <tr>
+        <td>[Plugins](./plugins/plugins.md)</td> 
+        <td>for a list and description of "non standard" plugins that are used within the examples</td>
+    </tr>
+    <tr>
+        <td>[Tool Configurations](./tool_configuration/tool_configuration.md)</td>
+        <td>for descriptions of setting up the different tools (inside and outside of Jenkins) in play</td>
+    </tr>
+    <tr>
+        <td>[Primary Pipelines](./pipelines/pipelines.md)</td>
+        <td>for detailed descriptions of the primary pipelines</td>
+    </tr>
+    <tr>
+        <td>[Code examples](./code_examples/code_examples.md)</td>
+        <td>for descriptions of Groovy and non-Groovy code examples outside the primary pipelines</td>
+    </tr>
+</table>
