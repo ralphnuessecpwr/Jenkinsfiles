@@ -18,7 +18,6 @@
         <h1 class="header">{{ site.title | default: site.github.repository_name }}</h1>
         <p class="header">{{ site.description | default: site.github.project_tagline }}</p>
 
-        <!--
         <ul>
           {% if site.show_downloads %}
             <li class="download"><a class="buttons" href="{{ site.github.zip_url }}">Download ZIP</a></li>
@@ -27,10 +26,13 @@
           <li><a class="buttons github" href="{{ site.github.repository_url }}">View On GitHub</a></li>
         </ul>
         
-        <h2 class="header">Navigation</h2>
-        -->
         <ul>
           <li class="header name"><a class="header name" href="./plugins/plugins.html">Required Plugins</a></li>
+          <li class="header name"><a class="header name" href="./tool_configuration/tool_configuration.html">Required Plugins</a></li>
+          <li class="header name"><a class="header name" href="./tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+          <li class="header name"><a class="header name" href="./pipelines/pipelines.html">The Primary Pipelines</a></li>
+          <li class="header name"><a class="header name" href="./helper_classes/helper_classes.html">Helper Classes</a></li>
+          <li class="header name"><a class="header name" href="./code_examples/code_examples.html">Other Code Examples</a></li>
         </ul>
 
         {% if site.github.is_project_page %}
