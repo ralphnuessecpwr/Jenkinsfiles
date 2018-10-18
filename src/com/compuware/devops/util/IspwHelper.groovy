@@ -119,7 +119,6 @@ class IspwHelper implements Serializable
         }
     }
 
-
 /* 
     Determine all assignments in the current container 
 */
