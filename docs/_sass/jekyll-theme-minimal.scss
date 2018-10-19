@@ -71,7 +71,8 @@ blockquote {
 
 code, pre {
   font-family:Monaco, Bitstream Vera Sans Mono, Lucida Console, Terminal, Consolas, Liberation Mono, DejaVu Sans Mono, Courier New, monospace;
-  color:#333;
+  color:rgb(98, 5, 121);
+  background: #f8f8f8;
 }
 
 pre {
@@ -121,7 +122,8 @@ p.header {
 
 h1.header {
 	font-size: 28px;
-	padding: 10px 5px;
+  padding-left: 10px 
+  padding-top: 5px;
 }
 
 ul.downloads {
