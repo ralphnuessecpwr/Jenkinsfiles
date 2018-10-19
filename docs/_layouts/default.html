@@ -41,6 +41,13 @@
           <li class="header name"><a class="header name" href="./code_examples/code_examples.html">Other Code Examples</a></li>
         </ul>
 
+      </header>
+
+      <section>
+        {{ content }}
+      </section>
+
+      <footer>
         {% if site.github.is_project_page %}
           <p class="header">This project is maintained by <a class="header name" href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
         {% endif %}
@@ -50,13 +57,7 @@
             <li><a class="buttons github" href="{{ site.github.owner_url }}">GitHub Profile</a></li>
           </ul>
         {% endif %}
-      </header>
 
-      <section>
-        {{ content }}
-      </section>
-
-      <footer>
         <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Minimal theme</small></p>
       </footer>
     </div>
