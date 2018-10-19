@@ -249,13 +249,14 @@ strong {
       line-height:52px;
       font-size:100%;
       color:#9d7f0d;
-      text-transform:capitalize;
+      /*text-transform:capitalize;*/
       text-shadow:rgba(#fff, 0.2) 0 1px 0;
     }
   }
 
   ul {
     list-style:none;
+    font-size: 14px;
     height:40px;
     padding:0;
     float: left;
