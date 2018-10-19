@@ -4,7 +4,7 @@
 body {
   background-color: #fff;
   /*padding:50px;*/
-  padding:10px 50px 0 0;
+  padding:50px 50px 0 0;
   font: 14px/1.5 "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color:#727272;
   font-weight:400;
@@ -113,6 +113,11 @@ header {
   float:left;
   position:fixed;
   -webkit-font-smoothing:subpixel-antialiased;
+}
+
+h1.header {
+	font-size: 28px;
+	margin: 5px 10px;
 }
 
 ul.downloads {
