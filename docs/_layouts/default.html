@@ -13,12 +13,12 @@
     <![endif]-->
   </head>
   <body>
-
     <div id="banner">
       <a href="{{ site.github.repository_url }}" class="button fork"><strong>View On GitHub</strong></a>
       <div class="downloads">
         <span><strong>DevOps-Examples</strong></span>
           <ul>
+            <li class="button"><a href="{{ site.url | append: '/DevOps-Examples/index.html' }}">Home</a></li>            
             <li class="button"><a href="./plugins/plugins.html">Required Plugins</a></li>
             <li class="button"><a href="./tool_configuration/tool_configuration.html">Tool Configurations</a></li>
             <li class="button"><a href="./pipelines/pipelines.html">The Primary Pipelines</a></li>
@@ -30,10 +30,11 @@
 
     <div class="wrapper">
       <header>
-        <h1 class="header">DevOps-Examples</h1>
+        <h1 class="header">{{ page.title | default: site.github.repository_name }}</h1>
         <p class="header">Examples of DevOps pipelines for mainframe applications</p>
 
         <ul>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/index.html' }}">Home</a></li>          
           <li class="header name"><a class="header name" href="./plugins/plugins.html">Required Plugins</a></li>
           <li class="header name"><a class="header name" href="./tool_configuration/tool_configuration.html">Tool Configurations</a></li>
           <li class="header name"><a class="header name" href="./pipelines/pipelines.html">The Primary Pipelines</a></li>
