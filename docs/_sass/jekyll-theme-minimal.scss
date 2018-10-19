@@ -112,6 +112,7 @@ img {
 header {
   /*width:270px;*/
   width:15%;
+  top: 50px;
   background: #aaaaaa;
   float:left;
   position:fixed;
@@ -119,7 +120,7 @@ header {
 }
 
 p.header {
-	padding-left: 10px;
+  padding-left: 10px;
 }
 
 h1.header {
@@ -194,8 +195,8 @@ strong {
   left:0;
   top:0;
   width: 100%;
-  /*right:50%;
   height: 50px;
+  /*right:50%;
   margin-right:-382px;*/
   float: top;
   position: fixed;
