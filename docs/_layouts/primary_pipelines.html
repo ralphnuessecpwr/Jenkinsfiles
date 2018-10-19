@@ -13,11 +13,10 @@
     <![endif]-->
   </head>
   <body>
-
     <div id="banner">
-      <a href="{{ site.github.repository_url }}" class="button fork"><strong>View On GitHub</strong></a>
-      <div class="downloads">
-        <span><strong>DevOps-Examples</strong></span>
+        <a href="{{ site.github.repository_url }}" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span><strong>DevOps-Examples</strong></span>
           <ul>
             <li class="button"><a href="./plugins/plugins.html">Required Plugins</a></li>
             <li class="button"><a href="./tool_configuration/tool_configuration.html">Tool Configurations</a></li>
@@ -26,21 +25,29 @@
             <li class="button"><a href="./code_examples/code_examples.html">Other Code Examples</a></li>
           </ul>
       </div>
-    </div>    
-
+    </div>
+  
     <div class="wrapper">
       <header>
-        <h1 class="header">DevOps-Examples</h1>
-        <p class="header">Examples of DevOps pipelines for mainframe applications</p>
+        <h1 class="header">Primary pipelines</h1>
+        <p class="header">The primary pipeline scenarios, setup and code</p>
 
         <ul>
-          <li class="header name"><a class="header name" href="./plugins/plugins.html">Required Plugins</a></li>
-          <li class="header name"><a class="header name" href="./tool_configuration/tool_configuration.html">Tool Configurations</a></li>
-          <li class="header name"><a class="header name" href="./pipelines/pipelines.html">The Primary Pipelines</a></li>
-          <li class="header name"><a class="header name" href="./helper_classes/helper_classes.html">Helper Classes</a></li>
-          <li class="header name"><a class="header name" href="./code_examples/code_examples.html">Other Code Examples</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/index.html' }}">Home</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/tool_configuration/tool_configuration.html' }}">Tool Configurations</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/pipelines/pipelines.html' }}">The Primary Pipelines</a></li>          
         </ul>
-
+        <ul>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/pipelines/scenario/ISPW_scenario.html' }}">ISPW Scenario</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/pipelines/scenario/TTT_scenario.html' }}">TTT Scenario</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/pipelines/scenario/TTT_in_Git.html' }}">Git(Hub) for TTT</a></li>          
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/pipelines/Mainframe-CI-Example-pipeline.html' }}">Simple Pipeline</a></li>                    
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/pipelines/Mainframe_CI_Pipeline_from_Shared_Lib.html' }}">From Shared Library</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/helper_classes/helper_classes.html' }}">Helper Classes</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/code_examples/code_examples.html' }}">Other Code Examples</a></li>
+        </ul>
       </header>
 
       <section>
@@ -51,7 +58,6 @@
         {% if site.github.is_project_page %}
           <p class="header">This project is maintained by <a class="header name" href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
         {% endif %}
-
         {% if site.github.is_user_page %}
           <ul>
             <li><a class="buttons github" href="{{ site.github.owner_url }}">GitHub Profile</a></li>
@@ -59,7 +65,7 @@
         {% endif %}
         <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Minimal theme</small></p>
       </footer>
-    </div>
+      </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     {% if site.google_analytics %}
       <script>

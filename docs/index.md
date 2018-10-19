@@ -1,4 +1,4 @@
-# DevOps-Examples
+# <a id="DevOps-Examples"></a> DevOps-Examples
 This repostitory is dedicated to providing information and working examples for anyone who is looking for information on how to integrate mainframe development into CI/CD pipelines, specifically Jenkins pipelines to start with. 
 
 The pages will contain example code and documentation on
@@ -10,15 +10,15 @@ The pages will contain example code and documentation on
 
 Some pieces of code already show how to use the underlying APIs rather than the Jenkins specific plugins, and we intend to expand to other CI/CD tools as the need arises. 
 
-## People wanting to contribute
+## <a id="People wanting to contribute"></a> People wanting to contribute
 Everyone perusing these pages is welcome to provide feedback, input and suggestions for improvement; as well as asking for specific topics to be covered in the future.
 
-## The repository structure and content
+## <a id="The repository structure and content"></a> The repository structure and content
 
-### Primary examples
+### <a id="Primary examples"></a> Primary examples
 Currently, we have published two examples of "complete" pipelines which show partly different process steps and different techniques in Jenkins. 
-- [Mainframe-CI-Example-pipeline.jenkinsfile](./Mainframe-CI-Example-pipeline.md) - ([code](https://github.com/cpwr-devops/DevOps-Examples/blob/suggest/Jenkinsfile/Mainframe-CI-Example-pipeline.jenkinsfile)) - is a scripted pipeline using parameters
-- [Mainframe_CI_Pipeline_from_Shared_Lib.groovy](./Mainframe_CI_Pipeline_from_Shared_Lib.md) - ([code](https://github.com/cpwr-devops/DevOps-Examples/blob/suggest/vars/Mainframe_CI_Pipeline_from_Shared_Lib.groovy)) - is a pipeline loaded from a Jenkins shared library.
+- [Mainframe-CI-Example-pipeline](./pipelines/Mainframe-CI-Example-pipeline.html) - ([jenkinsfile](https://github.com/cpwr-devops/DevOps-Examples/blob/suggest/Jenkinsfile/Mainframe-CI-Example-pipeline.jenkinsfile)) - is a scripted pipeline using parameters
+- [Mainframe_CI_Pipeline_from_Shared_Lib](./pipelines/Mainframe_CI_Pipeline_from_Shared_Lib.html) - ([groovy](https://github.com/cpwr-devops/DevOps-Examples/blob/suggest/vars/Mainframe_CI_Pipeline_from_Shared_Lib.groovy)) - is a pipeline loaded from a Jenkins shared library.
 
 Currently, both examples use a development scenario based on
 - [ISPW](https://compuware.com/ispw-source-code-management/) as SCM to store and govern mainframe sources
@@ -28,13 +28,13 @@ Currently, both examples use a development scenario based on
 - [SonarQube](https://www.sonarsource.com/) as server for code analysis and setting up quality gates
 - [XLRelease](https://xebialabs.com/) as CD server for release steps following the initial CI process Jenkins
 
-### Other code examples
+### <a id="Other code examples"></a> Other code examples
 Code snippets and examples related to Jenkins/Groovy will be stored alongside the *Mainframe-CI-Example-pipeline* in the [Jenkinsfile folder](https://github.com/cpwr-devops/DevOps-Examples/tree/suggest/Jenkinsfile) of the repository.
 
 Code snippets and examples not directly related are stored in separate folders in the root directory of the repository. Currently these are
 - [ISPW-REST-API-Examples](https://github.com/cpwr-devops/DevOps-Examples/tree/suggest/ISPW-REST-API-Examples) containing a Windows powershell script that demonstrates the use of ISPW's REST APIs. This code may be used a starting point if Jenkins is not the CI server of choice.
 
-### The complete folder structure
+### <a id="The complete folder structure"></a> The complete folder structure
 Based on the descritpion above and due to the requirements for the use of [Pipeline Shared Libraries](https://jenkins.io/doc/book/pipeline/shared-libraries/) in Jenkins the folder structure of the DevOps-Examples repository is as follows:
 
     (root)
@@ -61,19 +61,19 @@ Based on the descritpion above and due to the requirements for the use of [Pipel
     |
     +- docs                                                 # GitHub pages
 
-## Next pages
+## <a id="Next pages"></a> Next pages
 
-- [Plugins](./plugins/plugins.md) 
+- [Required Plugins](./plugins/plugins.html) 
 for a list and description of "non standard" plugins that are used within the examples
 
-- [Tool Configurations](./tool_configuration/tool_configuration.md) 
+- [Tool Configurations](./tool_configuration/tool_configuration.html) 
 for descriptions of setting up the different tools (inside and outside of Jenkins) in play
 
-- [Primary Pipelines](./pipelines/pipelines.md) 
+- [Primary Pipelines](./pipelines/pipelines.html) 
 for detailed descriptions of the *primary* pipelines
 
-- [Code examples](./code_examples/code_examples.md) 
-for descriptions of Groovy and non-Groovy code examples outside the *primary* pipelines
+- [Helper classes](./helper_classes/helper_classes.html)
+for descriptions of the classes in `src/com/compuware/devops/util` that are being used by the [Mainframe_CI_Pipeline_from_Shared_Lib.groovy](./Mainframe_CI_Pipeline_from_Shared_Lib.html) and other code examples.
 
-- [Helper classes](./helper_classes/helper_classes.md)
-for descriptions of the classes in `src/com/compuware/devops/util` that are being used by the [Mainframe_CI_Pipeline_from_Shared_Lib.groovy](./Mainframe_CI_Pipeline_from_Shared_Lib.md) and other code examples.
+- [Other Code examples](./code_examples/code_examples.html) 
+for descriptions of Groovy and non-Groovy code examples outside the *primary* pipelines
