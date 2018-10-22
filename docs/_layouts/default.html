@@ -13,35 +13,18 @@
     <![endif]-->
   </head>
   <body>
-    <div id="banner">
-      <a href="{{ site.github.repository_url }}" class="button fork"><strong>View On GitHub</strong></a>
-      <div class="downloads">
-        <span><strong>DevOps-Examples</strong></span>
-          <ul>
-            <li class="button"><a href="{{ site.url | append: '/Jenkinsfiles/index.html' }}">Home</a></li>            
-            <li class="button"><a href="{{ site.url | append: '/Jenkinsfiles/plugins/plugins.html' }}">Required Plugins</a></li>
-            <li class="button"><a href="{{ site.url | append: '/Jenkinsfiles/tool_configuration/tool_configuration.html' }}">Tool Configurations</a></li>
-            <li class="button"><a href="{{ site.url | append: '/Jenkinsfiles/pipelines/pipelines.html' }}">The Primary Pipelines</a></li>
-            <li class="button"><a href="{{ site.url | append: '/Jenkinsfiles/helper_classes/helper_classes.html' }}">Helper Classes</a></li>
-            <li class="button"><a href="{{ site.url | append: '/Jenkinsfiles/code_examples/code_examples.html' }}">Other Code Examples</a></li>
-          </ul>
-      </div>
-    </div>    
-
     <div class="wrapper">
       <header>
-        <h1 class="header">{{ page.title | default: site.github.repository_name }}</h1>
-        <p class="header">Examples of DevOps pipelines for mainframe applications</p>
+        <p class="header">{{ site.description | default: site.github.project_tagline }}</p>
 
         <ul>
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/index.html' }}">Home</a></li>          
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/plugins/plugins.html' }}">Required Plugins</a></li>
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/tool_configuration/tool_configuration.html' }}">Tool Configurations</a></li>
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/pipelines/pipelines.html' }}">The Primary Pipelines</a></li>
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/helper_classes/helper_classes.html' }}">Helper Classes</a></li>
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/code_examples/code_examples.html' }}">Other Code Examples</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/index.html' }}">Home</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/plugins/plugins.html' }}">Required Plugins</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/tool_configuration/tool_configuration.html' }}">Tool Configurations</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/pipelines/pipelines.html' }}">The Primary Pipelines</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/helper_classes/helper_classes.html' }}">Helper Classes</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/code_examples/code_examples.html' }}">Other Code Examples</a></li>
         </ul>
-
       </header>
 
       <section>
@@ -49,17 +32,10 @@
       </section>
 
       <footer>
-        {% if site.github.is_project_page %}
-          <p class="header">This project is maintained by <a class="header name" href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
-        {% endif %}
-
-        {% if site.github.is_user_page %}
-          <ul>
-            <li><a class="buttons github" href="{{ site.github.owner_url }}">GitHub Profile</a></li>
-          </ul>
-        {% endif %}
-        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Minimal theme</small></p>
-      </footer>
+        <ul>
+          <li><a class="name buttons github" href="{{ site.github.repository_url }}">View On GitHub</a></li>
+        </ul>
+      </footer>  
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     {% if site.google_analytics %}

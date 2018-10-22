@@ -13,54 +13,45 @@
     <![endif]-->
   </head>
   <body>
-    <div id="banner">
-        <a href="{{ site.github.repository_url }}" class="button fork"><strong>View On GitHub</strong></a>
-        <div class="downloads">
-          <span><strong>DevOps-Examples</strong></span>
-          <ul>
-            <li class="button"><a href="{{ site.url | append: '/Jenkinsfiles/index.html' }}">Home</a></li>            
-            <li class="button"><a href="{{ site.url | append: '/Jenkinsfiles/plugins/plugins.html' }}">Required Plugins</a></li>
-            <li class="button"><a href="{{ site.url | append: '/Jenkinsfiles/tool_configuration/tool_configuration.html' }}">Tool Configurations</a></li>
-            <li class="button"><a href="{{ site.url | append: '/Jenkinsfiles/pipelines/pipelines.html' }}">The Primary Pipelines</a></li>
-            <li class="button"><a href="{{ site.url | append: '/Jenkinsfiles/helper_classes/helper_classes.html' }}">Helper Classes</a></li>
-            <li class="button"><a href="{{ site.url | append: '/Jenkinsfiles/code_examples/code_examples.html' }}">Other Code Examples</a></li>
-          </ul>
-      </div>
-    </div>
-  
     <div class="wrapper">
       <header>
-        <h1 class="header">{{ page.title | default: site.github.repository_name }}</h1>
-        <p class="header">Configure supporting tools and Jenkins plugins</p>
+        <p class="header">Configure supporting tools and Jenkins plugins<br>&nbsp</p>
 
         <ul>
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/index.html' }}">Home</a></li>
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/plugins/plugins.html' }}">Required Plugins</a></li>
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/tool_configuration/tool_configuration.html' }}">Tool Configurations</a></li>          
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/index.html' }}">Home</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/plugins/plugins.html' }}">Required Plugins</a></li>
         </ul>
-        <p class="header name">Compuware</p>
+        <p><a class="header name" href="{{ site.url | append: '/DevOps-Examples/tool_configuration/tool_configuration.html' }}">Tool Configurations</a></p>
         <ul>
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/tool_configuration/Compuware_configurations.html' }}">Common configurations</a></li>          
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/tool_configuration/webhook_setup.html' }}">ISPW webhook</a></li>
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/tool_configuration/CES_credentials_token.html' }}">CES credentials token</a></li>
-        </ul>
-        <p class="header name">SonarSource</p>
-        <ul>
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/tool_configuration/SonarQube_server.html' }}">SonarQube server</a></li>
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/tool_configuration/SonarQube_scanner.html' }}">SonarQube scanner</a></li>
-        </ul>
-        <p class="header name">Misc</p>
-        <ul>
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/tool_configuration/XLR_config' }}">XL Release</a></li>
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/tool_configuration/Jenkins_Git_config.html' }}">Git</a></li>
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/tool_configuration/tool_configuration.html#Credentials' }}">Jenkins cedentials</a></li>
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/tool_configuration/tool_configuration.html#Managed Files' }}">Managed Files</a></li>          
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/tool_configuration/Compuware_configurations.html' }}">Common configurations</a></li>          
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/tool_configuration/webhook_setup.html' }}">ISPW webhook</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/tool_configuration/CES_credentials_token.html' }}">CES credentials token</a></li>
         </ul>
         <ul>
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/pipelines/pipelines.html' }}">The Primary Pipelines</a></li>
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/helper_classes/helper_classes.html' }}">Helper Classes</a></li>
-          <li class="header name"><a class="header name" href="{{ site.url | append: '/Jenkinsfiles/code_examples/code_examples.html' }}">Other Code Examples</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/tool_configuration/SonarQube_server.html' }}">SonarQube server</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/tool_configuration/SonarQube_scanner.html' }}">SonarQube scanner</a></li>
         </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/tool_configuration/XLR_config' }}">XL Release</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/tool_configuration/Jenkins_Git_config.html' }}">Git</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/tool_configuration/tool_configuration.html#Credentials' }}">Jenkins cedentials</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/tool_configuration/tool_configuration.html#Managed Files' }}">Managed Files</a></li>          
+        </ul>
+        <!--
+        <ul>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/tool_configuration/tool_configuration.html#Compuware Enterprise Services' }}">CES</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/tool_configuration/tool_configuration.html#Configure system' }}">Configure System</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/tool_configuration/tool_configuration.html#Global Tool Configuration' }}">Global Tools</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/tool_configuration/tool_configuration.html#Credentials' }}">Credentials</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/tool_configuration/tool_configuration.html#Managed Files' }}">Config Files</a></li>
+        </ul>
+        -->
+        <small>&nbsp</small>
+        <ul>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/pipelines/pipelines.html' }}">The Primary Pipelines</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/helper_classes/helper_classes.html' }}">Helper Classes</a></li>
+          <li class="header name"><a class="header name" href="{{ site.url | append: '/DevOps-Examples/code_examples/code_examples.html' }}">Other Code Examples</a></li>
+        </ul>      
       </header>
 
       <section>
@@ -68,18 +59,10 @@
       </section>
 
       <footer>
-          {% if site.github.is_project_page %}
-            <p class="header">This project is maintained by <a class="header name" href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
-          {% endif %}
-  
-          {% if site.github.is_user_page %}
-            <ul>
-              <li><a class="buttons github" href="{{ site.github.owner_url }}">GitHub Profile</a></li>
-            </ul>
-          {% endif %}
-  
-          <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Minimal theme</small></p>
-      </footer>
+          <ul>
+            <li><a class="name buttons github" href="{{ site.github.repository_url }}">View On GitHub</a></li>
+          </ul>
+      </footer>    
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     {% if site.google_analytics %}
