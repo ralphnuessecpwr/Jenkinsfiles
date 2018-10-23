@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Pipelines</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Pipelines" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/pipelines/scenario/TTT_scenario.html" />
+<meta property="og:url" content="http://localhost:4000/pipelines/scenario/TTT_scenario.html" />
+<script type="application/ld+json">
+{"@type":"WebPage","url":"http://localhost:4000/pipelines/scenario/TTT_scenario.html","headline":"Pipelines","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <script src="/assets/js/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <p class="header">The primary pipeline scenarios, setup and code<br>&nbsp</p>
+
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/index.html">Home</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/plugins/plugins.html">Required Plugins</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+        </ul>
+        <p><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/pipelines.html">The Primary Pipelines</a></p>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/scenario/ISPW_scenario.html">ISPW Scenario</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/scenario/TTT_scenario.html">TTT Scenario</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/scenario/TTT_in_Git.html">Git(Hub) for TTT</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/Mainframe-CI-Example-pipeline.html">Simple Pipeline</a></li>                    
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/Mainframe_CI_Pipeline_from_Shared_Lib.html">From Shared Library</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/pipeline_parameters.html">Parameters</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/helper_classes.html">Helper Classes</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/code_examples/code_examples.html">Other Code Examples</a></li>
+        </ul>
+      </header>
+
+      <section>
+        <h1 id="-topaz-for-total-test-scenario"><a id="Topaz for Total Test Scenario"></a> Topaz for Total Test Scenario</h1>
+<p>This page only briefly describes the processes of using Topaz for Total Test to generate, modify and execute unit tests. For more details refer to the Topaz for Total Test online help.</p>
+
+<h2 id="-initial-recording-of-test-cases"><a id="Initial recording of test cases"></a> Initial recording of test cases</h2>
+<p>Since most mainframe development is no green field development, the first step in working with Topaz for Total Test will be executing a program in question under control of the Xpediter debugger. During the debugging session Xpediter and Topaz for Total Test allow recording individual test cases. One such test case, in the sense of Topaz for Total Test, is one execution of a program (compile unit) from beginning (<code class="highlighter-rouge">PROCEDURE DIVISION</code> or <code class="highlighter-rouge">ENTRY</code> point) to end (e.g. <code class="highlighter-rouge">GOBACK</code>). It consists of</p>
+<ul>
+  <li>Input values as recorded at program <code class="highlighter-rouge">ENTRY</code></li>
+  <li>Output values as recorded at program exit (e.g. <code class="highlighter-rouge">GOBACK</code>)</li>
+  <li>Assertions for the recorded output values</li>
+  <li>Stubs (simulation data) for
+    <ul>
+      <li>Sub program calls</li>
+      <li>File I/O, i.e. <code class="highlighter-rouge">QSAM</code> or <code class="highlighter-rouge">VSAM</code> reads and writes</li>
+      <li><code class="highlighter-rouge">DB2 SQL</code> statement execution
+        <ul>
+          <li>Host variables</li>
+          <li>Column values</li>
+          <li><code class="highlighter-rouge">SQLCODE</code></li>
+        </ul>
+      </li>
+      <li><code class="highlighter-rouge">IMS DL/I</code> calls
+        <ul>
+          <li>PCB/ACB before and after each call (incl. <code class="highlighter-rouge">IMS STATUS-CODE</code>)</li>
+          <li>Segment Search Argument (<code class="highlighter-rouge">SSA</code>)</li>
+          <li>Segment data</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Any write stub will also create assertions for the data written to the external data source</li>
+</ul>
+
+<p><img src="../images/TTT record test case.png" alt="Record test case" /></p>
+
+<h2 id="-structuring-tests"><a id="Structuring Tests"> Structuring Tests</a></h2>
+<p>Topaz for Total Test allows storing one or more test case for one or more programs. It is a recommended practice, though, to create one Topaz for Total Test project per program. These projects allow grouping test cases into different scenarios (e.g. by major program branch being executed) and to define and use test suites to execute all test scenarios in one run.</p>
+
+<h2 id="-naming-conventions"><a id="Naming conventions"></a> Naming conventions</h2>
+<p>In order to map Topaz for Total Test project assets, stored in Git, to program components, stored in ISPW, naming conventions are used. These should be followed already when recording the unit tests, but asset names may be changed later, after recording, to use the following naming conventions:</p>
+<ul>
+  <li>The Topaz for Total Test project name uses <code class="highlighter-rouge">&lt;Target_Program_Name&gt;_Unit_Tests</code> as project name</li>
+  <li>The test scenario files or test suite files contain the <code class="highlighter-rouge">&lt;Target_Program_Name&gt;</code> as first part of their file name, followed by an underscore <code class="highlighter-rouge">_</code>, follwowed by any trailing name.</li>
+  <li>Topaz for Total Test itself requires the file extensions
+    <ul>
+      <li><code class="highlighter-rouge">.testscenario</code> for test scenarios</li>
+      <li><code class="highlighter-rouge">.testsuite</code> for test suites</li>
+    </ul>
+  </li>
+</ul>
+
+<p>The <a href="./TTT_in_Git.html">Git repository</a> uses <code class="highlighter-rouge">&lt;ISPW_Stream_Name&gt;_&lt;ISPW_Application_Name&gt;_Unit_Tests</code> as name.</p>
+
+<h2 id="-the-topaz-for-total-test-project-structure"><a id="The Topaz for Total Test project structure"></a> The Topaz for Total Test project structure</h2>
+<p>A Topaz for Total Test project will use the following folder structure, which will be generated and populated automatically, when the first test case gets recorded by Xpediter/Topaz for Total Test:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;project_name&gt;(root)                            # e.g. &lt;Target_Program_Name&gt;_Unit_Tests
++- Unit Tests
+    +- Interfaces                               # interfaces to programs (LINKAGE SECTION) and I/O stubs
+    +- JCL                                      # jcl 'members' for the execution of tests
+    +- Scenarios                                # test scenarios
+    +- Structures                               # COBOL structures (01-levels and subfields) making up the different interfaces 
+    +- Stubs                                    # Simulation data for sub-programs and external I/O
+    +- Suites                                   # test suite(s) executing one or more test scenarios
+</code></pre></div></div>
+
+<p><img src="../images/TTT project structure.png" alt="TTT project" /></p>
+
+<h2 id="-the-runnerjcl"><a id="The runner.jcl"></a> The runner.jcl</h2>
+<p>When using Xpediter/Topaz for Total Test to record test cases, the <code class="highlighter-rouge">JCL</code> folder will contain sample <code class="highlighter-rouge">JCL</code> code which is required to exeute the Topaz for Total Test driver program <code class="highlighter-rouge">TTTRUNNR</code>. As of now, Topaz for Total Test cannot create stub data for 100% of all  <code class="highlighter-rouge">SQL</code> statements or <code class="highlighter-rouge">DL/I</code> calls. Therefore, test execution of some programs will require a “mixed” mode - partly stubbed, partly using life data. For these situations the following sample <code class="highlighter-rouge">JCL</code>is generated:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">RunnerBmp.jcl</code> for tests of <code class="highlighter-rouge">IMS</code> programs in “mixed” mode</li>
+  <li><code class="highlighter-rouge">RunnerBmpDB2.jcl</code> for tests of <code class="highlighter-rouge">DB2/IMS</code> programs in “mixed” mode</li>
+  <li><code class="highlighter-rouge">RunnerDb2.jcl</code> for tests of <code class="highlighter-rouge">DB2</code> programs in “mixed” mode</li>
+</ul>
+
+<p>In case all I/O can be stubbed, the <code class="highlighter-rouge">Runner.jcl</code> can be used as a template for the test execution <code class="highlighter-rouge">JCL</code>.</p>
+
+<p>Due to the design of the example application, there are three paths through the development stages. Therefore, there will be three different <code class="highlighter-rouge">STEPLIB</code> concatenations to use in the Topaz for Total Test <code class="highlighter-rouge">runner.jcl</code>. The approach taken in the example is to have three different versions of the <code class="highlighter-rouge">runner.jcl</code> each using a different <code class="highlighter-rouge">STEPLIB</code> concatenation. The code of the pipeline will determine which <code class="highlighter-rouge">jcl</code> to use.</p>
+
+<ul>
+  <li><code class="highlighter-rouge">Runner_PATH1.jcl</code> is used for the path from <code class="highlighter-rouge">DEV1</code> to <code class="highlighter-rouge">PRD</code></li>
+  <li><code class="highlighter-rouge">Runner_PATH2.jcl</code> is used for the path from <code class="highlighter-rouge">DEV2</code> to <code class="highlighter-rouge">PRD</code></li>
+  <li><code class="highlighter-rouge">Runner_PATH3.jcl</code> is used for the path from <code class="highlighter-rouge">DEV3</code> to <code class="highlighter-rouge">PRD</code></li>
+</ul>
+
+<p><img src="../../tool_configuration/images/Example life cycle.png" alt="Life Cycle" /></p>
+
+<pre><code class="language-jcl">//RUNNER EXEC PGM=TTTRUNNR
+...
+//STEPLIB  DD DISP=SHR,DSN=SYS2.CW.&amp;CWGACX..SLCXLOAD
+//         DD   DSN=CEE.SCEERUN,DISP=SHR
+//         DD   DISP=SHR,DSN=SALESSUP.RXN3.DEV2.LOAD
+//         DD   DISP=SHR,DSN=SALESSUP.RXN3.QA2.LOAD
+//         DD   DISP=SHR,DSN=SALESSUP.RXN3.STG.LOAD
+//         DD   DISP=SHR,DSN=SALESSUP.RXN3.PRD.LOAD
+
+</code></pre>
+
+<h2 id="-adding-new-test-cases"><a id="Adding new test cases"></a> Adding new test cases</h2>
+<p>New test cases may be added to an existing test scenario by duplicating existing test cases and modifying the input and assertion data (based on any new requirements). Refer to the Topaz for Total Test online help for more details.</p>
+
+<h2 id="-storing-the-topaz-for-total-test-project-in-gitgithub"><a id="Storing the Topaz for Total Test project in Git/GitHub"></a> Storing the Topaz for Total Test project in Git/GitHub</h2>
+<p>The recommended procedure to share Topaz for Total Test projects across teams and to use them in automation pipelines is <a href="./TTT_in_Git.html">storing these projects in Git/GitHub repositories.</a></p>
+
+<p><img src="../images/TTT in Git and GitHub.png" alt="TTT in Git" /></p>
+
+      </section>
+
+      <footer>
+          <ul>
+            <li><a class="name buttons github" href="">View On GitHub</a></li>
+          </ul>
+      </footer>    
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

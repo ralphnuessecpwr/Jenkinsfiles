@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Compuware Configurations</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Compuware Configurations" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/tool_configuration/Compuware_configurations.html" />
+<meta property="og:url" content="http://localhost:4000/tool_configuration/Compuware_configurations.html" />
+<script type="application/ld+json">
+{"@type":"WebPage","url":"http://localhost:4000/tool_configuration/Compuware_configurations.html","headline":"Compuware Configurations","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <script src="/assets/js/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <p class="header">Configure supporting tools and Jenkins plugins<br>&nbsp</p>
+
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/index.html">Home</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/plugins/plugins.html">Required Plugins</a></li>
+        </ul>
+        <p><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html">Tool Configurations</a></p>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/Compuware_configurations.html">Common configurations</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/webhook_setup.html">ISPW webhook</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/CES_credentials_token.html">CES credentials token</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/SonarQube_server.html">SonarQube server</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/SonarQube_scanner.html">SonarQube scanner</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/XLR_config">XL Release</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/Jenkins_Git_config.html">Git</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Credentials">Jenkins cedentials</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Managed Files">Managed Files</a></li>          
+        </ul>
+        <!--
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Compuware Enterprise Services">CES</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Configure system">Configure System</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Global Tool Configuration">Global Tools</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Credentials">Credentials</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Managed Files">Config Files</a></li>
+        </ul>
+        -->
+        <small>&nbsp</small>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/pipelines.html">The Primary Pipelines</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/helper_classes.html">Helper Classes</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/code_examples/code_examples.html">Other Code Examples</a></li>
+        </ul>      
+      </header>
+
+      <section>
+        <h1 id="-compuware-configurations"><a id="Compuware Configurations"></a> Compuware Configurations</h1>
+<p>In <code class="highlighter-rouge">Manage Jenkins</code> -&gt; <code class="highlighter-rouge">Configure System</code>, under the heading <strong>Compuware Configurations</strong> use either the Windows or Linux path fields to point to the location of the Topaz Workbench CLI (Command Line Interface).</p>
+
+<p>Use the <code class="highlighter-rouge">Add Host Connection</code> button to add new host connection definition (connection to a mainframe LPAR). Use <code class="highlighter-rouge">Description</code> for name to be used during the scripts. Use <code class="highlighter-rouge">Host:port</code> to point to the host name of themainframe LPAR to connect to (HCI port), select the required <code class="highlighter-rouge">Code page</code>, and use <code class="highlighter-rouge">CES URL</code>to point to the CES to use.</p>
+
+<p><img src="./images/Compuware Config.png" alt="Compuware configuration" /></p>
+
+<h2 id="-installing-the-topaz-workbench-cli"><a id="Installing the Topaz Workbench CLI"></a> Installing the Topaz Workbench CLI</h2>
+<p>This interface is delivered with the Topaz Workbench full install download and can be installed using the provided setup.exe. In this dialog select the tab <code class="highlighter-rouge">CLI</code> and select either Windows or Linus installation.</p>
+
+<p><img src="./images/Install CLI.png" alt="Installing CLI" /></p>
+
+<p>The CLI must be installed locally to the Jenkins server.</p>
+
+      </section>
+
+      <footer>
+          <ul>
+            <li><a class="name buttons github" href="">View On GitHub</a></li>
+          </ul>
+      </footer>    
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

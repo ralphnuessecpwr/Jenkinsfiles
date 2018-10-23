@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Pipelines</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Pipelines" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/pipelines/Mainframe_CI_Pipeline_from_Shared_Lib.html" />
+<meta property="og:url" content="http://localhost:4000/pipelines/Mainframe_CI_Pipeline_from_Shared_Lib.html" />
+<script type="application/ld+json">
+{"@type":"WebPage","url":"http://localhost:4000/pipelines/Mainframe_CI_Pipeline_from_Shared_Lib.html","headline":"Pipelines","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <script src="/assets/js/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <p class="header">The primary pipeline scenarios, setup and code<br>&nbsp</p>
+
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/index.html">Home</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/plugins/plugins.html">Required Plugins</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+        </ul>
+        <p><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/pipelines.html">The Primary Pipelines</a></p>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/scenario/ISPW_scenario.html">ISPW Scenario</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/scenario/TTT_scenario.html">TTT Scenario</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/scenario/TTT_in_Git.html">Git(Hub) for TTT</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/Mainframe-CI-Example-pipeline.html">Simple Pipeline</a></li>                    
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/Mainframe_CI_Pipeline_from_Shared_Lib.html">From Shared Library</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/pipeline_parameters.html">Parameters</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/helper_classes.html">Helper Classes</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/code_examples/code_examples.html">Other Code Examples</a></li>
+        </ul>
+      </header>
+
+      <section>
+        <h1 id="-mainframe_ci_pipeline_from_shared_lib"><a id="Mainframe_CI_Pipeline_from_Shared_Lib"></a> Mainframe_CI_Pipeline_from_Shared_Lib</h1>
+<p>Being a pipeline from a <a href="https://jenkins.io/doc/book/pipeline/shared-libraries/">shared library</a> this pipeline must extend a <code class="highlighter-rouge">call</code> method. This pipeline expects a <a href="http://groovy-lang.org/syntax.html#_maps"><code class="highlighter-rouge">Map</code></a> object, containing the parameters to be passed to the pipeline from the job configuration and trigger.</p>
+
+<p>Once this pipeline has been triggered, the <a href="https://github.com/cpwr-devops/DevOps-Examples/blob/suggest/vars/Mainframe_CI_Pipeline_from_Shared_Lib.groovy">job</a> will</p>
+
+<ul>
+  <li>Execute its <code class="highlighter-rouge">call</code> method, within which it will</li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">def</span> <span class="nf">call</span><span class="o">(</span><span class="n">Map</span> <span class="n">pipelineParams</span><span class="o">)</span>
+<span class="o">{</span>
+    <span class="n">node</span>
+    <span class="o">{</span>
+</code></pre></div></div>
+
+<ul>
+  <li>execute its <a href="./code/initialize_method"><code class="highlighter-rouge">initialize</code></a> method to read configuration files and instatiate objects of <a href="../helper_classes/helper_classes.html">helper classes</a>
+    <ul>
+      <li><code class="highlighter-rouge">PipelineConfig</code> containing global parameter values that
+        <ul>
+          <li>passed by the job configuration/trigger and are pipeline/execution specific</li>
+          <li>not pipeline or execution specific, like server URLs. These parameters will be read from external configuration files</li>
+        </ul>
+      </li>
+      <li><code class="highlighter-rouge">GitHelper</code> serving as a wrapper for a set of interactions with Git/GitHub</li>
+      <li><code class="highlighter-rouge">IspwHelper</code> serving as a wrapper for use of the ISPW plugins’ methods</li>
+      <li><code class="highlighter-rouge">TttHelper</code> serving as a wrapper for use of the TTT plugin’s and Code Coverage plugin’s methods</li>
+      <li><code class="highlighter-rouge">SonarHelper</code> serving as a wrapper for use of the Sonar plugins’ methods</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="n">initialize</span><span class="o">(</span><span class="n">pipelineParams</span><span class="o">)</span>
+</code></pre></div></div>
+
+<ul>
+  <li>use the <code class="highlighter-rouge">downloadSources</code> method of class <code class="highlighter-rouge">IspwHelper</code> to download all COBOL sources and COBOL copybooks from ISPW (the mainframe) that are part of the set triggering this specific pipeline execution</li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="n">stage</span><span class="o">(</span><span class="s2">"Retrieve Code From ISPW"</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">ispwHelper</span><span class="o">.</span><span class="na">downloadSources</span><span class="o">()</span>
+        <span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Not always will all required COBOL copybooks be part of an ISPW assignment or set. In order to retrieve any missing copybooks, the next stage will use the <code class="highlighter-rouge">downloadCopyBooks</code> method of class <code class="highlighter-rouge">ispwHelper</code> to determine all required copybooks and download them from the mainframe</li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="n">stage</span><span class="o">(</span><span class="s2">"Retrieve Copy Books From ISPW"</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">ispwHelper</span><span class="o">.</span><span class="na">downloadCopyBooks</span><span class="o">(</span><span class="s2">"${workspace}"</span><span class="o">)</span>
+        <span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>use the <code class="highlighter-rouge">checkout</code> method of the <code class="highlighter-rouge">gitHelper</code>class to clone the Git repository for the ISPW application.</li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="cm">/* Retrieve the Tests from Github that match that ISPWW Stream and Application */</span>
+        <span class="n">stage</span><span class="o">(</span><span class="s2">"Retrieve Tests"</span><span class="o">)</span>
+        <span class="o">{</span>            
+            <span class="kt">def</span> <span class="n">gitUrlFullPath</span> <span class="o">=</span> <span class="s2">"${pConfig.gitUrl}/${pConfig.gitTttRepo}"</span>
+            
+            <span class="n">gitHelper</span><span class="o">.</span><span class="na">checkout</span><span class="o">(</span><span class="n">gitUrlFullPath</span><span class="o">,</span> <span class="n">pConfig</span><span class="o">.</span><span class="na">gitBranch</span><span class="o">,</span> <span class="n">pConfig</span><span class="o">.</span><span class="na">gitCredentials</span><span class="o">,</span> <span class="n">pConfig</span><span class="o">.</span><span class="na">tttFolder</span><span class="o">)</span>
+        <span class="o">}</span>
+ <span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Initialize the <code class="highlighter-rouge">TttHelper</code> instance, loop through the downloaded Topaz for Total Test secnarios, and pass the results to JUnit (within Jenkins) using the methods <code class="highlighter-rouge">initialize</code>, <code class="highlighter-rouge">loopThruScenarios</code>, and <code class="highlighter-rouge">passResultsToJunit</code> of the <code class="highlighter-rouge">TttHelper</code> class, respectively.</li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="cm">/* 
+        This stage executes any Total Test Projects related to the mainframe source that was downloaded
+        */</span> 
+        <span class="n">stage</span><span class="o">(</span><span class="s2">"Execute related Unit Tests"</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">tttHelper</span><span class="o">.</span><span class="na">initialize</span><span class="o">()</span>                                            
+            <span class="n">tttHelper</span><span class="o">.</span><span class="na">loopThruScenarios</span><span class="o">()</span>
+            <span class="n">tttHelper</span><span class="o">.</span><span class="na">passResultsToJunit</span><span class="o">()</span>
+        <span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>use the <code class="highlighter-rouge">collectCodeCoverageResults</code> method of the <code class="highlighter-rouge">TttHelper</code> class to download the code coveragre metrics from the Xpediter Code Coverage repository</li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="cm">/* 
+        This stage retrieve Code Coverage metrics from Xpediter Code Coverage for the test executed in the Pipeline
+        */</span> 
+        <span class="n">stage</span><span class="o">(</span><span class="s2">"Collect Coverage Metrics"</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="n">tttHelper</span><span class="o">.</span><span class="na">collectCodeCoverageResults</span><span class="o">()</span>
+        <span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>use the <code class="highlighter-rouge">scan</code> method of the <code class="highlighter-rouge">SonarHelper</code> class to pass downloaded COBOL sources, the results of the unit tests, and code coverage metrics to SonarQube</li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="cm">/* 
+        This stage pushes the Source Code, Test Metrics and Coverage metrics into SonarQube and then checks the status of the SonarQube Quality Gate.  
+        If the SonarQube quality date fails, the Pipeline fails and stops
+        */</span> 
+        <span class="n">stage</span><span class="o">(</span><span class="s2">"Check SonarQube Quality Gate"</span><span class="o">)</span> 
+        <span class="o">{</span>
+            <span class="n">sonarHelper</span><span class="o">.</span><span class="na">scan</span><span class="o">()</span>
+<span class="o">...</span>
+</code></pre></div></div>
+
+<ul>
+  <li>query the resulting Sonar quality gate, by registering a Sonar Webhook call back, if the quality gate fails, an email will be sent to the owner of the ISPW set - notifying them about the failure of the promote -, and the pipeline job will be aborted</li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">...</span>
+            <span class="c1">// Wait for the results of the SonarQube Quality Gate</span>
+            <span class="n">timeout</span><span class="o">(</span><span class="nl">time:</span> <span class="mi">2</span><span class="o">,</span> <span class="nl">unit:</span> <span class="s1">'MINUTES'</span><span class="o">)</span> <span class="o">{</span>
+                
+                <span class="c1">// Wait for webhook call back from SonarQube.  SonarQube webhook for callback to Jenkins must be configured on the SonarQube server.</span>
+                <span class="kt">def</span> <span class="n">sonarGate</span> <span class="o">=</span> <span class="n">waitForQualityGate</span><span class="o">()</span>
+                
+                <span class="c1">// Evaluate the status of the Quality Gate</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">sonarGate</span><span class="o">.</span><span class="na">status</span> <span class="o">!=</span> <span class="s1">'OK'</span><span class="o">)</span>
+                <span class="o">{</span>
+                    <span class="n">echo</span> <span class="s2">"Sonar quality gate failure: ${sonarGate.status}"</span>
+                    <span class="n">echo</span> <span class="s2">"Pipeline will be aborted and ISPW Assignment will be regressed"</span>
+
+                    <span class="n">currentBuild</span><span class="o">.</span><span class="na">result</span> <span class="o">=</span> <span class="s2">"FAILURE"</span>
+
+                    <span class="c1">// Send Standard Email</span>
+                    <span class="n">emailext</span> <span class="nl">subject:</span>       <span class="s1">'$DEFAULT_SUBJECT'</span><span class="o">,</span>
+                                <span class="nl">body:</span>       <span class="s1">'$DEFAULT_CONTENT'</span><span class="o">,</span>
+                                <span class="nl">replyTo:</span>    <span class="s1">'$DEFAULT_REPLYTO'</span><span class="o">,</span>
+                                <span class="nl">to:</span>         <span class="s2">"${pConfig.mailRecipient}"</span>
+                    
+                    <span class="n">withCredentials</span><span class="o">([</span><span class="n">string</span><span class="o">(</span><span class="nl">credentialsId:</span> <span class="n">pConfig</span><span class="o">.</span><span class="na">cesTokenId</span><span class="o">,</span> <span class="nl">variable:</span> <span class="s1">'cesTokenClear'</span><span class="o">)])</span> 
+                    <span class="o">{</span>
+                        <span class="c1">//ispwHelper.regressAssignmentList(assignmentList, cesTokenClear)</span>
+                        <span class="n">ispwHelper</span><span class="o">.</span><span class="na">regressAssignment</span><span class="o">(</span><span class="n">pConfig</span><span class="o">.</span><span class="na">ispwAssignment</span><span class="o">,</span> <span class="n">cesTokenClear</span><span class="o">)</span>
+                    <span class="o">}</span>
+
+                    <span class="n">error</span> <span class="s2">"Exiting Pipeline"</span> <span class="c1">// Exit the pipeline with an error if the SonarQube Quality Gate is failing</span>
+                <span class="o">}</span>
+            <span class="o">}</span>   
+        <span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>if the quality gate passes an XL Release template will be triggered - using the XL Release plugin - to execute CD stages beyond the Jenkins pipeline, and an email will be sent to the owner of the ISPW set - notifying them about the success of the promote</li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="cm">/* 
+        This stage triggers a XL Release Pipeline that will move code into the high levels in the ISPW Lifecycle  
+        */</span> 
+        <span class="n">stage</span><span class="o">(</span><span class="s2">"Start release in XL Release"</span><span class="o">)</span>
+        <span class="o">{</span>
+            <span class="c1">// Trigger XL Release Jenkins Plugin to kickoff a Release</span>
+            <span class="n">xlrCreateRelease</span><span class="o">(</span>
+                <span class="nl">releaseTitle:</span>       <span class="s1">'A Release for $BUILD_TAG'</span><span class="o">,</span>
+                <span class="nl">serverCredentials:</span>  <span class="s2">"${pConfig.xlrUser}"</span><span class="o">,</span>
+                <span class="nl">startRelease:</span>       <span class="kc">true</span><span class="o">,</span>
+                <span class="nl">template:</span>           <span class="s2">"${pConfig.xlrTemplate}"</span><span class="o">,</span>
+                <span class="nl">variables:</span>          <span class="o">[</span>
+                                        <span class="o">[</span><span class="nl">propertyName:</span>  <span class="s1">'ISPW_Dev_level'</span><span class="o">,</span>   <span class="nl">propertyValue:</span> <span class="s2">"${pConfig.ispwTargetLevel}"</span><span class="o">],</span> <span class="c1">// Level in ISPW that the Code resides currently</span>
+                                        <span class="o">[</span><span class="nl">propertyName:</span>  <span class="s1">'ISPW_RELEASE_ID'</span><span class="o">,</span>  <span class="nl">propertyValue:</span> <span class="s2">"${pConfig.ispwRelease}"</span><span class="o">],</span>     <span class="c1">// ISPW Release value from the ISPW Webhook</span>
+                                        <span class="o">[</span><span class="nl">propertyName:</span>  <span class="s1">'CES_Token'</span><span class="o">,</span>        <span class="nl">propertyValue:</span> <span class="s2">"${pConfig.cesTokenId}"</span><span class="o">]</span>
+                                    <span class="o">]</span>
+            <span class="o">)</span>
+
+            <span class="c1">// Send Standard Email</span>
+            <span class="n">emailext</span> <span class="nl">subject:</span>       <span class="s1">'$DEFAULT_SUBJECT'</span><span class="o">,</span>
+                        <span class="nl">body:</span>       <span class="s1">'$DEFAULT_CONTENT \n'</span> <span class="o">+</span> <span class="s1">'Promote passed the Quality gate and a new XL Release was started.'</span><span class="o">,</span>
+                        <span class="nl">replyTo:</span>    <span class="s1">'$DEFAULT_REPLYTO'</span><span class="o">,</span>
+                        <span class="nl">to:</span>         <span class="s2">"${pConfig.mailRecipient}"</span>
+
+        <span class="o">}</span>        
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="-setting-up-the-pipeline-job"><a id="Setting up the pipeline job"></a> Setting up the pipeline job</h2>
+<p>The job itself is defined via the usual way of creating a new pipeline job. It is important, though, to make sure that the resulting job uses parameters by checking the <code class="highlighter-rouge">This project is parameterized</code> box,</p>
+
+<p><img src="./images/parametertized pipeline.png" alt="Parameterized Pipeline" /></p>
+
+<h2 id="-setting-up-the-pipeline-job-1"><a id="Setting up the pipeline job"></a> Setting up the pipeline job</h2>
+<p>Succesively add the following string parameters (the default values are the ones used for the examples).</p>
+
+<p><img src="./images/Adding parameters.png" alt="Adding parameters" /></p>
+
+<p>The parameters in this first set are specific to the individual execution of the pipeline and get passed by the <a href="../tool_configurations/webhhok_setup.html#In summary">ISPW Webhook</a>.</p>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>ISPW_Stream</td>
+        <td>FTSDEMO</td>
+        <td>ISPW Stream Name</td>
+    </tr>
+    <tr>
+        <td>ISPW_Application</td>
+        <td>RXN3</td>
+        <td>ISPW Application</td>
+    </tr>
+    <tr>
+        <td>ISPW_Src_Level</td>
+        <td>DEV1</td>
+        <td>ISPW Level the promote has been started from</td>
+    </tr>
+    <tr>
+        <td>ISPW_Release</td>
+        <td></td>
+        <td>ISPW Release Name</td>
+    </tr>
+    <tr>
+        <td>ISPW_Container</td>
+        <td></td>
+        <td>ISPW Set ID</td>
+    </tr>
+    <tr>
+        <td>ISPW_Container_Type</td>
+        <td>2</td>
+        <td>ISPW Container Type
+            <ul>
+                <li>0 - assignment</li>
+                <li>1 - release</li>
+                <li>2 - set</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td>ISPW_Owner</td>
+        <td></td>
+        <td>ISPW Owner User ID</td>
+    </tr>
+</table>
+
+<h3 id="-loading-the-script-from-a-shared-library"><a id="Loading the script from a shared library"></a> Loading the script from a shared library</h3>
+<p>To tell Jenkins to execute a pipeline from a shared library, you need to add code like the follwoing to the Pipeline script definition.</p>
+
+<p><img src="./images/pipeline_from_shared_lib.png" alt="Pipeline from Shared Library" /></p>
+
+<p>The examle uses</p>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Library</span><span class="o">(</span><span class="s1">'RNU_Shared_Lib@Dev'</span><span class="o">)</span> <span class="n">_</span>
+<span class="n">Mainframe_CI_Pipeline_from_Shared_Lib</span><span class="o">(</span>
+    <span class="n">ISPW_Stream</span>         <span class="o">:</span><span class="s2">"${ISPW_Stream}"</span><span class="o">,</span>                          <span class="c1">// ISPW Stream               </span>
+    <span class="n">ISPW_Application</span>    <span class="o">:</span><span class="s2">"${ISPW_Application}"</span><span class="o">,</span>                     <span class="c1">// ISPW Application</span>
+    <span class="n">ISPW_Release</span>        <span class="o">:</span><span class="s2">"${ISPW_Release}"</span><span class="o">,</span>                         <span class="c1">// ISPW Release</span>
+    <span class="n">ISPW_Assignment</span>     <span class="o">:</span><span class="s2">"${ISPW_Assignment}"</span><span class="o">,</span>                      <span class="c1">// ISPW Assignment</span>
+    <span class="n">ISPW_Container</span>      <span class="o">:</span><span class="s2">"${ISPW_Container}"</span><span class="o">,</span>                       <span class="c1">// ISPW Container (Set)</span>
+    <span class="n">ISPW_Container_Type</span> <span class="o">:</span><span class="s2">"${ISPW_Container_Type}"</span><span class="o">,</span>                  <span class="c1">// ISPW Container Type (2 for Set)</span>
+    <span class="n">ISPW_Src_Level</span>      <span class="o">:</span><span class="s2">"${ISPW_Src_Level}"</span><span class="o">,</span>                       <span class="c1">// ISPW Level the promote worked from</span>
+    <span class="n">ISPW_Owner</span>          <span class="o">:</span><span class="s2">"${ISPW_Owner}"</span><span class="o">,</span>                           <span class="c1">// ISPW User doing the promote</span>
+    <span class="n">Config_Git_Branch</span>   <span class="o">:</span><span class="s1">'Dev'</span><span class="o">,</span>
+    <span class="n">CES_Token</span>           <span class="o">:</span><span class="s1">'xxxx'</span><span class="o">,</span>
+    <span class="n">CES_Token_Clear</span>     <span class="o">:</span><span class="s1">'xxxx'</span><span class="o">,</span>    
+    <span class="n">HCI_Conn_ID</span>         <span class="o">:</span><span class="s1">'xxxx'</span><span class="o">,</span>
+    <span class="n">HCI_Token</span>           <span class="o">:</span><span class="s1">'xxxx'</span><span class="o">,</span> 
+    <span class="n">CC_repository</span>       <span class="o">:</span><span class="s1">'xxxx'</span><span class="o">,</span>
+    <span class="n">Git_Project</span>         <span class="o">:</span><span class="s1">'xxxx'</span><span class="o">,</span>
+    <span class="n">Git_Credentials</span>     <span class="o">:</span><span class="s1">'xxxx'</span> 
+    <span class="o">)</span>
+</code></pre></div></div>
+
+<p>where</p>
+
+<ul>
+  <li><code class="highlighter-rouge">@Library('RNU_Shared_Lib@Dev') _</code>
+refers to the name of a <a href="./tool_configuration/Pipeline_libraries_config.html">Shared Library</a>, with <code class="highlighter-rouge">@Dev</code> in this example referring to the <code class="highlighter-rouge">Dev</code> branch of the underlying GitHub repository. The trailing <code class="highlighter-rouge">_</code> is required by Jenkins.</li>
+  <li><code class="highlighter-rouge">Mainframe_CI_Pipeline_from_Shared_Lib</code>
+refers to the name of the <code class="highlighter-rouge">.groovy</code> file in the <code class="highlighter-rouge">vars</code> <a href="../index.html">folder of the GitHub repository</a>, containing the pipeline code</li>
+  <li>Within the brackets <code class="highlighter-rouge">(...)</code> parameters are passed to the pipeline script. <code class="highlighter-rouge">Mainframe_CI_Pipeline_from_Shared_Lib</code> expects a <code class="highlighter-rouge">groovy</code> <a href="http://groovy-lang.org/syntax.html#_maps"><code class="highlighter-rouge">Map</code></a>, containing the following <code class="highlighter-rouge">key:value</code> pairs.</li>
+</ul>
+
+<p>The parameters in this first set are specific to the individual execution of the pipeline. The values are the parameters defined in the <a href="#Setting up the pipeline job">pipeline configuration above</a>. The syntax <code class="highlighter-rouge">"${parameter}"</code> ensures that the value passed to this parameter is taken as value in the <code class="highlighter-rouge">Map</code>.</p>
+<table>
+    <tr>
+        <th>Key</th>
+        <th>Value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>ISPW_Stream</td>
+        <td>"${ISPW_Stream}"</td>
+        <td>The ISPW_Stream parameter from the pipeline configuration above</td>
+    </tr>
+    <tr>
+        <td>ISPW_Application</td>
+        <td>"${ISPW_Application}"</td>
+        <td>The ISPW_Application parameter from the pipeline configuration above</td>
+    </tr>
+    <tr>
+        <td>ISPW_Release</td>
+        <td>"${ISPW_Release}"</td>
+        <td>The ISPW_Release parameter from the pipeline configuration above</td>
+    </tr>
+    <tr>
+        <td>ISPW_Assignment</td>
+        <td>"${ISPW_Assignment}"</td>
+        <td>The ISPW_Assignment parameter from the pipeline configuration above</td>
+    </tr>
+    <tr>
+        <td>ISPW_Container</td>
+        <td>"${ISPW_Container}"</td>
+        <td>The ISPW_Container parameter from the pipeline configuration above</td>
+    </tr>
+    <tr>
+        <td>ISPW_Container_Type</td>
+        <td>"${ISPW_Container_Type}"</td>
+        <td>The ISPW_Container_Type parameter from the pipeline configuration above</td>
+    </tr>
+    <tr>
+        <td>ISPW_Src_Level</td>
+        <td>"${ISPW_Src_Level}"</td>
+        <td>The ISPW_Src_Level parameter from the pipeline configuration above</td>
+    </tr>
+    <tr>
+        <td>ISPW_Owner</td>
+        <td>"${ISPW_Owner}"</td>
+        <td>The ISPW_Owner parameter from the pipeline configuration above</td>
+    </tr>
+</table>
+
+<p>The second set of parameters is installation specific and reference tokens and other IDs that have been defined during the configuration phase. To determine the approriate values to use refer to the <a href="../pipeline_parameters.html">description of the pipeline parameters</a>.</p>
+
+<p>Usually, these parameters will be installation specific rather than pipeline job or execution specific. Future versions of the example will take care of this, and move these parameters to configuration files.</p>
+<table>
+    <tr>
+        <th>Key</th>
+        <th>Value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>Config_Git_Branch</td>
+        <td></td>
+        <td>Branch in the Git repository where configuration files are to be read from</td>
+    </tr>
+    <tr>
+        <td>CES_Token</td>
+        <td></td>
+        <td>The Jenkins token, referring to the CES token</td>
+    </tr>
+    <tr>
+        <td>CES_Token_Clear</td>
+        <td></td>
+        <td>The "clear text" CES token (as copyied from the <a href="../tool_configuration/CES_credentials_token.html">CES Token dialog</a>)</td>
+    </tr>
+    <tr>
+        <td>HCI_Conn_ID</td>
+        <td></td>
+        <td>The Jenkins internal ID for the HCI connection to use</td>
+    </tr>
+    <tr>
+        <td>HCI_Token</td>
+        <td></td>
+        <td>Jenkins internal ID for HCI Token</td>
+    </tr>
+    <tr>
+        <td>CC_repository</td>
+        <td></td>
+        <td>The Xpediter Code Coverage repository to use</td>
+    </tr>
+    <tr>
+        <td>Git_Project</td>
+        <td></td>
+        <td>The name of the GitHub repository storing Topaz for Total Test assets</td>
+    </tr>
+    <tr>
+        <td>Git_Credentials</td>
+        <td></td>
+        <td>Jenkins internal ID for credentials to use the GitHub repository</td>
+    </tr>
+</table>
+
+      </section>
+
+      <footer>
+          <ul>
+            <li><a class="name buttons github" href="">View On GitHub</a></li>
+          </ul>
+      </footer>    
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

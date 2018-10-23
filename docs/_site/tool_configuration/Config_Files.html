@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Configuration handled by the Config File Provide</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Configuration handled by the Config File Provide" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/tool_configuration/Config_Files.html" />
+<meta property="og:url" content="http://localhost:4000/tool_configuration/Config_Files.html" />
+<script type="application/ld+json">
+{"@type":"WebPage","url":"http://localhost:4000/tool_configuration/Config_Files.html","headline":"Configuration handled by the Config File Provide","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <script src="/assets/js/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <p class="header">Configure supporting tools and Jenkins plugins<br>&nbsp</p>
+
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/index.html">Home</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/plugins/plugins.html">Required Plugins</a></li>
+        </ul>
+        <p><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html">Tool Configurations</a></p>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/Compuware_configurations.html">Common configurations</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/webhook_setup.html">ISPW webhook</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/CES_credentials_token.html">CES credentials token</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/SonarQube_server.html">SonarQube server</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/SonarQube_scanner.html">SonarQube scanner</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/XLR_config">XL Release</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/Jenkins_Git_config.html">Git</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Credentials">Jenkins cedentials</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Managed Files">Managed Files</a></li>          
+        </ul>
+        <!--
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Compuware Enterprise Services">CES</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Configure system">Configure System</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Global Tool Configuration">Global Tools</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Credentials">Credentials</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Managed Files">Config Files</a></li>
+        </ul>
+        -->
+        <small>&nbsp</small>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/pipelines.html">The Primary Pipelines</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/helper_classes.html">Helper Classes</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/code_examples/code_examples.html">Other Code Examples</a></li>
+        </ul>      
+      </header>
+
+      <section>
+        <h1 id="-configuration-handled-by-the-config-file-provider"><a id="Configuration handled by the Config File Provider"></a> Configuration handled by the Config File Provider</h1>
+<p>In <code class="highlighter-rouge">Manage Jenkins</code> -&gt; <code class="highlighter-rouge">Managed Files</code> select <code class="highlighter-rouge">Add a new Config</code> to add a new configuration file to be handled by this plugin. Once files are created you can select the existing files to review and modify their content.</p>
+
+<p>Configuration files used in the examples are plain text files. Therefore, chose <code class="highlighter-rouge">Custom file</code> as file type when defining a new file, and provide an ID that is meaningful. The examples use <code class="highlighter-rouge">MailList</code>as ID:</p>
+
+<p><img src="./images/Create new Config File.png" alt="New Config File" /></p>
+
+<p>After <code class="highlighter-rouge">submitting</code> specify a file name to use and start filling the file with content.</p>
+
+<h2 id="-the-email-list"><a id="The email list"></a> The email list</h2>
+<p>The example mail list file uses a file name of <code class="highlighter-rouge">mailList.config</code> and pairs of <code class="highlighter-rouge">&lt;TSO User ID&gt;:&lt;mailaddress&gt;</code>, each on a seprate line. The TSO user IDs used in this file correspond to the ISPW owner values passed by the <a href="./webhhok_setup.html">ISPW webhooks</a>.</p>
+
+<p><img src="./images/MailList Config File.png" alt="Mail List File" /></p>
+
+      </section>
+
+      <footer>
+          <ul>
+            <li><a class="name buttons github" href="">View On GitHub</a></li>
+          </ul>
+      </footer>    
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

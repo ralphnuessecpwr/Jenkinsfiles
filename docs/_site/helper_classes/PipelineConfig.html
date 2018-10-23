@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>PipelineConfig.groovy</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="PipelineConfig.groovy" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/helper_classes/PipelineConfig.html" />
+<meta property="og:url" content="http://localhost:4000/helper_classes/PipelineConfig.html" />
+<script type="application/ld+json">
+{"@type":"WebPage","url":"http://localhost:4000/helper_classes/PipelineConfig.html","headline":"PipelineConfig.groovy","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <script src="/assets/js/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div id="banner">
+        <a href="" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span><strong>DevOps-Examples</strong></span>
+          <ul>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/index.html">Home</a></li>            
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/plugins/plugins.html">Required Plugins</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/pipelines/pipelines.html">The Primary Pipelines</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/helper_classes/helper_classes.html">Helper Classes</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/code_examples/code_examples.html">Other Code Examples</a></li>
+          </ul>
+      </div>
+    </div>    
+    
+    <div class="wrapper">
+      <header>
+        <h1 class="header">PipelineConfig.groovy</h1>
+        <p class="header">Classes used by the pipeline from shared library</p>
+
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/index.html">Home</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/plugins/plugins.html">Required Plugins</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/pipelines/pipelines.html">The Primary Pipelines</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/helper_classes.html">Helper Classes</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/FileHelper.html">FileHelper</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/GitHelper.html">GitHelper</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/IspwHelper.html">IspwHelper</a></li>                    
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/JclSkeleton.html">JclSkeleton</a></li>                              
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/PipelineConfig.html">PipelineConfig</a></li>                                        
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/code_examples/code_examples.html">Other Code Examples</a></li>
+        </ul>
+      </header>
+
+      <section>
+        <h1 id="-pipelineconfiggroovy"><a id="PipelineConfig"></a> PipelineConfig.groovy</h1>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.compuware.devops.util</span>
+
+<span class="cm">/* 
+    Pipeline execution specific and server specific parameters which are use throughout the pipeline
+*/</span>
+<span class="kd">class</span> <span class="nc">PipelineConfig</span> <span class="kd">implements</span> <span class="n">Serializable</span>
+<span class="o">{</span>
+    <span class="kt">def</span> <span class="n">steps</span>
+    <span class="kt">def</span> <span class="n">mailListLines</span>
+    <span class="kt">def</span> <span class="n">mailListMap</span> <span class="o">=</span> <span class="o">[:]</span>
+
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">configGitProject</span>    <span class="o">=</span> <span class="s2">"Jenkinsfiles"</span>         <span class="c1">// Git Hub Repository containing the configuration files for the pipeline</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">configGitBranch</span>                              <span class="c1">// Branch in Git Hub Repository containing the configuration files for the pipeline    </span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">configGitPath</span>       <span class="o">=</span> <span class="s2">"config"</span>               <span class="c1">// Folder in Git Hub Repository containing the configuration files for the pipeline    </span>
+
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">configPath</span>           <span class="o">=</span> <span class="s1">'config\\pipeline'</span>    <span class="c1">// Path containing config files after downloading them from Git Hub Repository</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">pipelineConfigFile</span>   <span class="o">=</span> <span class="s1">'pipeline.config'</span>     <span class="c1">// Config file containing pipeline configuration</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">tttGitConfigFile</span>     <span class="o">=</span> <span class="s1">'tttgit.config'</span>       <span class="c1">// Config gile containing for TTT projects stroed in Git Hub</span>
+
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">workspace</span>
+
+<span class="cm">/* Environment specific settings, which differ between Jenkins servers and applications, but not between runs */</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">gitTargetBranch</span>                               <span class="c1">// Used for synchronizing TTT project stored in Git with programs stored in ISPW</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">gitBranch</span>                                     <span class="c1">// Used for synchronizing TTT project stored in Git with programs stored in ISPW</span>
+    
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">sqScannerName</span>                                 <span class="c1">// Sonar Qube Scanner Tool name as defined in "Manage Jenkins" -&gt; "Global Tool Configuration" -&gt; "SonarQube scanner"</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">sqServerName</span>                                  <span class="c1">// Sonar Qube Scanner Server name as defined in "Manage Jenkins" -&gt; "Configure System" -&gt; "SonarQube servers"</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">sqServerUrl</span>                                   <span class="c1">// URL to the SonarQube server</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">mfSourceFolder</span>                                <span class="c1">// Folder containing sources after downloading from ISPW</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">xlrTemplate</span>                                   <span class="c1">// XL Release template to start</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">xlrUser</span>                                       <span class="c1">// XL Release user to use</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">tttFolder</span>                                     <span class="c1">// Folder containing TTT projects after downloading from Git Hub</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">ispwUrl</span>                                       <span class="c1">// ISPW/CES URL for native REST API calls</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">ispwRuntime</span>                                   <span class="c1">// ISPW Runtime</span>
+
+<span class="cm">/* Runtime specific settings, which differ runs and get passed as parameters or determined during execution */</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">ispwStream</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">ispwApplication</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">ispwRelease</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">ispwAssignment</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">ispwContainer</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">ispwContainerType</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">ispwSrcLevel</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">ispwTargetLevel</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">ispwOwner</span>         
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">applicationPathNum</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">gitProject</span>        
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">gitCredentials</span>    
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">gitUrl</span>            
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">gitTttRepo</span>        
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">cesTokenId</span>        
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">hciConnId</span>         
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">hciTokenId</span>        
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">ccRepository</span>      
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">tttJcl</span> 
+      
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">mailRecipient</span> 
+</code></pre></div></div>
+<p><a id="PipelineConfig"></a></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    def PipelineConfig(steps, workspace, params, mailListLines)
+    {
+        this.configGitBranch    = params.Config_Git_Branch
+        this.steps              = steps
+        this.workspace          = workspace
+        this.mailListLines      = mailListLines
+
+        this.ispwStream         = params.ISPW_Stream
+        this.ispwApplication    = params.ISPW_Application
+        this.ispwRelease        = params.ISPW_Release
+        this.ispwAssignment     = params.ISPW_Assignment
+        this.ispwContainer      = params.ISPW_Container
+        this.ispwContainerType  = params.ISPW_Container_Type
+        this.ispwOwner          = params.ISPW_Owner        
+        this.ispwSrcLevel       = params.ISPW_Src_Level
+
+        this.applicationPathNum = ispwSrcLevel.charAt(ispwSrcLevel.length() - 1)
+        this.ispwTargetLevel    = "QA" + applicationPathNum
+        this.tttJcl             = "Runner_PATH" + applicationPathNum + ".jcl"
+
+        this.gitProject         = params.Git_Project
+        this.gitCredentials     = params.Git_Credentials
+        
+        this.gitUrl             = "https://github.com/${gitProject}"
+        this.gitTttRepo         = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
+
+        this.cesTokenId         = params.CES_Token       
+        this.hciConnId          = params.HCI_Conn_ID
+        this.hciTokenId         = params.HCI_Token
+        this.ccRepository       = params.CC_repository
+    }
+</code></pre></div></div>
+<p><a id="initialize"></a></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
+    def initialize()
+    {
+        steps.dir(".\\") 
+        {
+            steps.deleteDir()
+        }
+
+        GitHelper gitHelper     = new GitHelper(steps)
+
+        gitHelper.checkoutPath(gitUrl, configGitBranch, configGitPath, gitCredentials, configGitProject)
+
+        setServerConfig()
+
+        setTttGitConfig()
+
+        setMailConfig()    
+    }
+</code></pre></div></div>
+<p><a id="setServerConfig"></a></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    /* Read configuration values from pipeline.config file */
+    def setServerConfig()
+    {
+        def lineToken
+        def parmName
+        def parmValue
+
+        def lines = readConfigFile("${pipelineConfigFile}")
+
+        lines.each
+        {
+            lineToken   = it.toString().tokenize("=")
+            parmName    = lineToken.get(0).toString()
+            parmValue   = lineToken.get(1).toString().trim()
+
+            switch(parmName)
+            {
+                case "SQ_SCANNER_NAME":
+                    sqScannerName   = parmValue
+                    break;
+                case "SQ_SERVER_NAME": 
+                    sqServerName    = parmValue
+                    break;
+                case "SQ_SERVER_URL":
+                    sqServerUrl     = parmValue
+                    break;
+                case "MF_SOURCE_FOLDER":
+                    mfSourceFolder  = parmValue
+                    break;
+                case "XLR_TEMPLATE":
+                    xlrTemplate     = parmValue
+                    break;
+                case "XLR_USER":
+                    xlrUser         = parmValue
+                    break;
+                case "TTT_FOLDER":
+                    tttFolder       = parmValue
+                    break;
+                case "ISPW_URL":
+                    ispwUrl         = parmValue
+                    break;
+                case "ISPW_RUNTIME":
+                    ispwRuntime     = parmValue
+                    break;
+                default:
+                    steps.echo "Found unknown Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
+                    break;
+            }
+        }
+    }
+</code></pre></div></div>
+<p><a id="setTttGitConfig"></a></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    /* Read configuration values from tttgit.config file */
+    def setTttGitConfig()
+    {
+        def lineToken
+        def parmName
+        def parmValue
+        def lines = readConfigFile("${tttGitConfigFile}")
+
+        lines.each
+        {
+            lineToken   = it.toString().tokenize("=")
+            parmName    = lineToken.get(0).toString()
+            parmValue   = lineToken.get(1).toString().trim()
+
+            switch(parmName)
+            {
+                case "TTT_GIT_TARGET_BRANCH":
+                    gitTargetBranch   = parmValue
+                    break;
+                case "TTT_GIT_BRANCH": 
+                    gitBranch    = parmValue
+                    break;
+                default:
+                    steps.echo "Found unknown Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
+                    break;
+            }
+        }
+    }
+</code></pre></div></div>
+<p><a id="setMailConfig"></a></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    /* Read list of email addresses from config file */
+    def setMailConfig()
+    {        
+        def lineToken
+        def tsoUser
+        def emailAddress
+
+        mailListLines.each
+        {
+            lineToken       = it.toString().tokenize(":")
+            tsoUser         = lineToken.get(0).toString()
+            emailAddress    = lineToken.get(1).toString().trim()
+
+            this.mailListMap."${tsoUser}" = "${emailAddress}"
+        }
+
+        this.mailRecipient  = mailListMap[(ispwOwner.toUpperCase())]
+    }
+</code></pre></div></div>
+<p><a id="readConfigFile"></a></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    def readConfigFile(String fileName)
+    {
+        def filePath = "${workspace}\\${configPath}\\${fileName}"
+
+        FileHelper fileHelper = new FileHelper()
+
+        return fileHelper.readLines(filePath)
+    }
+}
+</code></pre></div></div>
+
+      </section>
+
+      <footer>
+          
+  
+          
+  
+          <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Minimal theme</small></p>
+        </footer>
+      </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Definition of a webhook used in the examples</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Definition of a webhook used in the examples" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/tool_configuration/webhook_setup.html" />
+<meta property="og:url" content="http://localhost:4000/tool_configuration/webhook_setup.html" />
+<script type="application/ld+json">
+{"@type":"WebPage","url":"http://localhost:4000/tool_configuration/webhook_setup.html","headline":"Definition of a webhook used in the examples","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <script src="/assets/js/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <p class="header">Configure supporting tools and Jenkins plugins<br>&nbsp</p>
+
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/index.html">Home</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/plugins/plugins.html">Required Plugins</a></li>
+        </ul>
+        <p><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html">Tool Configurations</a></p>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/Compuware_configurations.html">Common configurations</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/webhook_setup.html">ISPW webhook</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/CES_credentials_token.html">CES credentials token</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/SonarQube_server.html">SonarQube server</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/SonarQube_scanner.html">SonarQube scanner</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/XLR_config">XL Release</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/Jenkins_Git_config.html">Git</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Credentials">Jenkins cedentials</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Managed Files">Managed Files</a></li>          
+        </ul>
+        <!--
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Compuware Enterprise Services">CES</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Configure system">Configure System</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Global Tool Configuration">Global Tools</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Credentials">Credentials</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Managed Files">Config Files</a></li>
+        </ul>
+        -->
+        <small>&nbsp</small>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/pipelines.html">The Primary Pipelines</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/helper_classes.html">Helper Classes</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/code_examples/code_examples.html">Other Code Examples</a></li>
+        </ul>      
+      </header>
+
+      <section>
+        <h1 id="-definition-of-a-webhook-used-in-the-examples"><a id="Definition of a webhook used in the examples"></a> Definition of a webhook used in the examples</h1>
+
+<p>To define and register an ISPW webhook in CES go to the CES <strong>Administration</strong> menu</p>
+
+<p><img src="./images/CES menu.png" alt="CES Menu" /></p>
+
+<p>and select <strong>Webhooks</strong></p>
+
+<p><img src="./images/CES admin menu Webhooks.png" alt="Webhooks page" /></p>
+
+<p>On the Webhooks page select either <code class="highlighter-rouge">add</code> to define a new webhook or <code class="highlighter-rouge">edit</code> to modify an existing webhook. The <a href="./pipelines/Mainframe_CI_Pipeline_from_Shared_Lib.html">Mainframe_CI_Pipeline_from_Shared_Lib.groovy</a> makes use of the following definitions:</p>
+
+<h2 id="-webhook-definition-fields"><a id="Webhook definition fields"></a> Webhook definition fields</h2>
+
+<p><img src="./images/Webhook example.png" alt="Webhook example" /></p>
+
+<h3 id="-name"><a id="Name"></a> Name</h3>
+
+<p>Name of the webhook, e.g. “FTSDEMO Pipeline”</p>
+
+<h3 id="-url"><a id="URL"></a> URL</h3>
+<p>The URL to post the webhook’s http request to. In the example pipeline this is</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://sonarqube.nasa.cpwr.corp:8080/job/RNU_FTSDEMO_from_Shared_Lib/buildWithParameters?ISPW_Stream=$$stream$$&amp;ISPW_Application=$$application$$&amp;ISPW_Release=$$release$$&amp;ISPW_Assignment=$$assignment$$&amp;ISPW_Container=$$setID$$&amp;ISPW_Container_Type=2&amp;ISPW_Src_Level=$$level$$&amp;ISPW_Owner=$$owner$$
+</code></pre></div></div>
+
+<p>where</p>
+<ul>
+  <li><code class="highlighter-rouge">sonarqube.nasa.cpwr.corp:8080</code> is the name of Compuware’s internal Jenkins server</li>
+  <li><code class="highlighter-rouge">RNU_FTSDEMO_from_Shared_Lib</code> is the name of the pipeline job to trigger</li>
+  <li><code class="highlighter-rouge">buildWithParameters</code> is required since the pipeline job uses parameters</li>
+</ul>
+
+<p>followed by a list of <code class="highlighter-rouge">parameter=value</code> pairs. In this list</p>
+<ul>
+  <li>the part left of each <code class="highlighter-rouge">=</code> names the parameter name from the pipeline definition</li>
+  <li>the part right of each <code class="highlighter-rouge">=</code> is the value to pass to the parameter with <code class="highlighter-rouge">$$&lt;parameter-name&gt;$$</code> denoting parameter values passed from ISPW</li>
+  <li><code class="highlighter-rouge">&amp;</code> separates two pairs</li>
+</ul>
+
+<h3 id="-request-method"><a id="Request method"></a> Request method</h3>
+<p>Will be <code class="highlighter-rouge">POST</code>.</p>
+
+<h3 id="-request-headers"><a id="Request headers"></a> Request headers</h3>
+<p>Depending on the configuration of the Jenkins server you may need addition request headers. Especially if <a href="https://wiki.jenkins.io/display/JENKINS/CSRF+Protection">CSRF Protection</a> is activated, you will need an authorization header. Contact your Jenkins administrator for the required value.</p>
+
+<h3 id="-product"><a id="Product"></a> Product</h3>
+<p>Will be <code class="highlighter-rouge">ISPW</code>.</p>
+
+<h3 id="-event-criteria"><a id="Event Criteria"></a> Event Criteria</h3>
+<p>Define the ISPW events that will trigger this webhook.</p>
+
+<h4 id="-application"><a id="Application"></a> Application</h4>
+<p>Specify the ISPW application(s) you want to use this webhook for. Roughly 50 entries are allowed.</p>
+
+<p>The example uses applications <code class="highlighter-rouge">RXN1</code> and <code class="highlighter-rouge">RXN3</code>.</p>
+
+<h4 id="-level"><a id="Level"></a> Level</h4>
+<p>Specify the life cycle levels you want to use this webhook for. This is dependent on your specific configuration of ISPW.</p>
+
+<p>The example uses levels <code class="highlighter-rouge">DEV1</code>, <code class="highlighter-rouge">DEV2</code>, <code class="highlighter-rouge">DEV3</code>, with the life cycle for the applications <code class="highlighter-rouge">RXN1</code> and <code class="highlighter-rouge">RXN3</code> looking like the following:</p>
+
+<p><img src="./images/Example life cycle.png" alt="Example life cylce" /></p>
+
+<h4 id="-event-name"><a id="Event name"></a> Event name</h4>
+<p>One or more events during the operation(s) that trigger the webhook. Events can be</p>
+<ul>
+  <li><code class="highlighter-rouge">Always</code></li>
+  <li><code class="highlighter-rouge">Executing</code></li>
+  <li><code class="highlighter-rouge">Dispatched</code></li>
+  <li><code class="highlighter-rouge">Ready</code></li>
+  <li><code class="highlighter-rouge">Closed</code></li>
+  <li><code class="highlighter-rouge">Completed</code></li>
+  <li><code class="highlighter-rouge">Failed</code></li>
+  <li><code class="highlighter-rouge">Terminated</code></li>
+</ul>
+
+<p>The example uses <code class="highlighter-rouge">Completed</code>.</p>
+
+<h3 id="-operations"><a id="Operations"></a> Operations</h3>
+<p>One ore more ISPW operations that will trigger the webhook.</p>
+
+<p>The example uses <code class="highlighter-rouge">Promote</code>.</p>
+
+<h2 id="-in-summary"><a id="In summary"></a> In summary</h2>
+<p>Which means in total, that the pipeline job <code class="highlighter-rouge">RNU_FTSDEMO_from_Shared_Lib</code> will get triggered whenever a developer has promoted code from levels <code class="highlighter-rouge">DEV1</code>, <code class="highlighter-rouge">DEV2</code>, or <code class="highlighter-rouge">DEV3</code> within ISPW applications <code class="highlighter-rouge">RXN1</code>, or <code class="highlighter-rouge">RXN2</code> and the promote was successfully completed. The following information will be passed from ISPW to the pipleline job:</p>
+
+<ul>
+  <li>The ISPW stream name <code class="highlighter-rouge">$$stream$$</code> will be passed to pipeline parameter <code class="highlighter-rouge">ISPW_Stream</code></li>
+  <li>The ISPW application name <code class="highlighter-rouge">$$application$$</code> will be passed to the pipeline parameter <code class="highlighter-rouge">ISPW_Application</code></li>
+  <li>The ISPW release name <code class="highlighter-rouge">$$release$$</code> will be passed to the pipeline parameter <code class="highlighter-rouge">ISPW_Release</code></li>
+  <li>The ISPW assignment name <code class="highlighter-rouge">$$assignment$$</code> will be passed to the pipeline parameter <code class="highlighter-rouge">ISPW_Assignment</code></li>
+  <li>The ISPW set ID <code class="highlighter-rouge">$$setID$$</code> will be passed to the pipeline parameter <code class="highlighter-rouge">ISPW_Container</code></li>
+  <li>The value <code class="highlighter-rouge">2</code> will be passed to the pipeline parameter <code class="highlighter-rouge">ISPW_Container_Type</code> to denote a set ID was passed in the previous parameter</li>
+  <li>The ISPW source level <code class="highlighter-rouge">$$level$$</code> (<code class="highlighter-rouge">DEV1</code>, <code class="highlighter-rouge">DEV2</code>, or <code class="highlighter-rouge">DEV3</code>) will be passed to the pipeline parameter <code class="highlighter-rouge">ISPW_Src_Level</code></li>
+  <li>The ISPW user executing the promotion <code class="highlighter-rouge">$$owner$$</code> will be passed to the pipeline parameter <code class="highlighter-rouge">ISPW_Owner</code></li>
+</ul>
+
+      </section>
+
+      <footer>
+          <ul>
+            <li><a class="name buttons github" href="">View On GitHub</a></li>
+          </ul>
+      </footer>    
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

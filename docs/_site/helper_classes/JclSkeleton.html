@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>JclSkeleton.groovy</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="JclSkeleton.groovy" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/helper_classes/JclSkeleton.html" />
+<meta property="og:url" content="http://localhost:4000/helper_classes/JclSkeleton.html" />
+<script type="application/ld+json">
+{"@type":"WebPage","url":"http://localhost:4000/helper_classes/JclSkeleton.html","headline":"JclSkeleton.groovy","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <script src="/assets/js/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div id="banner">
+        <a href="" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span><strong>DevOps-Examples</strong></span>
+          <ul>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/index.html">Home</a></li>            
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/plugins/plugins.html">Required Plugins</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/pipelines/pipelines.html">The Primary Pipelines</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/helper_classes/helper_classes.html">Helper Classes</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/code_examples/code_examples.html">Other Code Examples</a></li>
+          </ul>
+      </div>
+    </div>    
+    
+    <div class="wrapper">
+      <header>
+        <h1 class="header">JclSkeleton.groovy</h1>
+        <p class="header">Classes used by the pipeline from shared library</p>
+
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/index.html">Home</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/plugins/plugins.html">Required Plugins</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/pipelines/pipelines.html">The Primary Pipelines</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/helper_classes.html">Helper Classes</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/FileHelper.html">FileHelper</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/GitHelper.html">GitHelper</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/IspwHelper.html">IspwHelper</a></li>                    
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/JclSkeleton.html">JclSkeleton</a></li>                              
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/PipelineConfig.html">PipelineConfig</a></li>                                        
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/code_examples/code_examples.html">Other Code Examples</a></li>
+        </ul>
+      </header>
+
+      <section>
+        <h1 id="-jclskeletongroovy"><a id="JclSkeleton"></a> JclSkeleton.groovy</h1>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.compuware.devops.util</span>
+
+<span class="cm">/**
+ Static Class to contain different JCL Skeletons
+*/</span>
+<span class="kd">class</span> <span class="nc">JclSkeleton</span> <span class="kd">implements</span> <span class="n">Serializable</span> <span class="o">{</span>
+
+    <span class="kt">def</span> <span class="n">steps</span>
+
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">skeletonPath</span>     <span class="o">=</span> <span class="s1">'config\\skels'</span>       <span class="c1">// Path containing JCL "skeletons" after downloading them from Git Hub Repository</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">jobCardSkel</span>      <span class="o">=</span> <span class="s1">'JobCard.jcl'</span>         <span class="c1">// Skeleton for job cards</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">iebcopySkel</span>      <span class="o">=</span> <span class="s1">'iebcopy.skel'</span>        <span class="c1">// Skeleton for IEBCOPY job</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">iebcopyInDdSkel</span>  <span class="o">=</span> <span class="s1">'iebcopyInDd.skel'</span>    <span class="c1">// Skeleton for input DDs for IEBCOPY job</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">deleteDsSkel</span>     <span class="o">=</span> <span class="s1">'deleteDs.skel'</span>       <span class="c1">// Skeleton for deleting the PDS after downloading copy books</span>
+
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">workspace</span>
+
+    <span class="n">String</span> <span class="n">jobCardJcl</span>
+    <span class="n">String</span> <span class="n">iebcopyCopyBooksJclSkel</span>
+    <span class="n">String</span> <span class="n">cleanUpDatasetJclSkel</span>
+    <span class="n">String</span> <span class="n">ispwApplication</span>
+    <span class="n">String</span> <span class="n">ispwPathNum</span>
+</code></pre></div></div>
+<p><a id="JclSkeleton"></a></p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">JclSkeleton</span><span class="o">(</span><span class="n">steps</span><span class="o">,</span> <span class="n">String</span> <span class="n">workspace</span><span class="o">,</span> <span class="n">String</span> <span class="n">ispwApplication</span><span class="o">,</span> <span class="n">String</span> <span class="n">ispwPathNum</span><span class="o">)</span> 
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">steps</span>              <span class="o">=</span> <span class="n">steps</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">workspace</span>          <span class="o">=</span> <span class="n">workspace</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">ispwApplication</span>    <span class="o">=</span> <span class="n">ispwApplication</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">ispwPathNum</span>        <span class="o">=</span> <span class="n">ispwPathNum</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+<p><a id="initialize"></a></p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="cm">/* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */</span>
+    <span class="kt">def</span> <span class="nf">initialize</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">jobCardJcl</span>                 <span class="o">=</span> <span class="n">readSkelFile</span><span class="o">(</span><span class="n">jobCardSkel</span><span class="o">).</span><span class="na">join</span><span class="o">(</span><span class="s2">"\n"</span><span class="o">)</span>
+
+        <span class="k">this</span><span class="o">.</span><span class="na">cleanUpDatasetJclSkel</span>      <span class="o">=</span> <span class="n">readSkelFile</span><span class="o">(</span><span class="n">deleteDsSkel</span><span class="o">).</span><span class="na">join</span><span class="o">(</span><span class="s2">"\n"</span><span class="o">)</span>
+
+        <span class="k">this</span><span class="o">.</span><span class="na">iebcopyCopyBooksJclSkel</span>    <span class="o">=</span> <span class="n">buildIebcopySkel</span><span class="o">()</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+<p><a id="buildIebcopySkel"></a></p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kt">def</span> <span class="n">String</span> <span class="nf">buildIebcopySkel</span><span class="o">()</span>
+    <span class="o">{</span>
+
+        <span class="kt">def</span> <span class="n">jclSkel</span>                 <span class="o">=</span> <span class="n">readSkelFile</span><span class="o">(</span><span class="n">iebcopySkel</span><span class="o">).</span><span class="na">join</span><span class="o">(</span><span class="s2">"\n"</span><span class="o">)</span>
+        
+        <span class="kt">def</span> <span class="n">tempInputDdStatements</span>   <span class="o">=</span> <span class="n">readSkelFile</span><span class="o">(</span><span class="n">iebcopyInDdSkel</span><span class="o">)</span>
+        <span class="kt">def</span> <span class="n">copyDdStatements</span>        <span class="o">=</span> <span class="o">[]</span>
+
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">tempInputDdStatements</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span>
+        <span class="o">{</span>                        
+            <span class="n">copyDdStatements</span><span class="o">.</span><span class="na">add</span> <span class="o">(</span><span class="s2">"       INDD=IN${i+1}"</span><span class="o">)</span>
+        <span class="o">}</span>
+
+        <span class="kt">def</span> <span class="n">inputDdJcl</span>      <span class="o">=</span> <span class="n">tempInputDdStatements</span><span class="o">.</span><span class="na">join</span><span class="o">(</span><span class="s2">"\n"</span><span class="o">)</span>
+        <span class="kt">def</span> <span class="n">inputCopyJcl</span>    <span class="o">=</span> <span class="n">copyDdStatements</span><span class="o">.</span><span class="na">join</span><span class="o">(</span><span class="s2">"\n"</span><span class="o">)</span>
+
+        <span class="n">jclSkel</span>             <span class="o">=</span> <span class="n">jclSkel</span><span class="o">.</span><span class="na">replace</span><span class="o">(</span><span class="s2">"&lt;source_copy_pds_list&gt;"</span><span class="o">,</span> <span class="n">inputDdJcl</span><span class="o">)</span>
+        <span class="n">jclSkel</span>             <span class="o">=</span> <span class="n">jclSkel</span><span class="o">.</span><span class="na">replace</span><span class="o">(</span><span class="s2">"&lt;source_input_dd_list&gt;"</span><span class="o">,</span> <span class="n">inputCopyJcl</span><span class="o">)</span>
+        <span class="n">jclSkel</span>             <span class="o">=</span> <span class="n">jclSkel</span><span class="o">.</span><span class="na">replace</span><span class="o">(</span><span class="s2">"&lt;ispw_application&gt;"</span><span class="o">,</span> <span class="n">ispwApplication</span><span class="o">)</span>
+        <span class="n">jclSkel</span>             <span class="o">=</span> <span class="n">jclSkel</span><span class="o">.</span><span class="na">replace</span><span class="o">(</span><span class="s2">"&lt;ispw_path&gt;"</span><span class="o">,</span> <span class="n">ispwPathNum</span><span class="o">)</span>
+
+        <span class="k">return</span> <span class="n">jclSkel</span>
+
+    <span class="o">}</span>
+</code></pre></div></div>
+<p><a id="createIebcopyCopyBooksJcl"></a></p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kt">def</span> <span class="n">String</span> <span class="nf">createIebcopyCopyBooksJcl</span><span class="o">(</span><span class="n">String</span> <span class="n">targetDsn</span><span class="o">,</span> <span class="n">List</span> <span class="n">copyMembers</span><span class="o">)</span>
+    <span class="o">{</span>
+
+        <span class="kt">def</span> <span class="n">iebcopyCopyBooksJcl</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">jobCardJcl</span>
+        <span class="kt">def</span> <span class="n">selectStatements</span>    <span class="o">=</span> <span class="o">[]</span>
+
+        <span class="n">copyMembers</span><span class="o">.</span><span class="na">each</span> <span class="o">{</span>
+            <span class="n">selectStatements</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s2">"  SELECT MEMBER=${it}"</span><span class="o">)</span>
+        <span class="o">}</span>
+
+        <span class="kt">def</span> <span class="n">selectJcl</span>       <span class="o">=</span> <span class="n">selectStatements</span><span class="o">.</span><span class="na">join</span><span class="o">(</span><span class="s2">"\n"</span><span class="o">)</span>  
+
+        <span class="n">iebcopyCopyBooksJcl</span> <span class="o">=</span> <span class="n">iebcopyCopyBooksJcl</span> <span class="o">+</span> <span class="s2">"\n"</span> <span class="o">+</span> <span class="n">iebcopyCopyBooksJclSkel</span>
+        <span class="n">iebcopyCopyBooksJcl</span> <span class="o">=</span> <span class="n">iebcopyCopyBooksJcl</span><span class="o">.</span><span class="na">replace</span><span class="o">(</span><span class="s2">"&lt;target_dsn&gt;"</span><span class="o">,</span> <span class="n">targetDsn</span><span class="o">)</span>
+        <span class="n">iebcopyCopyBooksJcl</span> <span class="o">=</span> <span class="n">iebcopyCopyBooksJcl</span><span class="o">.</span><span class="na">replace</span><span class="o">(</span><span class="s2">"&lt;select_list&gt;"</span><span class="o">,</span><span class="n">selectJcl</span><span class="o">)</span>
+
+        <span class="k">return</span> <span class="n">iebcopyCopyBooksJcl</span>
+
+    <span class="o">}</span>
+</code></pre></div></div>
+<p><a id="createDeleteTempDsn"></a></p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kt">def</span> <span class="n">String</span> <span class="nf">createDeleteTempDsn</span><span class="o">(</span><span class="n">String</span> <span class="n">targetDsn</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="kt">def</span> <span class="n">deleteJcl</span>   <span class="o">=</span> <span class="n">jobCardJcl</span>
+
+        <span class="n">deleteJcl</span>       <span class="o">=</span> <span class="n">deleteJcl</span> <span class="o">+</span> <span class="s2">"\n"</span> <span class="o">+</span> <span class="n">cleanUpDatasetJclSkel</span>
+        <span class="n">deleteJcl</span>       <span class="o">=</span> <span class="n">deleteJcl</span><span class="o">.</span><span class="na">replace</span><span class="o">(</span><span class="s2">"&lt;clean_dsn&gt;"</span><span class="o">,</span> <span class="n">targetDsn</span><span class="o">)</span>
+
+        <span class="k">return</span> <span class="n">deleteJcl</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+<p><a id="readSkelFile"></a></p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kt">def</span> <span class="nf">readSkelFile</span><span class="o">(</span><span class="n">String</span> <span class="n">fileName</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="kt">def</span> <span class="n">jclStatements</span>       <span class="o">=</span> <span class="o">[]</span>
+        <span class="n">FileHelper</span> <span class="n">fileHelper</span>   <span class="o">=</span> <span class="k">new</span> <span class="n">FileHelper</span><span class="o">()</span>
+
+        <span class="kt">def</span> <span class="n">skelFilePath</span>    <span class="o">=</span> <span class="s2">"${workspace}\\${skeletonPath}\\${fileName}"</span>
+
+        <span class="kt">def</span> <span class="n">lines</span>           <span class="o">=</span> <span class="n">fileHelper</span><span class="o">.</span><span class="na">readLines</span><span class="o">(</span><span class="n">skelFilePath</span><span class="o">)</span>
+        
+        <span class="n">lines</span><span class="o">.</span><span class="na">each</span>
+        <span class="o">{</span>
+            <span class="n">jclStatements</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">it</span><span class="o">.</span><span class="na">toString</span><span class="o">())</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">jclStatements</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+      </section>
+
+      <footer>
+          
+  
+          
+  
+          <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Minimal theme</small></p>
+        </footer>
+      </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

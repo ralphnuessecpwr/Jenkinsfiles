@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Pipelines</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Pipelines" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/pipelines/scenario/ISPW_scenario.html" />
+<meta property="og:url" content="http://localhost:4000/pipelines/scenario/ISPW_scenario.html" />
+<script type="application/ld+json">
+{"@type":"WebPage","url":"http://localhost:4000/pipelines/scenario/ISPW_scenario.html","headline":"Pipelines","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <script src="/assets/js/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <p class="header">The primary pipeline scenarios, setup and code<br>&nbsp</p>
+
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/index.html">Home</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/plugins/plugins.html">Required Plugins</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+        </ul>
+        <p><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/pipelines.html">The Primary Pipelines</a></p>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/scenario/ISPW_scenario.html">ISPW Scenario</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/scenario/TTT_scenario.html">TTT Scenario</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/scenario/TTT_in_Git.html">Git(Hub) for TTT</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/Mainframe-CI-Example-pipeline.html">Simple Pipeline</a></li>                    
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/Mainframe_CI_Pipeline_from_Shared_Lib.html">From Shared Library</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/pipeline_parameters.html">Parameters</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/helper_classes.html">Helper Classes</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/code_examples/code_examples.html">Other Code Examples</a></li>
+        </ul>
+      </header>
+
+      <section>
+        <h1 id="-ispw-scenario"><a id="ISPW Scenario"></a> ISPW Scenario</h1>
+<p>Both scenarios handled by the two primary pipelines work on Compuware’s demonstration stream <code class="highlighter-rouge">FTSDEMO</code>, using application <code class="highlighter-rouge">RXN3</code>, in our example. In this version of the application, some of the components (<code class="highlighter-rouge">CWXTSUBC</code>) use copybooks.</p>
+
+<p><img src="../images/ISPW repository explorer.png" alt="ISPW repository explorer" /></p>
+
+<h2 id="-checking-out-code-to-an-assignment"><a id="Checking out code to an assignment"></a> Checking out code to an assignment</h2>
+<p>In ISPW the developer checks out a few components to a new or existing assignment. Depending on the pipeline being used</p>
+<ul>
+  <li><a href="../Mainframe-CI-Example-pipeline.html">Mainframe-CI-Example-pipeline</a>
+The developer has to check out all related copybooks for the final anaylsis in SonarQube to work. This is issue will be handled differently by the second pipeline</li>
+  <li><a href="../Mainframe_CI_Pipeline_from_Shared_Lib.html">Mainframe_CI_Pipeline_from_Shared_Lib</a>
+The developer may check out any component. Missing copybooks will be determined and gathered in one of the pipeline steps.</li>
+</ul>
+
+<p>They check out the following components</p>
+
+<ul>
+  <li>COBOL program <code class="highlighter-rouge">CWXTCOB</code></li>
+  <li>COBOL program <code class="highlighter-rouge">CWXTSUBC</code></li>
+  <li>COBOL program <code class="highlighter-rouge">CWXTDATE</code></li>
+</ul>
+
+<p>and add them to a new or existing assignment. In the example, they use the <code class="highlighter-rouge">DEV1</code> path.</p>
+
+<p>In case of the first scenario, the developer also needs to check out the copybook <code class="highlighter-rouge">EMPFILE</code>.</p>
+
+<p><img src="../images/ISPW checkout.png" alt="ISPW checkout" /></p>
+
+<h2 id="-changing-code"><a id="Changing code"></a> Changing code</h2>
+<p>The developer applies changes to the code, stores them back to ISPW, and generates (<code class="highlighter-rouge">compile</code>, <code class="highlighter-rouge">link</code>, <code class="highlighter-rouge">bind</code>, etc.) the new code.</p>
+
+<h2 id="-modifying-the-unit-tests"><a id="Modifying the unit tests"></a> Modifying the unit tests</h2>
+<p>Parallel to changing the code, the developer also <a href="./TTT_scenario.html#Adding new test cases">adds new test cases to the set of unit tests for the components in question</a>. Since the unit tests are stored in GitHub, the changes need to be <a href="./TTT_in_Git.html#Pushing changes to GitHub"><code class="highlighter-rouge">committed</code> and <code class="highlighter-rouge">pushed</code> to the GitHub repository, before continuing</a>.</p>
+
+<h2 id="-promoting-the-code-changes"><a id="Promoting the code changes"></a> Promoting the code changes</h2>
+<p>Once the new code has been <code class="highlighter-rouge">generated</code>, and the unit tests have been <code class="highlighter-rouge">pushed</code> to GitHub, the develop can promote the selected components, or the complete assignment to the next level.</p>
+
+<p><img src="../images/ISPW promote.png" alt="ISPW promote" /></p>
+
+<h2 id="-the-resulting-set"><a id="The resulting set"></a> The resulting set</h2>
+<p>The promote will create a <code class="highlighter-rouge">set container</code> in ISPW, which will perform the steps required for the <code class="highlighter-rouge">promotion</code> of the code. This <code class="highlighter-rouge">set</code> has its own ID and contains all <code class="highlighter-rouge">tasks</code> that were <code class="highlighter-rouge">promoted</code>. The way the <a href="../tool_configuration/webhook_setup.html">ISPW webhook</a> has been set up, once the <code class="highlighter-rouge">promotion</code> has finished, the webhook will trigger one of the two pipeline jobs. (Depending on the job being triggered by the webhook’s <code class="highlighter-rouge">POST</code> request.)</p>
+
+<p><img src="../images/ISPW set.png" alt="ISPW set" /></p>
+
+      </section>
+
+      <footer>
+          <ul>
+            <li><a class="name buttons github" href="">View On GitHub</a></li>
+          </ul>
+      </footer>    
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

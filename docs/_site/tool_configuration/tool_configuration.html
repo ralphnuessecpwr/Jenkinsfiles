@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Tool Configurations</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Tool Configurations" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/tool_configuration/tool_configuration.html" />
+<meta property="og:url" content="http://localhost:4000/tool_configuration/tool_configuration.html" />
+<script type="application/ld+json">
+{"@type":"WebPage","url":"http://localhost:4000/tool_configuration/tool_configuration.html","headline":"Tool Configurations","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <script src="/assets/js/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <p class="header">Configure supporting tools and Jenkins plugins<br>&nbsp</p>
+
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/index.html">Home</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/plugins/plugins.html">Required Plugins</a></li>
+        </ul>
+        <p><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html">Tool Configurations</a></p>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/Compuware_configurations.html">Common configurations</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/webhook_setup.html">ISPW webhook</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/CES_credentials_token.html">CES credentials token</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/SonarQube_server.html">SonarQube server</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/SonarQube_scanner.html">SonarQube scanner</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/XLR_config">XL Release</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/Jenkins_Git_config.html">Git</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Credentials">Jenkins cedentials</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Managed Files">Managed Files</a></li>          
+        </ul>
+        <!--
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Compuware Enterprise Services">CES</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Configure system">Configure System</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Global Tool Configuration">Global Tools</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Credentials">Credentials</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html#Managed Files">Config Files</a></li>
+        </ul>
+        -->
+        <small>&nbsp</small>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/pipelines.html">The Primary Pipelines</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/helper_classes.html">Helper Classes</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/code_examples/code_examples.html">Other Code Examples</a></li>
+        </ul>      
+      </header>
+
+      <section>
+        <h1 id="-tool-configurations"><a id="Tool Configurations"></a> Tool Configurations</h1>
+<p>The scenarios covered by the <a href="../pipelines/pipelines.html">primary pipelines</a>, the <a href="../code_examples/code_examples.html">other code examples</a>, and more generally the use of the Compuware and third party <a href="../plugins/plugins.html">plugins</a>, require certain configurations and setting, both within Jenkins and within other tools provided by Compuware.</p>
+
+<h2 id="-compuware-enterprise-services"><a id="Compuware Enterprise Services"></a> Compuware Enterprise Services</h2>
+<p>Next to serving as web application server for Compuware’s web based tools like <a href="https://compuware.com/strobe-mainframe-performance-monitoring/">iStrobe</a> or the <a href="https://compuware.com/ispw-source-code-management/">ISPW web interface</a>, Compuware Enterprise Services (CES) provides a set of services that allow interfacing with Compuware tools outside the mainframe. In the context of Jenkins and CI/CD these are</p>
+
+<h3 id="-ispw-webhooks"><a id="ISPW Webhooks"></a> ISPW Webhooks</h3>
+<p>ISPW allows registering webhooks to use events in the ISPW software life cycle to trigger events outside of ISPW like triggering a Jenkins pipeline. CES may be used as one source to define and register webhooks for ISPW. Both <em>primary</em> pipelines make use of such webhooks defined in CES. Refer to the CES online help, chapter <strong>Compuware Enterprise Services</strong>, section <strong>Webhooks</strong> for documentation on setting up ISPW webhooks, and the parameters that may be passed from ISPW to the webhook.</p>
+
+<p><a href="./webhook_setup.html">Definition of a webhook used in the examples</a></p>
+
+<h3 id="-ces-credentials-token"><a id="CES Credentials Token"></a> CES Credentials Token</h3>
+<p>The Compuware plugins (and other operations) make use of credential tokens defined in CES. These tokens store mainfram TSO user id and password and allow authentication against the mainframe without using clear text credentials within script code.</p>
+
+<p><a href="./CES_credentials_token.html">Definition of CES credentials token</a></p>
+
+<h2 id="-jenkins"><a id="Jenkins"></a> Jenkins</h2>
+<p>The plugins used by the examples require additional setup like server locations/URLs or additional credentials to use. We describe the required steps by “location” in the Jenkins UI.</p>
+
+<h3 id="-manage-jenkins--configure-system"><a id="Configure system"></a> Manage Jenkins / Configure system</h3>
+<p>The settings under <code class="highlighter-rouge">Manage Jenkins</code> -&gt; <code class="highlighter-rouge">Configure System</code> will be required for the definition of at least</p>
+<ul>
+  <li><a href="./SonarQube_server.html">SonarQube server information</a> to store the SonarQube server URL under a reference name</li>
+  <li><a href="./Compuware_configurations.html">Compuware Configurations</a> to define settings shared by the Compuware plugins</li>
+  <li><a href="./Pipeline_libraries_config.html">Global Pipeline Libraries</a></li>
+  <li><a href="./XLR_config.html">XL Release</a></li>
+</ul>
+
+<h3 id="-manage-jenkins--global-tool-configuration"><a id="Global Tool Configuration"></a> Manage Jenkins / Global Tool Configuration</h3>
+<p>The settings under <code class="highlighter-rouge">Manage Jenkins</code> -&gt; <code class="highlighter-rouge">Global Tool Configuration</code> will be required for the definition of at least</p>
+<ul>
+  <li><a href="./Jenkins_Git_config.html">Git</a> to point to the installation of Git local to the Jenkins server. The Jenkins server requires its own <code class="highlighter-rouge">git.exe</code>.</li>
+  <li><a href="./SonarQube_scanner.html">SonarQube Scanner</a> to define a reference to the path to the Sonar Scanner installation local to the Jenkins server</li>
+</ul>
+
+<h3 id="-manage-jenkins--credentials"><a id="Credentials"></a> Manage Jenkins / Credentials</h3>
+<p>Use the credentials manager to store the following credentials for use in the examples</p>
+
+<ul>
+  <li>A user ID / password token for a valid logon to the required mainframe LPAR used by plugins that do not use the CES credentials token (used as parameter <code class="highlighter-rouge">HCI_Token</code>)</li>
+  <li>A secret text credential token to mask the <a href="CES_credentials_token.html">CES credentials ID created and retreieved from CES</a> (used as parameter <code class="highlighter-rouge">CES_Token</code>)</li>
+  <li>A user ID / password token for a valid logon to the GitHub repository storing Topaz for Total Test unit test assets (used as parameter <code class="highlighter-rouge">Git_Credentials</code>)</li>
+</ul>
+
+<p><img src="./images/Jenkins credentials.png" alt="Jenkins Credentials" /></p>
+
+<h3 id="-manage-jenkins--managed-files"><a id="Managed Files"></a> Manage Jenkins / Managed Files</h3>
+<p>The option <code class="highlighter-rouge">Manage Jenkins</code> -&gt; <code class="highlighter-rouge">Managed Files</code> will be available after installation of the <a href="https://wiki.jenkins.io/display/JENKINS/Config+File+Provider+Plugin">Config File Provider</a> plugin. The examples make use of configuration files handled and stored by this plugin. Especially this will be a list of TSO user IDs and <a href="./Config_Files.html">corresponding mail addresses</a>. Over time other configuration files will use the same technology.</p>
+
+      </section>
+
+      <footer>
+          <ul>
+            <li><a class="name buttons github" href="">View On GitHub</a></li>
+          </ul>
+      </footer>    
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

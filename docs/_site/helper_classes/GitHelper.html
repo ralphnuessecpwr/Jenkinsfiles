@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>GitHelper.groovy</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="GitHelper.groovy" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/helper_classes/GitHelper.html" />
+<meta property="og:url" content="http://localhost:4000/helper_classes/GitHelper.html" />
+<script type="application/ld+json">
+{"@type":"WebPage","url":"http://localhost:4000/helper_classes/GitHelper.html","headline":"GitHelper.groovy","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <script src="/assets/js/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div id="banner">
+        <a href="" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span><strong>DevOps-Examples</strong></span>
+          <ul>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/index.html">Home</a></li>            
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/plugins/plugins.html">Required Plugins</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/pipelines/pipelines.html">The Primary Pipelines</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/helper_classes/helper_classes.html">Helper Classes</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/code_examples/code_examples.html">Other Code Examples</a></li>
+          </ul>
+      </div>
+    </div>    
+    
+    <div class="wrapper">
+      <header>
+        <h1 class="header">GitHelper.groovy</h1>
+        <p class="header">Classes used by the pipeline from shared library</p>
+
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/index.html">Home</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/plugins/plugins.html">Required Plugins</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/pipelines/pipelines.html">The Primary Pipelines</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/helper_classes.html">Helper Classes</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/FileHelper.html">FileHelper</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/GitHelper.html">GitHelper</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/IspwHelper.html">IspwHelper</a></li>                    
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/JclSkeleton.html">JclSkeleton</a></li>                              
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/PipelineConfig.html">PipelineConfig</a></li>                                        
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/code_examples/code_examples.html">Other Code Examples</a></li>
+        </ul>
+      </header>
+
+      <section>
+        <h1 id="-githelpergroovy"><a id="GitHelper"></a> GitHelper.groovy</h1>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.compuware.devops.util</span>
+
+<span class="cm">/**
+ Wrapper around the Git Plugin's Checkout Method
+ @param URL - URL for the git server
+ @param Branch - The branch that will be checked out of git
+ @param Credentials - Jenkins credentials for logging into git
+ @param Folder - Folder relative to the workspace that git will check out files into
+*/</span>
+<span class="kd">class</span> <span class="nc">GitHelper</span> <span class="kd">implements</span> <span class="n">Serializable</span> <span class="o">{</span>
+
+    <span class="kt">def</span> <span class="n">steps</span>
+</code></pre></div></div>
+<p><a id="GitHelper"></a></p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">GitHelper</span><span class="o">(</span><span class="n">steps</span><span class="o">)</span> 
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">steps</span> <span class="o">=</span> <span class="n">steps</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+<p><a id="checkout"></a></p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kt">def</span> <span class="nf">checkout</span><span class="o">(</span><span class="n">String</span> <span class="n">gitUrl</span><span class="o">,</span> <span class="n">String</span> <span class="n">gitBranch</span><span class="o">,</span> <span class="n">String</span> <span class="n">gitCredentials</span><span class="o">,</span> <span class="n">String</span> <span class="n">tttFolder</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="n">steps</span><span class="o">.</span><span class="na">checkout</span><span class="o">(</span>
+            <span class="nl">changelog:</span>  <span class="kc">false</span><span class="o">,</span> 
+            <span class="nl">poll:</span>       <span class="kc">false</span><span class="o">,</span> 
+            <span class="nl">scm:</span>        <span class="o">[</span>
+                        <span class="n">$class</span><span class="o">:</span>                                 <span class="s1">'GitSCM'</span><span class="o">,</span> 
+                            <span class="nl">branches:</span>                           <span class="o">[[</span><span class="nl">name:</span> <span class="s2">"*/${gitBranch}"</span><span class="o">]],</span> 
+                            <span class="nl">doGenerateSubmoduleConfigurations:</span>  <span class="kc">false</span><span class="o">,</span> 
+                            <span class="nl">extensions:</span>                         <span class="o">[[</span><span class="n">$class</span><span class="o">:</span> <span class="s1">'RelativeTargetDirectory'</span><span class="o">,</span> <span class="nl">relativeTargetDir:</span> <span class="s2">"${tttFolder}"</span><span class="o">]],</span> 
+                            <span class="nl">submoduleCfg:</span>                       <span class="o">[],</span> 
+                            <span class="nl">userRemoteConfigs:</span>                  <span class="o">[[</span><span class="nl">credentialsId:</span> <span class="s2">"${gitCredentials}"</span><span class="o">,</span> <span class="nl">name:</span> <span class="s1">'origin'</span><span class="o">,</span> <span class="nl">url:</span> <span class="s2">"${gitUrl}"</span><span class="o">]]</span>
+                        <span class="o">]</span>
+        <span class="o">)</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+<p><a id="checkoutPath"></a></p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kt">def</span> <span class="nf">checkoutPath</span><span class="o">(</span><span class="n">String</span> <span class="n">gitUrl</span><span class="o">,</span> <span class="n">String</span> <span class="n">gitBranch</span><span class="o">,</span> <span class="n">String</span> <span class="n">path</span><span class="o">,</span> <span class="n">String</span> <span class="n">gitCredentials</span><span class="o">,</span> <span class="n">String</span> <span class="n">gitProject</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="n">steps</span><span class="o">.</span><span class="na">checkout</span><span class="o">(</span>
+        <span class="nl">changelog:</span> <span class="kc">false</span><span class="o">,</span> 
+        <span class="nl">poll:</span> <span class="kc">false</span><span class="o">,</span> 
+        <span class="nl">scm:</span> <span class="o">[</span>
+                <span class="n">$class</span><span class="o">:</span> <span class="s1">'GitSCM'</span><span class="o">,</span> 
+                <span class="nl">branches:</span> <span class="o">[[</span><span class="nl">name:</span> <span class="s2">"*/${gitBranch}"</span><span class="o">]],</span> 
+                <span class="nl">doGenerateSubmoduleConfigurations:</span> <span class="kc">false</span><span class="o">,</span> 
+                <span class="nl">extensions:</span> <span class="o">[[</span>
+                    <span class="n">$class</span><span class="o">:</span> <span class="s1">'SparseCheckoutPaths'</span><span class="o">,</span> 
+                    <span class="nl">sparseCheckoutPaths:</span> <span class="o">[[</span><span class="nl">path:</span> <span class="s2">"${path}/*"</span><span class="o">]]</span>
+                <span class="o">]],</span> 
+                <span class="nl">submoduleCfg:</span> <span class="o">[],</span> 
+                <span class="nl">userRemoteConfigs:</span> <span class="o">[[</span>
+                    <span class="nl">credentialsId:</span> <span class="s2">"${gitCredentials}"</span><span class="o">,</span> 
+                    <span class="nl">url:</span> <span class="s2">"${gitUrl}/${gitProject}.git"</span>
+                <span class="o">]]</span>
+            <span class="o">]</span>
+        <span class="o">)</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+      </section>
+
+      <footer>
+          
+  
+          
+  
+          <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Minimal theme</small></p>
+        </footer>
+      </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

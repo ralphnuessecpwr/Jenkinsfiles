@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Pipelines</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Pipelines" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/pipelines/pipeline_parameters.html" />
+<meta property="og:url" content="http://localhost:4000/pipelines/pipeline_parameters.html" />
+<script type="application/ld+json">
+{"@type":"WebPage","url":"http://localhost:4000/pipelines/pipeline_parameters.html","headline":"Pipelines","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <script src="/assets/js/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <p class="header">The primary pipeline scenarios, setup and code<br>&nbsp</p>
+
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/index.html">Home</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/plugins/plugins.html">Required Plugins</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+        </ul>
+        <p><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/pipelines.html">The Primary Pipelines</a></p>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/scenario/ISPW_scenario.html">ISPW Scenario</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/scenario/TTT_scenario.html">TTT Scenario</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/scenario/TTT_in_Git.html">Git(Hub) for TTT</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/Mainframe-CI-Example-pipeline.html">Simple Pipeline</a></li>                    
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/Mainframe_CI_Pipeline_from_Shared_Lib.html">From Shared Library</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/pipeline_parameters.html">Parameters</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/helper_classes.html">Helper Classes</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/code_examples/code_examples.html">Other Code Examples</a></li>
+        </ul>
+      </header>
+
+      <section>
+        <h1 id="-the-pipeline-parameters"><a id="The pipeline parameters"></a> The pipeline parameters</h1>
+<p>The two primary pipelines - and some of the other code examples - use a set of parameters that are taken from several sources - both names and values. 
+This table documents, the different names the parameters appear under, how and where to define them, where the parameters are read from, how to determine which value to specify as used in the <code class="highlighter-rouge">PipelineConfig</code>class and the <a href="../pipelines/Mainframe_CI_Pipeline_from_Shared_Lib.html">Mainframe_CI_Pipeline_from_Shared_Lib</a>.</p>
+
+<table>
+    <tr>
+        <th>Parameter / Description</th>
+        <th>Name in PipelineConfig class</th>
+        <th>Alias</th>
+        <th>Passed to pipeline via</th>
+        <th>Defined where</th>
+        <th>How to determine</th>
+    </tr>    
+    <tr>
+        <td>Runner jcl to use for unit test execution</td>
+        <td><code class="highlighter-rouge">tttJcl</code></td>
+        <td>N/A</td>
+        <td><a href="../tool_configuration/Config_Files.html#The email list">Email List configuration file <code class="highlighter-rouge">mailRecipient</code></a></td>
+        <td><a href="../tool_configuration/tool_configuration.html#Managed Files"><code class="highlighter-rouge">Manage Jenkins</code> -&gt; <code class="highlighter-rouge">Managed Files</code></a></td>
+        <td>The email file contains TSO user : email address pairs. The owner of the ISPW set will be taken as lookup for the email address&lt;/code&gt;</td>
+    </tr>
+    <tr>
+        <td>Recipient of emails sent by the pipeline informing the owner of the ISPW set about the results</td>
+        <td><code class="highlighter-rouge">mailRecipient</code></td>
+        <td>N/A</td>
+        <td><a href="../tool_configuration/Config_Files.html#The email list">Email List configuration file <code class="highlighter-rouge">mailList.config</code></a></td>
+        <td><a href="../tool_configuration/tool_configuration.html#Managed Files"><code class="highlighter-rouge">Manage Jenkins</code> -&gt; <code class="highlighter-rouge">Managed Files</code></a></td>
+        <td>The email file contains TSO user : email address pairs. The owner of the ISPW set will be taken as lookup for the email address&lt;/code&gt;</td>
+    </tr>
+    <tr>
+        <td>Git project name of repository storing configuration files</td>
+        <td><code class="highlighter-rouge">configGitProject</code></td>
+        <td>N/A</td>
+        <td>N/A</td>
+        <td>Hardcoded in the class</td>
+        <td>The configuration files are stored in the same Git project which stores the pipeline code itself.</td>
+    </tr>
+    <tr>
+        <td>Git branch name of repository storing configuration files</td>
+        <td><code class="highlighter-rouge">configGitBranch</code></td>
+        <td><a href="../pipelines/Mainframe_CI_Pipeline_from_Shared_Lib.html#Loading the script from a shared library">Pipeline call</a></td>
+        <td>Config_Git_Branch</td>
+        <td>N/A</td>
+        <td>The configuration files are stored in the same Git project which stores the pipeline code itself. You may use adifferent branch for the configuration files, though, if you want to store and use confiurations for e.g. different Jenkins instances</td>
+    </tr>
+    <tr>
+        <td>Folder in the Git repository containing all configuration files</td>
+        <td><code class="highlighter-rouge">configGitPath</code></td>
+        <td>N/A</td>
+        <td>N/A</td>
+        <td>Hardcoded in the class</td>
+        <td>The folder containing all configuration file is <code class="highlighter-rouge">(root)/config</code></td>
+    </tr>
+</table>
+
+      </section>
+
+      <footer>
+          <ul>
+            <li><a class="name buttons github" href="">View On GitHub</a></li>
+          </ul>
+      </footer>    
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

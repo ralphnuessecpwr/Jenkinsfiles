@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Required plugins</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Required plugins" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/plugins/plugins.html" />
+<meta property="og:url" content="http://localhost:4000/plugins/plugins.html" />
+<script type="application/ld+json">
+{"@type":"WebPage","url":"http://localhost:4000/plugins/plugins.html","headline":"Required plugins","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <script src="/assets/js/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <p class="header">Non standard plugins required for setup<br>&nbsp</p>
+
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/index.html">Home</a></li>
+        </ul>
+        <p><a class="header name" href="http://localhost:4000/DevOps-Examples/plugins/plugins.html">Required Plugins</a></p>
+        <ul>
+                        
+            <li class="header name"><a class="header name" href="https://wiki.jenkins.io/display/JENKINS/Compuware+Common+Configuration+Plugin">Common Configuration</a></li>
+            <li class="header name"><a class="header name" href="https://wiki.jenkins.io/display/JENKINS/Compuware+ISPW+Operations+Plugin">ISPW Operations</a></li>
+            <li class="header name"><a class="header name" href="https://wiki.jenkins-ci.org/display/JENKINS/Compuware+Source+Code+Download+for+Endevor%2C+PDS%2C+and+ISPW+Plugin">Source Code Download</a></li>
+            <li class="header name"><a class="header name" href="https://wiki.jenkins-ci.org/display/JENKINS/Compuware+Xpediter+Code+Coverage+Plugin">Xpediter Code Coverage</a></li>
+            <li class="header name"><a class="header name" href="https://wiki.jenkins.io/display/JENKINS/Compuware+Topaz+Utilities+Plugin">Topaz Utilities</a></li>
+        </ul>
+        <ul>          
+          <li class="header name"><a class="header name" href="https://wiki.jenkins.io/display/JENKINS/Pipeline+Utility+Steps+Plugin">Pipeline Utility Steps</a></li>
+          <li class="header name"><a class="header name" href="https://wiki.jenkins.io/display/JENKINS/Config+File+Provider+Plugin">Config File Provider</a></li>
+        </ul> 
+        <small>&nbsp</small>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/pipelines.html">The Primary Pipelines</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/helper_classes.html">Helper Classes</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/code_examples/code_examples.html">Other Code Examples</a></li>
+        </ul>
+      </header>
+
+      <section>
+        <h1 id="-plugins"><a id="Plugins"></a> Plugins</h1>
+<p>The examples - especially the two <a href="../pipelines/pipelines.html">primary pipelines</a> - use plugins that may not be part of a standard installation of Jenkins; this will likely be the case for the Compuware plugins. All plugins described here can be obtained from the Jenkins plugin marketplace using <code class="highlighter-rouge">Manage Jenkins</code> / <code class="highlighter-rouge">Manage Plugins</code>.</p>
+
+<h2 id="-compuware-plugins"><a id="Compuware plugins"></a> Compuware plugins</h2>
+<p>Compuware provides a continously growing set of plugins that allow connecting to the mainframe and using Compuware’s (and other) tools within a Jenkins job/pipeline.</p>
+
+<h3 id="-compuware-common-configuration"><a id="Compuware Common Configuration"></a> Compuware Common Configuration</h3>
+<p>The <a href="https://wiki.jenkins.io/display/JENKINS/Compuware+Common+Configuration+Plugin">Compuware Common Configuration</a> plugin allows defining and storing configuration settings that are used by and shared between the other Compuware plugins.</p>
+
+<h3 id="-compuware-ispw-operations-plugin"><a id="Compuware ISPW Operations Plugin"></a> Compuware ISPW Operations Plugin</h3>
+<p>The <a href="https://wiki.jenkins.io/display/JENKINS/Compuware+ISPW+Operations+Plugin">Compuware ISPW Operations Plugin</a> allows using ISPW REST API operations without having to code native http requests</p>
+
+<h3 id="-compuware-source-code-download-for-endevor-pds-and-ispw"><a id="Compuware Source Code Download for Endevor, PDS, and ISPW"></a> Compuware Source Code Download for Endevor, PDS, and ISPW</h3>
+<p>The <a href="https://wiki.jenkins-ci.org/display/JENKINS/Compuware+Source+Code+Download+for+Endevor%2C+PDS%2C+and+ISPW+Plugin">Compuware Source Code Download for Endevor, PDS, and ISPW</a> plugin allows downloading source code and other assets stored in mainframe SCM tools:</p>
+<ul>
+  <li>ISPW</li>
+  <li>Endevor</li>
+  <li>Plain PDS</li>
+</ul>
+
+<h3 id="-compuware-topaz-for-total-test"><a id="Compuware Topaz for Total Test"></a> Compuware Topaz for Total Test</h3>
+<p>The <a href="https://wiki.jenkins-ci.org/display/JENKINS/Compuware+Topaz+for+Total+Test+Plugin">Compuware Topaz for Total Test</a> plugin allows execution of Topaz for Total Test unit test scenarios and suites and retrieving of the results. The results will be downloaded and stored in <code class="highlighter-rouge">html</code> format as well as <code class="highlighter-rouge">xml</code> format for further use by SonarQube. Collection of Xpediter Code Coverage data can be triggered alongside the execution of the unit tests.</p>
+
+<h3 id="-compuware-xpediter-code-coverage"><a id="Compuware Xpediter Code Coverage"></a> Compuware Xpediter Code Coverage</h3>
+<p>The <a href="https://wiki.jenkins-ci.org/display/JENKINS/Compuware+Xpediter+Code+Coverage+Plugin">Compuware Xpediter Code Coverage</a> plugin allows querying an Xpediter Code Coverage repository and downloading the results. These results will be stored in <code class="highlighter-rouge">xml</code> format for further use by SonarQube.</p>
+
+<h3 id="-compuware-topaz-utilities"><a id="Compuware Topaz Utilities"></a> Compuware Topaz Utilities</h3>
+<p>The <a href="https://wiki.jenkins-ci.org/display/JENKINS/Compuware+Topaz+Utilities+Plugin">Compuware Topaz Utilities</a> plugin will provide a collection of utilities around interfacing to and using tools on mainframes. In its first version it allows execution and checking return codes of JCL. The JCL may be stored in PDS members on the mainframe or in string variables during execution.</p>
+
+<h2 id="-third-party-plugins"><a id="Third party plugins"></a> Third party plugins</h2>
+<p>Other plugins that are used by the examples are:</p>
+
+<h3 id="-pipeline-utility-steps"><a id="Pipeline Utility Steps"></a> Pipeline Utility Steps</h3>
+<p>The <a href="https://wiki.jenkins.io/display/JENKINS/Pipeline+Utility+Steps+Plugin">Pipeline Utility Steps</a> plugin provides a set of script methhods that are being used in the examples like</p>
+<ul>
+  <li><code class="highlighter-rouge">findFiles</code>   to search for files by name pattern</li>
+  <li><code class="highlighter-rouge">zip</code>         to create zip archives</li>
+  <li><code class="highlighter-rouge">unzip</code>       to unzip archives</li>
+</ul>
+
+<h3 id="-config-file-provider"><a id="Config File Provider"></a> Config File Provider</h3>
+<p>The <a href="https://wiki.jenkins.io/display/JENKINS/Config+File+Provider+Plugin">Config File Provider</a> allows defining files and storing their content within Jenkins thus allowing to define configuration files that do not have to be stored on disk within e.g. the Git repository storing the <code class="highlighter-rouge">jenkinsfile</code>.</p>
+
+<h3 id="-credentials-binding-plugin"><a id="Credentials Binding Plugin"></a> Credentials Binding Plugin</h3>
+<p>Some plugins/methods like the <code class="highlighter-rouge">httpRequest</code> require the use of plain text credentials or tokens rather than using credential IDs as provided by the Jenkins Crendentials manager. The <a href="">Credentials Binding Plugin</a> allows converting a Jenkins credentials ID into a variable containing the plain text stored in the credential definition. Thus, these plugins can be used without having to expose any plain <em>secret</em> texts within the code of the scripts.</p>
+
+      </section>
+
+      <footer>
+          <ul>
+            <li><a class="name buttons github" href="">View On GitHub</a></li>
+          </ul>
+      </footer>    
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

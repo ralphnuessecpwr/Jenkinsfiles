@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Pipelines</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Pipelines" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/pipelines/Mainframe-CI-Example-pipeline.html" />
+<meta property="og:url" content="http://localhost:4000/pipelines/Mainframe-CI-Example-pipeline.html" />
+<script type="application/ld+json">
+{"@type":"WebPage","url":"http://localhost:4000/pipelines/Mainframe-CI-Example-pipeline.html","headline":"Pipelines","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <script src="/assets/js/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <p class="header">The primary pipeline scenarios, setup and code<br>&nbsp</p>
+
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/index.html">Home</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/plugins/plugins.html">Required Plugins</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+        </ul>
+        <p><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/pipelines.html">The Primary Pipelines</a></p>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/scenario/ISPW_scenario.html">ISPW Scenario</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/scenario/TTT_scenario.html">TTT Scenario</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/scenario/TTT_in_Git.html">Git(Hub) for TTT</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/Mainframe-CI-Example-pipeline.html">Simple Pipeline</a></li>                    
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/Mainframe_CI_Pipeline_from_Shared_Lib.html">From Shared Library</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/pipeline_parameters.html">Parameters</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/helper_classes.html">Helper Classes</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/code_examples/code_examples.html">Other Code Examples</a></li>
+        </ul>
+      </header>
+
+      <section>
+        <h1 id="-mainframe-ci-example-pipelinejenkinsfile"><a id="Mainframe-CI-Example-pipeline.jenkinsfile"></a> Mainframe-CI-Example-pipeline.jenkinsfile</h1>
+<p>Once this pipeline has been triggered, the <a href="https://github.com/cpwr-devops/DevOps-Examples/blob/suggest/Jenkinsfile/Mainframe-CI-Example-pipeline.jenkinsfile">job</a> will</p>
+
+<ul>
+  <li>Initialize globaly variables determine and determine which <code class="highlighter-rouge">runner.jcl</code> to use</li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">def</span> <span class="n">String</span> <span class="nf">getPathNum</span><span class="o">(</span><span class="n">String</span> <span class="n">Level</span><span class="o">)</span>
+<span class="o">{</span>
+<span class="k">return</span> <span class="n">Level</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">Level</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span>
+<span class="o">}</span>
+<span class="o">...</span>
+<span class="c1">// Determine the current ISPW Path and Level that the code Promotion is from</span>
+<span class="kt">def</span> <span class="n">PathNum</span> <span class="o">=</span> <span class="n">getPathNum</span><span class="o">(</span><span class="n">ISPW_Level</span><span class="o">)</span>
+
+<span class="c1">// Use the Path Number to determine the right Runner JCL to use (different STEPLIB concatenations)</span>
+<span class="kt">def</span> <span class="n">TTT_Jcl</span> <span class="o">=</span> <span class="s2">"Runner_PATH"</span> <span class="o">+</span> <span class="n">PathNum</span> <span class="o">+</span> <span class="s2">".jcl"</span>
+<span class="c1">// Also set the Level that the code currently resides in</span>
+<span class="kt">def</span> <span class="n">ISPW_Target_Level</span> <span class="o">=</span> <span class="s2">"QA"</span> <span class="o">+</span> <span class="n">PathNum</span>
+</code></pre></div></div>
+
+<ul>
+  <li>download all COBOL sources and COBOL copybooks from ISPW (the mainframe) that are part of the set triggering this specific pipeline execution, using the ISPW Container downloader</li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">stage</span><span class="o">(</span><span class="s2">"Retrieve Code From ISPW"</span><span class="o">)</span>
+<span class="o">{</span>
+        <span class="c1">//Retrieve the code from ISPW that has been promoted </span>
+        <span class="n">checkout</span><span class="o">([</span><span class="n">$class</span><span class="o">:</span> <span class="s1">'IspwContainerConfiguration'</span><span class="o">,</span> 
+        <span class="nl">componentType:</span> <span class="s1">''</span><span class="o">,</span>                  <span class="c1">// optional filter for component types in ISPW</span>
+        <span class="nl">connectionId:</span> <span class="s2">"${HCI_Conn_ID}"</span><span class="o">,</span>     
+        <span class="nl">credentialsId:</span> <span class="s2">"${HCI_Token}"</span><span class="o">,</span>      
+        <span class="nl">containerName:</span> <span class="s2">"${SetId}"</span><span class="o">,</span>   
+        <span class="nl">containerType:</span> <span class="s1">'2'</span><span class="o">,</span>                 <span class="c1">// 0-Assignment 1-Release 2-Set</span>
+        <span class="nl">ispwDownloadAll:</span> <span class="kc">false</span><span class="o">,</span>             <span class="c1">// false will not download files that exist in the workspace and haven't previous changed</span>
+        <span class="nl">serverConfig:</span> <span class="s1">''</span><span class="o">,</span>                   <span class="c1">// ISPW runtime config.  if blank ISPW will use the default runtime config</span>
+        <span class="nl">serverLevel:</span> <span class="s1">''</span><span class="o">])</span>                   <span class="c1">// level to download the components from</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>clone the Git repository for the ISPW application, using the fixed stream name <code class="highlighter-rouge">FTSDEMO</code> in our examples, using the <code class="highlighter-rouge">gitcheckout</code> method defined at the beginning of the script. The method uses the Git SCM plugin.</li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">def</span> <span class="nf">gitcheckout</span><span class="o">(</span><span class="n">String</span> <span class="n">URL</span><span class="o">,</span> <span class="n">String</span> <span class="n">Branch</span><span class="o">,</span> <span class="n">String</span> <span class="n">Credentials</span><span class="o">,</span> <span class="n">String</span> <span class="n">Folder</span><span class="o">)</span>
+ <span class="o">{</span>
+        <span class="n">println</span> <span class="s2">"Scenario "</span> <span class="o">+</span> <span class="n">URL</span>
+        <span class="n">println</span> <span class="s2">"Scenario "</span> <span class="o">+</span> <span class="n">Branch</span>
+        <span class="n">println</span> <span class="s2">"Scenario "</span> <span class="o">+</span> <span class="n">Credentials</span>
+
+        <span class="n">checkout</span> <span class="nl">changelog:</span> <span class="kc">false</span><span class="o">,</span> <span class="nl">poll:</span> <span class="kc">false</span><span class="o">,</span> 
+            <span class="nl">scm:</span> <span class="o">[</span><span class="n">$class</span><span class="o">:</span> <span class="s1">'GitSCM'</span><span class="o">,</span> 
+            <span class="nl">branches:</span> <span class="o">[[</span><span class="nl">name:</span> <span class="s2">"*/${Branch}"</span><span class="o">]],</span> 
+            <span class="nl">doGenerateSubmoduleConfigurations:</span> <span class="kc">false</span><span class="o">,</span> 
+            <span class="nl">extensions:</span> <span class="o">[[</span><span class="n">$class</span><span class="o">:</span> <span class="s1">'RelativeTargetDirectory'</span><span class="o">,</span> <span class="nl">relativeTargetDir:</span> <span class="s2">"${Folder}"</span><span class="o">]],</span> 
+            <span class="nl">submoduleCfg:</span> <span class="o">[],</span> 
+            <span class="nl">userRemoteConfigs:</span> <span class="o">[[</span><span class="nl">credentialsId:</span> <span class="s2">"${Credentials}"</span><span class="o">,</span> <span class="nl">name:</span> <span class="s1">'origin'</span><span class="o">,</span> <span class="nl">url:</span> <span class="s2">"${URL}"</span><span class="o">]]]</span>
+ <span class="o">}</span>
+ <span class="o">...</span>
+
+<span class="n">stage</span><span class="o">(</span><span class="s2">"Retrieve Tests"</span><span class="o">)</span>
+<span class="o">{</span>
+    <span class="c1">//Retrieve the Tests from Github that match that ISPWW Stream and Application</span>
+    <span class="n">Git_URL</span> <span class="o">=</span> <span class="s2">"${Git_URL}/${Git_TTT_Repo}"</span>
+
+    <span class="c1">//call gitcheckout wrapper function</span>
+    <span class="n">gitcheckout</span><span class="o">(</span><span class="n">Git_URL</span><span class="o">,</span> <span class="n">Git_Branch</span><span class="o">,</span> <span class="n">Git_Credentials</span><span class="o">,</span> <span class="s2">"tests"</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>build a list of all downloaded COBOL sources</li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Get all Cobol Sources in the MF_Source folder into an array </span>
+<span class="kt">def</span> <span class="n">ListOfSources</span>  <span class="o">=</span> <span class="n">findFiles</span><span class="o">(</span><span class="nl">glob:</span> <span class="s2">"**/${ISPW_Application}/${MF_Source}/*.cbl"</span><span class="o">)</span>
+
+<span class="c1">// Define a empty array for the list of programs</span>
+<span class="kt">def</span> <span class="n">ListOfPrograms</span> <span class="o">=</span> <span class="o">[]</span>
+
+<span class="c1">// Determine program names for each source member</span>
+<span class="n">ListOfSources</span><span class="o">.</span><span class="na">each</span>
+<span class="o">{</span>
+    <span class="c1">// The split method uses regex to search for patterns, therefore</span>
+    <span class="c1">// Backslashes, Dots and Underscores which mean certain patterns in regex need to be escaped </span>
+    <span class="c1">// The backslash in Windows paths is duplicated in Java, therefore it need to be escaped twice</span>
+    <span class="c1">// Trim ./cbl from the Source members to populate the array of program names</span>
+    <span class="n">ListOfPrograms</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">it</span><span class="o">.</span><span class="na">name</span><span class="o">.</span><span class="na">trim</span><span class="o">().</span><span class="na">split</span><span class="o">(</span><span class="s2">"\\."</span><span class="o">)[</span><span class="mi">0</span><span class="o">])</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>build a list of all downloaded Topaz for Total Test <code class="highlighter-rouge">.testscenario</code> files</li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// findFiles method requires the "Pipeline Utilities Plugin"</span>
+<span class="c1">// Get all testscenario files in the current workspace into an array</span>
+<span class="kt">def</span> <span class="n">TTTListOfScenarios</span> <span class="o">=</span> <span class="n">findFiles</span><span class="o">(</span><span class="nl">glob:</span> <span class="s1">'**/*.testscenario'</span><span class="o">)</span>
+</code></pre></div></div>
+<ul>
+  <li>match the two lists and execute all unit test scenarios that have a matching COBOL source; execution of the unit tests will collect code coverage data, using the Topaz for Total Test plugin</li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">stage</span><span class="o">(</span><span class="s2">"Execute related Unit Tests"</span><span class="o">)</span>
+<span class="o">{</span>
+    <span class="c1">// Loop through all downloaded Topaz for Total Test scenarios</span>
+    <span class="n">TTTListOfScenarios</span><span class="o">.</span><span class="na">each</span>
+    <span class="o">{</span>
+
+        <span class="c1">// Get root node of the path, i.e. the name of the Total Test project</span>
+        <span class="kt">def</span> <span class="n">TTTScenarioPath</span>        <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="na">path</span> <span class="c1">// Fully qualified name of the Total Test Scenario file</span>
+        <span class="kt">def</span> <span class="n">TTTProjectName</span>         <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="na">path</span><span class="o">.</span><span class="na">trim</span><span class="o">().</span><span class="na">split</span><span class="o">(</span><span class="s2">"\\\\"</span><span class="o">)[</span><span class="mi">0</span><span class="o">]</span> <span class="o">+</span> <span class="s2">"\\"</span><span class="o">+</span> <span class="n">it</span><span class="o">.</span><span class="na">path</span><span class="o">.</span><span class="na">trim</span><span class="o">().</span><span class="na">split</span><span class="o">(</span><span class="s2">"\\\\"</span><span class="o">)[</span><span class="mi">1</span><span class="o">]</span>  <span class="c1">// Total Test Project name is the root folder of the full path to the testscenario </span>
+        <span class="kt">def</span> <span class="n">TTTScenarioFullName</span>    <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="na">name</span>  <span class="c1">// Get the full name of the testscenario file i.e. "name.testscenario"</span>
+        <span class="kt">def</span> <span class="n">TTTScenarioName</span>        <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="na">name</span><span class="o">.</span><span class="na">trim</span><span class="o">().</span><span class="na">split</span><span class="o">(</span><span class="s2">"\\."</span><span class="o">)[</span><span class="mi">0</span><span class="o">]</span>  <span class="c1">// Get the name of the scenario file without ".testscenario"</span>
+        <span class="kt">def</span> <span class="n">TTTScenarioTarget</span>      <span class="o">=</span> <span class="n">TTTScenarioName</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s2">"\\_"</span><span class="o">)[</span><span class="mi">0</span><span class="o">]</span>  <span class="c1">// Target Program will be the first part of the scenario name (convention)</span>
+
+        <span class="c1">// For each of the scenarios walk through the list of source files and determine if the target matches one of the programs</span>
+        <span class="c1">// In that case, execute the unit test.  Determine if the program name matches the target of the Total Test scenario</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">ListOfPrograms</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">TTTScenarioTarget</span><span class="o">))</span>
+        <span class="o">{</span>
+            <span class="c1">// Log which </span>
+            <span class="n">println</span> <span class="s2">"*************************"</span>
+            <span class="n">println</span> <span class="s2">"Scenario "</span> <span class="o">+</span> <span class="n">TTTScenarioFullName</span>
+            <span class="n">println</span> <span class="s2">"Path "</span> <span class="o">+</span> <span class="n">TTTScenarioPath</span>
+            <span class="n">println</span> <span class="s2">"Project "</span> <span class="o">+</span> <span class="n">TTTProjectName</span>
+            <span class="n">println</span> <span class="s2">"*************************"</span>
+        
+            <span class="n">step</span><span class="o">([</span><span class="n">$class</span><span class="o">:</span> <span class="s1">'TotalTestBuilder'</span><span class="o">,</span> 
+                <span class="nl">ccClearStats:</span> <span class="kc">false</span><span class="o">,</span>                <span class="c1">// Clear out any existing Code Coverage stats for the given ccSystem and ccTestId</span>
+                <span class="nl">ccRepo:</span> <span class="s2">"${CC_repository}"</span><span class="o">,</span>         
+                <span class="nl">ccSystem:</span> <span class="s2">"${ISPW_Application}"</span><span class="o">,</span> 
+                <span class="nl">ccTestId:</span> <span class="s2">"${BUILD_NUMBER}"</span><span class="o">,</span>        <span class="c1">// Jenkins environment variable, resolves to build number, i.e. #177 </span>
+                <span class="nl">credentialsId:</span> <span class="s2">"${HCI_Token}"</span><span class="o">,</span> 
+                <span class="nl">deleteTemp:</span> <span class="kc">true</span><span class="o">,</span>                   <span class="c1">// (true|false) Automatically delete any temp files created during the execution</span>
+                <span class="nl">hlq:</span> <span class="s1">''</span><span class="o">,</span>                            <span class="c1">// Optional - high level qualifier used when allocation datasets</span>
+                <span class="nl">connectionId:</span> <span class="s2">"${HCI_Conn_ID}"</span><span class="o">,</span>    
+                <span class="nl">jcl:</span> <span class="s2">"${TTT_Jcl}"</span><span class="o">,</span>                  <span class="c1">// Name of the JCL file in the Total Test Project to execute</span>
+                <span class="nl">projectFolder:</span> <span class="s2">"${TTTProjectName}"</span><span class="o">,</span> <span class="c1">// Name of the Folder in the file system that contains the Total Test Project.  </span>
+                <span class="nl">testSuite:</span> <span class="s2">"${TTTScenarioFullName}"</span><span class="o">,</span><span class="c1">// Name of the Total Test Scenario to execute</span>
+                <span class="nl">useStubs:</span> <span class="kc">false</span><span class="o">])</span>                   <span class="c1">// (true|false) - Execute with or without stubs</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>download code coverage results from the underlying <a href="https://compuware.com/xpediter-mainframe-debugging-tools/">Xpediter Code Coverage</a> repository, using the Xpediter Code Coverage plugin</li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">stage</span><span class="o">(</span><span class="s2">"Collect Coverage Metrics"</span><span class="o">)</span>
+<span class="o">{</span>
+        <span class="c1">// Code Coverage needs to match the code coverage metrics back to the source code in order for them to be loaded in SonarQube</span>
+        <span class="c1">// The source variable is the location of the source that was downloaded from ISPW</span>
+        <span class="kt">def</span> <span class="n">String</span> <span class="n">sources</span><span class="o">=</span><span class="s2">"${ISPW_Application}\\${MF_Source}"</span>
+
+        <span class="c1">// The Code Coverage Plugin passes it's primary configuration in the string or a file</span>
+        <span class="kt">def</span> <span class="n">ccproperties</span> <span class="o">=</span> <span class="s1">'cc.sources='</span> <span class="o">+</span> <span class="n">sources</span> <span class="o">+</span> <span class="s1">'\rcc.repos='</span> <span class="o">+</span> <span class="n">CC_repository</span> <span class="o">+</span> <span class="s1">'\rcc.system='</span> <span class="o">+</span> <span class="n">ISPW_Application</span>  <span class="o">+</span> <span class="s1">'\rcc.test='</span> <span class="o">+</span> <span class="n">BUILD_NUMBER</span>
+
+        <span class="n">step</span><span class="o">([</span><span class="n">$class</span><span class="o">:</span> <span class="s1">'CodeCoverageBuilder'</span><span class="o">,</span>
+        <span class="nl">analysisProperties:</span> <span class="n">ccproperties</span><span class="o">,</span>       <span class="c1">// Pass in the analysisProperties as a string</span>
+        <span class="nl">analysisPropertiesPath:</span> <span class="s1">''</span><span class="o">,</span>             <span class="c1">// Pass in the analysisProperties as a file.  Not used in this example</span>
+        <span class="nl">connectionId:</span> <span class="s2">"${HCI_Conn_ID}"</span><span class="o">,</span> 
+        <span class="nl">credentialsId:</span> <span class="s2">"${HCI_Token}"</span><span class="o">])</span>
+<span class="o">}</span>
+
+</code></pre></div></div>
+
+<ul>
+  <li>pass downloaded COBOL sources, the results of the unit tests, and code coverage metrics to SonarQube using the Sonar Scanner</li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">stage</span><span class="o">(</span><span class="s2">"Check SonarQube Quality Gate"</span><span class="o">)</span> 
+<span class="o">{</span>
+    <span class="c1">// Requires SonarQube Scanner 2.8+</span>
+    <span class="c1">// Retrieve the location of the SonarQube Scanner.  </span>
+    <span class="kt">def</span> <span class="n">scannerHome</span> <span class="o">=</span> <span class="n">tool</span> <span class="s1">'scanner'</span><span class="o">;</span>   <span class="c1">// 'scanner' is the name defined for the SonarQube scanner defined in Jenkins / Global Tool Configuration / SonarQube Scanner section</span>
+    <span class="n">withSonarQubeEnv</span><span class="o">(</span><span class="s1">'localhost'</span><span class="o">)</span>       <span class="c1">// 'localhost' is the name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section</span>
+    <span class="o">{</span>
+        <span class="c1">// Finds all of the Total Test results files that will be submitted to SonarQube</span>
+        <span class="kt">def</span> <span class="n">TTTListOfResults</span> <span class="o">=</span> <span class="n">findFiles</span><span class="o">(</span><span class="nl">glob:</span> <span class="s1">'TTTSonar/*.xml'</span><span class="o">)</span>   <span class="c1">// Total Test SonarQube result files are stored in TTTSonar directory</span>
+
+        <span class="c1">// Build the sonar testExecutionReportsPaths property</span>
+        <span class="c1">// Start will the property itself</span>
+        <span class="kt">def</span> <span class="n">SQ_TestResult</span>          <span class="o">=</span> <span class="s2">"-Dsonar.testExecutionReportPaths="</span>    
+
+        <span class="c1">// Loop through each result Total Test results file found</span>
+        <span class="n">TTTListOfResults</span><span class="o">.</span><span class="na">each</span> 
+        <span class="o">{</span>
+            <span class="kt">def</span> <span class="n">TTTResultName</span>    <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="na">name</span>   <span class="c1">// Get the name of the Total Test results file   </span>
+            <span class="n">SQ_TestResult</span> <span class="o">=</span> <span class="n">SQ_TestResult</span> <span class="o">+</span> <span class="s2">"TTTSonar/"</span> <span class="o">+</span> <span class="n">it</span><span class="o">.</span><span class="na">name</span> <span class="o">+</span>  <span class="s1">','</span> <span class="c1">// Append the results file to the property</span>
+        <span class="o">}</span>
+
+        <span class="c1">// Build the rest of the SonarQube Scanner Properties</span>
+        
+        <span class="c1">// Test and Coverage results</span>
+        <span class="kt">def</span> <span class="n">SQ_Scanner_Properties</span>   <span class="o">=</span> <span class="s2">" -Dsonar.tests=tests ${SQ_TestResult} -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"</span>
+        <span class="c1">// SonarQube project to load results into</span>
+        <span class="n">SQ_Scanner_Properties</span> <span class="o">=</span> <span class="n">SQ_Scanner_Properties</span> <span class="o">+</span> <span class="s2">" -Dsonar.projectKey=${JOB_NAME} -Dsonar.projectName=${JOB_NAME} -Dsonar.projectVersion=1.0"</span>
+        <span class="c1">// Location of the Cobol Source Code to scan</span>
+        <span class="n">SQ_Scanner_Properties</span> <span class="o">=</span> <span class="n">SQ_Scanner_Properties</span> <span class="o">+</span> <span class="s2">" -Dsonar.sources=${ISPW_Application}\\MF_Source"</span>
+        <span class="c1">// Location of the Cobol copybooks to scan</span>
+        <span class="n">SQ_Scanner_Properties</span> <span class="o">=</span> <span class="n">SQ_Scanner_Properties</span> <span class="o">+</span> <span class="s2">" -Dsonar.cobol.copy.directories=${ISPW_Application}\\MF_Source"</span>  
+        <span class="c1">// File extensions for Cobol and Copybook files.  The Total Test files need that contain tests need to be defined as cobol for SonarQube to process the results</span>
+        <span class="n">SQ_Scanner_Properties</span> <span class="o">=</span> <span class="n">SQ_Scanner_Properties</span> <span class="o">+</span> <span class="s2">" -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub -Dsonar.cobol.copy.suffixes=cpy -Dsonar.sourceEncoding=UTF-8"</span>
+        
+        <span class="c1">// Call the SonarQube Scanner with properties defined above</span>
+        <span class="n">bat</span> <span class="s2">"${scannerHome}/bin/sonar-scanner"</span> <span class="o">+</span> <span class="n">SQ_Scanner_Properties</span>
+    <span class="o">}</span>
+<span class="o">...</span>
+</code></pre></div></div>
+
+<ul>
+  <li>query the resulting Sonar quality gate, by registering a Sonar Webhook call back, if the quality gate fails, the pipeline job will be aboted</li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">...</span>
+        <span class="c1">// Wait for the results of the SonarQube Quality Gate</span>
+        <span class="n">timeout</span><span class="o">(</span><span class="nl">time:</span> <span class="mi">2</span><span class="o">,</span> <span class="nl">unit:</span> <span class="s1">'MINUTES'</span><span class="o">)</span> <span class="o">{</span>
+            
+            <span class="c1">// Wait for webhook call back from SonarQube.  SonarQube webhook for callback to Jenkins must be configured on the SonarQube server.</span>
+            <span class="kt">def</span> <span class="n">qg</span> <span class="o">=</span> <span class="n">waitForQualityGate</span><span class="o">()</span>
+            
+            <span class="c1">// Evaluate the status of the Quality Gate</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">qg</span><span class="o">.</span><span class="na">status</span> <span class="o">!=</span> <span class="s1">'OK'</span><span class="o">)</span>
+            <span class="o">{</span>
+                <span class="n">echo</span> <span class="s2">"Pipeline aborted due to quality gate failure: ${qg.status}"</span>
+                <span class="n">error</span> <span class="s2">"Exiting Pipeline"</span> <span class="c1">// Exit the pipeline with an error if the SonarQube Quality Gate is failing</span>
+            <span class="o">}</span>
+        <span class="o">}</span>   
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>if the quality gate passes an XL Release template will be triggered - using the XL Release plugin - to execute CD stages beyond the Jenkins pipeline</li>
+</ul>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">stage</span><span class="o">(</span><span class="s2">"Start release in XL Release"</span><span class="o">)</span>
+<span class="o">{</span>
+        <span class="c1">// Determine the current ISPW Path and Level that the code Promotion is from</span>
+        <span class="n">PathNum</span> <span class="o">=</span> <span class="n">getPathNum</span><span class="o">(</span><span class="n">ISPW_Level</span><span class="o">)</span>
+
+        <span class="c1">// Use the Path Number to determine what QA Path to Promote the code from in ISPW.  This example has seperate QA paths in ISPW Lifecycle (i.e. DEV1-&gt;QA1-&gt;STG-&gt;PRD / DEV2-&gt;QA2-&gt;STG-&gt;PRD)</span>
+        <span class="kt">def</span> <span class="n">XLRPath</span> <span class="o">=</span> <span class="s2">"QA"</span> <span class="o">+</span> <span class="n">PathNum</span> 
+
+        <span class="c1">// Trigger XL Release Jenkins Plugin to kickoff a Release</span>
+        <span class="n">xlrCreateRelease</span> <span class="nl">releaseTitle:</span> <span class="s1">'A Release for $BUILD_TAG'</span><span class="o">,</span>
+        <span class="nl">serverCredentials:</span> <span class="s2">"${XLR_User}"</span><span class="o">,</span>
+        <span class="nl">startRelease:</span> <span class="kc">true</span><span class="o">,</span>
+        <span class="nl">template:</span> <span class="s2">"${XLR_Template}"</span>
+        <span class="nl">variables:</span>
+        <span class="o">[[</span><span class="nl">propertyName:</span><span class="s1">'ISPW_Dev_level'</span><span class="o">,</span> <span class="nl">propertyValue:</span> <span class="s2">"${ISPW_Target_Level}"</span><span class="o">],</span> <span class="c1">// Level in ISPW that the Code resides currently</span>
+        <span class="o">[</span><span class="nl">propertyName:</span> <span class="s1">'ISPW_RELEASE_ID'</span><span class="o">,</span> <span class="nl">propertyValue:</span> <span class="s2">"${ISPW_Release}"</span><span class="o">],</span>     <span class="c1">// ISPW Release value from the ISPW Webhook</span>
+        <span class="o">[</span><span class="nl">propertyName:</span> <span class="s1">'CES_Token'</span><span class="o">,</span> <span class="nl">propertyValue:</span> <span class="s2">"${CES_Token}"</span><span class="o">]]</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="-setting-up-the-pipeline-job"><a id="Setting up the pipeline job"></a> Setting up the pipeline job</h2>
+<p>The job itself is defined the usual way by creating a new pipeline job. It is important, though, to make sure that the resulting job uses parameters by checking the `This project is parameterized’ box.</p>
+
+<p><img src="./images/parametertized pipeline.png" alt="Parameterized Pipeline" /></p>
+
+<h3 id="-the-pipeline-parameters"><a id="The pipeline parameters"></a> The pipeline parameters</h3>
+<p>Succesively add the following string parameters (the default values are the ones used for the examples).</p>
+
+<p><img src="./images/Adding parameters.png" alt="Adding parameters" /></p>
+
+<p>The parameters in this first set are specific to the individual execution of the pipeline and get passed by the <a href="../tool_configuration/webhook_setup.html#In summary">ISPW Webhook</a></p>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>ISPW_Stream</td>
+        <td>FTSDEMO</td>
+        <td>ISPW Stream Name</td>
+    </tr>
+    <tr>
+        <td>ISPW_Application</td>
+        <td>RXN3</td>
+        <td>ISPW Application</td>
+    </tr>
+    <tr>
+        <td>ISPW_Src_Level</td>
+        <td>DEV1</td>
+        <td>ISPW Level the promote has been started from</td>
+    </tr>
+    <tr>
+        <td>ISPW_Release</td>
+        <td></td>
+        <td>ISPW Release Name</td>
+    </tr>
+    <tr>
+        <td>ISPW_Container</td>
+        <td></td>
+        <td>ISPW Set ID</td>
+    </tr>
+    <tr>
+        <td>ISPW_Container_Type</td>
+        <td>2</td>
+        <td>ISPW Container Type
+            <ul>
+                <li>0 - assignment</li>
+                <li>1 - release</li>
+                <li>2 - set</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td>ISPW_Owner</td>
+        <td></td>
+        <td>ISPW Owner User ID</td>
+    </tr>
+</table>
+
+<p>The second set of parameters is installation specific and reference tokens and other IDs that have been defined during the configuration phase. To determine the approriate values to use refer to the <a href="../pipeline_parameters.html">description of the pipeline parameters</a>.</p>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>CES_Token</td>
+        <td></td>
+        <td>Jenkins internal Token ID for the CES Token</td>
+    </tr>
+    <tr>
+        <td>HCI_Conn_ID</td>
+        <td></td>
+        <td>Jenkins internal ID for HCI Connection</td>
+    </tr>
+    <tr>
+        <td>HCI_Token</td>
+        <td></td>
+        <td>Jenkins internal ID for HCI Token</td>
+    </tr>
+    <tr>
+        <td>CC_repository</td>
+        <td></td>
+        <td>Code Coverage Repository - Check with your Xpediter Code Coverage administrator for the name to use</td>
+    </tr>
+    <tr>
+        <td>Git_Project</td>
+        <td></td>
+        <td>Github (or other Git based repository) project used to store the Topaz for Total Test Projects</td>
+    </tr>
+</table>
+
+<h3 id="-loading-the-script-from-github"><a id="Loading the script from GitHub"></a> Loading the script from GitHub</h3>
+<p>Instead of using a <code class="highlighter-rouge">Pipeline script</code> and placing the pipeline code into the <code class="highlighter-rouge">Script</code> text box, the pipeline uses a <code class="highlighter-rouge">Pipeline from SCM</code>, stored in GitHub.</p>
+
+<p><img src="./images/Pipeline from SCM.png" alt="Pipeline from SCM" /></p>
+
+      </section>
+
+      <footer>
+          <ul>
+            <li><a class="name buttons github" href="">View On GitHub</a></li>
+          </ul>
+      </footer>    
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

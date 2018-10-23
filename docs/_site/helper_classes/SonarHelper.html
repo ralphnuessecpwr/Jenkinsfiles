@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>SonarHelper.groovy</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="SonarHelper.groovy" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/helper_classes/SonarHelper.html" />
+<meta property="og:url" content="http://localhost:4000/helper_classes/SonarHelper.html" />
+<script type="application/ld+json">
+{"@type":"WebPage","url":"http://localhost:4000/helper_classes/SonarHelper.html","headline":"SonarHelper.groovy","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <script src="/assets/js/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div id="banner">
+        <a href="" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span><strong>DevOps-Examples</strong></span>
+          <ul>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/index.html">Home</a></li>            
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/plugins/plugins.html">Required Plugins</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/pipelines/pipelines.html">The Primary Pipelines</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/helper_classes/helper_classes.html">Helper Classes</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/code_examples/code_examples.html">Other Code Examples</a></li>
+          </ul>
+      </div>
+    </div>    
+    
+    <div class="wrapper">
+      <header>
+        <h1 class="header">SonarHelper.groovy</h1>
+        <p class="header">Classes used by the pipeline from shared library</p>
+
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/index.html">Home</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/plugins/plugins.html">Required Plugins</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/pipelines/pipelines.html">The Primary Pipelines</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/helper_classes.html">Helper Classes</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/FileHelper.html">FileHelper</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/GitHelper.html">GitHelper</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/IspwHelper.html">IspwHelper</a></li>                    
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/JclSkeleton.html">JclSkeleton</a></li>                              
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/PipelineConfig.html">PipelineConfig</a></li>                                        
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/code_examples/code_examples.html">Other Code Examples</a></li>
+        </ul>
+      </header>
+
+      <section>
+        <h1 id="-sonarhelpergroovy"><a id="SonarHelper"></a> SonarHelper.groovy</h1>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.compuware.devops.util</span>
+
+<span class="cm">/**
+ Wrapper around the Git Plugin's Checkout Method
+ @param URL - URL for the git server
+ @param Branch - The branch that will be checked out of git
+ @param Credentials - Jenkins credentials for logging into git
+ @param Folder - Folder relative to the workspace that git will check out files into
+*/</span>
+<span class="kd">class</span> <span class="nc">SonarHelper</span> <span class="kd">implements</span> <span class="n">Serializable</span> <span class="o">{</span>
+
+    <span class="kt">def</span> <span class="n">script</span>
+    <span class="kt">def</span> <span class="n">steps</span>
+    <span class="kt">def</span> <span class="n">scannerHome</span>
+    <span class="kt">def</span> <span class="n">pConfig</span>
+</code></pre></div></div>
+<p><a id="SonarHelper"></a></p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">SonarHelper</span><span class="o">(</span><span class="n">script</span><span class="o">,</span> <span class="n">steps</span><span class="o">,</span> <span class="n">pConfig</span><span class="o">)</span> 
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">script</span>     <span class="o">=</span> <span class="n">script</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">steps</span>      <span class="o">=</span> <span class="n">steps</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">pConfig</span>    <span class="o">=</span> <span class="n">pConfig</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+<p><a id="initialize"></a></p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="cm">/* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */</span>
+    <span class="kt">def</span> <span class="nf">initialize</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">scannerHome</span>    <span class="o">=</span> <span class="n">steps</span><span class="o">.</span><span class="na">tool</span> <span class="s2">"${pConfig.sqScannerName}"</span><span class="o">;</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+<p><a id="scan"></a></p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kt">def</span> <span class="nf">scan</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="n">steps</span><span class="o">.</span><span class="na">withSonarQubeEnv</span><span class="o">(</span><span class="s2">"${pConfig.sqServerName}"</span><span class="o">)</span>       <span class="c1">// 'localhost' is the name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section</span>
+        <span class="o">{</span>
+            <span class="c1">// Finds all of the Total Test results files that will be submitted to SonarQube</span>
+            <span class="kt">def</span> <span class="n">tttListOfResults</span>    <span class="o">=</span> <span class="n">steps</span><span class="o">.</span><span class="na">findFiles</span><span class="o">(</span><span class="nl">glob:</span> <span class="s1">'TTTSonar/*.xml'</span><span class="o">)</span>   <span class="c1">// Total Test SonarQube result files are stored in TTTSonar directory</span>
+
+            <span class="c1">// Build the sonar testExecutionReportsPaths property</span>
+            <span class="c1">// Start will the property itself</span>
+            <span class="kt">def</span> <span class="n">sqTestResult</span>       <span class="o">=</span> <span class="s2">"-Dsonar.testExecutionReportPaths="</span>    
+
+            <span class="c1">// Loop through each result Total Test results file found</span>
+            <span class="n">tttListOfResults</span><span class="o">.</span><span class="na">each</span> 
+            <span class="o">{</span>
+                <span class="n">sqTestResult</span>       <span class="o">=</span> <span class="n">sqTestResult</span> <span class="o">+</span> <span class="s2">"TTTSonar/"</span> <span class="o">+</span> <span class="n">it</span><span class="o">.</span><span class="na">name</span> <span class="o">+</span>  <span class="s1">','</span> <span class="c1">// Append the results file to the property</span>
+            <span class="o">}</span>
+
+            <span class="c1">// Build the rest of the SonarQube Scanner Properties</span>
+            
+            <span class="c1">// Test and Coverage results</span>
+            <span class="kt">def</span> <span class="n">sqScannerProperties</span>   <span class="o">=</span> <span class="s2">" -Dsonar.tests=tests ${sqTestResult} -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"</span>
+            <span class="c1">// SonarQube project to load results into</span>
+            <span class="n">sqScannerProperties</span>       <span class="o">=</span> <span class="n">sqScannerProperties</span> <span class="o">+</span> <span class="s2">" -Dsonar.projectKey=${script.JOB_NAME} -Dsonar.projectName=${script.JOB_NAME} -Dsonar.projectVersion=1.0"</span>
+            <span class="c1">// Location of the Cobol Source Code to scan</span>
+            <span class="n">sqScannerProperties</span>       <span class="o">=</span> <span class="n">sqScannerProperties</span> <span class="o">+</span> <span class="s2">" -Dsonar.sources=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}"</span>
+            <span class="c1">// Location of the Cobol copybooks to scan</span>
+            <span class="n">sqScannerProperties</span>       <span class="o">=</span> <span class="n">sqScannerProperties</span> <span class="o">+</span> <span class="s2">" -Dsonar.cobol.copy.directories=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}"</span>  
+            <span class="c1">// File extensions for Cobol and Copybook files.  The Total Test files need that contain tests need to be defined as cobol for SonarQube to process the results</span>
+            <span class="n">sqScannerProperties</span>       <span class="o">=</span> <span class="n">sqScannerProperties</span> <span class="o">+</span> <span class="s2">" -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub -Dsonar.cobol.copy.suffixes=cpy -Dsonar.sourceEncoding=UTF-8"</span>
+            
+            <span class="c1">// Call the SonarQube Scanner with properties defined above</span>
+            <span class="n">steps</span><span class="o">.</span><span class="na">bat</span> <span class="s2">"${scannerHome}/bin/sonar-scanner"</span> <span class="o">+</span> <span class="n">sqScannerProperties</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+      </section>
+
+      <footer>
+          
+  
+          
+  
+          <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Minimal theme</small></p>
+        </footer>
+      </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

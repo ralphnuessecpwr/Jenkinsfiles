@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>IspwHelper.groovy</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="IspwHelper.groovy" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/helper_classes/IspwHelper.html" />
+<meta property="og:url" content="http://localhost:4000/helper_classes/IspwHelper.html" />
+<script type="application/ld+json">
+{"@type":"WebPage","url":"http://localhost:4000/helper_classes/IspwHelper.html","headline":"IspwHelper.groovy","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <script src="/assets/js/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div id="banner">
+        <a href="" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span><strong>DevOps-Examples</strong></span>
+          <ul>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/index.html">Home</a></li>            
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/plugins/plugins.html">Required Plugins</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/pipelines/pipelines.html">The Primary Pipelines</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/helper_classes/helper_classes.html">Helper Classes</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/code_examples/code_examples.html">Other Code Examples</a></li>
+          </ul>
+      </div>
+    </div>    
+    
+    <div class="wrapper">
+      <header>
+        <h1 class="header">IspwHelper.groovy</h1>
+        <p class="header">Classes used by the pipeline from shared library</p>
+
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/index.html">Home</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/plugins/plugins.html">Required Plugins</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/pipelines/pipelines.html">The Primary Pipelines</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/helper_classes.html">Helper Classes</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/FileHelper.html">FileHelper</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/GitHelper.html">GitHelper</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/IspwHelper.html">IspwHelper</a></li>                    
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/JclSkeleton.html">JclSkeleton</a></li>                              
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/PipelineConfig.html">PipelineConfig</a></li>                                        
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/code_examples/code_examples.html">Other Code Examples</a></li>
+        </ul>
+      </header>
+
+      <section>
+        <h1 id="-ispwhelpergroovy"><a id="IspwHelper"></a> IspwHelper.groovy</h1>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.compuware.devops.util</span>
+
+<span class="kn">import</span> <span class="nn">groovy.json.JsonSlurper</span>
+<span class="kn">import</span> <span class="nn">jenkins.plugins.http_request.*</span>
+<span class="kn">import</span> <span class="nn">com.compuware.devops.util.TaskInfo</span>
+
+<span class="cm">/* Wrapper class to simplify use of ISPW functions */</span>
+<span class="kd">class</span> <span class="nc">IspwHelper</span> <span class="kd">implements</span> <span class="n">Serializable</span> 
+<span class="o">{</span>
+    <span class="kt">def</span> <span class="n">steps</span>
+
+    <span class="kt">def</span> <span class="n">String</span> <span class="n">ispwUrl</span>
+    <span class="kt">def</span> <span class="n">String</span> <span class="n">ispwRuntime</span>
+    <span class="kt">def</span> <span class="n">String</span> <span class="n">ispwApplication</span>
+    <span class="kt">def</span> <span class="n">String</span> <span class="n">ispwRelease</span>
+    <span class="kt">def</span> <span class="n">String</span> <span class="n">ispwContainer</span>
+    <span class="kt">def</span> <span class="n">String</span> <span class="n">ispwContainerType</span>    
+    <span class="kt">def</span> <span class="n">String</span> <span class="n">applicationPathNum</span>
+    <span class="kt">def</span> <span class="n">String</span> <span class="n">ispwOwner</span>
+    <span class="kt">def</span> <span class="n">String</span> <span class="n">ispwTargetLevel</span>
+
+
+    <span class="kt">def</span> <span class="n">String</span> <span class="n">mfSourceFolder</span>
+
+    <span class="kt">def</span> <span class="n">String</span> <span class="n">hciConnId</span>
+    <span class="kt">def</span> <span class="n">String</span> <span class="n">hciTokenId</span>
+
+    <span class="nf">IspwHelper</span><span class="o">(</span><span class="n">steps</span><span class="o">,</span> <span class="n">pConfig</span><span class="o">)</span> 
+    <span class="o">{</span>
+
+        <span class="k">this</span><span class="o">.</span><span class="na">steps</span>              <span class="o">=</span> <span class="n">steps</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">ispwUrl</span>            <span class="o">=</span> <span class="n">pConfig</span><span class="o">.</span><span class="na">ispwUrl</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">ispwRuntime</span>        <span class="o">=</span> <span class="n">pConfig</span><span class="o">.</span><span class="na">ispwRuntime</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">ispwApplication</span>    <span class="o">=</span> <span class="n">pConfig</span><span class="o">.</span><span class="na">ispwApplication</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">ispwRelease</span>        <span class="o">=</span> <span class="n">pConfig</span><span class="o">.</span><span class="na">ispwRelease</span>        
+        <span class="k">this</span><span class="o">.</span><span class="na">ispwContainer</span>      <span class="o">=</span> <span class="n">pConfig</span><span class="o">.</span><span class="na">ispwContainer</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">ispwContainerType</span>  <span class="o">=</span> <span class="n">pConfig</span><span class="o">.</span><span class="na">ispwContainerType</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">ispwOwner</span>          <span class="o">=</span> <span class="n">pConfig</span><span class="o">.</span><span class="na">ispwOwner</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">ispwTargetLevel</span>    <span class="o">=</span> <span class="n">pConfig</span><span class="o">.</span><span class="na">ispwTargetLevel</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">applicationPathNum</span> <span class="o">=</span> <span class="n">pConfig</span><span class="o">.</span><span class="na">applicationPathNum</span>
+
+        <span class="k">this</span><span class="o">.</span><span class="na">mfSourceFolder</span>     <span class="o">=</span> <span class="n">pConfig</span><span class="o">.</span><span class="na">mfSourceFolder</span>
+
+        <span class="k">this</span><span class="o">.</span><span class="na">hciConnId</span>          <span class="o">=</span> <span class="n">pConfig</span><span class="o">.</span><span class="na">hciConnId</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">hciTokenId</span>         <span class="o">=</span> <span class="n">pConfig</span><span class="o">.</span><span class="na">hciTokenId</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+<p><a id="downloadSources"></a></p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="cm">/* Download sources for the ISPW Set which triggered the current pipeline */</span>
+    <span class="kt">def</span> <span class="nf">downloadSources</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="n">steps</span><span class="o">.</span><span class="na">checkout</span><span class="o">([</span>
+            <span class="n">$class</span><span class="o">:</span>             <span class="s1">'IspwContainerConfiguration'</span><span class="o">,</span> 
+            <span class="nl">componentType:</span>      <span class="s1">''</span><span class="o">,</span>                                 <span class="c1">// optional filter for component types in ISPW</span>
+            <span class="nl">connectionId:</span>       <span class="s2">"${hciConnId}"</span><span class="o">,</span>     
+            <span class="nl">credentialsId:</span>      <span class="s2">"${hciTokenId}"</span><span class="o">,</span>      
+            <span class="nl">containerName:</span>      <span class="s2">"${ispwContainer}"</span><span class="o">,</span>   
+            <span class="nl">containerType:</span>      <span class="s2">"${ispwContainerType}"</span><span class="o">,</span>     <span class="c1">// 0-Assignment 1-Release 2-Set</span>
+            <span class="nl">ispwDownloadAll:</span>    <span class="kc">true</span><span class="o">,</span>                              <span class="c1">// false will not download files that exist in the workspace and haven't previous changed</span>
+            <span class="nl">serverConfig:</span>       <span class="s1">''</span><span class="o">,</span>                                 <span class="c1">// ISPW runtime config.  if blank ISPW will use the default runtime config</span>
+            <span class="nl">serverLevel:</span>        <span class="s1">''</span>                                  <span class="c1">// level to download the components from</span>
+        <span class="o">])</span>
+    <span class="o">}</span>
+
+    <span class="cm">/* Download copy books used in the downloaded sources  */</span>
+    <span class="cm">/* Since copy books do not have to be part of the current set, the downloaded programs need to be parsed to determine copy books */</span>
+    <span class="cm">/* Since the SCM downloader plugin does not provide the option to download specific members, */</span>
+    <span class="cm">/* the required copy books will be copied from the ISPW libraries to a single PDS using an IEBCOPY job */</span>
+    <span class="cm">/* Then this PDS will be downloaded */</span>
+    <span class="kt">def</span> <span class="nf">downloadCopyBooks</span><span class="o">(</span><span class="n">String</span> <span class="n">workspace</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="cm">/* Class JclSkeleton will allow using "JCL Skeletons" to generate the requires JCL */</span>
+        <span class="n">JclSkeleton</span> <span class="n">jclSkeleton</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JclSkeleton</span><span class="o">(</span><span class="n">steps</span><span class="o">,</span> <span class="n">workspace</span><span class="o">,</span> <span class="n">ispwApplication</span><span class="o">,</span> <span class="n">applicationPathNum</span><span class="o">)</span>
+
+        <span class="cm">/* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */</span>
+        <span class="n">jclSkeleton</span><span class="o">.</span><span class="na">initialize</span><span class="o">()</span>
+
+        <span class="cm">/* Method referencedCopyBooks will parse the downloaded sources and generate a list of required copy books */</span>
+        <span class="kt">def</span> <span class="n">copyBookList</span> <span class="o">=</span> <span class="n">referencedCopyBooks</span><span class="o">(</span><span class="n">workspace</span><span class="o">)</span>  
+
+        <span class="k">if</span><span class="o">(</span><span class="n">copyBookList</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span>       
+        <span class="o">{</span>
+            <span class="c1">// Get a string with JCL to create a PDS with referenced Copybooks</span>
+            <span class="kt">def</span> <span class="n">pdsDatasetName</span>  <span class="o">=</span> <span class="s1">'HDDRXM0.DEVOPS.ISPW.COPY.PDS'</span>   
+
+            <span class="c1">// The createIebcopyCopyBooksJcl will create the JCL for the IEBCOPY job */</span>
+            <span class="kt">def</span> <span class="n">processJcl</span>      <span class="o">=</span> <span class="n">jclSkeleton</span><span class="o">.</span><span class="na">createIebcopyCopyBooksJcl</span><span class="o">(</span><span class="n">pdsDatasetName</span><span class="o">,</span> <span class="n">copyBookList</span><span class="o">)</span>
+
+            <span class="c1">// Submit the JCL created to create a PDS with Copybooks</span>
+            <span class="n">steps</span><span class="o">.</span><span class="na">topazSubmitFreeFormJcl</span><span class="o">(</span> 
+                <span class="nl">connectionId:</span>       <span class="s2">"${hciConnId}"</span><span class="o">,</span> 
+                <span class="nl">credentialsId:</span>      <span class="s2">"${hciTokenId}"</span><span class="o">,</span> 
+                <span class="nl">jcl:</span>                <span class="n">processJcl</span><span class="o">,</span> 
+                <span class="nl">maxConditionCode:</span>   <span class="s1">'4'</span>
+            <span class="o">)</span>
+                        
+            <span class="c1">// Download the generated PDS</span>
+            <span class="n">steps</span><span class="o">.</span><span class="na">checkout</span><span class="o">([</span>
+                <span class="n">$class</span><span class="o">:</span>         <span class="s1">'PdsConfiguration'</span><span class="o">,</span> 
+                <span class="nl">connectionId:</span>   <span class="s2">"${hciConnId}"</span><span class="o">,</span>
+                <span class="nl">credentialsId:</span>  <span class="s2">"${hciTokenId}"</span><span class="o">,</span>
+                <span class="nl">fileExtension:</span>  <span class="s1">'cpy'</span><span class="o">,</span>
+                <span class="nl">filterPattern:</span>  <span class="s2">"${pdsDatasetName}"</span><span class="o">,</span>
+                <span class="nl">targetFolder:</span>   <span class="s2">"${ispwApplication}/${mfSourceFolder}"</span>
+            <span class="o">])</span>
+                                                                        
+            <span class="c1">// Delete the downloaded Dataset</span>
+            <span class="n">processJcl</span> <span class="o">=</span> <span class="n">jclSkeleton</span><span class="o">.</span><span class="na">createDeleteTempDsn</span><span class="o">(</span><span class="n">pdsDatasetName</span><span class="o">)</span>
+
+            <span class="n">steps</span><span class="o">.</span><span class="na">topazSubmitFreeFormJcl</span><span class="o">(</span>
+                <span class="nl">connectionId:</span>       <span class="s2">"${hciConnId}"</span><span class="o">,</span>
+                <span class="nl">credentialsId:</span>      <span class="s2">"${hciTokenId}"</span><span class="o">,</span>
+                <span class="nl">jcl:</span>                <span class="n">processJcl</span><span class="o">,</span>
+                <span class="nl">maxConditionCode:</span>   <span class="s1">'4'</span>
+            <span class="o">)</span>
+        <span class="o">}</span>
+        <span class="k">else</span>
+        <span class="o">{</span>
+            <span class="n">steps</span><span class="o">.</span><span class="na">echo</span> <span class="s2">"No Copy Books to download"</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+<p><a id="referencedCopyBooks"></a></p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="cm">/* Parse downloaded sources and get a list of copy books */</span>
+    <span class="kt">def</span> <span class="n">List</span> <span class="nf">referencedCopyBooks</span><span class="o">(</span><span class="n">String</span> <span class="n">workspace</span><span class="o">)</span> 
+    <span class="o">{</span>
+
+        <span class="n">steps</span><span class="o">.</span><span class="na">echo</span> <span class="s2">"Get all .cbl in current workspace"</span>
+        
+        <span class="c1">// findFiles method requires the "Pipeline Utilities Plugin"</span>
+        <span class="c1">// Get all Cobol Sources in the MF_Source folder into an array </span>
+        <span class="kt">def</span> <span class="n">listOfSources</span>   <span class="o">=</span> <span class="n">steps</span><span class="o">.</span><span class="na">findFiles</span><span class="o">(</span><span class="nl">glob:</span> <span class="s2">"**/${ispwApplication}/${mfSourceFolder}/*.cbl"</span><span class="o">)</span>
+        <span class="kt">def</span> <span class="n">listOfCopybooks</span> <span class="o">=</span> <span class="o">[]</span>
+        <span class="kt">def</span> <span class="n">lines</span>           <span class="o">=</span> <span class="o">[]</span>
+        <span class="kt">def</span> <span class="n">cbook</span>           <span class="o">=</span> <span class="s">/\bCOPY\b/</span>
+        <span class="kt">def</span> <span class="n">tokenItem</span>       <span class="o">=</span> <span class="s1">''</span>
+        <span class="kt">def</span> <span class="n">seventhChar</span>     <span class="o">=</span> <span class="s1">''</span>
+        <span class="kt">def</span> <span class="n">lineToken</span>       <span class="o">=</span> <span class="s1">''</span>
+
+        <span class="c1">// Define a empty array for the list of programs</span>
+        <span class="n">listOfSources</span><span class="o">.</span><span class="na">each</span> 
+        <span class="o">{</span>
+            <span class="n">steps</span><span class="o">.</span><span class="na">echo</span> <span class="s2">"Scanning Program: ${it}"</span>
+            <span class="kt">def</span> <span class="n">cpyFile</span> <span class="o">=</span> <span class="s2">"${workspace}\\${it}"</span>
+
+            <span class="n">File</span> <span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">cpyFile</span><span class="o">)</span>
+
+            <span class="k">if</span> <span class="o">(</span><span class="n">file</span><span class="o">.</span><span class="na">exists</span><span class="o">())</span> 
+            <span class="o">{</span>
+                <span class="n">lines</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="na">readLines</span><span class="o">().</span><span class="na">findAll</span><span class="o">({</span><span class="n">book</span> <span class="o">-&gt;</span> <span class="n">book</span> <span class="o">=~</span> <span class="s">/$cbook/</span><span class="o">})</span>
+
+                <span class="n">lines</span><span class="o">.</span><span class="na">each</span> 
+                <span class="o">{</span>
+                    <span class="n">lineToken</span>   <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="na">toString</span><span class="o">().</span><span class="na">tokenize</span><span class="o">()</span>
+                    <span class="n">seventhChar</span> <span class="o">=</span> <span class="s2">""</span>
+
+                    <span class="k">if</span> <span class="o">(</span><span class="n">lineToken</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="na">toString</span><span class="o">().</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;=</span> <span class="mi">7</span><span class="o">)</span> 
+                    <span class="o">{</span>
+                        <span class="n">seventhChar</span> <span class="o">=</span> <span class="n">lineToken</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="na">toString</span><span class="o">()[</span><span class="mi">6</span><span class="o">]</span>
+                    <span class="o">}</span>
+                        
+                    <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">lineToken</span><span class="o">.</span><span class="na">size</span><span class="o">();</span><span class="n">i</span><span class="o">++)</span> 
+                    <span class="o">{</span>
+                        <span class="n">tokenItem</span> <span class="o">=</span> <span class="n">lineToken</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">).</span><span class="na">toString</span><span class="o">()</span>
+
+                        <span class="k">if</span> <span class="o">(</span><span class="n">tokenItem</span> <span class="o">==</span> <span class="s2">"COPY"</span> <span class="o">&amp;&amp;</span> <span class="n">seventhChar</span> <span class="o">!=</span> <span class="s2">"*"</span> <span class="o">)</span> 
+                        <span class="o">{</span>
+                            <span class="n">steps</span><span class="o">.</span><span class="na">echo</span> <span class="s2">"Copybook: ${lineToken.get(i+1)}"</span>
+                            <span class="n">tokenItem</span> <span class="o">=</span> <span class="n">lineToken</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">).</span><span class="na">toString</span><span class="o">()</span>
+        
+                            <span class="k">if</span> <span class="o">(</span><span class="n">tokenItem</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s2">"."</span><span class="o">))</span> 
+                            <span class="o">{</span>
+                                <span class="n">listOfCopybooks</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">tokenItem</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span><span class="n">tokenItem</span><span class="o">.</span><span class="na">size</span><span class="o">()-</span><span class="mi">1</span><span class="o">))</span>
+                            <span class="o">}</span>
+                            <span class="k">else</span> 
+                            <span class="o">{</span>
+                                <span class="n">listOfCopybooks</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">tokenItem</span><span class="o">)</span>
+                            <span class="o">}</span>
+                                
+                        <span class="n">i</span> <span class="o">=</span> <span class="n">lineToken</span><span class="o">.</span><span class="na">size</span><span class="o">()</span>
+                        <span class="o">}</span>
+                    <span class="o">}</span>    
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">listOfCopybooks</span>
+
+    <span class="o">}</span>      
+</code></pre></div></div>
+<p><a id="regressAssignmentList"></a></p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="cm">/* Regress a list of assignments */</span>
+    <span class="kt">def</span> <span class="nf">regressAssignmentList</span><span class="o">(</span><span class="n">assignmentList</span><span class="o">,</span> <span class="n">cesToken</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">assignmentList</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span>
+        <span class="o">{</span>
+
+            <span class="n">steps</span><span class="o">.</span><span class="na">echo</span> <span class="s2">"Regress Assignment ${assignmentList[0].toString()}, Level ${ispwTargetLevel}"</span>
+
+            <span class="n">regressAssignment</span><span class="o">(</span><span class="n">assignmentList</span><span class="o">[</span><span class="n">i</span><span class="o">],</span> <span class="n">cesToken</span><span class="o">)</span>
+
+        <span class="o">}</span>
+            
+    <span class="o">}</span>
+</code></pre></div></div>
+<p><a id="regressAssignment"></a></p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="cm">/* Regress one assigment */</span>
+    <span class="kt">def</span> <span class="nf">regressAssignment</span><span class="o">(</span><span class="n">assignment</span><span class="o">,</span> <span class="n">cesToken</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="kt">def</span> <span class="n">requestBodyParm</span> <span class="o">=</span> <span class="s1">'''{
+            "runtimeConfiguration": "'''</span> <span class="o">+</span> <span class="n">ispwRuntime</span> <span class="o">+</span> <span class="s1">'''"
+        }'''</span>
+
+        <span class="n">steps</span><span class="o">.</span><span class="na">httpRequest</span><span class="o">(</span>
+                <span class="nl">url:</span>                    <span class="s2">"${ispwUrl}/ispw/${ispwRuntime}/assignments/${assignment}/tasks/regress?level=${ispwTargetLevel}"</span><span class="o">,</span>
+                <span class="nl">httpMode:</span>               <span class="s1">'POST'</span><span class="o">,</span>
+                <span class="nl">consoleLogResponseBody:</span> <span class="kc">true</span><span class="o">,</span>
+                <span class="nl">contentType:</span>            <span class="s1">'APPLICATION_JSON'</span><span class="o">,</span>
+                <span class="nl">requestBody:</span>            <span class="n">requestBodyParm</span><span class="o">,</span>
+                <span class="nl">customHeaders:</span>          <span class="o">[[</span>
+                                        <span class="nl">maskValue:</span>  <span class="kc">true</span><span class="o">,</span> 
+                                        <span class="nl">name:</span>       <span class="s1">'authorization'</span><span class="o">,</span> 
+                                        <span class="nl">value:</span>      <span class="s2">"${cesToken}"</span>
+                                        <span class="o">]]</span>
+            <span class="o">)</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+      </section>
+
+      <footer>
+          
+  
+          
+  
+          <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Minimal theme</small></p>
+        </footer>
+      </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
