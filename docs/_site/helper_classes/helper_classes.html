@@ -23,17 +23,42 @@
     <![endif]-->
   </head>
   <body>
+    <div id="banner">
+        <a href="" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span><strong>DevOps-Examples</strong></span>
+          <ul>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/index.html">Home</a></li>            
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/plugins/plugins.html">Required Plugins</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/pipelines/pipelines.html">The Primary Pipelines</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/helper_classes/helper_classes.html">Helper Classes</a></li>
+            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/code_examples/code_examples.html">Other Code Examples</a></li>
+          </ul>
+      </div>
+    </div>    
+    
     <div class="wrapper">
       <header>
-        <p class="header"></p>
+        <h1 class="header">Helper classes</h1>
+        <p class="header">Classes used by the pipeline from shared library</p>
 
         <ul>
-          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/index.html">Home</a></li>
-          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/plugins/plugins.html">Required Plugins</a></li>
-          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
-          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/pipelines.html">The Primary Pipelines</a></li>
-          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/helper_classes.html">Helper Classes</a></li>
-          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/code_examples/code_examples.html">Other Code Examples</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/index.html">Home</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/plugins/plugins.html">Required Plugins</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/pipelines/pipelines.html">The Primary Pipelines</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/helper_classes.html">Helper Classes</a></li>
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/FileHelper.html">FileHelper</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/GitHelper.html">GitHelper</a></li>          
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/IspwHelper.html">IspwHelper</a></li>                    
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/JclSkeleton.html">JclSkeleton</a></li>                              
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/PipelineConfig.html">PipelineConfig</a></li>                                        
+        </ul>
+        <ul>
+          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/code_examples/code_examples.html">Other Code Examples</a></li>
         </ul>
       </header>
 
@@ -283,7 +308,7 @@
   <ul>
     <li><a href="https://docs.sonarqube.org/display/SONAR/Generic+Test+Data"><code class="highlighter-rouge">sonar.testExecutionReportPaths=</code></a> allows using a comma-seprated list of paths the results of unit tests (Topaz for Total Test in our case) in the format required by the Sonar scanner.</li>
     <li><a href="https://docs.sonarqube.org/display/SONAR/Analysis+Parameters"><code class="highlighter-rouge">sonar.tests</code></a> comma-seperated list of colders containing unit tests (Topaz for Total Test projects in our case)</li>
-    <li><a href="https://docs.sonarqube.org/display/SONAR/Generic+Test+Data"><code class="highlighter-rouge">coverageReportPaths</code></a> path to code coverage results. With Xpediter Code Coverage the results will reside in <code class="highlighter-rouge">Coverage/Coverage.xml</code>-</li>
+    <li><a href="https://docs.sonarqube.org/display/SONAR/Generic+Test+Data"><code class="highlighter-rouge">coverageReportPaths</code></a> path to code coverage results. With Xpediter Code Coverage the results will reside in <code class="highlighter-rouge">Coverage/Coverage.xml</code>.</li>
     <li><a href="https://docs.sonarqube.org/display/SONAR/Analysis+Parameters"><code class="highlighter-rouge">sonar.projectKey</code></a> the SonarQube project key that is unique for each project. Our example pipelines use the <a href="https://wiki.jenkins.io/display/JENKINS/Building+a+software+project">Jenkins environment variable</a> <code class="highlighter-rouge">JOB_NAME</code>.</li>
     <li><a href="https://docs.sonarqube.org/display/SONAR/Analysis+Parameters"><code class="highlighter-rouge">sonar.projectName</code></a> the SonarQube project name that is unique for each project. Our example pipelines use the <a href="https://wiki.jenkins.io/display/JENKINS/Building+a+software+project">Jenkins environment variable</a> <code class="highlighter-rouge">JOB_NAME</code>.</li>
     <li><a href="https://docs.sonarqube.org/display/SONAR/Analysis+Parameters"><code class="highlighter-rouge">sonar.projectVersion</code></a> the SonarQube project version. The current examples to not modify the project version between executions.</li>
@@ -295,26 +320,58 @@
 </blockquote>
 
 <h2 id="-ttthelper"><a id="TttHelper"></a> TttHelper</h2>
-<p><a href="./TttHelper.html"><code class="highlighter-rouge">TttHelper</code></a> test text</p>
+<p>The <a href="./TttHelper.html"><code class="highlighter-rouge">TttHelper</code></a> class serves as a wrapper around Topaz for Total Test related activities like, executing the unit tests for the downloaded programs in a loop, and gathering the results from Code Coverage.</p>
 
 <p><a href="./TttHelper.html#TttHelper"><code class="highlighter-rouge">TttHelper(script, steps, pConfig)</code></a></p>
+<blockquote>
+  <p>The constructor recieves the <code class="highlighter-rouge">script</code>object and the <code class="highlighter-rouge">steps</code> from the pipeline  and a <a href="./#PipelineConfig"><code class="highlighter-rouge">PipelineConfig</code></a> to make use of pipeline execution specific parameters.</p>
+</blockquote>
 
 <p><a href="./TttHelper.html#initialize"><code class="highlighter-rouge">initialize()</code></a></p>
+<blockquote>
+  <p>is used for additional <a href="">initialization which cannot be executed in the custructor</a> and</p>
+  <ul>
+    <li>Instanciates a <code class="highlighter-rouge">JclSkeleton</code> for later use by <code class="highlighter-rouge">loopThruScenarios()</code>.</li>
+    <li>Builds a list of downloaded COBOL sources and a list of downloaded <code class="highlighter-rouge">.testscenarios</code>.</li>
+  </ul>
+</blockquote>
 
 <p><a href="./TttHelper.html#loopThruScenarios"><code class="highlighter-rouge">loopThruScenarios()</code></a></p>
+<blockquote>
+  <p>loops through the <code class="highlighter-rouge">.testscenarios</code> and for each scenario</p>
+  <ul>
+    <li>determines if the scenario matches one of the COBOL programs</li>
+    <li>in that case
+      <blockquote>
+        <ul>
+          <li>the job card of the corresponding runner jcl gets replaced by the configuration job card</li>
+          <li>the scenario gets executed</li>
+        </ul>
+      </blockquote>
+    </li>
+  </ul>
+</blockquote>
 
 <p><a href="./TttHelper.html#passResultsToJunit"><code class="highlighter-rouge">passResultsToJunit()</code></a></p>
+<blockquote>
+  <p>uses the JUnit plugin to display the unit test results on the pipeline dashboard.</p>
+</blockquote>
 
 <p><a href="./TttHelper.html#collectCodeCoverageResults"><code class="highlighter-rouge">collectCodeCoverageResults()</code></a></p>
+<blockquote>
+  <p>uses the Xpediter Code Coverage plugin to retrieve code coverage results from the Xpediter Code Coverage repository.</p>
+</blockquote>
 
       </section>
 
       <footer>
-        <ul>
-          <li><a class="name buttons github" href="">View On GitHub</a></li>
-        </ul>
-      </footer>  
-    </div>
+          
+  
+          
+  
+          <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Minimal theme</small></p>
+        </footer>
+      </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
   </body>
