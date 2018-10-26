@@ -5,11 +5,11 @@ The skeleton JCL in our examples uses strings in brackets '<>' to identify place
 
 In total there are three pieces of JCL that get generated during runtime.
 
-## <a id="JobCard.jcl"> A job card `JobCard.jcl`
+## <a id="JobCard.jcl"> A job card JobCard.jcl
 The file `JobCard.jcl` contains a job card that will be used for jobs that get submitted on the mainframe from the pipeline. This way job that get executed by pipeline automation can be distinguished (and executed under different rights) than the normal "user related" job JCL that gets stored with the Topaz for Total test projects.
 The current version of the `JobCard.jcl` does not provide any pipeline specific variable subsitution. Any valid JCL specific variable (e.g. `&SYSUID`) may still be used. 
 
-## <a id="deleteDs.skel"> Delete temporary Dataset `deleteDs.skel`
+## <a id="deleteDs.skel"> Delete temporary Dataset deleteDs.skel
 The purpose of this JCL is to submit a job that deletes a dataset. In the context of the pipelines this dataset is supposed to be temporary in use (and contains copybook members that need to be downloaded). The skeleton looks like this
 ```
 //CLEAN   EXEC PGM=IEFBR14
@@ -18,7 +18,7 @@ The purpose of this JCL is to submit a job that deletes a dataset. In the contex
 
 The placeholder `<clean_dsn>` will be replaced by a concrete dataset name during runtime.
 
-## <a id="iebcopy.skel"> IEBCOPY job `iebcopy.skel`
+## <a id="iebcopy.skel"> IEBCOPY job iebcopy.skel
 The purpose of this JCL is to copy all members that have been identified a copybooks from the ISPW libraries to a temporary PDS. (These will then be downloaded by the ISPW PDS downloader.) The skeleton looks like this
 ```
 //COPY    EXEC PGM=IEBCOPY
@@ -43,7 +43,7 @@ The placeholders are
 - `<source_input_dd_list>` will be replaced by a set of `INDD=INx` statements for IEBCOPY. The set corresponds with the set of `//INx` DD statements defined by the `iebcopyInDd.skel`.
 - `<select_list>` will be replaced by a set of `SELECT` statements for IEBCOPY. The set is determined from the list of copybook members to be downloaded.
 
-## <a id="iebcopyInDd.skel"> List in IN DD statements `iebcopyInDd.skel`
+## <a id="iebcopyInDd.skel"> List in IN DD statements iebcopyInDd.skel
 The purpose of this file is to provide a list of datasets to use a input datasets for the `iebcopy.skel` JCL. The skeleton looks like this and corresponds with the libraries used to story copybooks in the ISPW environment used for these examples
 
 ```
