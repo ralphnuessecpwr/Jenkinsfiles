@@ -80,11 +80,17 @@ In the example `response` recieves the result of the `httpRequest`, `jsonSlurper
 ```
 
 ## <a id="Using methods in class constructors"></a> Using methods in class constructors
+Simply put, class constructors in Groovy cannot use methods, be it own internal methods, or instantiating other classes and using their methods. Anything other than 'simple' variable initialization will result in
+```
+hudson.remoting.ProxyException: com.cloudbees.groovy.cps.impl.CpsCallableInvocation
+```
+
+Therefore, many of the classes in use here, have an `initialize` method that performs any additional work necessary after the constructor executed before any of the other methods can be used.
 
 ## <a id="Plugins setting variables"></a> Plugins setting variables
 There are certain plugins that within their execution set variables that are exposed to the rest of the script. Two of these plugins being used throughout the examples are [Config File Provider `configFileProvider`](https://wiki.jenkins.io/display/JENKINS/Config+File+Provider+Plugin) and [Credentials Binding `withCredentials`](https://wiki.jenkins.io/display/JENKINS/Credentials+Binding+Plugin). 
 
-The first one allows accessing a file that has been defined using the Config File Provider plugin like the [`mailList.config` file]()../tool_configuration/Config_Files.html#The email list). You pass the `fileID` and retrieve a variable that contains the (temporary) path to the file. In the follwoing snippet variable `mailListFilePath` will contain that path.
+The first one allows accessing a file that has been defined using the Config File Provider plugin like the [`mailList.config` file](../tool_configuration/Config_Files.html#The email list). You pass the `fileID` and retrieve a variable that contains the (temporary) path to the file. In the follwoing snippet variable `mailListFilePath` will contain that path.
 
 ```groovy
     configFileProvider(
