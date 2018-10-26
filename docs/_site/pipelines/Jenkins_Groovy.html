@@ -52,15 +52,120 @@
       <section>
         <h1 id="-things-to-consider-when-using-jenkins-groovy"><a id="The Jenkins Groovy dialect"></a> Things to consider when using Jenkins Groovy</h1>
 <p>Having learned Groovy and pipeline scripting at the same time from ground up - without having any decent background in any of the undelying “<em>modern</em>” principles or languages - has been an interesting experience. It was (and still is) a constant struggle to figure out, if I am doing something I shouldn’t do at all or simply something that I cannot do inside Jenkins. Definitely something that did not help speeding up the learning experience. This section is deicated to listing and pointing out those pitfalls and learning experiences that we went through, to help people saving the same struggle and speed up their getting productive. And the same time it is supposed as a “reference” to explain why some things were done they way they are done in the showcased examples.
-Any hints and suggestions to improve or circumnavigate the pitfalls in smarter ways are highly apprectiated.</p>
+Any hints and suggestions to improve or circumnavigate the pitfalls in smarter ways are highly appreciated.</p>
 
 <h2 id="-using-steps-in-classes"><a id="Using steps in classes"></a> Using steps in classes</h2>
+<p>Using pipeline steps, i.e. almost every execution of a plugin, within classes that are not the main script, require the script <code class="highlighter-rouge">steps</code> to be passed to the class and executing the corresponding methods of this <code class="highlighter-rouge">steps</code> class. Failure to do so will result in</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>groovy.lang.MissingPropertyException
+</code></pre></div></div>
+<p>for the respective method. This starts with a simple <code class="highlighter-rouge">prinln</code>. Almost all classes in use in our examples perform one or the other <code class="highlighter-rouge">steps</code> method. Therefore, a common scheme is to declare the class and its constructor as follows:</p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">IspwHelper</span> <span class="kd">implements</span> <span class="n">Serializable</span> 
+<span class="o">{</span>
+    <span class="kt">def</span> <span class="n">steps</span>
+<span class="o">...</span>
+    <span class="n">IspwHelper</span><span class="o">(</span><span class="n">steps</span> <span class="o">...)</span> 
+    <span class="o">{</span>
+
+        <span class="k">this</span><span class="o">.</span><span class="na">steps</span>              <span class="o">=</span> <span class="n">steps</span>
+<span class="o">...</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<p>Instantiation of these classes will happen like this</p>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">ispwHelper</span>  <span class="o">=</span> <span class="k">new</span>   <span class="n">IspwHelper</span><span class="o">(</span><span class="n">steps</span> <span class="o">...)</span>
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">ispwHelper</span>  <span class="o">=</span> <span class="k">new</span>   <span class="n">IspwHelper</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">steps</span> <span class="o">...)</span>
+</code></pre></div></div>
+
+<p>For more and detailed information refer to the <a href="https://jenkins.io/doc/book/pipeline/shared-libraries/">Jenkins documentation</a></p>
 
 <h2 id="-non-serializable-classes"><a id="Non serializable classes"></a> Non serializable classes</h2>
+<p>As seen above and as discussed in the <a href="https://jenkins.io/doc/book/pipeline/shared-libraries/">Jenkins documentation</a> classes must implement the <code class="highlighter-rouge">Serializable</code> interface. This is necessary so that pipeline jobs remain ‘restartable’, i.e. when the Jenkins node fails during execution of a job, the job is able to resume work from the place were it got interrupted. For this to be possible, Jenkins needs to be able to store the state of all instantiated objects.</p>
+
+<p>This bears some implications when it comes to the use of third party classes that are not serializable. Trying to re-use objects of such classes will likely result in</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>java.io.NotSerializableException
+</code></pre></div></div>
+
+<p>Example are the <code class="highlighter-rouge">JsonSlurper</code> class or the <code class="highlighter-rouge">responseBody</code> class. The latter is being returned by a native <code class="highlighter-rouge">httpRequest</code>, the former is used to digest the JSON <code class="highlighter-rouge">responseBody</code> from an <code class="highlighter-rouge">httpRequest</code>. The simplest way to use these classes without running into <code class="highlighter-rouge">java.io.NotSerializableException</code> we found, is to de-reference the objects as soon as possible in the code. That way there is no need to store their state across method boundaries:</p>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kt">def</span> <span class="n">ArrayList</span> <span class="nf">getAssigmentList</span><span class="o">(</span><span class="n">String</span> <span class="n">cesToken</span><span class="o">,</span> <span class="n">String</span> <span class="n">level</span><span class="o">)</span>
+    <span class="o">{</span>
+        <span class="kt">def</span> <span class="n">returnList</span>  <span class="o">=</span> <span class="o">[]</span>
+        
+        <span class="kt">def</span> <span class="n">taskIds</span>     <span class="o">=</span> <span class="n">getSetTaskIdList</span><span class="o">(</span><span class="n">cesToken</span><span class="o">,</span> <span class="n">level</span><span class="o">)</span>
+        
+        <span class="kt">def</span> <span class="n">response</span> <span class="o">=</span> <span class="n">steps</span><span class="o">.</span><span class="na">httpRequest</span><span class="o">(</span>
+            <span class="nl">url:</span>                        <span class="s2">"${ispwUrl}/ispw/${ispwRuntime}/releases/${ispwRelease}/tasks"</span><span class="o">,</span>
+            <span class="nl">consoleLogResponseBody:</span>     <span class="kc">false</span><span class="o">,</span> 
+            <span class="nl">customHeaders:</span>              <span class="o">[[</span>
+                                        <span class="nl">maskValue:</span>  <span class="kc">true</span><span class="o">,</span> 
+                                        <span class="nl">name:</span>       <span class="s1">'authorization'</span><span class="o">,</span> 
+                                        <span class="nl">value:</span>      <span class="s2">"${cesToken}"</span>
+                                        <span class="o">]]</span>
+            <span class="o">)</span>
+
+        <span class="kt">def</span> <span class="n">jsonSlurper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JsonSlurper</span><span class="o">()</span>
+        <span class="kt">def</span> <span class="n">resp</span>        <span class="o">=</span> <span class="n">jsonSlurper</span><span class="o">.</span><span class="na">parseText</span><span class="o">(</span><span class="n">response</span><span class="o">.</span><span class="na">getContent</span><span class="o">())</span>
+        <span class="n">response</span>        <span class="o">=</span> <span class="kc">null</span>
+        <span class="n">jsonSlurper</span>     <span class="o">=</span> <span class="kc">null</span>
+        <span class="o">...</span>
+</code></pre></div></div>
+
+<p>In the example <code class="highlighter-rouge">response</code> recieves the result of the <code class="highlighter-rouge">httpRequest</code>, <code class="highlighter-rouge">jsonSlurper</code> get instantiated and <code class="highlighter-rouge">resp</code> receives the content of <code class="highlighter-rouge">response</code> as list. Once the two objects are not needed they get de-referenced by</p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="n">response</span>        <span class="o">=</span> <span class="kc">null</span>
+        <span class="n">jsonSlurper</span>     <span class="o">=</span> <span class="kc">null</span>
+</code></pre></div></div>
 
 <h2 id="-using-methods-in-class-constructors"><a id="Using methods in class constructors"></a> Using methods in class constructors</h2>
 
-<h2 id="-plugins-returning-temorary-variables"><a id="Plugins returning 'temorary' variables"></a> Plugins returning “temorary” variables</h2>
+<h2 id="-plugins-setting-variables"><a id="Plugins setting variables"></a> Plugins setting variables</h2>
+<p>There are certain plugins that within their execution set variables that are exposed to the rest of the script. Two of these plugins being used throughout the examples are <a href="https://wiki.jenkins.io/display/JENKINS/Config+File+Provider+Plugin">Config File Provider <code class="highlighter-rouge">configFileProvider</code></a> and <a href="https://wiki.jenkins.io/display/JENKINS/Credentials+Binding+Plugin">Credentials Binding <code class="highlighter-rouge">withCredentials</code></a>.</p>
+
+<p>The first one allows accessing a file that has been defined using the Config File Provider plugin like the <a href=""><code class="highlighter-rouge">mailList.config</code> file</a>../tool_configuration/Config_Files.html#The email list). You pass the <code class="highlighter-rouge">fileID</code> and retrieve a variable that contains the (temporary) path to the file. In the follwoing snippet variable <code class="highlighter-rouge">mailListFilePath</code> will contain that path.</p>
+
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">configFileProvider</span><span class="o">(</span>
+        <span class="o">[</span>
+            <span class="n">configFile</span><span class="o">(</span>
+                <span class="nl">fileId:</span> <span class="s1">'MailList'</span><span class="o">,</span> 
+                <span class="nl">variable:</span> <span class="s1">'mailListFilePath'</span>
+            <span class="o">)</span>
+        <span class="o">]</span>
+    <span class="o">)</span> 
+    <span class="o">{</span>
+        <span class="n">File</span> <span class="n">mailConfigFile</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">mailListFilePath</span><span class="o">)</span>
+
+        <span class="k">if</span><span class="o">(!</span><span class="n">mailConfigFile</span><span class="o">.</span><span class="na">exists</span><span class="o">())</span>
+        <span class="o">{</span>
+            <span class="n">steps</span><span class="o">.</span><span class="na">error</span> <span class="s2">"File - ${mailListFilePath} - not found! \n Aborting Pipeline"</span>
+        <span class="o">}</span>
+
+        <span class="n">mailListlines</span> <span class="o">=</span> <span class="n">mailConfigFile</span><span class="o">.</span><span class="na">readLines</span><span class="o">()</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<p>The second one allows retrieving the information stored in a Jenkins credentials token, in cases when certain plugins require the content in clear text. This is the case for example when using native <code class="highlighter-rouge">httpRequest</code> to interact with REST APIs. Some of the example code makes use of the <code class="highlighter-rouge">httpRequest</code> and the ISPW API requires the CES credentials to be passed. Other than the ISPW operations plugin the <code class="highlighter-rouge">httpRequest</code> cannot use the Jenkins secret text toekn storing the CES token. Using the <code class="highlighter-rouge">withCredentials</code>, one can use the Jenkins in <code class="highlighter-rouge">credentialsID</code> token to retrieve the ‘clear text’ CES token during runtime (stored in variable <code class="highlighter-rouge">cesToken</code> in the example below), without having to expose the token in the code:</p>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">withCredentials</span><span class="o">(</span>
+        <span class="o">[</span><span class="n">string</span><span class="o">(</span><span class="nl">credentialsId:</span> <span class="s2">"${CES_Token}"</span><span class="o">,</span> <span class="nl">variable:</span> <span class="s1">'cesToken'</span><span class="o">)]</span>
+    <span class="o">)</span> 
+    <span class="o">{</span>
+        <span class="n">response1</span> <span class="o">=</span> <span class="n">steps</span><span class="o">.</span><span class="na">httpRequest</span><span class="o">(</span>
+            <span class="nl">url:</span>                    <span class="s2">"${ISPW_URL}/ispw/${ISPW_Runtime}/sets/${ISPW_Container}/tasks"</span><span class="o">,</span>
+            <span class="nl">httpMode:</span>               <span class="s1">'GET'</span><span class="o">,</span>
+            <span class="nl">consoleLogResponseBody:</span> <span class="kc">false</span><span class="o">,</span>
+            <span class="nl">customHeaders:</span>          <span class="o">[[</span><span class="nl">maskValue:</span> <span class="kc">true</span><span class="o">,</span> <span class="nl">name:</span> <span class="s1">'authorization'</span><span class="o">,</span> <span class="nl">value:</span> <span class="s2">"${cesToken}"</span><span class="o">]]</span>
+        <span class="o">)</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<p>Unfortunately, while this works perfectly fine in the main script, trying to use such plugins in classes ‘external’ to the script class will likely result in exceptions like the following:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>groovy.lang.MissingPropertyException: No such property: mailConfigPath for class: com.compuware.devops.util.PipelineConfig
+</code></pre></div></div>
+
+<p>This seems to be <a href="https://groups.google.com/forum/#!topic/jenkinsci-users/8wd8Omvs74Y">Groovy specifc</a> and the only work around so far seems to be to execute these plugins in the main script. That is why the <code class="highlighter-rouge">mailList.config</code> down not get read in the <code class="highlighter-rouge">PipelineConfig</code> class as one would expect, but in the main script.</p>
 
       </section>
 
