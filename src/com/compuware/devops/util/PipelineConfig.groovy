@@ -90,11 +90,6 @@ class PipelineConfig implements Serializable
         this.hciTokenId         = params.HCI_Token
         this.ccRepository       = params.CC_repository
 
-        steps.dir(".\\") 
-        {
-            steps.deleteDir()
-        }
-
     }
 
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
