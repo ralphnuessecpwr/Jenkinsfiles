@@ -1,3 +1,6 @@
+---
+layout: config_files
+---
 # <a id="Config Files"></a> Configuration Files
 The [Mainframe_CI_Pipeline_from_Shared_Lib](../pipelines/Mainframe_CI_Pipeline_from_Shared_Lib.html#Mainframe_CI_Pipeline_from_Shared_Lib) uses two external files, storing configuration on the environment it is running in. There are two files stored externally (in a GitHub repository, in folder `(root)/config/pipeline`). The first two files will get downloaded from the GitHub repo and read during initialization of the `PipelineConfig` class. For a detailed description of the parameters refer to [the pipeline parameters](../pipeline/pipeline_parameters.html#The pipeline parameters).
 
