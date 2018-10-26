@@ -23,42 +23,29 @@
     <![endif]-->
   </head>
   <body>
-    <div id="banner">
-        <a href="" class="button fork"><strong>View On GitHub</strong></a>
-        <div class="downloads">
-          <span><strong>DevOps-Examples</strong></span>
-          <ul>
-            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/index.html">Home</a></li>            
-            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/plugins/plugins.html">Required Plugins</a></li>
-            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
-            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/pipelines/pipelines.html">The Primary Pipelines</a></li>
-            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/helper_classes/helper_classes.html">Helper Classes</a></li>
-            <li class="button"><a href="http://localhost:4000/Jenkinsfiles/code_examples/code_examples.html">Other Code Examples</a></li>
-          </ul>
-      </div>
-    </div>    
-    
     <div class="wrapper">
-      <header>
-        <h1 class="header">Helper classes</h1>
-        <p class="header">Classes used by the pipeline from shared library</p>
+      <header>       
+        <p class="header">Classes used by the pipeline from a Shared Library</p>
 
         <ul>
-          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/index.html">Home</a></li>          
-          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/plugins/plugins.html">Required Plugins</a></li>
-          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
-          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/pipelines/pipelines.html">The Primary Pipelines</a></li>
-          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/helper_classes.html">Helper Classes</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/index.html">Home</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/plugins/plugins.html">Required Plugins</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/tool_configuration/tool_configuration.html">Tool Configurations</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/pipelines.html">The Primary Pipelines</a></li>          
+          <p><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/helper_classes.html">Helper Classes</a></p>
         </ul>
         <ul>
-          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/FileHelper.html">FileHelper</a></li>
-          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/GitHelper.html">GitHelper</a></li>          
-          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/IspwHelper.html">IspwHelper</a></li>                    
-          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/JclSkeleton.html">JclSkeleton</a></li>                              
-          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/helper_classes/PipelineConfig.html">PipelineConfig</a></li>                                        
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/FileHelper.html">FileHelper</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/GitHelper.html">GitHelper</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/IspwHelper.html">IspwHelper</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/JclSkeleton.html">JclSkeleton</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/PipelineConfig.html">PipelineConfig</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/SonarHelper.html">SonarHelper</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/TttHelper.html">TttHelper Test</a></li>
         </ul>
+        <small>&nbsp</small>
         <ul>
-          <li class="header name"><a class="header name" href="http://localhost:4000/Jenkinsfiles/code_examples/code_examples.html">Other Code Examples</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/code_examples/code_examples.html">Other Code Examples</a></li>
         </ul>
       </header>
 
@@ -72,7 +59,7 @@
 <p><a href="./FileHelper.html#FileHelper"><code class="highlighter-rouge">FileHelper(steps)</code></a></p>
 
 <blockquote>
-  <p>The constructor recieves the <code class="highlighter-rouge">steps</code> from the pipeline to <a href="">allow use of pipeline step within the class code</a>.</p>
+  <p>The constructor recieves the <code class="highlighter-rouge">steps</code> from the pipeline to <a href="../pipelines/Jenkins_Groovy.html#Using steps in classes">allow use of pipeline step within the class code</a>.</p>
 </blockquote>
 
 <p><a href="./FileHelper.html#readLines"><code class="highlighter-rouge">readLines(String path)</code></a></p>
@@ -87,7 +74,7 @@
 <p><a href="./GitHelper.html#GitHelper"><code class="highlighter-rouge">GitHelper(steps)</code></a></p>
 
 <blockquote>
-  <p>The constructor recieves the <code class="highlighter-rouge">steps</code> from the pipeline to <a href="">allow use of pipeline step within the class code</a>.</p>
+  <p>The constructor recieves the <code class="highlighter-rouge">steps</code> from the pipeline to <a href="../pipelines/Jenkins_Groovy.html#Using steps in classes">allow use of pipeline step within the class code</a>.</p>
 </blockquote>
 
 <p><a href="./GitHelper.html#checkout"><code class="highlighter-rouge">checkout(String gitUrl, String gitBranch, String gitCredentials, String tttFolder)</code></a></p>
@@ -108,7 +95,7 @@
 <p><code class="highlighter-rouge">IspwHelper(steps, pConfig)</code></p>
 
 <blockquote>
-  <p>The constructor recieves the <code class="highlighter-rouge">steps</code> from the pipeline to <a href="">allow use of pipeline step within the class code</a> and a <a href="./#PipelineConfig"><code class="highlighter-rouge">PipelineConfig</code></a> to make use of pipeline execution specific parameters.</p>
+  <p>The constructor recieves the <code class="highlighter-rouge">steps</code> from the pipeline to <a href="../pipelines/Jenkins_Groovy.html#Using steps in classes">allow use of pipeline step within the class code</a> and a <a href="./#PipelineConfig"><code class="highlighter-rouge">PipelineConfig</code></a> to make use of pipeline execution specific parameters.</p>
 </blockquote>
 
 <p><a href="./IspwHelper.html#downloadSources"><code class="highlighter-rouge">downloadSources()</code></a></p>
@@ -169,13 +156,13 @@
 <p><a href=".JclSkeleton.html#JclSkeleton"><code class="highlighter-rouge">JclSkeleton(steps, String workspace, String ispwApplication, String ispwPathNum)</code></a></p>
 
 <blockquote>
-  <p>The constructor recieves the <code class="highlighter-rouge">steps</code> from the pipeline to <a href="">allow use of pipeline step within the class code</a>, the path to the pipeline <code class="highlighter-rouge">workpace</code>, the name of the ISPW application in <code class="highlighter-rouge">ispwApplication</code> and the <a href="../pipelines/scenario/TTT_scenario.html#The runner.jcl">number of the development path</a> in <code class="highlighter-rouge">pathNum</code>.</p>
+  <p>The constructor recieves the <code class="highlighter-rouge">steps</code> from the pipeline to <a href="../pipelines/Jenkins_Groovy.html#Using steps in classes">allow use of pipeline step within the class code</a>, the path to the pipeline <code class="highlighter-rouge">workpace</code>, the name of the ISPW application in <code class="highlighter-rouge">ispwApplication</code> and the <a href="../pipelines/scenario/TTT_scenario.html#The runner.jcl">number of the development path</a> in <code class="highlighter-rouge">pathNum</code>.</p>
 </blockquote>
 
 <p><a href=".JclSkeleton.html#initialize"><code class="highlighter-rouge">initialize()</code></a></p>
 
 <blockquote>
-  <p>is used for additional <a href="">initialization which cannot be executed in the custructor</a> and</p>
+  <p>is used for additional <a href="../pipelines/Jenkins_Groovy.html#Using methods in class constructors">initialization which cannot be executed in the custructor</a> and</p>
   <ul>
     <li>reads the <code class="highlighter-rouge">JobCard.jcl</code> skeleton file</li>
     <li>reads the <code class="highlighter-rouge">deleteDs.skel</code> skeleton file</li>
@@ -236,13 +223,13 @@
 <p><a href=".PipelineConfig.html#PipelineConfig"><code class="highlighter-rouge">PipelineConfig(steps, workspace, params, mailListLines)</code></a></p>
 
 <blockquote>
-  <p>The constructor recieves the <code class="highlighter-rouge">steps</code> from the pipeline to <a href="">allow use of pipeline step within the class code</a>, the path of the pipeline <code class="highlighter-rouge">workspace</code> the <code class="highlighter-rouge">Map</code> <code class="highlighter-rouge">params</code> containing the <code class="highlighter-rouge">key:value</code> parameter pairs from the <a href="../pipelines/Mainframe_CI_Pipeline_from_Shared_Lib.html#Loading the script from a shared library">pipeline call</a>, and a the list of records from the <a href="../tool_configuration/Config_Files.html#The email list"><code class="highlighter-rouge">mailList.config</code> file</a> and initializes all parameters that can be initialized immediately.</p>
+  <p>The constructor recieves the <code class="highlighter-rouge">steps</code> from the pipeline to <a href="../pipelines/Jenkins_Groovy.html#Using steps in classes">allow use of pipeline step within the class code</a>, the path of the pipeline <code class="highlighter-rouge">workspace</code> the <code class="highlighter-rouge">Map</code> <code class="highlighter-rouge">params</code> containing the <code class="highlighter-rouge">key:value</code> parameter pairs from the <a href="../pipelines/Mainframe_CI_Pipeline_from_Shared_Lib.html#Loading the script from a shared library">pipeline call</a>, and a the list of records from the <a href="../tool_configuration/Config_Files.html#The email list"><code class="highlighter-rouge">mailList.config</code> file</a> and initializes all parameters that can be initialized immediately.</p>
 </blockquote>
 
 <p><a href=".PipelineConfig#initialize"><code class="highlighter-rouge">initialize()</code></a></p>
 
 <blockquote>
-  <p>is used for additional <a href="">initialization which cannot be executed in the custructor</a> and</p>
+  <p>is used for additional <a href="../pipelines/Jenkins_Groovy.html#Using methods in class constructors">initialization which cannot be executed in the custructor</a> and</p>
   <ul>
     <li>deletes any old content from the pipeline workspace</li>
     <li>Uses the <code class="highlighter-rouge">checkoutPath</code>method of the <a href="#GitHelper"><code class="highlighter-rouge">GitHelper</code> class</a> to download the path containing the configuration files from the GitHub repository containing the configuration. (In future configuration files will be move to <a href="../tool_configuration/tool_configuration.html#Managed Files">Managed Files</a>, thus avoiding to have to download configuration from GitHub and exposure of configuration on GitHub.)</li>
@@ -298,7 +285,7 @@
 <p><a href=".SonarHelper#initialize"><code class="highlighter-rouge">initialize()</code></a></p>
 
 <blockquote>
-  <p>is used for additional <a href="">initialization which cannot be executed in the custructor</a> and determines the scanner home path</p>
+  <p>is used for additional <a href="../pipelines/Jenkins_Groovy.html#Using methods in class constructors">initialization which cannot be executed in the custructor</a> and determines the scanner home path</p>
 </blockquote>
 
 <p><a href=".SonarHelper#scan"><code class="highlighter-rouge">scan()</code></a></p>
@@ -329,7 +316,7 @@
 
 <p><a href="./TttHelper.html#initialize"><code class="highlighter-rouge">initialize()</code></a></p>
 <blockquote>
-  <p>is used for additional <a href="">initialization which cannot be executed in the custructor</a> and</p>
+  <p>is used for additional <a href="../pipelines/Jenkins_Groovy.html#Using methods in class constructors">initialization which cannot be executed in the custructor</a> and</p>
   <ul>
     <li>Instanciates a <code class="highlighter-rouge">JclSkeleton</code> for later use by <code class="highlighter-rouge">loopThruScenarios()</code>.</li>
     <li>Builds a list of downloaded COBOL sources and a list of downloaded <code class="highlighter-rouge">.testscenarios</code>.</li>
@@ -363,15 +350,13 @@
 </blockquote>
 
       </section>
-
+      
       <footer>
-          
-  
-          
-  
-          <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Minimal theme</small></p>
-        </footer>
-      </div>
+          <ul>
+            <li><a class="name buttons github" href="">View On GitHub</a></li>
+          </ul>
+      </footer>    
+    </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
   </body>

@@ -9,10 +9,10 @@
 <meta name="generator" content="Jekyll v3.7.4" />
 <meta property="og:title" content="Pipelines" />
 <meta property="og:locale" content="en_US" />
-<link rel="canonical" href="http://localhost:4000/pipelines/Jenkins_Groovy_Ideosynchrasies.html" />
-<meta property="og:url" content="http://localhost:4000/pipelines/Jenkins_Groovy_Ideosynchrasies.html" />
+<link rel="canonical" href="http://localhost:4000/pipelines/Jenkins_Groovy.html" />
+<meta property="og:url" content="http://localhost:4000/pipelines/Jenkins_Groovy.html" />
 <script type="application/ld+json">
-{"@type":"WebPage","url":"http://localhost:4000/pipelines/Jenkins_Groovy_Ideosynchrasies.html","headline":"Pipelines","@context":"http://schema.org"}</script>
+{"@type":"WebPage","url":"http://localhost:4000/pipelines/Jenkins_Groovy.html","headline":"Pipelines","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <link rel="stylesheet" href="/assets/css/style.css?v=">
@@ -39,8 +39,10 @@
           <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/scenario/TTT_in_Git.html">Git(Hub) for TTT</a></li>          
           <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/Mainframe-CI-Example-pipeline.html">Simple Pipeline</a></li>                    
           <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/Mainframe_CI_Pipeline_from_Shared_Lib.html">From Shared Library</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/Jenkins_Groovy.html">Jenkins Groovy</a></li>          
           <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/pipeline_parameters.html">Parameters</a></li>
         </ul>
+        <small>&nbsp</small>
         <ul>
           <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/helper_classes.html">Helper Classes</a></li>
           <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/code_examples/code_examples.html">Other Code Examples</a></li>
@@ -48,7 +50,17 @@
       </header>
 
       <section>
-        <h1 id="-the-jenkins-groovy-dialect"><a id="The Jenkins Groovy dialect"></a> The Jenkins Groovy dialect</h1>
+        <h1 id="-things-to-consider-when-using-jenkins-groovy"><a id="The Jenkins Groovy dialect"></a> Things to consider when using Jenkins Groovy</h1>
+<p>Having learned Groovy and pipeline scripting at the same time from ground up - without having any decent background in any of the undelying “<em>modern</em>” principles or languages - has been an interesting experience. It was (and still is) a constant struggle to figure out, if I am doing something I shouldn’t do at all or simply something that I cannot do inside Jenkins. Definitely something that did not help speeding up the learning experience. This section is deicated to listing and pointing out those pitfalls and learning experiences that we went through, to help people saving the same struggle and speed up their getting productive. And the same time it is supposed as a “reference” to explain why some things were done they way they are done in the showcased examples.
+Any hints and suggestions to improve or circumnavigate the pitfalls in smarter ways are highly apprectiated.</p>
+
+<h2 id="-using-steps-in-classes"><a id="Using steps in classes"></a> Using steps in classes</h2>
+
+<h2 id="-non-serializable-classes"><a id="Non serializable classes"></a> Non serializable classes</h2>
+
+<h2 id="-using-methods-in-class-constructors"><a id="Using methods in class constructors"></a> Using methods in class constructors</h2>
+
+<h2 id="-plugins-returning-temorary-variables"><a id="Plugins returning 'temorary' variables"></a> Plugins returning “temorary” variables</h2>
 
       </section>
 

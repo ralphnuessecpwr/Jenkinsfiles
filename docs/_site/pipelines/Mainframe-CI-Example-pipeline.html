@@ -39,8 +39,10 @@
           <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/scenario/TTT_in_Git.html">Git(Hub) for TTT</a></li>          
           <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/Mainframe-CI-Example-pipeline.html">Simple Pipeline</a></li>                    
           <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/Mainframe_CI_Pipeline_from_Shared_Lib.html">From Shared Library</a></li>
+          <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/Jenkins_Groovy.html">Jenkins Groovy</a></li>          
           <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/pipelines/pipeline_parameters.html">Parameters</a></li>
         </ul>
+        <small>&nbsp</small>
         <ul>
           <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/helper_classes/helper_classes.html">Helper Classes</a></li>
           <li class="header name"><a class="header name" href="http://localhost:4000/DevOps-Examples/code_examples/code_examples.html">Other Code Examples</a></li>
@@ -315,87 +317,91 @@
 <p><img src="./images/Adding parameters.png" alt="Adding parameters" /></p>
 
 <p>The parameters in this first set are specific to the individual execution of the pipeline and get passed by the <a href="../tool_configuration/webhook_setup.html#In summary">ISPW Webhook</a></p>
+
 <table>
+  <thead>
     <tr>
-        <th>Name</th>
-        <th>Default value</th>
-        <th>Description</th>
+      <th>Name</th>
+      <th>Defaul value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ISPW_Stream</td>
+      <td>FTSDEMO</td>
+      <td>ISPW Stream Name</td>
     </tr>
     <tr>
-        <td>ISPW_Stream</td>
-        <td>FTSDEMO</td>
-        <td>ISPW Stream Name</td>
+      <td>ISPW_Application</td>
+      <td>RXN3</td>
+      <td>ISPW Application</td>
     </tr>
     <tr>
-        <td>ISPW_Application</td>
-        <td>RXN3</td>
-        <td>ISPW Application</td>
+      <td>ISPW_Src_Level</td>
+      <td>DEV1</td>
+      <td>ISPW Level the promote has been started from</td>
     </tr>
     <tr>
-        <td>ISPW_Src_Level</td>
-        <td>DEV1</td>
-        <td>ISPW Level the promote has been started from</td>
+      <td>ISPW_Release</td>
+      <td> </td>
+      <td>ISPW Release Name</td>
     </tr>
     <tr>
-        <td>ISPW_Release</td>
-        <td></td>
-        <td>ISPW Release Name</td>
+      <td>ISPW_Container</td>
+      <td> </td>
+      <td>ISPW Set ID</td>
     </tr>
     <tr>
-        <td>ISPW_Container</td>
-        <td></td>
-        <td>ISPW Set ID</td>
+      <td>ISPW_Container_Type</td>
+      <td>2</td>
+      <td>ISPW Container Type (0. - assignment, 1. - release, 2. - set)</td>
     </tr>
     <tr>
-        <td>ISPW_Container_Type</td>
-        <td>2</td>
-        <td>ISPW Container Type
-            <ul>
-                <li>0 - assignment</li>
-                <li>1 - release</li>
-                <li>2 - set</li>
-            </ul>
-        </td>
+      <td>ISPW_Owner</td>
+      <td> </td>
+      <td>ISPW Owner User ID</td>
     </tr>
-    <tr>
-        <td>ISPW_Owner</td>
-        <td></td>
-        <td>ISPW Owner User ID</td>
-    </tr>
+  </tbody>
 </table>
 
 <p>The second set of parameters is installation specific and reference tokens and other IDs that have been defined during the configuration phase. To determine the approriate values to use refer to the <a href="../pipeline_parameters.html">description of the pipeline parameters</a>.</p>
+
 <table>
+  <thead>
     <tr>
-        <th>Name</th>
-        <th>Default value</th>
-        <th>Description</th>
+      <th>Name</th>
+      <th>Defaul value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>CES_Token</td>
+      <td> </td>
+      <td>Jenkins internal Token ID for the CES Token</td>
     </tr>
     <tr>
-        <td>CES_Token</td>
-        <td></td>
-        <td>Jenkins internal Token ID for the CES Token</td>
+      <td>HCI_Conn_ID</td>
+      <td> </td>
+      <td>Jenkins internal ID for HCI Connection</td>
     </tr>
     <tr>
-        <td>HCI_Conn_ID</td>
-        <td></td>
-        <td>Jenkins internal ID for HCI Connection</td>
+      <td>HCI_Token</td>
+      <td> </td>
+      <td>Jenkins internal ID for HCI Token</td>
     </tr>
     <tr>
-        <td>HCI_Token</td>
-        <td></td>
-        <td>Jenkins internal ID for HCI Token</td>
+      <td>CC_repository</td>
+      <td> </td>
+      <td>Code Coverage Repository - Check with your Xpediter Code Coverage administrator for the name to use</td>
     </tr>
     <tr>
-        <td>CC_repository</td>
-        <td></td>
-        <td>Code Coverage Repository - Check with your Xpediter Code Coverage administrator for the name to use</td>
+      <td>Git_Project</td>
+      <td> </td>
+      <td>Github (or other Git based repository) project used to store the Topaz for Total Test Projects</td>
     </tr>
-    <tr>
-        <td>Git_Project</td>
-        <td></td>
-        <td>Github (or other Git based repository) project used to store the Topaz for Total Test Projects</td>
-    </tr>
+  </tbody>
 </table>
 
 <h3 id="-loading-the-script-from-github"><a id="Loading the script from GitHub"></a> Loading the script from GitHub</h3>
