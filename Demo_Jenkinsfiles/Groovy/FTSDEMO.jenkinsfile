@@ -360,10 +360,10 @@ node{
                 println "*************************"
             
                 step([$class: 'TotalTestBuilder', 
-                    ccClearStats: false,                // Clear out any existing Code Coverage stats for the given ccSystem and ccTestId
-                    ccRepo: "${CC_repository}",
-                    ccSystem: "${ISPW_Application}", 
-                    ccTestId: "${BUILD_NUMBER}",        // Jenkins environment variable, resolves to build number, i.e. #177 
+                    //ccClearStats: false,                // Clear out any existing Code Coverage stats for the given ccSystem and ccTestId
+                    //ccRepo: "${CC_repository}",
+                    //ccSystem: "${ISPW_Application}", 
+                    //ccTestId: "${BUILD_NUMBER}",        // Jenkins environment variable, resolves to build number, i.e. #177 
                     credentialsId: "${HCI_Token}", 
                     deleteTemp: true,                   // (true|false) Automatically delete any temp files created during the execution
                     hlq: '',                            // Optional - high level qualifier used when allocation datasets
@@ -376,12 +376,13 @@ node{
         }
 
         // Process the Total Test Junit result files into Jenkins
-        junit allowEmptyResults: true, keepLongStdio: true, testResults: "TTTUnit/*.xml"
+        //junit allowEmptyResults: true, keepLongStdio: true, testResults: "TTTUnit/*.xml"
     }
 
     /* 
      This stage retrieve Code Coverage metrics from Xpediter Code Coverage for the test executed in the Pipeline
      */ 
+    /* 
     stage("Collect Coverage Metrics")
     {
             // Code Coverage needs to match the code coverage metrics back to the source code in order for them to be loaded in SonarQube
@@ -397,7 +398,7 @@ node{
             connectionId: "${HCI_Conn_ID}", 
             credentialsId: "${HCI_Token}"])
     }
-
+    */
     /* 
      This stage pushes the Source Code, Test Metrics and Coverage metrics into SonarQube and then checks the status of the SonarQube Quality Gate.  
      If the SonarQube quality date fails, the Pipeline fails and stops
@@ -427,9 +428,9 @@ node{
             // Build the rest of the SonarQube Scanner Properties
             
             // Test and Coverage results
-            def SQ_Scanner_Properties   = " -Dsonar.tests=tests ${SQ_TestResult} -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"
+            def SQ_Scanner_Properties   = " -Dsonar.tests=tests ${SQ_TestResult}" //-Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"
             // SonarQube project to load results into
-            SQ_Scanner_Properties = SQ_Scanner_Properties + " -Dsonar.projectKey=${JOB_NAME} -Dsonar.projectName=${JOB_NAME} -Dsonar.projectVersion=1.0"
+            SQ_Scanner_Properties = SQ_Scanner_Properties + " -Dsonar.projectKey=${JOB_NAME}_TST -Dsonar.projectName=${JOB_NAME}_TST -Dsonar.projectVersion=1.0"
             // Location of the Cobol Source Code to scan
             SQ_Scanner_Properties = SQ_Scanner_Properties + " -Dsonar.sources=${ISPW_Application}\\MF_Source"
             // Location of the Cobol copybooks to scan
