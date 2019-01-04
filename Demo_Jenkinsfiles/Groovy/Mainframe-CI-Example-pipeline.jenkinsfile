@@ -489,6 +489,7 @@ node{
                 error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
             }
         }   
+        */
     }
 
     /* 
