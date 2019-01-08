@@ -1,0 +1,52 @@
+#!/usr/bin/env groovy
+import hudson.model.*
+import hudson.EnvVars
+import groovy.json.JsonSlurper
+import groovy.json.JsonBuilder
+import groovy.json.JsonOutput
+import java.net.URL
+
+//Compuware Environment to connect, need to be defined in Jenkins via Credentials Dialogs and Plugin Dialogs
+String CES_Token         = "Hddrxm0CES"                             //CES Credentials Token
+String HCI_Conn_ID       = "8e0838c8-4445-42c5-b6db-e352d4b2c64a"   //Connection String to HCI      
+String HCI_Token         = "dde8dbfc-7818-436d-8b4b-0101c9734285"   //Credentials for HCI
+
+// XL Release template to trigger / XL Release user to connect with / The
+String XLR_Template         = "A Release from Jenkins"  // XL Release template to invoke at the end of the Jenkins workflow
+String XLR_User             = "xebialabs"               // XL Release user ID. Configured in Jenkins/Manage Jenkins/Configure System/XL Release credentials
+String XLR_Release          = "GENA Q2"
+
+def response
+
+node
+{
+    stage("Functional Test")
+    {
+
+        response = httpRequest acceptType: 'APPLICATION_JSON', 
+            consoleLogResponseBody: true, 
+            contentType: 'APPLICATION_JSON', 
+            customHeaders: [[maskValue: false, 
+                name: 'Authorization', 
+                value: '665fc9fb-39de-428a-8a67-a3619752873d']], 
+                httpMode: 'POST', 
+                requestBody: '''{
+                    "reqType": "addQueued",
+                    "jobName": "HDDRXM0X",
+                    "system": "CWCC",
+                    "profileName": "HDDRXM0X",
+                    "duration": "1",
+                    "samples": "10000",
+                    "finalAction": "continue"
+                    }''', 
+                url: 'http://cwcc.compuware.com:2020/strobe/measurement'
+
+        println "Response: " + response.toString()
+       
+        topazSubmitJclMembers connectionId: "${HCI_Conn_ID}", 
+            credentialsId: "${HCI_Token}", 
+            jclMember: 'HDDRXM0.DEMO.JCL(CWXTJCLC)', 
+            maxConditionCode: '4'
+
+    }
+}
