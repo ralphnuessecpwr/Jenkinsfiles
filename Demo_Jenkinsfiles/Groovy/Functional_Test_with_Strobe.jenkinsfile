@@ -31,13 +31,14 @@ node
                 value: '665fc9fb-39de-428a-8a67-a3619752873d']], 
                 httpMode: 'POST', 
                 requestBody: '''{
-                    "reqType": "addQueued",
+                    "reqType": "addQueue",
+                    "step": "STEP1",
                     "jobName": "HDDRXM0X",
                     "system": "CWCC",
                     "profileName": "HDDRXM0X",
-                    "duration": "1",
+                    "duration": "5",
                     "samples": "10000",
-                    "finalAction": "continue"
+                    "emailto": "ralph.nuesse@compuware.com"
                     }''', 
                 url: 'http://cwcc.compuware.com:2020/strobe/measurement'
 
