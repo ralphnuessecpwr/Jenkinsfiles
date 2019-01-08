@@ -27,13 +27,14 @@ node
                 value: "${CES_Token_Clear}]], 
                 httpMode: 'POST', 
                 requestBody: '''{
-                    "reqType": "addQueued",
+                    "reqType": "addQueue",
+                    "step": "STEP1",
                     "jobName": "HDDRXM0X",
                     "system": "CWCC",
                     "profileName": "HDDRXM0X",
-                    "duration": "1",
+                    "duration": "5",
                     "samples": "10000",
-                    "finalAction": "continue"
+                    "emailto": "ralph.nuesse@compuware.com"
                     }''', 
                 url: 'http://cwcc.compuware.com:2020/strobe/measurement'
 
