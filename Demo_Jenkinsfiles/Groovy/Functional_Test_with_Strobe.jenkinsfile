@@ -1,0 +1,48 @@
+#!/usr/bin/env groovy
+import hudson.model.*
+import hudson.EnvVars
+import groovy.json.JsonSlurper
+import groovy.json.JsonBuilder
+import groovy.json.JsonOutput
+import java.net.URL
+
+//Compuware Environment to connect, need to be defined in Jenkins via Credentials Dialogs and Plugin Dialogs
+String CES_Token         = "71063193-ee67-4b52-890a-58843f33c183"   //CES Credentials Token
+String CES_Token_Clear   = "665fc9fb-39de-428a-8a67-a3619752873d"
+String HCI_Conn_ID       = "196de681-04d7-4170-824f-09a5457c5cda"   //Connection String to HCI      
+String HCI_Token         = "ea48408b-b2be-4810-8f4e-5b5f35977eb1"   //Credentials for HCI
+
+def response
+
+node
+{
+    stage("Functional Test")
+    {
+
+        response = httpRequest acceptType: 'APPLICATION_JSON', 
+            consoleLogResponseBody: true, 
+            contentType: 'APPLICATION_JSON', 
+            customHeaders: [[maskValue: false, 
+                name: 'Authorization', 
+                value: "${CES_Token_Clear}]], 
+                httpMode: 'POST', 
+                requestBody: '''{
+                    "reqType": "addQueued",
+                    "jobName": "HDDRXM0X",
+                    "system": "CWCC",
+                    "profileName": "HDDRXM0X",
+                    "duration": "1",
+                    "samples": "10000",
+                    "finalAction": "continue"
+                    }''', 
+                url: 'http://cwcc.compuware.com:2020/strobe/measurement'
+
+        println "Response: " + response.toString()
+       
+        topazSubmitJclMembers connectionId: "${HCI_Conn_ID}", 
+            credentialsId: "${HCI_Token}", 
+            jclMember: 'HDDRXM0.DEMO.JCL(CWXTJCLC)', 
+            maxConditionCode: '4'
+
+    }
+}
