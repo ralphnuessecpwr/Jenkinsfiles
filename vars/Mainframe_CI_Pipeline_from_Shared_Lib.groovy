@@ -142,7 +142,7 @@ def call(Map pipelineParams)
             //{
                 
                 // Wait for webhook call back from SonarQube.  SonarQube webhook for callback to Jenkins must be configured on the SonarQube server.
-                def sonarGate = waitForQualityGate()
+                //def sonarGate = waitForQualityGate()
                 
                 // Evaluate the status of the Quality Gate
                 //if (sonarGate.status != 'OK')
