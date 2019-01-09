@@ -138,35 +138,34 @@ def call(Map pipelineParams)
             sonarHelper.scan()
 
             // Wait for the results of the SonarQube Quality Gate
-            //timeout(time: 2, unit: 'MINUTES') 
-            //{
-                
+            timeout(time: 2, unit: 'MINUTES') 
+            {                
                 // Wait for webhook call back from SonarQube.  SonarQube webhook for callback to Jenkins must be configured on the SonarQube server.
-                //def sonarGate = waitForQualityGate()
+                def sonarGate = waitForQualityGate()
                 
                 // Evaluate the status of the Quality Gate
-                //if (sonarGate.status != 'OK')
-                //{
-                //    echo "Sonar quality gate failure: ${sonarGate.status}"
-                //    echo "Pipeline will be aborted and ISPW Assignment will be regressed"
+                if (sonarGate.status != 'OK')
+                {
+                    echo "Sonar quality gate failure: ${sonarGate.status}"
+                    echo "Pipeline will be aborted and ISPW Assignment will be regressed"
 
-                //    currentBuild.result = "FAILURE"
+                    currentBuild.result = "FAILURE"
 
-                //    // Send Standard Email
-                //    emailext subject:       '$DEFAULT_SUBJECT',
-                //                body:       '$DEFAULT_CONTENT',
-                //                replyTo:    '$DEFAULT_REPLYTO',
-                //                to:         "${pConfig.mailRecipient}"
+                    // Send Standard Email
+                    emailext subject:       '$DEFAULT_SUBJECT',
+                                body:       '$DEFAULT_CONTENT',
+                                replyTo:    '$DEFAULT_REPLYTO',
+                                to:         "${pConfig.mailRecipient}"
                     
-                //    withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
-                //    {
-                //        //ispwHelper.regressAssignmentList(assignmentList, cesTokenClear)
-                //        ispwHelper.regressAssignment(pConfig.ispwAssignment, cesTokenClear)
-                //    }
+                    withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
+                    {
+                        //ispwHelper.regressAssignmentList(assignmentList, cesTokenClear)
+                        ispwHelper.regressAssignment(pConfig.ispwAssignment, cesTokenClear)
+                    }
 
-                //    error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
-                //}
-            //}   
+                    error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
+                }
+            }   
         }
 
         /* 
