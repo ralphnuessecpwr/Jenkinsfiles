@@ -68,8 +68,6 @@ def initialize(pipelineParams)
                             pConfig
                         )
 
-    tttHelper.initialize()                                            
-
     sonarHelper = new SonarHelper(this, steps, pConfig)
 
     sonarHelper.initialize()
@@ -96,7 +94,6 @@ def call(Map pipelineParams)
         /* Download all sources that are part of the container  */
         stage("Retrieve Mainframe Code")
         {
-
             ispwHelper.downloadSources()
         //}
         
@@ -119,8 +116,9 @@ def call(Map pipelineParams)
         */ 
         //stage("Execute related Unit Tests")
         //{
+            tttHelper.initialize()                                            
             tttHelper.loopThruScenarios()
-            tttHelper.passResultsToJunit()
+            //tttHelper.passResultsToJunit()
         }
 
         /* 
@@ -140,11 +138,11 @@ def call(Map pipelineParams)
             sonarHelper.scan()
 
             // Wait for the results of the SonarQube Quality Gate
-            timeout(time: 2, unit: 'MINUTES') 
-            {
+            //timeout(time: 2, unit: 'MINUTES') 
+            //{
                 
                 // Wait for webhook call back from SonarQube.  SonarQube webhook for callback to Jenkins must be configured on the SonarQube server.
-                def sonarGate = waitForQualityGate()
+                //def sonarGate = waitForQualityGate()
                 
                 // Evaluate the status of the Quality Gate
                 //if (sonarGate.status != 'OK')
@@ -168,7 +166,7 @@ def call(Map pipelineParams)
 
                 //    error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
                 //}
-            }   
+            //}   
         }
 
         /* 
