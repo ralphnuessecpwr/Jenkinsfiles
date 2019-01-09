@@ -118,7 +118,7 @@ def call(Map pipelineParams)
         //{
             tttHelper.initialize()                                            
             tttHelper.loopThruScenarios()
-            tttHelper.passResultsToJunit()
+            //tttHelper.passResultsToJunit()
         }
 
         /* 
