@@ -97,12 +97,6 @@ def call(Map pipelineParams)
         stage("Retrieve Mainframe Code")
         {
 
-            // Clean out any previously downloaded source
-            dir(".\\") 
-            {
-                deleteDir()
-            }
-
             ispwHelper.downloadSources()
         //}
         
