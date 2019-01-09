@@ -96,6 +96,13 @@ def call(Map pipelineParams)
         /* Download all sources that are part of the container  */
         stage("Retrieve Mainframe Code")
         {
+
+            // Clean out any previously downloaded source
+            dir(".\\") 
+            {
+                deleteDir()
+            }
+
             ispwHelper.downloadSources()
         //}
         
