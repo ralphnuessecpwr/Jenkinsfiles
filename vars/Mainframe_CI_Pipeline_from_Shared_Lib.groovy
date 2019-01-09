@@ -139,7 +139,8 @@ def call(Map pipelineParams)
             sonarHelper.scan()
 
             // Wait for the results of the SonarQube Quality Gate
-            timeout(time: 2, unit: 'MINUTES') {
+            timeout(time: 2, unit: 'MINUTES') 
+            {
                 
                 // Wait for webhook call back from SonarQube.  SonarQube webhook for callback to Jenkins must be configured on the SonarQube server.
                 def sonarGate = waitForQualityGate()
@@ -165,7 +166,7 @@ def call(Map pipelineParams)
                 //    }
 
                 //    error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
-                }
+                //}
             }   
         }
 
