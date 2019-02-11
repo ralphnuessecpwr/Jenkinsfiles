@@ -129,6 +129,12 @@ class PipelineConfig implements Serializable
             parmName    = lineToken.get(0).toString()
             parmValue   = lineToken.get(1).toString().trim()
 
+            steps.echo"Parm"
+            steps.echo parmName
+            steps.echo"Value"
+            steps.echo parmValue
+
+
             switch(parmName)
             {
                 case "SQ_SCANNER_NAME":
