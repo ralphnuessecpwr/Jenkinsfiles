@@ -118,12 +118,7 @@ class PipelineConfig implements Serializable
         def parmName
         def parmValue
 
-        //def lines = readConfigFile("${pipelineConfigFile}")
-        def fileText = steps.libraryResource "${configPath}/${pipelineConfigFile}"
-
-        steps.echo "Text Read:"
-        steps.echo fileText
-        def lines = fileText.tokenize("\n")
+        def lines = readConfigFile("${pipelineConfigFile}")
 
         lines.each
         {
@@ -174,8 +169,7 @@ class PipelineConfig implements Serializable
         def parmName
         def parmValue
 
-        //def lines = readConfigFile("${tttGitConfigFile}")
-        def lines = steps.libraryResource "${configPath}/${tttGitConfigFile}"
+        def lines = readConfigFile("${tttGitConfigFile}")
 
         lines.each
         {
@@ -218,11 +212,8 @@ class PipelineConfig implements Serializable
     }
     
     def readConfigFile(String fileName)
-    {
-        def filePath = "${workspace}\\${configPath}\\${fileName}"
-
-        FileHelper fileHelper = new FileHelper()
-
-        return fileHelper.readLines(filePath)
+    {        
+        def fileText = steps.libraryResource "${configPath}/${pipelineConfigFile}"
+        return fileText.tokenize("\n")
     }
 }
