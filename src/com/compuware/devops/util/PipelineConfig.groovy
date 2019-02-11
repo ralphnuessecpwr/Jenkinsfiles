@@ -9,10 +9,6 @@ class PipelineConfig implements Serializable
     def mailListLines
     def mailListMap = [:]
 
-    //private String configGitProject    = "Jenkinsfiles"         // Git Hub Repository containing the configuration files for the pipeline
-    //private String configGitBranch                              // Branch in Git Hub Repository containing the configuration files for the pipeline    
-    //private String configGitPath       = "config"               // Folder in Git Hub Repository containing the configuration files for the pipeline    
-
     private String configPath           = 'pipeline'            // Path containing config files after downloading them from Git Hub Repository 'config\\pipeline'
     private String pipelineConfigFile   = 'pipeline.config'     // Config file containing pipeline configuration
     private String tttGitConfigFile     = 'tttgit.config'       // Config gile containing for TTT projects stroed in Git Hub
