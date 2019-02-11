@@ -45,6 +45,10 @@ class JclSkeleton implements Serializable {
         def jclSkel                 = readSkelFile(iebcopySkel).join("\n")
         
         def tempInputDdStatements   = readSkelFile(iebcopyInDdSkel)
+
+        steps.echo "tempInputDdStatements"
+        steps.echo "-" + tempInputDdStatements + "-"
+
         def copyDdStatements        = []
 
         for(int i=0; i < tempInputDdStatements.size(); i++)
@@ -96,13 +100,9 @@ class JclSkeleton implements Serializable {
 
     def readSkelFile(String fileName)
     {
-        def jclStatements       = []
-        FileHelper fileHelper   = new FileHelper()
-
+        def jclStatements   = []
         def skelFilePath    = "${skeletonPath}\\${fileName}"
-
         def fileText        = steps.libraryResource skelFilePath
-
         def lines           = fileText.tokenize("\n")
         
         lines.each
