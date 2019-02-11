@@ -101,9 +101,8 @@ import java.net.URL
 */
  def gitcheckout(String URL, String Branch, String Credentials, String Folder)
  {
-    println "Scenario " + URL
-    println "Scenario " + Branch
-    println "Scenario " + Credentials
+    println "URL " + URL
+    println "Branch " + Branch
 
     checkout changelog: false, poll: false, 
         scm: [$class: 'GitSCM', 
@@ -299,7 +298,7 @@ node{
      */ 
     stage("Retrieve Tests")
     {
-        Git_Branch = assignmentList[0].toString()
+        //Git_Branch = assignmentList[0].toString()
         echo "Checking out Branch " + Git_Branch
 
         //Retrieve the Tests from Github that match that ISPWW Stream and Application
@@ -430,7 +429,7 @@ node{
             // Test and Coverage results
             def SQ_Scanner_Properties   = " -Dsonar.tests=tests ${SQ_TestResult} -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"
             // SonarQube project to load results into
-            SQ_Scanner_Properties = SQ_Scanner_Properties + " -Dsonar.projectKey=${JOB_NAME} -Dsonar.projectName=${JOB_NAME} -Dsonar.projectVersion=1.0"
+            SQ_Scanner_Properties = SQ_Scanner_Properties + " -Dsonar.projectKey=${JOB_NAME}_TST -Dsonar.projectName=${JOB_NAME}_TST -Dsonar.projectVersion=1.0"
             // Location of the Cobol Source Code to scan
             SQ_Scanner_Properties = SQ_Scanner_Properties + " -Dsonar.sources=${ISPW_Application}\\MF_Source"
             // Location of the Cobol copybooks to scan
@@ -441,7 +440,7 @@ node{
             // Call the SonarQube Scanner with properties defined above
             bat "${scannerHome}/bin/sonar-scanner" + SQ_Scanner_Properties
         }
-    
+        /*
         // Wait for the results of the SonarQube Quality Gate
         timeout(time: 2, unit: 'MINUTES') {
             
@@ -489,11 +488,13 @@ node{
                 error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
             }
         }   
+        */
     }
 
     /* 
      This stage triggers a XL Release Pipeline that will move code into the high levels in the ISPW Lifecycle  
      */ 
+    /* 
     stage("Start release in XL Release")
     {
             // Use the Path Number to determine what QA Path to Promote the code from in ISPW.  This example has seperate QA paths in ISPW Lifecycle (i.e. DEV1->QA1->STG->PRD / DEV2->QA2->STG->PRD)
@@ -509,4 +510,5 @@ node{
             [propertyName: 'ISPW_RELEASE_ID', propertyValue: "${ISPW_Release}"],     // ISPW Release value from the ISPW Webhook
             [propertyName: 'CES_Token', propertyValue: "${CES_Token}"]]
     }
+    */
 }
