@@ -120,11 +120,12 @@ class PipelineConfig implements Serializable
 
         def lines = readConfigFile("${pipelineConfigFile}")
 
-        steps.echo "Pipeline Lines Returned"
-        steps.echo lines.toString()
-
         lines.each
         {
+            lineToken   = it.toString().tokenize("=")
+            parmName    = lineToken.get(0).toString()
+            parmValue   = lineToken.get(1).toString().trim()
+
             switch(parmName)
             {
                 case "SQ_SCANNER_NAME":
@@ -169,9 +170,6 @@ class PipelineConfig implements Serializable
         def parmValue
 
         def lines = readConfigFile("${tttGitConfigFile}")
-
-        steps.echo "TTT Lines Returned"
-        steps.echo lines.toString()
 
         lines.each
         {
