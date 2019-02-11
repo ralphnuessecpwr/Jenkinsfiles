@@ -17,8 +17,7 @@ IspwHelper      ispwHelper
 TttHelper       tttHelper
 SonarHelper     sonarHelper 
 
-def ResponseContentSupplier response3
-//def assignmentList = []
+String          mailMessageExtension
 
 def initialize(pipelineParams)
 {
@@ -139,9 +138,14 @@ def call(Map pipelineParams)
                     echo "Sonar quality gate failure: ${sonarGate.status}"
                     echo "Pipeline will be aborted and ISPW Assignment will be regressed"
 
+                    mailMessageExtension = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
                     currentBuild.result = "FAILURE"
 
                     error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
+                }
+                else
+                {
+                    mailMessageExtension = "Generated code passed the Quality gate and may be promoted."
                 }
             }   
         }
@@ -153,7 +157,7 @@ def call(Map pipelineParams)
         {
             // Send Standard Email
             emailext subject:       '$DEFAULT_SUBJECT',
-                        body:       '$DEFAULT_CONTENT \n' + 'Promote passed the Quality gate and a new XL Release was started.',
+                        body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,
                         replyTo:    '$DEFAULT_REPLYTO',
                         to:         "${pConfig.mailRecipient}"
 
