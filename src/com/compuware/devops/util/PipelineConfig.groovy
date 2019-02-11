@@ -152,7 +152,7 @@ class PipelineConfig implements Serializable
                     ispwRuntime     = parmValue
                     break;
                 default:
-                    steps.echo "Found unknown Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
+                    steps.echo "Found unknown Pipeline Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
                     break;
             }
         }
@@ -182,7 +182,7 @@ class PipelineConfig implements Serializable
                     gitBranch    = parmValue
                     break;
                 default:
-                    steps.echo "Found unknown Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
+                    steps.echo "Found unknown TTT Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
                     break;
             }
         }
