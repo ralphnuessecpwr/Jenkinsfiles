@@ -120,6 +120,9 @@ class PipelineConfig implements Serializable
 
         def lines = readConfigFile("${pipelineConfigFile}")
 
+        steps.echo "Pipeline Lines Returned"
+        steps.echo lines.toString()
+
         lines.each
         {
             switch(parmName)
@@ -167,6 +170,9 @@ class PipelineConfig implements Serializable
 
         def lines = readConfigFile("${tttGitConfigFile}")
 
+        steps.echo "TTT Lines Returned"
+        steps.echo lines.toString()
+
         lines.each
         {
             lineToken   = it.toString().tokenize("=")
@@ -210,9 +216,8 @@ class PipelineConfig implements Serializable
     def readConfigFile(String fileName)
     {        
         def filePath    = "${configPath}/${fileName}"
-        steps.echo "Reading file " + filePath
         def fileText    = steps.libraryResource filePath
-        steps.echo "Read content " + fileText
+
         return fileText.tokenize("\n")
     }
 }
