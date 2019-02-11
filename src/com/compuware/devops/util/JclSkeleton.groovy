@@ -46,9 +46,6 @@ class JclSkeleton implements Serializable {
         
         def tempInputDdStatements   = readSkelFile(iebcopyInDdSkel)
 
-        steps.echo "tempInputDdStatements"
-        steps.echo "-" + tempInputDdStatements + "-"
-
         def copyDdStatements        = []
 
         for(int i=0; i < tempInputDdStatements.size(); i++)
@@ -58,13 +55,7 @@ class JclSkeleton implements Serializable {
 
         def inputDdJcl      = tempInputDdStatements.join("\n")
 
-        steps.echo "inputDdJcl"
-        steps.echo "-" + inputDdJcl + "-"
-
         def inputCopyJcl    = copyDdStatements.join("\n")
-
-        steps.echo "inputCopyJcl"
-        steps.echo "-" + inputCopyJcl + "-"
 
         jclSkel             = jclSkel.replace("<source_copy_pds_list>", inputDdJcl)
         jclSkel             = jclSkel.replace("<source_input_dd_list>", inputCopyJcl)
