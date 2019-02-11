@@ -9,11 +9,11 @@ class PipelineConfig implements Serializable
     def mailListLines
     def mailListMap = [:]
 
-    private String configGitProject    = "Jenkinsfiles"         // Git Hub Repository containing the configuration files for the pipeline
-    private String configGitBranch                              // Branch in Git Hub Repository containing the configuration files for the pipeline    
-    private String configGitPath       = "config"               // Folder in Git Hub Repository containing the configuration files for the pipeline    
+    //private String configGitProject    = "Jenkinsfiles"         // Git Hub Repository containing the configuration files for the pipeline
+    //private String configGitBranch                              // Branch in Git Hub Repository containing the configuration files for the pipeline    
+    //private String configGitPath       = "config"               // Folder in Git Hub Repository containing the configuration files for the pipeline    
 
-    private String configPath           = 'config\\pipeline'    // Path containing config files after downloading them from Git Hub Repository
+    private String configPath           = 'pipeline'            // Path containing config files after downloading them from Git Hub Repository 'config\\pipeline'
     private String pipelineConfigFile   = 'pipeline.config'     // Config file containing pipeline configuration
     private String tttGitConfigFile     = 'tttgit.config'       // Config gile containing for TTT projects stroed in Git Hub
 
@@ -61,7 +61,7 @@ class PipelineConfig implements Serializable
 
     def PipelineConfig(steps, workspace, params, mailListLines)
     {
-        this.configGitBranch    = params.Config_Git_Branch
+        //this.configGitBranch    = params.Config_Git_Branch
         this.steps              = steps
         this.workspace          = workspace
         this.mailListLines      = mailListLines
@@ -99,9 +99,9 @@ class PipelineConfig implements Serializable
             steps.deleteDir()
         }
 
-        GitHelper gitHelper     = new GitHelper(steps)
+        //GitHelper gitHelper     = new GitHelper(steps)
 
-        gitHelper.checkoutPath(gitUrl, configGitBranch, configGitPath, gitCredentials, configGitProject)
+        //gitHelper.checkoutPath(gitUrl, configGitBranch, configGitPath, gitCredentials, configGitProject)
 
         setServerConfig()
 
@@ -117,7 +117,8 @@ class PipelineConfig implements Serializable
         def parmName
         def parmValue
 
-        def lines = readConfigFile("${pipelineConfigFile}")
+        //def lines = readConfigFile("${pipelineConfigFile}")
+        def lines = steps.libraryResource "${configPath}/${pipelineConfigFile}"
 
         lines.each
         {
@@ -167,7 +168,9 @@ class PipelineConfig implements Serializable
         def lineToken
         def parmName
         def parmValue
-        def lines = readConfigFile("${tttGitConfigFile}")
+
+        //def lines = readConfigFile("${tttGitConfigFile}")
+        def lines = steps.libraryResource "${configPath}/${tttGitConfigFile}"
 
         lines.each
         {
