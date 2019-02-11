@@ -7,7 +7,7 @@ class JclSkeleton implements Serializable {
 
     def steps
 
-    private String skeletonPath     = 'config\\skels'       // Path containing JCL "skeletons" after downloading them from Git Hub Repository
+    private String skeletonPath     = 'skels'               // Path containing JCL "skeletons" after downloading them from Git Hub Repository 'config\\skels'
     private String jobCardSkel      = 'JobCard.jcl'         // Skeleton for job cards
     private String iebcopySkel      = 'iebcopy.skel'        // Skeleton for IEBCOPY job
     private String iebcopyInDdSkel  = 'iebcopyInDd.skel'    // Skeleton for input DDs for IEBCOPY job
@@ -99,9 +99,11 @@ class JclSkeleton implements Serializable {
         def jclStatements       = []
         FileHelper fileHelper   = new FileHelper()
 
-        def skelFilePath    = "${workspace}\\${skeletonPath}\\${fileName}"
+        def skelFilePath    = "${skeletonPath}\\${fileName}"
 
-        def lines           = fileHelper.readLines(skelFilePath)
+        def fileText        = libraryResource skelFilePath
+
+        def lines           = fileText.tokenize("\n")
         
         lines.each
         {
