@@ -122,6 +122,9 @@ class PipelineConfig implements Serializable
 
         lines.each
         {
+            steps.echo "Line:"
+            steps.echo it.toString()
+
             lineToken   = it.toString().tokenize("=")
             parmName    = lineToken.get(0).toString()
             parmValue   = lineToken.get(1).toString().trim()
@@ -173,6 +176,9 @@ class PipelineConfig implements Serializable
 
         lines.each
         {
+            steps.echo "Line:"
+            steps.echo it.toString()
+
             lineToken   = it.toString().tokenize("=")
             parmName    = lineToken.get(0).toString()
             parmValue   = lineToken.get(1).toString().trim()
