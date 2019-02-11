@@ -89,13 +89,8 @@ def call(Map pipelineParams)
         /* Download all sources that are part of the container  */
         stage("Retrieve Mainframe Code")
         {
-            ispwHelper.downloadSources()
-        //}
-        
-        /* Download all copybooks in case, not all copybook are part of the container  */
-        //stage("Retrieve Copy Books From ISPW")
-        //{
-            ispwHelper.downloadCopyBooks("${workspace}")
+            ispwHelper.downloadSources(pConfig.ispwSrcLevel)
+            ispwHelper.downloadCopyBooks(workspace)
         }
         
         /* Retrieve the Tests from Github that match that ISPWW Stream and Application */
