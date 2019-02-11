@@ -101,7 +101,7 @@ class JclSkeleton implements Serializable {
 
         def skelFilePath    = "${skeletonPath}\\${fileName}"
 
-        def fileText        = libraryResource skelFilePath
+        def fileText        = steps.libraryResource skelFilePath
 
         def lines           = fileText.tokenize("\n")
         
