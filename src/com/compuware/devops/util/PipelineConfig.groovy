@@ -119,7 +119,10 @@ class PipelineConfig implements Serializable
         def parmValue
 
         //def lines = readConfigFile("${pipelineConfigFile}")
-        def lines = steps.libraryResource "${configPath}/${pipelineConfigFile}"
+        def fileText = steps.libraryResource "${configPath}/${pipelineConfigFile}"
+
+        steps.echo "Text Read:"
+        steps.echo fileText
 
         lines.each
         {
