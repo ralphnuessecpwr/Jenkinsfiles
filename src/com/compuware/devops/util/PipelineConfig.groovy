@@ -122,19 +122,6 @@ class PipelineConfig implements Serializable
 
         lines.each
         {
-            steps.echo "Line:"
-            steps.echo it.toString()
-
-            lineToken   = it.toString().tokenize("=")
-            parmName    = lineToken.get(0).toString()
-            parmValue   = lineToken.get(1).toString().trim()
-
-            steps.echo"Parm"
-            steps.echo parmName
-            steps.echo"Value"
-            steps.echo parmValue
-
-
             switch(parmName)
             {
                 case "SQ_SCANNER_NAME":
@@ -182,9 +169,6 @@ class PipelineConfig implements Serializable
 
         lines.each
         {
-            steps.echo "Line:"
-            steps.echo it.toString()
-
             lineToken   = it.toString().tokenize("=")
             parmName    = lineToken.get(0).toString()
             parmValue   = lineToken.get(1).toString().trim()
@@ -225,7 +209,7 @@ class PipelineConfig implements Serializable
     
     def readConfigFile(String fileName)
     {        
-        def fileText = steps.libraryResource "${configPath}/${pipelineConfigFile}"
+        def fileText = steps.libraryResource "${configPath}/${fileName}"
         return fileText.tokenize("\n")
     }
 }
