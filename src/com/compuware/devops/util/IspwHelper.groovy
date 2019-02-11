@@ -46,7 +46,7 @@ class IspwHelper implements Serializable
     }
 
     /* Download sources for the ISPW Set which triggered the current pipeline */
-    def downloadSources()
+    def downloadSources(String ispwLevel)
     {
         steps.checkout([
             $class:             'IspwContainerConfiguration', 
@@ -57,7 +57,7 @@ class IspwHelper implements Serializable
             containerType:      "${ispwContainerType}",     // 0-Assignment 1-Release 2-Set
             ispwDownloadAll:    true,                              // false will not download files that exist in the workspace and haven't previous changed
             serverConfig:       '',                                 // ISPW runtime config.  if blank ISPW will use the default runtime config
-            serverLevel:        "${ispwTargetLevel}"                                  // level to download the components from
+            serverLevel:        "${ispwLevel}"                                  // level to download the components from
         ])
     }
 
