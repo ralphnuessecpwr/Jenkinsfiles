@@ -209,7 +209,9 @@ class PipelineConfig implements Serializable
     
     def readConfigFile(String fileName)
     {        
-        def fileText = steps.libraryResource "${configPath}/${fileName}"
+        filePath        = "${configPath}/${fileName}"
+        def fileText    = steps.libraryResource "${filePath}"
+        
         return fileText.tokenize("\n")
     }
 }
