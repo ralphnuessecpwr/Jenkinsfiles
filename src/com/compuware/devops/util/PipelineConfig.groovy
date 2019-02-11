@@ -123,6 +123,7 @@ class PipelineConfig implements Serializable
 
         steps.echo "Text Read:"
         steps.echo fileText
+        def lines = fileText.tokenize("\n")
 
         lines.each
         {
