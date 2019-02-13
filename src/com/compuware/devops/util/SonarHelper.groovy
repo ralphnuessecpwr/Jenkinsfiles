@@ -38,7 +38,7 @@ class SonarHelper implements Serializable {
                 project     = determineUtProjectName()
                 resultPath  = determineUtResultPath()
                 break;
-            case "promote"
+            case "promote":
                 project     = determineFtProjectName()
                 resultPath  = determineFtResultPath()
                 break;
