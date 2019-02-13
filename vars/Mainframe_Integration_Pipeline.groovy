@@ -87,7 +87,7 @@ def call(Map pipelineParams)
         }
         
         /* Retrieve the Tests from Github that match that ISPW Stream and Application */
-        stage("Execute Unit Tests")
+        stage("Execute Integration Tests")
         {            
             def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttFtRepo}"
             
@@ -106,9 +106,9 @@ def call(Map pipelineParams)
             /*sonarHelper.scan()*/
             def scannerHome     = tool "scanner"
             
-            def SQ_TestResult   = '-Dsonar.testExecutionReportPaths=C:\\Users\\pfhsxk0\\.jenkins\\workspace\\RNU_Functional_Test\\TestResults\\SonarTestReport.xml'
+            def SQ_TestResult   = '-Dsonar.testExecutionReportPaths=TestResults\\SonarTestReport.xml'
 
-            def TestFolder      = '"C:\\Users\\pfhsxk0\\.jenkins\\workspace\\RNU_Functional_Test\\FTSDEMO_RXN3_Functional_Tests\\Functional Test"'
+            def TestFolder      = '"FTSDEMO_RXN3_Functional_Tests\\Functional Test"'
 
             withSonarQubeEnv("localhost") 
             {
