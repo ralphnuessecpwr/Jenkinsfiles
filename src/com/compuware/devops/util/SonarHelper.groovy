@@ -34,11 +34,11 @@ class SonarHelper implements Serializable {
 
         switch(pipelineType)
         {
-            case "generate":
+            case "UT":
                 project     = determineUtProjectName()
                 resultPath  = determineUtResultPath()
                 break;
-            case "promote":
+            case "FT":
                 project     = determineFtProjectName()
                 resultPath  = determineFtResultPath()
                 break;
