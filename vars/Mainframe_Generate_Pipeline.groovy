@@ -95,7 +95,7 @@ def call(Map pipelineParams)
         /* Retrieve the Tests from Github that match that ISPWW Stream and Application */
         stage("Execute Unit Tests")
         {            
-            def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttFtRepo}"
+            def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttUtRepo}"
             
             gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
         //}
