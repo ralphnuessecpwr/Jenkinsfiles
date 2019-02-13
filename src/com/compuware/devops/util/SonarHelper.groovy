@@ -32,7 +32,7 @@ class SonarHelper implements Serializable {
         def project
         def resultPath
 
-        switch(pipeLineType)
+        switch(pipelineType)
         {
             case "generate":
                 project     = determineUtProjectName()
