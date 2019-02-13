@@ -126,6 +126,9 @@ class PipelineConfig implements Serializable
 
         lines.each
         {
+            steps.echo "Config read:"
+            steps.echo it.toString()
+
             lineToken   = it.toString().tokenize("=")
             parmName    = lineToken.get(0).toString()
             parmValue   = lineToken.get(1).toString().trim()
@@ -142,6 +145,7 @@ class PipelineConfig implements Serializable
                     sqServerUrl     = parmValue
                     break;
                 case "XA_TESTER_SERVER_URL":
+                    steps.echo "Found XATester: " + parmValue
                     xaTesterUrl     = parmValue
                     break;
                 case "MF_SOURCE_FOLDER":
