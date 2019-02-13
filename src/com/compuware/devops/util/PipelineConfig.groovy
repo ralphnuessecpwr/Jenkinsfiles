@@ -139,7 +139,7 @@ class PipelineConfig implements Serializable
                 case "SQ_SERVER_URL":
                     sqServerUrl     = parmValue
                     break;
-                case "XA_TESTER_SERVER_URL"
+                case "XA_TESTER_SERVER_URL":
                     xaTesterUrl     = parmValue
                     break;
                 case "MF_SOURCE_FOLDER":
