@@ -47,6 +47,8 @@ class PipelineConfig implements Serializable
     public String gitCredentials    
     public String gitUrl            
     public String gitTttRepo        
+    public String gitTttUtRepo        
+    public String gitTttFtRepo        
 
     public String cesTokenId        
     public String hciConnId         
