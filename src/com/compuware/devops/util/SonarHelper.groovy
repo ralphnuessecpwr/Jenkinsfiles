@@ -42,7 +42,7 @@ class SonarHelper implements Serializable {
                 project     = determineFtProjectName()
                 resultPath  = determineFtResultPath()
                 break;
-            default
+            default:
                 steps.echo "SonarHelper.scan received wrong pipelineType: " + pipelineType
                 steps.echo "Valid types are 'UT' or FT"
                 break;
