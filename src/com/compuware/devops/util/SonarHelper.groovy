@@ -68,7 +68,7 @@ class SonarHelper implements Serializable {
         // Loop through each result Total Test results file found
         tttListOfResults.each 
         {
-            testResults         = testResult + "TTTSonar/" + it.name +  ',' // Append the results file to the property
+            testResults         = testResults + "TTTSonar/" + it.name +  ',' // Append the results file to the property
         }
 
         return testResults
