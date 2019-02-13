@@ -51,7 +51,7 @@ class SonarHelper implements Serializable {
         runScan(resultPath, project)
     }
 
-    String determineUtProjectName()
+    private String determineUtProjectName()
     {
         return pConfig.ispwOwner + '_' + pConfig.ispwStream + '_' + pConfig.ispwApplication
     }
@@ -68,7 +68,7 @@ class SonarHelper implements Serializable {
         // Loop through each result Total Test results file found
         tttListOfResults.each 
         {
-            testResults         = sqTestResult + "TTTSonar/" + it.name +  ',' // Append the results file to the property
+            testResults         = testResult + "TTTSonar/" + it.name +  ',' // Append the results file to the property
         }
 
         return testResults
@@ -81,7 +81,7 @@ class SonarHelper implements Serializable {
         runScan(testResults, script.JOB_NAME)
     }
 
-    def runScan(testResultPath, projectName)
+    private runScan(testResultPath, projectName)
     {
         steps.withSonarQubeEnv("${pConfig.sqServerName}")       // 'localhost' is the name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section
         {
