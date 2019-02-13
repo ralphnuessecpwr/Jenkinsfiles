@@ -22,6 +22,8 @@ class PipelineConfig implements Serializable
     public String sqScannerName                                 // Sonar Qube Scanner Tool name as defined in "Manage Jenkins" -> "Global Tool Configuration" -> "SonarQube scanner"
     public String sqServerName                                  // Sonar Qube Scanner Server name as defined in "Manage Jenkins" -> "Configure System" -> "SonarQube servers"
     public String sqServerUrl                                   // URL to the SonarQube server
+    public String xaTesterUrl                                   // URL to the XATester repository
+    public String xaTesterEnvId                                 // XATester Environment ID
     public String mfSourceFolder                                // Folder containing sources after downloading from ISPW
     public String xlrTemplate                                   // XL Release template to start
     public String xlrUser                                       // XL Release user to use
@@ -62,6 +64,8 @@ class PipelineConfig implements Serializable
         this.workspace          = workspace
         this.mailListLines      = mailListLines
 
+        this.xaTesterEnvId      = "5b5f2a71787be73b59238d7b"
+
         this.ispwStream         = params.ISPW_Stream
         this.ispwApplication    = params.ISPW_Application
         this.ispwRelease        = params.ISPW_Release
@@ -80,6 +84,8 @@ class PipelineConfig implements Serializable
         
         this.gitUrl             = "https://github.com/${gitProject}"
         this.gitTttRepo         = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
+        this.gitTttUtRepo       = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
+        this.gitTttFtRepo       = "${ispwStream}_${ispwApplication}_Functional_Tests.git"
 
         this.cesTokenId         = params.CES_Token       
         this.hciConnId          = params.HCI_Conn_ID
@@ -132,6 +138,9 @@ class PipelineConfig implements Serializable
                     break;
                 case "SQ_SERVER_URL":
                     sqServerUrl     = parmValue
+                    break;
+                case "XA_TESTER_SERVER_URL"
+                    xaTesterUrl     = parmValue
                     break;
                 case "MF_SOURCE_FOLDER":
                     mfSourceFolder  = parmValue

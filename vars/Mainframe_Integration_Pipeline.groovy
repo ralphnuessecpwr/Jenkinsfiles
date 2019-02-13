@@ -61,12 +61,6 @@ def initialize(pipelineParams)
                             pConfig
                         )
 
-    tttHelper   = new   TttHelper(
-                            this,
-                            steps,
-                            pConfig
-                        )
-
     sonarHelper = new SonarHelper(this, steps, pConfig)
 
     sonarHelper.initialize()
@@ -98,30 +92,16 @@ def call(Map pipelineParams)
             def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttFtRepo}"
             
             gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
-        //}
 
-        /* 
-        This stage executes any Total Test Projects related to the mainframe source that was downloaded
-        */ 
-        //stage("Execute related Unit Tests")
-        //{
-            tttHelper.initialize()                                            
-            tttHelper.loopThruScenarios()
-            //tttHelper.passResultsToJunit()
+            ///C:\\Users\\pfhsxk0\\.jenkins\\workspace\\RNU_Functional_Test
+            bat '''
+                cd C:\\TopazCLI190301
+                C:\\TopazCLI190301\\TotalTestFTCLI.bat -e ''' + pConfig.xaTesterEnvId + ''' -f . -s ''' + pConfig.xaTesterUrl +''' -u HDDRXM0 -p CPWR1901 -r ''' + workspace + ''' -R -x -S MF_Source -g TestResults -G -v 6
+                '''
+
         }
 
-        /* 
-        This stage retrieve Code Coverage metrics from Xpediter Code Coverage for the test executed in the Pipeline
-        */ 
-        stage("Collect Metrics")
-        {
-            tttHelper.collectCodeCoverageResults()
-        }
-
-        /* 
-        This stage pushes the Source Code, Test Metrics and Coverage metrics into SonarQube and then checks the status of the SonarQube Quality Gate.  
-        If the SonarQube quality date fails, the Pipeline fails and stops
-        */ 
+        /*
         stage("Check SonarQube Quality Gate") 
         {
             sonarHelper.scan()
@@ -149,10 +129,11 @@ def call(Map pipelineParams)
                 }
             }   
         }
-
+        */
         /* 
         This stage triggers a XL Release Pipeline that will move code into the high levels in the ISPW Lifecycle  
-        */ 
+        */
+        /* 
         stage("Send Mail")
         {
             // Send Standard Email
@@ -161,6 +142,7 @@ def call(Map pipelineParams)
                         replyTo:    '$DEFAULT_REPLYTO',
                         to:         "${pConfig.mailRecipient}"
 
-        }        
+        } 
+        */       
     }
 }
