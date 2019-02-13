@@ -112,7 +112,7 @@ def call(Map pipelineParams)
 
             withSonarQubeEnv("localhost") 
             {
-                def SQ_Tests                = ' -Dsonar.tests=".\\FTSDEMO_RXN3_Functional_Tests\\Functional Test" ${SQ_TestResult}'
+                def SQ_Tests                = ' -Dsonar.tests=".\\FTSDEMO_RXN3_Functional_Tests\\Functional Test "' + "${SQ_TestResult}"
                 def SQ_ProjectKey           = " -Dsonar.projectKey=RNU_Functional_Tests -Dsonar.projectName=RNU_Functional_Tests -Dsonar.projectVersion=1.0"
                 def SQ_Source               = " -Dsonar.sources=MF_Source"
                 def SQ_Copybook             = " -Dsonar.cobol.copy.directories=MF_Source"
