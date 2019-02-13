@@ -96,16 +96,30 @@ def call(Map pipelineParams)
             /* Execute TTT unctional Test */
             bat '''
                 cd C:\\TopazCLI190301
-                C:\\TopazCLI190301\\TotalTestFTCLI.bat -e ''' + pConfig.xaTesterEnvId + ''' -f . -s ''' + pConfig.xaTesterUrl +''' -u HDDRXM0 -p CPWR1901 -r ''' + workspace + ''' -R -x -S MF_Source -g TestResults -G -v 6
+                C:\\TopazCLI190301\\TotalTestFTCLI.bat -e ''' + pConfig.xaTesterEnvId + ''' -f . -s ''' + pConfig.xaTesterUrl +''' -u HDDRXM0 -p CPWR1901 -r ''' + workspace + ''' -R -x -S MF_Source -g TestResults -G -v 5
                 '''
 
         }
 
-        /*
         stage("Check SonarQube Quality Gate") 
         {
-            sonarHelper.scan()
+            /*sonarHelper.scan()*/
+            def scannerHome     = tool "scanner"
+            
+            def SQ_TestResult   = '-Dsonar.testExecutionReportPaths=C:\\Users\\pfhsxk0\\.jenkins\\workspace\\RNU_Functional_Test\\TestResults\\SonarTestReport.xml'
 
+            def TestFolder      = '"C:\\Users\\pfhsxk0\\.jenkins\\workspace\\RNU_Functional_Test\\FTSDEMO_RXN3_Functional_Tests\\Functional Test"'
+
+            withSonarQubeEnv("localhost") 
+            {
+                def SQ_Tests                = " -Dsonar.tests=${TestFolder} ${SQ_TestResult}"
+                def SQ_ProjectKey           = " -Dsonar.projectKey=RNU_Functional_Tests -Dsonar.projectName=RNU_Functional_Tests -Dsonar.projectVersion=1.0"
+                def SQ_Source               = " -Dsonar.sources=MF_Source"
+                def SQ_Copybook             = " -Dsonar.cobol.copy.directories=MF_Source"
+                def SQ_Cobol_conf           = " -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub -Dsonar.cobol.copy.suffixes=cpy -Dsonar.sourceEncoding=UTF-8"
+                bat "${scannerHome}/bin/sonar-scanner" + SQ_Tests + SQ_ProjectKey + SQ_Source + SQ_Copybook + SQ_Cobol_conf
+            }
+            /*
             // Wait for the results of the SonarQube Quality Gate
             timeout(time: 2, unit: 'MINUTES') 
             {                
@@ -127,9 +141,10 @@ def call(Map pipelineParams)
                 {
                     mailMessageExtension = "Generated code passed the Quality gate and may be promoted."
                 }
-            }   
+            } 
+            */  
         }
-        */
+
         /* 
         This stage triggers a XL Release Pipeline that will move code into the high levels in the ISPW Lifecycle  
         */
