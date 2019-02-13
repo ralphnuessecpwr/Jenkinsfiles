@@ -86,14 +86,14 @@ def call(Map pipelineParams)
             ispwHelper.downloadCopyBooks(workspace)
         }
         
-        /* Retrieve the Tests from Github that match that ISPWW Stream and Application */
+        /* Retrieve the Tests from Github that match that ISPW Stream and Application */
         stage("Execute Unit Tests")
         {            
             def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttFtRepo}"
             
             gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
 
-            ///C:\\Users\\pfhsxk0\\.jenkins\\workspace\\RNU_Functional_Test
+            /* Execute TTT unctional Test */
             bat '''
                 cd C:\\TopazCLI190301
                 C:\\TopazCLI190301\\TotalTestFTCLI.bat -e ''' + pConfig.xaTesterEnvId + ''' -f . -s ''' + pConfig.xaTesterUrl +''' -u HDDRXM0 -p CPWR1901 -r ''' + workspace + ''' -R -x -S MF_Source -g TestResults -G -v 6

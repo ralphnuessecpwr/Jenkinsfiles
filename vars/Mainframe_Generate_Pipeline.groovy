@@ -124,7 +124,7 @@ def call(Map pipelineParams)
         */ 
         stage("Check SonarQube Quality Gate") 
         {
-            sonarHelper.scan()
+            sonarHelper.scan("UT")
 
             // Wait for the results of the SonarQube Quality Gate
             timeout(time: 2, unit: 'MINUTES') 
