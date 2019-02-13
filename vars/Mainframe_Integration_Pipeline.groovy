@@ -108,7 +108,7 @@ def call(Map pipelineParams)
             
             def SQ_TestResult   = '-Dsonar.testExecutionReportPaths=TestResults\\SonarTestReport.xml'
 
-            def TestFolder      = '"FTSDEMO_RXN3_Functional_Tests\\FTSDEMO_RXN3_Functional_Tests\\Functional Test"'
+            def TestFolder      = '".\\FTSDEMO_RXN3_Functional_Tests\\Functional Test"'
 
             withSonarQubeEnv("localhost") 
             {
