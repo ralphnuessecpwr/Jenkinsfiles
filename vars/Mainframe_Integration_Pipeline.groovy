@@ -76,6 +76,12 @@ def call(Map pipelineParams)
     {
         stage("Initialization")
         {
+            
+            dir(".\\") 
+            {
+                deleteDir()
+            }
+
             initialize(pipelineParams) 
         }
                 
