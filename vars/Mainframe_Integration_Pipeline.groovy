@@ -106,13 +106,15 @@ def call(Map pipelineParams)
             /*sonarHelper.scan()*/
             def scannerHome     = tool "scanner"
             
-            def SQ_TestResult   = '-Dsonar.testExecutionReportPaths=TestResults\\SonarTestReport.xml'
+            def SQ_TestResult   = ' -Dsonar.testExecutionReportPaths=TestResults\\SonarTestReport.xml'
 
-            def TestFolder      = '".\\FTSDEMO_RXN3_Functional_Tests\\Functional Test"'
+            //def TestFolder      = '"C:\\Users\\pfhsxk0\\.jenkins\\workspace\\RNU_Functional_Test\\TTT_Demo\\Functional Test"'
+            //def TestFolder      = '".\\RNU_Functional_Test\\TTT_Demo\\Functional Test"'
 
             withSonarQubeEnv("localhost") 
             {
-                def SQ_Tests                = ' -Dsonar.tests=".\\FTSDEMO_RXN3_Functional_Tests\\Functional Test" ' + SQ_TestResult}
+                //" -Dsonar.tests=${TestFolder} ${SQ_TestResult}"
+                def SQ_Tests                = ' -Dsonar.tests=".\\FTSDEMO_RXN3_Functional_Tests\\Functional Test" ' + SQ_TestResult
                 def SQ_ProjectKey           = " -Dsonar.projectKey=RNU_Functional_Tests -Dsonar.projectName=RNU_Functional_Tests -Dsonar.projectVersion=1.0"
                 def SQ_Source               = " -Dsonar.sources=MF_Source"
                 def SQ_Copybook             = " -Dsonar.cobol.copy.directories=MF_Source"
