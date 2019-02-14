@@ -11,6 +11,7 @@ class IspwHelper implements Serializable
 
     def String ispwUrl
     def String ispwRuntime
+    def String ispwStream
     def String ispwApplication
     def String ispwRelease
     def String ispwContainer
