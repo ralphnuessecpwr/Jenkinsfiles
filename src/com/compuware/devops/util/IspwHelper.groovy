@@ -59,7 +59,7 @@ class IspwHelper implements Serializable
                     credentialsId: "${hciTokenId}",      
                     folderName: '', 
                     ispwDownloadAll: true, 
-                    levelOption: '1', 
+                    levelOption: '0', 
                     serverApplication: "${ispwApplication}"
                     serverConfig: "${ispwRuntime}", 
                     serverLevel: "${ispwLevel}", 
