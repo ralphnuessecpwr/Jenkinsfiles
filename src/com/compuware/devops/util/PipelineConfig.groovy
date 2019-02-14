@@ -142,7 +142,6 @@ class PipelineConfig implements Serializable
                     sqServerUrl     = parmValue
                     break;
                 case "XA_TESTER_SERVER_URL":
-                    steps.echo "Found XATester: " + parmValue
                     xaTesterUrl     = parmValue
                     break;
                 case "MF_SOURCE_FOLDER":

@@ -46,6 +46,43 @@ class IspwHelper implements Serializable
     }
 
     /* Download sources for the ISPW Set which triggered the current pipeline */
+    def downloadAllSources(String ispwLevel)
+    {
+
+        steps.checkout( 
+            changelog: false, 
+            poll: false, 
+            scm: [
+                $class: 'IspwConfiguration', 
+                    componentType: 'COB, COPY', 
+                    connectionId: "${hciConnId}", 
+                    credentialsId: "${hciTokenId}",      
+                    folderName: '', 
+                    ispwDownloadAll: true, 
+                    levelOption: '1', 
+                    serverApplication: "${ispwApplication}"
+                    serverConfig: "${ispwRuntime}", 
+                    serverLevel: "${ispwLevel}", 
+                    serverStream: "${ispwStream}"
+                ]
+        )
+
+        steps.checkout([
+            $class:             'IspwContainerConfiguration', 
+            componentType:      '',                                 // optional filter for component types in ISPW
+            connectionId:       "${hciConnId}",     
+            credentialsId:      "${hciTokenId}",      
+            containerName:      "${ispwContainer}",   
+            containerType:      "${ispwContainerType}",     // 0-Assignment 1-Release 2-Set
+            ispwDownloadAll:    true,                              // false will not download files that exist in the workspace and haven't previous changed
+            serverConfig:       '',                                 // ISPW runtime config.  if blank ISPW will use the default runtime config
+            serverLevel:        "${ispwLevel}"                                  // level to download the components from
+        ])
+    }
+
+
+
+    /* Download sources for the ISPW Set which triggered the current pipeline */
     def downloadSources(String ispwLevel)
     {
         steps.checkout([

@@ -88,7 +88,7 @@ def call(Map pipelineParams)
         /* Download all sources that are part of the container  */
         stage("Retrieve Mainframe Code")
         {
-            ispwHelper.downloadSources(pConfig.ispwTargetLevel)
+            ispwHelper.downloadAllSources(pConfig.ispwTargetLevel)
             ispwHelper.downloadCopyBooks(workspace)
         }
         
