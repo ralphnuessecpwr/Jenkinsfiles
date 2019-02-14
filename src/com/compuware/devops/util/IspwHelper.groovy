@@ -31,6 +31,7 @@ class IspwHelper implements Serializable
         this.steps              = steps
         this.ispwUrl            = pConfig.ispwUrl
         this.ispwRuntime        = pConfig.ispwRuntime
+        this.ispwStream         = pConfig.ispwStream
         this.ispwApplication    = pConfig.ispwApplication
         this.ispwRelease        = pConfig.ispwRelease        
         this.ispwContainer      = pConfig.ispwContainer
