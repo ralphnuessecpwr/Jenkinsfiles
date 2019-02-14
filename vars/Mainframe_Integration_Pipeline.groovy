@@ -100,17 +100,10 @@ def call(Map pipelineParams)
             gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
 
             /* Execute TTT unctional Test */
-            /*
             bat '''
                 cd C:\\TopazCLI190301
                 C:\\TopazCLI190301\\TotalTestFTCLI.bat -e ''' + pConfig.xaTesterEnvId + ''' -f . -s ''' + pConfig.xaTesterUrl +''' -u HDDRXM0 -p CPWR1901 -r ''' + workspace + ''' -R -x -S MF_Source -g TestResults -G -v 5
                 '''
-            */
-            bat '''
-                cd tests
-                dir
-                '''
-
         }
 
         stage("Check SonarQube Quality Gate") 
@@ -121,7 +114,7 @@ def call(Map pipelineParams)
             def SQ_TestResult   = '-Dsonar.testExecutionReportPaths=TestResults\\SonarTestReport.xml'
 
             //def TestFolder      = '"C:\\Users\\pfhsxk0\\.jenkins\\workspace\\RNU_Functional_Test\\TTT_Demo\\Functional Test"'
-            def TestFolder      = '"FTSDEMO_RXN3_Functional_Tests\\Functional Test"'
+            def TestFolder      = '"tests\\FTSDEMO_RXN3_Functional_Tests\\Functional Test"'
 
             withSonarQubeEnv("localhost") 
             {
