@@ -60,7 +60,7 @@ class IspwHelper implements Serializable
                     folderName: '', 
                     ispwDownloadAll: true, 
                     levelOption: '0', 
-                    serverApplication: "${ispwApplication}"
+                    serverApplication: "${ispwApplication}",
                     serverConfig: "${ispwRuntime}", 
                     serverLevel: "${ispwLevel}", 
                     serverStream: "${ispwStream}"
