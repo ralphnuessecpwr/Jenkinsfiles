@@ -106,7 +106,10 @@ def call(Map pipelineParams)
                 C:\\TopazCLI190301\\TotalTestFTCLI.bat -e ''' + pConfig.xaTesterEnvId + ''' -f . -s ''' + pConfig.xaTesterUrl +''' -u HDDRXM0 -p CPWR1901 -r ''' + workspace + ''' -R -x -S MF_Source -g TestResults -G -v 5
                 '''
             */
-            bat 'dir'
+            bat '''
+                cd tests
+                dir
+                '''
 
         }
 
