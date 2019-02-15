@@ -99,11 +99,22 @@ def call(Map pipelineParams)
             
             gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
 
-            /* Execute TTT unctional Test */
-            bat '''
-                cd C:\\TopazCLI190301
-                C:\\TopazCLI190301\\TotalTestFTCLI.bat -e ''' + pConfig.xaTesterEnvId + ''' -f . -s ''' + pConfig.xaTesterUrl +''' -u HDDRXM0 -p CPWR1901 -r ''' + workspace + ''' -R -x -S MF_Source -g TestResults -G -v 6
-                '''
+
+            withCredentials(
+                [usernamePassword(credentialsId: "${CES_Token}", usernameVariable: 'userId', passwordVariable: 'password')]
+            ) 
+            {
+                /* Execute TTT Functional Test */
+                /*bat '''
+                    cd C:\\TopazCLI190301
+                    C:\\TopazCLI190301\\TotalTestFTCLI.bat -e ''' + pConfig.xaTesterEnvId + ''' -f . -s ''' + pConfig.xaTesterUrl +''' -u HDDRXM0 -p CPWR1901 -r ''' + workspace + ''' -R -x -S MF_Source -g TestResults -G -v 6
+                    '''
+                */
+                bat '''
+                    cd C:\\TopazCLI190301
+                    C:\\TopazCLI190301\\TotalTestFTCLI.bat -e ''' + pConfig.xaTesterEnvId + ''' -f . -s ''' + pConfig.xaTesterUrl +''' -u ''' + userId + '''  -p ''' + password + ''' -r ''' + workspace + ''' -R -x -S ''' + pConfig.mfSourceFolder + ''' -g TestResults -G -v 6
+                    '''
+            }
         }
 
         stage("Check SonarQube Quality Gate") 
