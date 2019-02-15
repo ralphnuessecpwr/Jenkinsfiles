@@ -61,6 +61,12 @@ def initialize(pipelineParams)
                             pConfig
                         )
 
+    tttHelper   = new   TttHelper(
+                            this,
+                            steps,
+                            pConfig
+                        )
+
     sonarHelper = new SonarHelper(this, steps, pConfig)
 
     sonarHelper.initialize()
@@ -104,6 +110,7 @@ def call(Map pipelineParams)
                 [usernamePassword(credentialsId: "${pConfig.hciTokenId}", usernameVariable: 'userId', passwordVariable: 'password')]
             ) 
             {
+                tttHelper.initialize()
                 tttHelper.executeFunctionalTests(userId, password)
             }
         }
