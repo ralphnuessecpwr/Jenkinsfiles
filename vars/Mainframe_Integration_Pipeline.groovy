@@ -101,7 +101,7 @@ def call(Map pipelineParams)
 
 
             withCredentials(
-                [usernamePassword(credentialsId: "${pConfig.cesTokenId}", usernameVariable: 'userId', passwordVariable: 'password')]
+                [usernamePassword(credentialsId: "${pConfig.hciTokenId}", usernameVariable: 'userId', passwordVariable: 'password')]
             ) 
             {
                 /* Execute TTT Functional Test */
