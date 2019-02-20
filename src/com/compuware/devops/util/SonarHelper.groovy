@@ -37,7 +37,9 @@ class SonarHelper implements Serializable {
     def scan(pipelineType)
     {
         def project
+        def testPath
         def resultPath
+        def coveragePath
 
         switch(pipelineType)
         {
