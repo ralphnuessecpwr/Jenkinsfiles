@@ -132,6 +132,8 @@ def call(Map pipelineParams)
 
             }    
 
+            echo "Return: " + sonarGate.status
+
             // Evaluate the status of the Quality Gate
             if (sonarGate.status != 'OK')
             {
