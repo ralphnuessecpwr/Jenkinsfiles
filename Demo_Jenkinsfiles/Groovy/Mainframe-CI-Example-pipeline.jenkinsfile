@@ -25,7 +25,7 @@ import java.net.URL
  Please note that the assignment is not currently available in the webhook, but will be added in a future release.
  http://<<your jenkins server>>/job/<<you jenkins job>>/buildWithParameters?ISPW_Stream=$$stream$$&ISPW_Container=$$release$$&ISPW_Src_Level=$$level$$&SetId=$$setID$$&ISPW_Release=$$release$$&Owner=$$owner$$
  
- ISPW Webhook Parameter List below
+ ISPW Webhook Parameter List, these parameters need to be defined in the Jenkins job configuration and will be passed by the ISPW Webhook
  @param ISPW_Stream - ISPW Stream that had the code promotion
  @param ISPW_Container - ISPW Container that had the code promotion
  @param ISPW_Container_Type - Type of ISPW Container that had the code promotion, 0 - Assignment, 1 - Release, 3 - Set
@@ -33,7 +33,7 @@ import java.net.URL
  @param ISPW_Src_Level - ISPW Level that code was promoted from
  @param ISPW_Owner - The ISPW Owner value from the ISPW Set that was created for the promotion
 
- The Pipeline also takes the following parameters from the Jenkins Job
+ The Pipeline also takes the following parameters from the Jenkins Job, they also need to be defined in the Jenkins job configuration, the values need to be specified as defaults
  @param CES_Token - CES Personal Access Token.  These are configured in Compuware Enterprise Services / Security / Personal Access Tokens 
  @param HCI_Conn_ID - HCI Connection ID configured in the Compuware Common Configuration Plugin.  Use Pipeline Syntax Generator to determine this value. 
  @param HCI_Token - The ID of the Jenkins Credential for the TSO ID that will used to execute the pipeline
@@ -58,7 +58,7 @@ import java.net.URL
  @param ISPW_Runtime - ISPW Runtime configuration
 */
 
- String Git_Credentials      = "67a3fb18-073f-498b-adee-1a3c75192745" //"github"
+ String Git_Credentials      = "67a3fb18-073f-498b-adee-1a3c75192745"
  String Git_URL              = "https://github.com/${Git_Project}"
  String Git_TTT_Repo         = "${ISPW_Stream}_${ISPW_Application}_Unit_Tests.git"
  String Git_Branch           = "master"
@@ -76,7 +76,6 @@ import java.net.URL
     Map containing ISPW Owners (TSO Users) to eMail addresses
     For sending mail when the Quality Gate fails
 */
-
  Map    mailRecipientMap     = ["HDDRXM0":"ralph.nuesse@compuware.com"]
  
 /**
@@ -440,7 +439,7 @@ node{
             // Call the SonarQube Scanner with properties defined above
             bat "${scannerHome}/bin/sonar-scanner" + SQ_Scanner_Properties
         }
-        /*
+        
         // Wait for the results of the SonarQube Quality Gate
         timeout(time: 2, unit: 'MINUTES') {
             
@@ -494,7 +493,6 @@ node{
     /* 
      This stage triggers a XL Release Pipeline that will move code into the high levels in the ISPW Lifecycle  
      */ 
-    /* 
     stage("Start release in XL Release")
     {
             // Use the Path Number to determine what QA Path to Promote the code from in ISPW.  This example has seperate QA paths in ISPW Lifecycle (i.e. DEV1->QA1->STG->PRD / DEV2->QA2->STG->PRD)
@@ -510,5 +508,4 @@ node{
             [propertyName: 'ISPW_RELEASE_ID', propertyValue: "${ISPW_Release}"],     // ISPW Release value from the ISPW Webhook
             [propertyName: 'CES_Token', propertyValue: "${CES_Token}"]]
     }
-    */
 }
