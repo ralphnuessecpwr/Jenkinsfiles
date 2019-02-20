@@ -127,7 +127,6 @@ def call(Map pipelineParams)
 
             withSonarQubeEnv("localhost") 
             {
-                //" -Dsonar.tests=${TestFolder} ${SQ_TestResult}"
                 def SQ_Tests                = " -Dsonar.tests=${TestFolder} ${SQ_TestResult}"
                 def SQ_ProjectKey           = " -Dsonar.projectKey=RNU_Functional_Tests -Dsonar.projectName=RNU_Functional_Tests -Dsonar.projectVersion=1.0"
                 def SQ_Source               = " -Dsonar.sources=${pConfig.ispwApplication}\\MF_Source"
@@ -135,7 +134,6 @@ def call(Map pipelineParams)
                 def SQ_Cobol_conf           = " -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub -Dsonar.cobol.copy.suffixes=cpy -Dsonar.sourceEncoding=UTF-8"
                 bat "${scannerHome}/bin/sonar-scanner" + SQ_Tests + SQ_ProjectKey + SQ_Source + SQ_Copybook + SQ_Cobol_conf
             }
-            /*
             // Wait for the results of the SonarQube Quality Gate
             timeout(time: 2, unit: 'MINUTES') 
             {                
@@ -155,16 +153,32 @@ def call(Map pipelineParams)
                 }
                 else
                 {
-                    mailMessageExtension = "Generated code passed the Quality gate and may be promoted."
+                    mailMessageExtension = "Generated code passed the Quality gate. XL Release will be started."
                 }
             } 
             */  
         }
 
-        /* 
-        This stage triggers a XL Release Pipeline that will move code into the high levels in the ISPW Lifecycle  
-        */
-        /* 
+        stage("Trigger XL Release")
+        {
+            /* 
+            This stage triggers a XL Release Pipeline that will move code into the high levels in the ISPW Lifecycle  
+            */
+
+            // Trigger XL Release Jenkins Plugin to kickoff a Release
+            xlrCreateRelease(
+                releaseTitle:       'A Release for $BUILD_TAG',
+                serverCredentials:  "${pConfig.xlrUser}",
+                startRelease:       true,
+                template:           "${pConfig.xlrTemplate}",
+                variables:          [
+                                        [propertyName:  'ISPW_Dev_level',   propertyValue: "${pConfig.ispwTargetLevel}"], // Level in ISPW that the Code resides currently
+                                        [propertyName:  'ISPW_RELEASE_ID',  propertyValue: "${pConfig.ispwRelease}"],     // ISPW Release value from the ISPW Webhook
+                                        [propertyName:  'CES_Token',        propertyValue: "${pConfig.cesTokenId}"]
+                                    ]
+            )
+        }
+
         stage("Send Mail")
         {
             // Send Standard Email
@@ -174,6 +188,6 @@ def call(Map pipelineParams)
                         to:         "${pConfig.mailRecipient}"
 
         } 
-        */       
+
     }
 }

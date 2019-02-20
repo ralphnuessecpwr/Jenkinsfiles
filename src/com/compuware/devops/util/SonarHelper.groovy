@@ -27,6 +27,13 @@ class SonarHelper implements Serializable {
         this.scannerHome    = steps.tool "${pConfig.sqScannerName}";
     }
 
+    def scan()
+    {
+        def testResults = determineUtResultPath()
+
+        runScan(testResults, script.JOB_NAME)
+    }
+
     def scan(pipelineType)
     {
         def project
@@ -56,7 +63,7 @@ class SonarHelper implements Serializable {
         return pConfig.ispwOwner + '_' + pConfig.ispwStream + '_' + pConfig.ispwApplication
     }
 
-    String determineUtResultPath()
+    private String determineUtResultPath()
     {
         // Finds all of the Total Test results files that will be submitted to SonarQube
         def tttListOfResults    = steps.findFiles(glob: 'TTTSonar/*.xml')   // Total Test SonarQube result files are stored in TTTSonar directory
@@ -72,13 +79,6 @@ class SonarHelper implements Serializable {
         }
 
         return testResults
-    }
-
-    def scan()
-    {
-        def testResults = determineUtResultPath()
-
-        runScan(testResults, script.JOB_NAME)
     }
 
     private runScan(testResultPath, projectName)
