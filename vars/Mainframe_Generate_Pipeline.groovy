@@ -124,14 +124,12 @@ def call(Map pipelineParams)
         {
             sonarHelper.scan("UT")
 
-            String gateResult = sonarHelper.checkQualityGate()
-
-            echo "Result  " + gateResult
+            String sonarGateResult = sonarHelper.checkQualityGate()
 
             // Evaluate the status of the Quality Gate
-            if (gateResult /*sonarGate.status*/ != 'OK')
+            if (sonarGateResult != 'OK')
             {
-                echo "Sonar quality gate failure: ${gateResult}"
+                echo "Sonar quality gate failure: ${sonarGateResult}"
 
                 mailMessageExtension = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
                 currentBuild.result = "FAILURE"

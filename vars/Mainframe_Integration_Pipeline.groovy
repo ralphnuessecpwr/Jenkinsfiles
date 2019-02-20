@@ -117,46 +117,44 @@ def call(Map pipelineParams)
 
         stage("Check SonarQube Quality Gate") 
         {
-            /*sonarHelper.scan()*/
-            def scannerHome     = tool "scanner"
             
-            def SQ_TestResult   = '-Dsonar.testExecutionReportPaths=TestResults\\SonarTestReport.xml'
+            // /*sonarHelper.scan()*/
+            // def scannerHome     = tool "scanner"
+            
+            // def SQ_TestResult   = '-Dsonar.testExecutionReportPaths=TestResults\\SonarTestReport.xml'
 
-            //def TestFolder      = '"C:\\Users\\pfhsxk0\\.jenkins\\workspace\\RNU_Functional_Test\\TTT_Demo\\Functional Test"'
-            def TestFolder      = '"tests\\FTSDEMO_RXN3_Functional_Tests\\Functional Test"'
+            // //def TestFolder      = '"C:\\Users\\pfhsxk0\\.jenkins\\workspace\\RNU_Functional_Test\\TTT_Demo\\Functional Test"'
+            // def TestFolder      = '"tests\\FTSDEMO_RXN3_Functional_Tests\\Functional Test"'
 
-            withSonarQubeEnv("localhost") 
+            // withSonarQubeEnv("localhost") 
+            // {
+            //     def SQ_Tests                = " -Dsonar.tests=${TestFolder} ${SQ_TestResult}"
+            //     def SQ_ProjectKey           = " -Dsonar.projectKey=RNU_Functional_Tests -Dsonar.projectName=RNU_Functional_Tests -Dsonar.projectVersion=1.0"
+            //     def SQ_Source               = " -Dsonar.sources=${pConfig.ispwApplication}\\MF_Source"
+            //     def SQ_Copybook             = " -Dsonar.cobol.copy.directories=${pConfig.ispwApplication}\\MF_Source"
+            //     def SQ_Cobol_conf           = " -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub -Dsonar.cobol.copy.suffixes=cpy -Dsonar.sourceEncoding=UTF-8"
+            //     bat "${scannerHome}/bin/sonar-scanner" + SQ_Tests + SQ_ProjectKey + SQ_Source + SQ_Copybook + SQ_Cobol_conf
+            // }
+
+            sonarHelper.scan("FT")
+
+            String sonarGateResult = sonarHelper.checkQualityGate()
+
+            // Evaluate the status of the Quality Gate
+            if (sonarGateResult != 'OK')
             {
-                def SQ_Tests                = " -Dsonar.tests=${TestFolder} ${SQ_TestResult}"
-                def SQ_ProjectKey           = " -Dsonar.projectKey=RNU_Functional_Tests -Dsonar.projectName=RNU_Functional_Tests -Dsonar.projectVersion=1.0"
-                def SQ_Source               = " -Dsonar.sources=${pConfig.ispwApplication}\\MF_Source"
-                def SQ_Copybook             = " -Dsonar.cobol.copy.directories=${pConfig.ispwApplication}\\MF_Source"
-                def SQ_Cobol_conf           = " -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub -Dsonar.cobol.copy.suffixes=cpy -Dsonar.sourceEncoding=UTF-8"
-                bat "${scannerHome}/bin/sonar-scanner" + SQ_Tests + SQ_ProjectKey + SQ_Source + SQ_Copybook + SQ_Cobol_conf
+                echo "Sonar quality gate failure: ${sonarGateResult}"
+                echo "Pipeline will be aborted and ISPW Assignment will be regressed"
+
+                mailMessageExtension = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
+                currentBuild.result = "FAILURE"
+
+                error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
             }
-            // Wait for the results of the SonarQube Quality Gate
-            timeout(time: 2, unit: 'MINUTES') 
-            {                
-                // Wait for webhook call back from SonarQube.  SonarQube webhook for callback to Jenkins must be configured on the SonarQube server.
-                def sonarGate = waitForQualityGate()
-                
-                // Evaluate the status of the Quality Gate
-                if (sonarGate.status != 'OK')
-                {
-                    echo "Sonar quality gate failure: ${sonarGate.status}"
-                    echo "Pipeline will be aborted and ISPW Assignment will be regressed"
-
-                    mailMessageExtension = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
-                    currentBuild.result = "FAILURE"
-
-                    error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
-                }
-                else
-                {
-                    mailMessageExtension = "Generated code passed the Quality gate. XL Release will be started."
-                }
-            } 
-            */  
+            else
+            {
+                mailMessageExtension = "Generated code passed the Quality gate. XL Release will be started."
+            }
         }
 
         stage("Trigger XL Release")
