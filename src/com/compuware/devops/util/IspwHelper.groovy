@@ -47,7 +47,7 @@ class IspwHelper implements Serializable
         this.hciTokenId         = pConfig.hciTokenId
     }
 
-    /* Download sources for the ISPW Set which triggered the current pipeline */
+    /* Download all sources from ISPW for a given level */
     def downloadAllSources(String ispwLevel)
     {
 
@@ -69,22 +69,11 @@ class IspwHelper implements Serializable
                 ]
         )
 
-        steps.checkout([
-            $class:             'IspwContainerConfiguration', 
-            componentType:      '',                                 // optional filter for component types in ISPW
-            connectionId:       "${hciConnId}",     
-            credentialsId:      "${hciTokenId}",      
-            containerName:      "${ispwContainer}",   
-            containerType:      "${ispwContainerType}",     // 0-Assignment 1-Release 2-Set
-            ispwDownloadAll:    true,                              // false will not download files that exist in the workspace and haven't previous changed
-            serverConfig:       '',                                 // ISPW runtime config.  if blank ISPW will use the default runtime config
-            serverLevel:        "${ispwLevel}"                                  // level to download the components from
-        ])
     }
 
 
 
-    /* Download sources for the ISPW Set which triggered the current pipeline */
+    /* Download sources for the ISPW Set which triggered the current pipeline from a given level */
     def downloadSources(String ispwLevel)
     {
         steps.checkout([
