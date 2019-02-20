@@ -139,21 +139,23 @@ def call(Map pipelineParams)
             }
             else
             {
-                def jenkinsUrl = "http://sonarqube.nasa.cpwr.corp:8080"
-                def jenkinsJob = "RNU_FTSDEMO_Promote"
-                mailMessageExtension = "Generated code passed the Quality gate and may be promoted. \n" +
-                "Use this link to promote the code immediately: " +
-                jenkinsUrl + 
-                    '/job/'                 + jenkinsJob + 
-                    '/buildWithParameters?' +
-                    'ISPW_Stream='          + pConfig.ispwStream + 
-                    '&ISPW_Application='    + pConfig.ispwApplication + 
-                    '&ISPW_Release='        + pConfig.ispwRelease + 
-                    '&ISPW_Assignment='     + pConfig.ispwAssignment + 
-                    '&ISPW_Container='      + pConfig.ispwContainer + 
-                    '&ISPW_Container_Type=' + pConfig.ispwContainerType + 
-                    '&ISPW_Src_Level='      + pConfig.ispwSrcLevel + 
-                    '&ISPW_Owner='          + pConfig.ispwOwner
+                mailMessageExtension = "Generated code passed the Quality gate and may be promoted."
+
+                // def jenkinsUrl = "http://sonarqube.nasa.cpwr.corp:8080"
+                // def jenkinsJob = "RNU_FTSDEMO_Promote"
+                // mailMessageExtension = "Generated code passed the Quality gate and may be promoted. \n" +
+                // "Use this link to promote the code immediately: \n" +
+                // jenkinsUrl + 
+                //     '/job/'                 + jenkinsJob + 
+                //     '/buildWithParameters?' +
+                //     'ISPW_Stream='          + pConfig.ispwStream + 
+                //     '&ISPW_Application='    + pConfig.ispwApplication + 
+                //     '&ISPW_Release='        + pConfig.ispwRelease + 
+                //     '&ISPW_Assignment='     + pConfig.ispwAssignment + 
+                //     '&ISPW_Container='      + pConfig.ispwContainer + 
+                //     '&ISPW_Container_Type=' + pConfig.ispwContainerType + 
+                //     '&ISPW_Src_Level='      + pConfig.ispwSrcLevel + 
+                //     '&ISPW_Owner='          + pConfig.ispwOwner
             }   
         }
 
