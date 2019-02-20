@@ -124,20 +124,14 @@ def call(Map pipelineParams)
         {
             sonarHelper.scan("UT")
 
-            // Wait for the results of the SonarQube Quality Gate
-            timeout(time: 2, unit: 'MINUTES') 
-            {                
-                // Wait for webhook call back from SonarQube.  SonarQube webhook for callback to Jenkins must be configured on the SonarQube server.
-                def sonarGate = waitForQualityGate()
+            String gateResult = sonarHelper.checkQualityGate()
 
-            }    
-
-            echo "Return: " + sonarGate.status
+            echo "Result  " + gateResult
 
             // Evaluate the status of the Quality Gate
-            if (sonarGate.status != 'OK')
+            if (gateResult /*sonarGate.status*/ != 'OK')
             {
-                echo "Sonar quality gate failure: ${sonarGate.status}"
+                echo "Sonar quality gate failure: ${gateResult}"
 
                 mailMessageExtension = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
                 currentBuild.result = "FAILURE"

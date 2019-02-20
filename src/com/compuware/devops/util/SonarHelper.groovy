@@ -58,6 +58,22 @@ class SonarHelper implements Serializable {
         runScan(resultPath, project)
     }
 
+    String checkQualityGate()
+    {
+        String result
+
+        // Wait for the results of the SonarQube Quality Gate
+        timeout(time: 2, unit: 'MINUTES') 
+        {                
+            // Wait for webhook call back from SonarQube.  SonarQube webhook for callback to Jenkins must be configured on the SonarQube server.
+            def sonarGate = steps.waitForQualityGate()
+
+            result = sonarGate.status
+        }
+
+        return result
+    }
+
     private String determineUtProjectName()
     {
         return pConfig.ispwOwner + '_' + pConfig.ispwStream + '_' + pConfig.ispwApplication
