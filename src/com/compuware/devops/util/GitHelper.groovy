@@ -21,6 +21,7 @@ class GitHelper implements Serializable {
 
     def initialize(pConfig, gitPassword, gitUser)
     {
+        this.pConfig    = pConfig
         this.user       = gitUser
         this.password   = gitUser
 
