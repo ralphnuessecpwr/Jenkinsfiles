@@ -56,6 +56,11 @@ def initialize(pipelineParams)
                             steps
                         )
 
+    withCredentials([usernamePassword(credentialsId: "${pConfig.gitCredentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]) 
+    {
+        gitHelper.initialize(pConfig, gitPassword, gitUsername)
+    }
+
     ispwHelper  = new   IspwHelper(
                             steps, 
                             pConfig
@@ -106,6 +111,8 @@ def call(Map pipelineParams)
             /* Execute unit tests */
             tttHelper.loopThruScenarios()
 
+            /* push results back to GitHub */
+            gitHelper.pushResults()
         }
 
         /* 
