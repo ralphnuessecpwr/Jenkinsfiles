@@ -65,11 +65,11 @@ class GitHelper implements Serializable {
         )
     }
 
-    def pushResults(String gitProject, String gitRepo, String tttFolder)
+    def pushResults(String gitProject, String gitRepo, String tttFolder, String gitBranch)
     {
         steps.dir(tttFolder)
         {
-            stdout = steps.bat(returnStdout: true, script: "git push  https://${gitUser}:${gitPassword}@github.com/${gitProject}/${gitTttUtRepo} HEAD:${pConfig.gitBranch} -f")
+            stdout = steps.bat(returnStdout: true, script: "git push  https://${gitUser}:${gitPassword}@github.com/${gitProject}/${gitRepo} HEAD:${gitBranch} -f")
         }
     }
 }
