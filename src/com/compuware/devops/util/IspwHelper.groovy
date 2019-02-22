@@ -381,6 +381,7 @@ class IspwHelper implements Serializable
         def listOfCopybooks = []
         def lines           = []
         def cbook           = /\bCOPY\b/
+        def include         = /\bINCLUDE\b/
         def tokenItem       = ''
         def seventhChar     = ''
         def lineToken       = ''
@@ -397,6 +398,8 @@ class IspwHelper implements Serializable
             {
                 lines = file.readLines().findAll({book -> book =~ /$cbook/})
 
+                lines.plus(file.readLines().findAll({book -> book =~ /$include/}))
+
                 lines.each 
                 {
                     lineToken   = it.toString().tokenize()
@@ -411,7 +414,10 @@ class IspwHelper implements Serializable
                     {
                         tokenItem = lineToken.get(i).toString()
 
-                        if (tokenItem == "COPY" && seventhChar != "*" ) 
+                        if (
+                            tokenItem == "COPY" && seventhChar != "*" !!
+                            tokenItem == "INCLUDE" && seventhChar != "*" !!
+                            ) 
                         {
                             steps.echo "Copybook: ${lineToken.get(i+1)}"
                             tokenItem = lineToken.get(i+1).toString()
