@@ -67,7 +67,7 @@ class GitHelper implements Serializable {
 
     def pushResults(String gitProject, String gitRepo, String tttFolder, String gitBranch)
     {
-        def message = '"Jenkins Build ' + steps.BUILD_NUMBER + '"'
+        def message = '"Jenkins Build ' + BUILD_NUMBER + '"'
 
         steps.dir(tttFolder)
         {
