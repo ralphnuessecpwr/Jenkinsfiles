@@ -11,9 +11,20 @@ class GitHelper implements Serializable {
 
     def steps
 
+    def gitUser
+    def gitPassword
+
     GitHelper(steps) 
     {
         this.steps = steps
+    }
+
+    def initialize(String gitPassword, String gitUser, String gitUserName, String gitEmail)
+    {
+        this.gitUser            = gitUser
+        this.gitPassword        = gitPassword
+
+        def stdout              = steps.bat(script: "git config --global user.name ${gitUserName} \r\ngit config --global user.email ${gitEmail}")
     }
 
     def checkout(String gitUrl, String gitBranch, String gitCredentials, String tttFolder)
@@ -52,5 +63,16 @@ class GitHelper implements Serializable {
                 ]]
             ]
         )
+    }
+
+    def pushResults(String gitProject, String gitRepo, String tttFolder, String gitBranch)
+    {
+        steps.dir(tttFolder)
+        {
+            def stdout = steps.bat(returnStdout: true, script: "git push  https://${gitUser}:${gitPassword}@github.com/${gitProject}/${gitRepo} HEAD:${gitBranch} -f")
+            
+            steps.echo "Pushed outputs to Git:"
+            steps.echo stdout
+        }
     }
 }
