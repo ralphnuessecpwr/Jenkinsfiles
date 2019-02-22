@@ -10,7 +10,6 @@ package com.compuware.devops.util
 class GitHelper implements Serializable {
 
     def steps
-    def pConfig 
 
     def gitUser
     def gitPassword
@@ -20,20 +19,19 @@ class GitHelper implements Serializable {
         this.steps = steps
     }
 
-    GitHelper(steps, pConfig) 
+    GitHelper(steps) 
     {
         this.steps      = steps
         this.pConfig    = pConfig
     }
 
 
-    def initialize(gitPassword, gitUser)
+    def initialize(String gitPassword, String gitUser, String gitUserName, String gitEmail)
     {
         this.gitUser            = gitUser
         this.gitPassword        = gitUser
 
-        def stdout              = steps.bat(script: "git config --global user.name ${pConfig.ispwOwner} \r\ngit config --global user.email ${pConfig.mailRecipient}")
-        steps.echo "Set git congiguration: " + stdout
+        def stdout              = steps.bat(script: "git config --global user.name ${gitUserName} \r\ngit config --global user.email ${gitEmail}")
     }
 
     def checkout(String gitUrl, String gitBranch, String gitCredentials, String tttFolder)
@@ -74,8 +72,11 @@ class GitHelper implements Serializable {
         )
     }
 
-    def pushResults()
+    def pushResults(String gitProject, String gitRepo, String tttFolder)
     {
-        stdout = steps.bat(returnStdout: true, script: "git push  https://${gitUser}:${gitPassword}@github.com/${pConfig.gitProject}/${pConfig.gitTttUtRepo} HEAD:${pConfig.gitBranch} -f")
+        steps.dir(tttFolder)
+        {
+            stdout = steps.bat(returnStdout: true, script: "git push  https://${gitUser}:${gitPassword}@github.com/${gitProject}/${gitTttUtRepo} HEAD:${pConfig.gitBranch} -f")
+        }
     }
 }

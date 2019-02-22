@@ -53,13 +53,12 @@ def initialize(pipelineParams)
     pConfig.initialize()                                            
 
     gitHelper   = new   GitHelper(
-                            steps,
-                            pConfig
+                            steps
                         )
 
     withCredentials([usernamePassword(credentialsId: "${pConfig.gitCredentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]) 
     {
-        gitHelper.initialize(gitPassword, gitUsername)
+        gitHelper.initialize(gitPassword, gitUsername, pConfig.ispwOwner, pConfig.mailRecipient)
     }
 
     ispwHelper  = new   IspwHelper(
@@ -113,7 +112,7 @@ def call(Map pipelineParams)
             tttHelper.loopThruScenarios()
 
             /* push results back to GitHub */
-            gitHelper.pushResults()
+            gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder)
         }
 
         /* 
