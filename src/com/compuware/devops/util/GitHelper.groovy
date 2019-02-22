@@ -22,7 +22,7 @@ class GitHelper implements Serializable {
     def initialize(String gitPassword, String gitUser, String gitUserName, String gitEmail)
     {
         this.gitUser            = gitUser
-        this.gitPassword        = gitUser
+        this.gitPassword        = gitPassword
 
         def stdout              = steps.bat(script: "git config --global user.name ${gitUserName} \r\ngit config --global user.email ${gitEmail}")
     }
