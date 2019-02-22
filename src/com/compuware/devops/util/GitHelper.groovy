@@ -69,7 +69,10 @@ class GitHelper implements Serializable {
     {
         steps.dir(tttFolder)
         {
-            stdout = steps.bat(returnStdout: true, script: "git push  https://${gitUser}:${gitPassword}@github.com/${gitProject}/${gitRepo} HEAD:${gitBranch} -f")
+            def stdout = steps.bat(returnStdout: true, script: "git push  https://${gitUser}:${gitPassword}@github.com/${gitProject}/${gitRepo} HEAD:${gitBranch} -f")
+            
+            steps.echo "Pushed outputs to Git:"
+            steps.echo stdout
         }
     }
 }
