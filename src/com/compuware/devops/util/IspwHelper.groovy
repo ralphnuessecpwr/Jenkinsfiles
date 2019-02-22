@@ -402,6 +402,7 @@ class IspwHelper implements Serializable
 
                 lines.each 
                 {
+                    
                     lineToken   = it.toString().tokenize()
                     seventhChar = ""
 
@@ -413,6 +414,8 @@ class IspwHelper implements Serializable
                     for(int i=0;i<lineToken.size();i++) 
                     {
                         tokenItem = lineToken.get(i).toString()
+
+                        steps.echo tokenItem
 
                         if (
                             tokenItem == "COPY" && seventhChar != "*" ||
