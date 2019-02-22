@@ -396,9 +396,9 @@ class IspwHelper implements Serializable
 
             if (file.exists()) 
             {
-                lines = file.readLines().findAll({book -> book =~ /$cbook/})
+                lines = file.readLines().findAll({book -> book =~ /$include/})
 
-                lines.plus(file.readLines().findAll({book -> book =~ /$include/}))
+                //lines.plus(file.readLines().findAll({book -> book =~ /$include/}))
 
                 lines.each 
                 {
