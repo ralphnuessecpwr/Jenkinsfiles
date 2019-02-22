@@ -12,6 +12,9 @@ class GitHelper implements Serializable {
     def steps
     def pConfig 
 
+    def gitUser
+    def gitPassword
+
     GitHelper(steps) 
     {
         this.steps = steps
@@ -73,6 +76,6 @@ class GitHelper implements Serializable {
 
     def pushResults()
     {
-        stdout = steps.bat(returnStdout: true, script: "git push  https://${user}:${password}@github.com/${pConfig.gitProject}/${pConfig.gitTttUtRepo} HEAD:${pConfig.gitBranch} -f")
+        stdout = steps.bat(returnStdout: true, script: "git push  https://${gitUser}:${gitPassword}@github.com/${pConfig.gitProject}/${pConfig.gitTttUtRepo} HEAD:${pConfig.gitBranch} -f")
     }
 }
