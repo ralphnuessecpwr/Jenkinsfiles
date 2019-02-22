@@ -19,13 +19,6 @@ class GitHelper implements Serializable {
         this.steps = steps
     }
 
-    GitHelper(steps) 
-    {
-        this.steps      = steps
-        this.pConfig    = pConfig
-    }
-
-
     def initialize(String gitPassword, String gitUser, String gitUserName, String gitEmail)
     {
         this.gitUser            = gitUser
