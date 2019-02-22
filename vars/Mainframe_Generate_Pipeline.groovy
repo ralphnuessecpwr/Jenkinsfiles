@@ -53,12 +53,13 @@ def initialize(pipelineParams)
     pConfig.initialize()                                            
 
     gitHelper   = new   GitHelper(
-                            steps
+                            steps,
+                            pConfig
                         )
 
     withCredentials([usernamePassword(credentialsId: "${pConfig.gitCredentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]) 
     {
-        gitHelper.initialize(pConfig, gitPassword, gitUsername)
+        gitHelper.initialize(gitPassword, gitUsername)
     }
 
     ispwHelper  = new   IspwHelper(
