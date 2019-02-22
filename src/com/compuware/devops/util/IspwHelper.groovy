@@ -415,8 +415,8 @@ class IspwHelper implements Serializable
                         tokenItem = lineToken.get(i).toString()
 
                         if (
-                            tokenItem == "COPY" && seventhChar != "*" !!
-                            tokenItem == "INCLUDE" && seventhChar != "*" !!
+                            tokenItem == "COPY" && seventhChar != "*" ||
+                            tokenItem == "INCLUDE" && seventhChar != "*"
                             ) 
                         {
                             steps.echo "Copybook: ${lineToken.get(i+1)}"
