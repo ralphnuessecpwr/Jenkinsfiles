@@ -67,9 +67,11 @@ class GitHelper implements Serializable {
 
     def pushResults(String gitProject, String gitRepo, String tttFolder, String gitBranch)
     {
+        def message = '"Jenkins Build ' + steps.BUILD_NUMBER + '"'
+
         steps.dir(tttFolder)
         {
-            steps.bat(returnStdout: true, script: 'git commit -a -m "Jenkins Build"')
+            steps.bat(returnStdout: true, script: 'git commit -a -m ' + message)
             steps.bat(returnStdout: true, script: "git push  https://${gitUser}:${gitPassword}@github.com/${gitProject}/${gitRepo} HEAD:${gitBranch} -f")
         }
     }
