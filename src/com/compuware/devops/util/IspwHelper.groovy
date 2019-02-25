@@ -381,7 +381,7 @@ class IspwHelper implements Serializable
         def listOfCopybooks = []
         def lines           = []
         def cbook           = /\bCOPY\b/
-        def include         = /\bINCLUDE\b/
+        //def include         = /\bINCLUDE\b/
         def tokenItem       = ''
         def seventhChar     = ''
         def lineToken       = ''
@@ -396,7 +396,7 @@ class IspwHelper implements Serializable
 
             if (file.exists()) 
             {
-                lines = file.readLines().findAll({book -> book =~ /$cbook/}) + (file.readLines().findAll({book -> book =~ /$include/}))
+                lines = file.readLines().findAll({book -> book =~ /$cbook/}) //+ (file.readLines().findAll({book -> book =~ /$include/}))
 
                 lines.each 
                 {
