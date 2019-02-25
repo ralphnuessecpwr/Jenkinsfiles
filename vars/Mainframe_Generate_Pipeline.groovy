@@ -127,7 +127,6 @@ def call(Map pipelineParams)
         stage("Collect Metrics")
         {
             tttHelper.collectCodeCoverageResults()
-            ispwHelper.downloadCopyBooks(workspace)
         }
 
         /* 
@@ -136,6 +135,7 @@ def call(Map pipelineParams)
         */ 
         stage("Check SonarQube Quality Gate") 
         {
+            ispwHelper.downloadCopyBooks(workspace)
             sonarHelper.scan("UT")
 
             String sonarGateResult = sonarHelper.checkQualityGate()
