@@ -47,7 +47,7 @@ class SonarHelper implements Serializable {
                 project         = determineUtProjectName()
                 testPath        = 'tests'
                 resultPath      = determineUtResultPath()
-                coveragePath    = '' //"Coverage/CodeCoverage.xml"
+                coveragePath    = "Coverage/CodeCoverage.xml"
                 break;
             case "FT":
                 project         = determineFtProjectName()
