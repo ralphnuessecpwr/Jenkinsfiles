@@ -154,7 +154,10 @@ def call(Map pipelineParams)
             else
             {
                 mailMessageExtension = "Generated code passed the Quality gate and may be promoted. \n" +
-                "SonarQube results may be reviewed at http://sonarqube.nasa.cpwr.corp:9000/dashboard?id=" + sonarHelper.determineUtProjectName()
+                    "SonarQube results may be reviewed at " + 
+                    pConfig.sqServerUrl + 
+                    "/dashboard?id=" + 
+                    sonarHelper.determineUtProjectName()
 
                 // def jenkinsUrl = "http://sonarqube.nasa.cpwr.corp:8080"
                 // def jenkinsJob = "RNU_FTSDEMO_Promote"
