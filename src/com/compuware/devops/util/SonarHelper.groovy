@@ -80,12 +80,12 @@ class SonarHelper implements Serializable {
         return result
     }
 
-    private String determineUtProjectName()
+    String determineUtProjectName()
     {
         return pConfig.ispwOwner + '_' + pConfig.ispwStream + '_' + pConfig.ispwApplication
     }
 
-    private String determineFtProjectName()
+    String determineFtProjectName()
     {
         return pConfig.ispwStream + '_' + pConfig.ispwApplication
     }
