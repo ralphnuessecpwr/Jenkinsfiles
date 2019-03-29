@@ -1,0 +1,43 @@
+import groovy.json.JsonSlurper
+
+node
+{
+    def jobList     = ''
+    
+    stage('Get Task List')
+    {
+        def response = ispwOperation connectionId: '91bae501-8b4d-4155-909d-2ad5aa9f3131', 
+            credentialsId: '71063193-ee67-4b52-890a-58843f33c183', 
+            ispwAction: 'GetAssignmentTaskList', 
+            ispwRequestBody: 'assignmentId=RXN3000007\nlevel=DEV1'
+    
+        def jsonSlurper = new JsonSlurper()
+        def resp        = jsonSlurper.parseText(response.getContent())
+        def taskList    = resp.tasks
+        
+        taskList.each
+        {
+            //if(it.moduleName.startsWith('LG') && it.moduleType == 'COB')
+            if(it.moduleName.startsWith('CW') && it.moduleType == 'JOB')
+            {
+                echo "Adding:    " + it.moduleName
+                jobList = jobList + 'SALESSUP.RXN3.DEV1.JOB(' + it.moduleName + ')\n'
+            }
+        }
+    }
+    
+    stage('Submit Jobs')
+    {
+        
+        topazSubmitJclMembers connectionId: '91bae501-8b4d-4155-909d-2ad5aa9f3131', 
+            credentialsId: 'ea48408b-b2be-4810-8f4e-5b5f35977eb1', 
+            jclMember: jobList, 
+            maxConditionCode: '4'        
+        /*
+        topazSubmitJclMembers connectionId: '91bae501-8b4d-4155-909d-2ad5aa9f3131', 
+            credentialsId: 'ea48408b-b2be-4810-8f4e-5b5f35977eb1', 
+            jclMember: 'HDDRXM0.DEMO.CWXTJCLC', 
+            maxConditionCode: '4'        
+        */
+    }
+}
