@@ -110,7 +110,8 @@ class TttHelper implements Serializable {
     {
         // Process the Total Test Junit result files into Jenkins
         steps.junit allowEmptyResults:    true, 
-            keepLongStdio:                true, 
+            keepLongStdio:                true,
+            healthScaleFactor:            0.0,  
             testResults:                  "TTTUnit/*.xml"
     }
 
