@@ -119,6 +119,11 @@ def call(Map pipelineParams)
 
             /* push results back to GitHub */
             gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
+         
+            /* Record results in jUnit */
+            junit allowEmptyResults:    true, 
+                keepLongStdio:          true, 
+                testResults: "TTTUnit/*.xml"
         }
 
         /* 
