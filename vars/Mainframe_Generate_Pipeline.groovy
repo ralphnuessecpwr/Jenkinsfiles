@@ -100,7 +100,7 @@ def call(Map pipelineParams)
         stage("Retrieve Mainframe Code")
         {
             ispwHelper.downloadSources(pConfig.ispwSrcLevel)
-            //ispwHelper.downloadCopyBooks(workspace)
+            ispwHelper.downloadCopyBooks(workspace)
         }
         
         /* Retrieve the Tests from Github that match that ISPWW Stream and Application */
@@ -116,6 +116,8 @@ def call(Map pipelineParams)
 
             /* Execute unit tests */
             tttHelper.loopThruScenarios()
+         
+            tttHelper.passResultsToJunit()
 
             /* push results back to GitHub */
             //gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
