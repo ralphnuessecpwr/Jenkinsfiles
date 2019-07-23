@@ -76,7 +76,6 @@ class PipelineConfig implements Serializable
         this.ispwOwner          = params.ISPW_Owner        
         this.ispwSrcLevel       = params.ISPW_Src_Level
 
-        steps.echo "Assigning Auth Token ${params.SQ_SERVER_AUTH_TOKEN}"
         this.sqHttpRequestAuthHeader    = params.SQ_SERVER_AUTH_TOKEN
 
         this.applicationPathNum = ispwSrcLevel.charAt(ispwSrcLevel.length() - 1)
