@@ -139,7 +139,7 @@ class SonarHelper implements Serializable {
         def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: 'Basic YWRtaW46YWRtaW4=']], 
             ignoreSslErrors: true, 
             responseHandle: 'NONE', 
-            url: "${pConfig.sqServerName}/api/projects/search?projects=${projectName}"
+            url: "${pConfig.sqServerUrl}/api/projects/search?projects=${projectName}"
 
         def response = "NOT FOUND"
 
