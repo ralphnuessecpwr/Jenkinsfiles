@@ -142,6 +142,23 @@ class SonarHelper implements Serializable {
             consoleLogResponseBody:     true,
             url:                        "${pConfig.sqServerUrl}/api/projects/search?projects=${projectName}"
 
+        def jsonSlurper = new JsonSlurper()
+        def httResp     = jsonSlurper.parseText(response.getContent())
+        httpResponse    = null
+        jsonSlurper     = null
+
+        if(httpResp.message != null)
+        {
+            steps.echo "Resp: " + resp.message
+            steps.error
+        }
+        else
+        {
+            // Compare the taskIds from the set to all tasks in the release 
+            // Where they match, determine the assignment and add it to the list of assignments 
+            def steps.echo "Response" + resp.paging
+        }
+
         def response = "FOUND"
 
         return response
