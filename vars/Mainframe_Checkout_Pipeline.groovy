@@ -18,7 +18,8 @@ TttHelper       tttHelper
 SonarHelper     sonarHelper 
 
 String          mailMessageExtension
-String          sonarQualityGateId    = '21' // 'RNU_Gate'
+
+def sonarQualityGateId    = '21' // 'RNU_Gate'
 
 def initialize(pipelineParams)
 {
