@@ -139,6 +139,8 @@ class SonarHelper implements Serializable {
     {
         def response
 
+        steps.echo "Using auth header ${pConfig.sqHttpRequestAuthHeader}"
+
         def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sqHttpRequestAuthHeader]], 
             ignoreSslErrors:            true, 
             responseHandle:             'NONE', 
