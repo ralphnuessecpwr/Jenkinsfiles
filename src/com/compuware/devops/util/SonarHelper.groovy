@@ -1,11 +1,8 @@
 package com.compuware.devops.util
+import groovy.json.JsonSlurper
 
 /**
- Wrapper around the Git Plugin's Checkout Method
- @param URL - URL for the git server
- @param Branch - The branch that will be checked out of git
- @param Credentials - Jenkins credentials for logging into git
- @param Folder - Folder relative to the workspace that git will check out files into
+ Wrapper around the Sonar Qube activities and the Sonar Scanner
 */
 class SonarHelper implements Serializable {
 
@@ -135,5 +132,27 @@ class SonarHelper implements Serializable {
             // Call the SonarQube Scanner with properties defined above
             steps.bat "${scannerHome}/bin/sonar-scanner" + sqScannerProperties
         }
+    }
+
+    def checkForProject(String projectName)
+    {
+        def httpResponse = httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: 'Basic YWRtaW46YWRtaW4=']], 
+            ignoreSslErrors: true, 
+            responseHandle: 'NONE', 
+            url: "${pConfig.sqServerName}/api/projects/search?projects=${projectName}"
+            
+        def response = "NOT FOUND"
+
+        return response
+    }
+
+    def createProject(String projectName)
+    {
+
+    }
+
+    def setQualityGate(String qualityGate, String projectName)
+    {
+        
     }
 }
