@@ -87,7 +87,6 @@ def call(Map pipelineParams)
                 echo "Project ${sonarProjectName} does not exist."
 
                 sonarHelper.createProject(sonarProjectName)
-                /*
                 sonarHelper.setQualityGate(sonarQualityGateId, sonarProjectName)
 
                 emailext subject:   "SonarQube Project created: ${sonarProjectName}",
@@ -95,7 +94,6 @@ def call(Map pipelineParams)
                                     " ${sonarProjectName} has been created and Quality Gate ${sonarQualityGateId} has been assigned to it.",
                         replyTo:    '$DEFAULT_REPLYTO',
                         to:         "${pConfig.mailRecipient}"
-                */
             }
             else
             {
