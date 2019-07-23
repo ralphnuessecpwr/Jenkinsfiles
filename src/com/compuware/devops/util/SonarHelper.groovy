@@ -175,7 +175,8 @@ class SonarHelper implements Serializable {
 
     def createProject(String projectName)
     {
-        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: 'Basic YWRtaW46YWRtaW4=']], 
+        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: 'Basic YWRtaW46YWRtaW4=']],
+            httpMode:                   'POST',
             ignoreSslErrors:            true, 
             responseHandle:             'NONE', 
             consoleLogResponseBody:     true,
