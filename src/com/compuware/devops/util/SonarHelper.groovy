@@ -143,7 +143,7 @@ class SonarHelper implements Serializable {
             url:                        "${pConfig.sqServerUrl}/api/projects/search?projects=${projectName}"
 
         def jsonSlurper = new JsonSlurper()
-        def httResp     = jsonSlurper.parseText(httpResponse.getContent())
+        def httpResp    = jsonSlurper.parseText(httpResponse.getContent())
         httpResponse    = null
         jsonSlurper     = null
 
