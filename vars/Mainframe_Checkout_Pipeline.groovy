@@ -85,8 +85,9 @@ def call(Map pipelineParams)
             if(sonarHelper.checkForProject(sonarProjectName) == 'NOT FOUND')
             {
                 echo "Project ${sonarProjectName} does not exist."
-                /*
+
                 sonarHelper.createProject(sonarProjectName)
+                /*
                 sonarHelper.setQualityGate(sonarQualityGateId, sonarProjectName)
 
                 emailext subject:   "SonarQube Project created: ${sonarProjectName}",

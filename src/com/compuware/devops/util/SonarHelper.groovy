@@ -146,7 +146,7 @@ class SonarHelper implements Serializable {
 
         def jsonSlurper = new JsonSlurper()
         def httpResp    = jsonSlurper.parseText(httpResponse.getContent())
-        
+
         httpResponse    = null
         jsonSlurper     = null
 
@@ -175,7 +175,27 @@ class SonarHelper implements Serializable {
 
     def createProject(String projectName)
     {
+        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: 'Basic YWRtaW46YWRtaW4=']], 
+            ignoreSslErrors:            true, 
+            responseHandle:             'NONE', 
+            consoleLogResponseBody:     true,
+            url:                        "${pConfig.sqServerUrl}/api/projects/create?project=${projectName}&name=${projectName}"
 
+        def jsonSlurper = new JsonSlurper()
+        def httpResp    = jsonSlurper.parseText(httpResponse.getContent())
+        
+        httpResponse    = null
+        jsonSlurper     = null
+
+        if(httpResp.message != null)
+        {
+            steps.echo "Resp: " + httpResp.message
+            steps.error
+        }
+        else
+        {
+            steps.echo "Created SonarQube project ${projectName}."
+        }
     }
 
     def setQualityGate(String qualityGate, String projectName)
