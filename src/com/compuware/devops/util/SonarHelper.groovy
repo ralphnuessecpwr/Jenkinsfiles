@@ -136,6 +136,8 @@ class SonarHelper implements Serializable {
 
     def checkForProject(String projectName)
     {
+        def response
+
         def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: 'Basic YWRtaW46YWRtaW4=']], 
             ignoreSslErrors:            true, 
             responseHandle:             'NONE', 
@@ -144,6 +146,7 @@ class SonarHelper implements Serializable {
 
         def jsonSlurper = new JsonSlurper()
         def httpResp    = jsonSlurper.parseText(httpResponse.getContent())
+        
         httpResponse    = null
         jsonSlurper     = null
 
