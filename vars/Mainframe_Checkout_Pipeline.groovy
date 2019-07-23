@@ -18,7 +18,7 @@ TttHelper       tttHelper
 SonarHelper     sonarHelper 
 
 String          mailMessageExtension
-String          sonarQualityGateName    = 'RNU_Gate'
+String          sonarQualityGateId    = '21' // 'RNU_Gate'
 
 def initialize(pipelineParams)
 {
@@ -85,14 +85,18 @@ def call(Map pipelineParams)
             if(sonarHelper.checkForProject(sonarProjectName) == 'NOT FOUND')
             {
                 sonarHelper.createProject(sonarProjectName)
-                sonarHelper.setQualityGate(sonarQualityGateName, sonarProjectName)
+                sonarHelper.setQualityGate(sonarQualityGateId, sonarProjectName)
 
                 emailext subject:   "SonarQube Project created: ${sonarProjectName}",
                         body:       "Due to a checkout activity in application ${pConfig.ispwApplication} SonarQube project" +
-                                    " ${sonarProjectName} has been created and Quality Gate ${sonarQualityGateName} has been assigned to it.",
+                                    " ${sonarProjectName} has been created and Quality Gate ${sonarQualityGateId} has been assigned to it.",
                         replyTo:    '$DEFAULT_REPLYTO',
                         to:         "${pConfig.mailRecipient}"
 
+            }
+            else
+            {
+                echo "Project ${sonarProjectName} already existed."
             }
         }
     }

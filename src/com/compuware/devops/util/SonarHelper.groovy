@@ -137,11 +137,12 @@ class SonarHelper implements Serializable {
     def checkForProject(String projectName)
     {
         def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: 'Basic YWRtaW46YWRtaW4=']], 
-            ignoreSslErrors: true, 
-            responseHandle: 'NONE', 
-            url: "${pConfig.sqServerUrl}/api/projects/search?projects=${projectName}"
+            ignoreSslErrors:            true, 
+            responseHandle:             'NONE', 
+            consoleLogResponseBody:     true,
+            url:                        "${pConfig.sqServerUrl}/api/projects/search?projects=${projectName}"
 
-        def response = "NOT FOUND"
+        def response = "FOUND"
 
         return response
     }
