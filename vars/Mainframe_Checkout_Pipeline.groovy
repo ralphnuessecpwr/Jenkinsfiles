@@ -23,8 +23,8 @@ String          sonarQualityGateId
 
 def initialize(pipelineParams)
 {
-    sonarQualityGateId = '21' // 'RNU_Gate'
-    
+    sonarQualityGateName = 'RNU_Gate'
+
     // Clean out any previously downloaded source
     dir(".\\") 
     {
@@ -90,11 +90,12 @@ def call(Map pipelineParams)
                 echo "Project ${sonarProjectName} does not exist."
 
                 sonarHelper.createProject(sonarProjectName)
-                sonarHelper.setQualityGate(sonarQualityGateId, sonarProjectName)
+
+                sonarHelper.setQualityGate(sonarQualityGateName, sonarProjectName)
 
                 emailext subject:   "SonarQube Project created: ${sonarProjectName}",
                         body:       "Due to a checkout activity in application ${pConfig.ispwApplication} SonarQube project" +
-                                    " ${sonarProjectName} has been created and Quality Gate ${sonarQualityGateId} has been assigned to it.",
+                                    " ${sonarProjectName} has been created and Quality Gate ${sonarQualityGateName} has been assigned to it.",
                         replyTo:    '$DEFAULT_REPLYTO',
                         to:         "${pConfig.mailRecipient}"
             }

@@ -201,16 +201,31 @@ class SonarHelper implements Serializable {
 
     def setQualityGate(String qualityGate, String projectName)
     {
+        def qualityGateId = getQualityGateId(qualityGate)
+
         def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: 'Basic YWRtaW46YWRtaW4=']],
             httpMode:                   'POST',
             ignoreSslErrors:            true, 
             responseHandle:             'NONE', 
             consoleLogResponseBody:     true,
-            url:                        "${pConfig.sqServerUrl}/api/qualitygates/select?gateId=${qualityGate}&projectKey=${projectName}"
+            url:                        "${pConfig.sqServerUrl}/api/qualitygates/select?gateId=${qualityGateId}&projectKey=${projectName}"
+
+        steps.echo "Assigned QualityGate to project ${projectName}."
+    }
+
+    private getQualityGateId(String qualityGateName)
+    {
+        def response
+
+        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: 'Basic YWRtaW46YWRtaW4=']], 
+            ignoreSslErrors:            true, 
+            responseHandle:             'NONE', 
+            consoleLogResponseBody:     true,
+            url:                        "${pConfig.sqServerUrl}/api/qualitygates/show?name=${qualityGateName}"
 
         def jsonSlurper = new JsonSlurper()
         def httpResp    = jsonSlurper.parseText(httpResponse.getContent())
-        
+
         httpResponse    = null
         jsonSlurper     = null
 
@@ -221,7 +236,9 @@ class SonarHelper implements Serializable {
         }
         else
         {
-            steps.echo "Assigned QualityGate to project ${projectName}."
-        }        
+            response = httpResp.id 
+        }
+
+        return response
     }
 }
