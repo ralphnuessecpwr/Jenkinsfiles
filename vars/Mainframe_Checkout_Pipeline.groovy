@@ -19,10 +19,12 @@ SonarHelper     sonarHelper
 
 String          mailMessageExtension
 
-def sonarQualityGateId    = '21' // 'RNU_Gate'
+String          sonarQualityGateId
 
 def initialize(pipelineParams)
 {
+    sonarQualityGateId = '21' // 'RNU_Gate'
+    
     // Clean out any previously downloaded source
     dir(".\\") 
     {
