@@ -156,7 +156,7 @@ class SonarHelper implements Serializable {
         {
             // Compare the taskIds from the set to all tasks in the release 
             // Where they match, determine the assignment and add it to the list of assignments 
-            def steps.echo "Response" + resp.paging
+            steps.echo "Response" + resp.paging
         }
 
         def response = "FOUND"
