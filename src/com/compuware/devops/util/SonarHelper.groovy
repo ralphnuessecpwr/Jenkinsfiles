@@ -10,12 +10,13 @@ class SonarHelper implements Serializable {
     def steps
     def scannerHome
     def pConfig
+    def httpRequestAuthorizationHeader
 
     SonarHelper(script, steps, pConfig) 
     {
-        this.script     = script
-        this.steps      = steps
-        this.pConfig    = pConfig
+        this.script                         = script
+        this.steps                          = steps
+        this.pConfig                        = pConfig
     }
 
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
@@ -138,7 +139,7 @@ class SonarHelper implements Serializable {
     {
         def response
 
-        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: 'Basic YWRtaW46YWRtaW4=']], 
+        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sqHttpRequestAuthHeader]], 
             ignoreSslErrors:            true, 
             responseHandle:             'NONE', 
             consoleLogResponseBody:     true,
@@ -175,7 +176,7 @@ class SonarHelper implements Serializable {
 
     def createProject(String projectName)
     {
-        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: 'Basic YWRtaW46YWRtaW4=']],
+        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sqHttpRequestAuthHeader]],
             httpMode:                   'POST',
             ignoreSslErrors:            true, 
             responseHandle:             'NONE', 
@@ -203,21 +204,21 @@ class SonarHelper implements Serializable {
     {
         def qualityGateId = getQualityGateId(qualityGate)
 
-        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: 'Basic YWRtaW46YWRtaW4=']],
+        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sqHttpRequestAuthHeader]],
             httpMode:                   'POST',
             ignoreSslErrors:            true, 
             responseHandle:             'NONE', 
             consoleLogResponseBody:     true,
             url:                        "${pConfig.sqServerUrl}/api/qualitygates/select?gateId=${qualityGateId}&projectKey=${projectName}"
 
-        steps.echo "Assigned QualityGate to project ${projectName}."
+        steps.echo "Assigned QualityGate ${qualityGate} to project ${projectName}."
     }
 
     private getQualityGateId(String qualityGateName)
     {
         def response
 
-        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: 'Basic YWRtaW46YWRtaW4=']], 
+        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sqHttpRequestAuthHeader]], 
             ignoreSslErrors:            true, 
             responseHandle:             'NONE', 
             consoleLogResponseBody:     true,
