@@ -100,12 +100,12 @@ class TttHelper implements Serializable {
 
     def executeFunctionalTests(String userId, String password)
     {
-        totaltest credentialsId: "${pConfig.hciTokenId}", 
-            environmentId: "${pConfig.xaTesterEnvId}", 
-            folderPath: '', 
-            serverUrl: "${ispwUrl}", 
-            stopIfTestFailsOrThresholdReached: false,
-            sonarVersion: '6'
+        totaltest credentialsId:                "${pConfig.hciTokenId}", 
+            environmentId:                      "${pConfig.xaTesterEnvId}", 
+            folderPath:                         '', 
+            serverUrl:                          "${pConfig.ispwUrl}", 
+            stopIfTestFailsOrThresholdReached:  false,
+            sonarVersion:                       '6'
 
         /*
         steps.bat '''
