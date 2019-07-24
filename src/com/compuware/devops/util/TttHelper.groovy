@@ -100,7 +100,7 @@ class TttHelper implements Serializable {
 
     def executeFunctionalTests(String userId, String password)
     {
-        totaltest credentialsId:                "${pConfig.hciTokenId}", 
+        steps.totaltest credentialsId:                "${pConfig.hciTokenId}", 
             environmentId:                      "${pConfig.xaTesterEnvId}", 
             folderPath:                         '', 
             serverUrl:                          "${pConfig.ispwUrl}", 
