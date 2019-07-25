@@ -100,7 +100,6 @@ def call(Map pipelineParams)
         stage("Retrieve Mainframe Code")
         {
             ispwHelper.downloadSources(pConfig.ispwSrcLevel)
-            ispwHelper.downloadCopyBooks(workspace)
         }
         
         /* Retrieve the Tests from Github that match that ISPWW Stream and Application */
@@ -138,6 +137,7 @@ def call(Map pipelineParams)
         */ 
         stage("Check SonarQube Quality Gate") 
         {
+            ispwHelper.downloadCopyBooks(workspace)            
             sonarHelper.scan("UT")
 
             String sonarGateResult = sonarHelper.checkQualityGate()
