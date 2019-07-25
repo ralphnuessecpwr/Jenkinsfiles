@@ -113,6 +113,9 @@ def call(Map pipelineParams)
             /* initialize requires the TTT projects to be present in the Jenkins workspace, therefore it can only execute after downloading from GitHub */
             tttHelper.initialize()  
 
+            /* Clean up Code Coverage results from previous run */
+            tttHelper.cleanUpCodeCoverageResults()
+
             /* Execute unit tests */
             tttHelper.loopThruScenarios()
          
@@ -128,7 +131,6 @@ def call(Map pipelineParams)
         stage("Collect Metrics")
         {
             tttHelper.collectCodeCoverageResults()
-            //tttHelper.cleanUpCodeCoverageResults()
         }
 
         /* 
