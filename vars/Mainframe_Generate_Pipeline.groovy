@@ -129,7 +129,7 @@ def call(Map pipelineParams)
         stage("Collect Metrics")
         {
             tttHelper.collectCodeCoverageResults()
-            tttHelper.cleanUpCodeCoverageResults()
+            //tttHelper.cleanUpCodeCoverageResults()
         }
 
         /* 
