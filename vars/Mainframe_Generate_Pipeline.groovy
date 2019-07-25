@@ -91,7 +91,7 @@ Call method to execute the pipeline from a shared library
 */
 def call(Map pipelineParams)
 {
-    node any
+    node
     {
         echo "I am starting now"
         stage("Initialization")
