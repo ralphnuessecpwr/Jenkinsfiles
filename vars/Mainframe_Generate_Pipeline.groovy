@@ -124,7 +124,7 @@ def call(Map pipelineParams)
             /* Prevent junit results from influencing the restult of the pipeline */
             if(currentBuild.currentResult != 'FAILURE')
             {
-                currentBuild.currentResult = 'SUCCESS'
+                currentBuild.result = 'SUCCESS'
             }
 
             /* push results back to GitHub */
