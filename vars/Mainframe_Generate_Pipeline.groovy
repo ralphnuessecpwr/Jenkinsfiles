@@ -122,7 +122,7 @@ def call(Map pipelineParams)
             tttHelper.passResultsToJunit()
 
             /* Prevent junit results from influencing the restult of the pipeline */
-            if(currentBuild.currentResult != 'FAILURE')
+            if(currentBuild.result != 'FAILURE')
             {
                 currentBuild.result = 'SUCCESS'
             }
