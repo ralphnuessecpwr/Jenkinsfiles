@@ -16,8 +16,11 @@ GitHelper       gitHelper
 IspwHelper      ispwHelper
 TttHelper       tttHelper
 SonarHelper     sonarHelper 
+XlrHelper       xlrHelper
 
-def ResponseContentSupplier response3
+String          mailMessageExtension
+
+//def ResponseContentSupplier response3
 //def assignmentList = []
 
 def initialize(pipelineParams)
@@ -72,7 +75,9 @@ def initialize(pipelineParams)
 
     sonarHelper.initialize()
 
-    echo "Found Assignment " + pConfig.ispwAssignment
+    xlrHelper   = new XlrHelper(steps, pConfig)
+
+    //echo "Found Assignment " + pConfig.ispwAssignment
     /*
     withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
     {
@@ -109,15 +114,14 @@ def call(Map pipelineParams)
             def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttRepo}"
             
             gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
-        //}
 
-        /* 
-        This stage executes any Total Test Projects related to the mainframe source that was downloaded
-        */ 
-        //stage("Execute related Unit Tests")
-        //{
             tttHelper.initialize()                                            
+
+            /* Clean up Code Coverage results from previous run */
+            tttHelper.cleanUpCodeCoverageResults()
+
             tttHelper.loopThruScenarios()
+
             //tttHelper.passResultsToJunit()
         }
 
@@ -135,37 +139,41 @@ def call(Map pipelineParams)
         */ 
         stage("Check SonarQube Quality Gate") 
         {
+            ispwHelper.downloadCopyBooks(workspace)            
+            
             sonarHelper.scan()
 
-            // Wait for the results of the SonarQube Quality Gate
-            timeout(time: 2, unit: 'MINUTES') 
-            {                
-                // Wait for webhook call back from SonarQube.  SonarQube webhook for callback to Jenkins must be configured on the SonarQube server.
-                def sonarGate = waitForQualityGate()
+            String sonarGateResult = sonarHelper.checkQualityGate()
+
+            // Evaluate the status of the Quality Gate
+            if (sonarGateResult != 'OK')
+            {
+                echo "Sonar quality gate failure: ${sonarGate.status}"
+                echo "Pipeline will be aborted and ISPW Assignment will be regressed"
+
+                mailMessageExtension    = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
+                currentBuild.result     = "FAILURE"
+
+                // Send Standard Email
+                emailext subject:       '$DEFAULT_SUBJECT',
+                            body:       '$DEFAULT_CONTENT',
+                            replyTo:    '$DEFAULT_REPLYTO',
+                            to:         "${pConfig.mailRecipient}"
                 
-                // Evaluate the status of the Quality Gate
-                if (sonarGate.status != 'OK')
+                /*
+                withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
                 {
-                    echo "Sonar quality gate failure: ${sonarGate.status}"
-                    echo "Pipeline will be aborted and ISPW Assignment will be regressed"
-
-                    currentBuild.result = "FAILURE"
-
-                    // Send Standard Email
-                    emailext subject:       '$DEFAULT_SUBJECT',
-                                body:       '$DEFAULT_CONTENT',
-                                replyTo:    '$DEFAULT_REPLYTO',
-                                to:         "${pConfig.mailRecipient}"
-                    
-                    withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
-                    {
-                        //ispwHelper.regressAssignmentList(assignmentList, cesTokenClear)
-                        ispwHelper.regressAssignment(pConfig.ispwAssignment, cesTokenClear)
-                    }
-
-                    error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
+                    //ispwHelper.regressAssignmentList(assignmentList, cesTokenClear)
+                    //ispwHelper.regressAssignment(pConfig.ispwAssignment, cesTokenClear)
                 }
-            }   
+                */
+
+                error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
+            }
+            else
+            {
+                mailMessageExtension = "Generated code passed the Quality gate. XL Release will be started."
+            }
         }
 
         /* 
@@ -173,25 +181,17 @@ def call(Map pipelineParams)
         */ 
         stage("Start release in XL Release")
         {
-            // Trigger XL Release Jenkins Plugin to kickoff a Release
-            xlrCreateRelease(
-                releaseTitle:       'A Release for $BUILD_TAG',
-                serverCredentials:  "${pConfig.xlrUser}",
-                startRelease:       true,
-                template:           "${pConfig.xlrTemplate}",
-                variables:          [
-                                        [propertyName:  'ISPW_Dev_level',   propertyValue: "${pConfig.ispwTargetLevel}"], // Level in ISPW that the Code resides currently
-                                        [propertyName:  'ISPW_RELEASE_ID',  propertyValue: "${pConfig.ispwRelease}"],     // ISPW Release value from the ISPW Webhook
-                                        [propertyName:  'CES_Token',        propertyValue: "${pConfig.cesTokenId}"]
-                                    ]
-            )
+            xlrHelper.triggerRelease()            
+        }
 
+        stage("Send Mail")
+        {
             // Send Standard Email
             emailext subject:       '$DEFAULT_SUBJECT',
-                        body:       '$DEFAULT_CONTENT \n' + 'Promote passed the Quality gate and a new XL Release was started.',
+                        body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,
                         replyTo:    '$DEFAULT_REPLYTO',
                         to:         "${pConfig.mailRecipient}"
 
-        }        
+        } 
     }
 }

@@ -121,13 +121,6 @@ def call(Map pipelineParams)
          
             tttHelper.passResultsToJunit()
 
-            /* Prevent junit results from influencing the restult of the pipeline */
-            if(currentBuild.result != 'FAILURE')
-            {
-                echo "Setting result state"
-                currentBuild.result = 'SUCCESS'
-            }
-
             /* push results back to GitHub */
             //gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
         }
@@ -147,6 +140,7 @@ def call(Map pipelineParams)
         stage("Check SonarQube Quality Gate") 
         {
             ispwHelper.downloadCopyBooks(workspace)            
+
             sonarHelper.scan("UT")
 
             String sonarGateResult = sonarHelper.checkQualityGate()
@@ -169,22 +163,6 @@ def call(Map pipelineParams)
                     pConfig.sqServerUrl + 
                     "/dashboard?id=" + 
                     sonarHelper.determineUtProjectName()
-
-                // def jenkinsUrl = "http://sonarqube.nasa.cpwr.corp:8080"
-                // def jenkinsJob = "RNU_FTSDEMO_Promote"
-                // mailMessageExtension = "Generated code passed the Quality gate and may be promoted. \n" +
-                // "Use this link to promote the code immediately: \n" +
-                // jenkinsUrl + 
-                //     '/job/'                 + jenkinsJob + 
-                //     '/buildWithParameters?' +
-                //     'ISPW_Stream='          + pConfig.ispwStream + 
-                //     '&ISPW_Application='    + pConfig.ispwApplication + 
-                //     '&ISPW_Release='        + pConfig.ispwRelease + 
-                //     '&ISPW_Assignment='     + pConfig.ispwAssignment + 
-                //     '&ISPW_Container='      + pConfig.ispwContainer + 
-                //     '&ISPW_Container_Type=' + pConfig.ispwContainerType + 
-                //     '&ISPW_Src_Level='      + pConfig.ispwSrcLevel + 
-                //     '&ISPW_Owner='          + pConfig.ispwOwner
             }   
         }
 
