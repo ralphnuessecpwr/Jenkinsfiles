@@ -58,8 +58,6 @@ def initialize(pipelineParams)
 
     pConfig.initialize()                                            
 
-    steps.echo "initialize pConfig and got " + pConfig.ispwSrcLevel
-
     gitHelper   = new   GitHelper(
                             steps
                         )
@@ -93,7 +91,6 @@ def call(Map pipelineParams)
 {
     node
     {
-        echo "I am starting now"
         stage("Initialization")
         {
             initialize(pipelineParams) 
@@ -102,7 +99,6 @@ def call(Map pipelineParams)
         /* Download all sources that are part of the container  */
         stage("Retrieve Mainframe Code")
         {
-            steps.echo "Calling ISPW Helper with " + pConfig.ispwSrcLevel
             ispwHelper.downloadSources(pConfig.ispwSrcLevel)
             ispwHelper.downloadCopyBooks(workspace)
         }
@@ -142,7 +138,6 @@ def call(Map pipelineParams)
         */ 
         stage("Check SonarQube Quality Gate") 
         {
-            ispwHelper.downloadCopyBooks(workspace)
             sonarHelper.scan("UT")
 
             String sonarGateResult = sonarHelper.checkQualityGate()
