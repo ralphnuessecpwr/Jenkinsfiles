@@ -137,7 +137,7 @@ class TttHelper implements Serializable {
 
     def cleanUpCodeCoverageResults()
     {
-        def testId = script.BUILD_NUMBER - 1
+        Int testId = script.BUILD_NUMBER - 1
 
         steps.echo "Cleaning up Code Coverage results from previous job execution"
         steps.echo "Determined Test ID " + testId
