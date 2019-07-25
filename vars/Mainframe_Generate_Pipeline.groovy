@@ -124,6 +124,7 @@ def call(Map pipelineParams)
             /* Prevent junit results from influencing the restult of the pipeline */
             if(currentBuild.result != 'FAILURE')
             {
+                echo "Setting result state"
                 currentBuild.result = 'SUCCESS'
             }
 
