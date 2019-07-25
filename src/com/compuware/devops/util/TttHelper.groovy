@@ -133,7 +133,15 @@ class TttHelper implements Serializable {
                 connectionId:               "${pConfig.hciConnId}", 
                 credentialsId:              "${pConfig.hciTokenId}"
         ])
-
     }
 
+    def cleanUpCodeCoverageResults()
+    {
+        def cleanupJcl = jclSkeleton.createCleanUpCcRepo(pConfig.ispwApplication, script.BUILD_NUMBER)
+
+        steps.topazSubmitFreeFormJcl connectionId:  pConfig.hciConnId, 
+            credentialsId:                          pConfig.hciTokenId, 
+            jcl:                                    cleanupJcl, 
+            maxConditionCode:                       '4'
+    }
 }
