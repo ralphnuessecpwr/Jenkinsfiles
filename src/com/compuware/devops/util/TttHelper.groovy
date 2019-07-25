@@ -137,7 +137,7 @@ class TttHelper implements Serializable {
 
     def cleanUpCodeCoverageResults()
     {
-        def testId = script.BUILD_NUMBER.toInt() - 1
+        def testId = script.BUILD_NUMBER - 1
         def cleanupJcl = jclSkeleton.createCleanUpCcRepo(pConfig.ispwApplication, testId.toString())
 
         steps.topazSubmitFreeFormJcl connectionId:  pConfig.hciConnId, 
