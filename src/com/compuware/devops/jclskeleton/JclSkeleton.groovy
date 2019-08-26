@@ -1,4 +1,4 @@
-package com.compuware.devops.util
+package com.compuware.devops.jclskeleton
 
 /**
  Static Class to contain different JCL Skeletons

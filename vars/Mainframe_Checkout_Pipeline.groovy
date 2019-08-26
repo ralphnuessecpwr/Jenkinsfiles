@@ -6,7 +6,7 @@ import groovy.json.JsonBuilder
 import groovy.json.JsonOutput
 import jenkins.plugins.http_request.*
 import java.net.URL
-import com.compuware.devops.util.*
+import com.compuware.devops.*
 
 /**
  Helper Methods for the Pipeline Script
@@ -18,8 +18,8 @@ TttHelper       tttHelper
 SonarHelper     sonarHelper 
 
 String          mailMessageExtension
-
 String          sonarQualityGateId
+def             componentList
 
 def initialize(pipelineParams)
 {
@@ -65,6 +65,30 @@ def initialize(pipelineParams)
     sonarHelper = new SonarHelper(this, steps, pConfig)
 
     sonarHelper.initialize()
+
+    componentList = []
+}
+
+def setupSonarProject(String sonarProjectName)
+{
+    if(sonarHelper.checkForProject(sonarProjectName) == 'NOT FOUND')
+    {
+        echo "Project ${sonarProjectName} does not exist."
+
+        sonarHelper.createProject(sonarProjectName)
+
+        sonarHelper.setQualityGate(sonarQualityGateName, sonarProjectName)
+
+        emailext subject:   "SonarQube Project created: ${sonarProjectName}",
+                body:       "Due to a checkout activity in application ${pConfig.ispwApplication} SonarQube project" +
+                            " ${sonarProjectName} has been created and Quality Gate ${sonarQualityGateName} has been assigned to it.",
+                replyTo:    '$DEFAULT_REPLYTO',
+                to:         "${pConfig.mailRecipient}"
+    }
+    else
+    {
+        echo "Project ${sonarProjectName} already existed."
+    }
 }
 
 /**
@@ -77,32 +101,37 @@ def call(Map pipelineParams)
     {
         stage("Initialization")
         {
-            initialize(pipelineParams) 
+            initialize(pipelineParams)
+
+            componentList           = ispwHelper.getComponents(pConfig.ispwContainer, pConfig.ispwContainerType)
+
+            pConfig.ispwAssignment  = ispwHelper.determineAssignment(pConfig.ispwContainer)
         }
-        
+
         /* Download all sources that are part of the container */
-        stage("Setup Sonar Project")
+        stage("Setup Sonar Projects")
         {
-            def sonarProjectName        = sonarHelper.determineUtProjectName()
+            def sonarProjectName
 
-            if(sonarHelper.checkForProject(sonarProjectName) == 'NOT FOUND')
+            componentList.each
             {
-                echo "Project ${sonarProjectName} does not exist."
-
-                sonarHelper.createProject(sonarProjectName)
-
-                sonarHelper.setQualityGate(sonarQualityGateName, sonarProjectName)
-
-                emailext subject:   "SonarQube Project created: ${sonarProjectName}",
-                        body:       "Due to a checkout activity in application ${pConfig.ispwApplication} SonarQube project" +
-                                    " ${sonarProjectName} has been created and Quality Gate ${sonarQualityGateName} has been assigned to it.",
-                        replyTo:    '$DEFAULT_REPLYTO',
-                        to:         "${pConfig.mailRecipient}"
+                sonarProjectName = sonarHelper.determineProjectName('Component', it)
+            
+                setupSonarProject(sonarProjectName)
             }
-            else
-            {
-                echo "Project ${sonarProjectName} already existed."
-            }
+
+            sonarProjectName = sonarHelper.determineProjectName('UT')
+
+            setupSonarProject(sonarProjectName)
+
+            sonarProjectName = sonarHelper.determineProjectName('FT')
+
+            setupSonarProject(sonarProjectName)
+
+            sonarProjectName = sonarHelper.determineProjectName('Assignment')
+
+            setupSonarProject(sonarProjectName)
+
         }
     }
 }

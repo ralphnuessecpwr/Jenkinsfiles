@@ -6,7 +6,7 @@ import groovy.json.JsonBuilder
 import groovy.json.JsonOutput
 import jenkins.plugins.http_request.*
 import java.net.URL
-import com.compuware.devops.util.*
+import com.compuware.devops.*
 
 JclSkeleton     jclSkeleton
 String          ispwApplication

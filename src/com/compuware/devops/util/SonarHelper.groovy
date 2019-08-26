@@ -42,13 +42,13 @@ class SonarHelper implements Serializable {
         switch(pipelineType)
         {
             case "UT":
-                project         = determineUtProjectName()
+                project         = determineProjectName("UT")
                 testPath        = 'tests'
                 resultPath      = determineUtResultPath()
                 coveragePath    = "Coverage/CodeCoverage.xml"
                 break;
             case "FT":
-                project         = determineFtProjectName()
+                project         = determineProjectName("FT")
                 testPath        = '"tests\\' + pConfig.ispwStream + '_' + pConfig.ispwApplication + '_Functional_Tests\\Functional Test"'
                 resultPath      = 'TestResults\\SonarTestReport.xml'
                 coveragePath    = ''
@@ -78,16 +78,33 @@ class SonarHelper implements Serializable {
         return result
     }
 
-    String determineUtProjectName()
+    String determineProjectName(String projectType, String componentName)
     {
-        return pConfig.ispwOwner + '_' + pConfig.ispwStream + '_' + pConfig.ispwApplication
-    }
+        String projectName = ""
 
-    String determineFtProjectName()
-    {
-        return pConfig.ispwStream + '_' + pConfig.ispwApplication
-    }
+        switch(projectType)
+        {
+            case "Component":
+                projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication + '_' + pConfig.ispwAssignment + '_' + pConfig.componentName
+                break;
+            case "UT":
+                projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication + '_' + pConfig.ispwAssignment + '_Unit_Tests'
+                break;
+            case "FT":
+                projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication + '_' + pConfig.ispwAssignment + '_Functional_Tests'
+                break;
+            case "Application":
+                projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication
+                break;
+            default:
+                steps.echo "SonarHelper.scan received wrong projectType: " + projectType
+                steps.echo "Valid types are 'Component', 'UT', 'FT' or 'Application'"
+                break;
+        }
 
+        return projectName
+        
+    }
 
     private String determineUtResultPath()
     {
