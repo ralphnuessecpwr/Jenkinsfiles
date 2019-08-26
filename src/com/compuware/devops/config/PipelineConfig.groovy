@@ -1,4 +1,4 @@
-package com.compuware.devops.util
+package com.compuware.devops.config
 
 /* 
     Pipeline execution specific and server specific parameters which are use throughout the pipeline
