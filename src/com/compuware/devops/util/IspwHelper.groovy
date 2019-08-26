@@ -2,7 +2,6 @@ package com.compuware.devops.util
 
 import groovy.json.JsonSlurper
 import jenkins.plugins.http_request.*
-import com.compuware.devops.util.TaskInfo
 
 /* Wrapper class to simplify use of ISPW functions */
 class IspwHelper implements Serializable 
@@ -70,8 +69,6 @@ class IspwHelper implements Serializable
         )
 
     }
-
-
 
     /* Download sources for the ISPW Set which triggered the current pipeline from a given level */
     def downloadSources(String ispwLevel)
@@ -147,6 +144,21 @@ class IspwHelper implements Serializable
         }
     }
 
+    def getComponents(String container, String containerType)
+    {
+        def componentList = []
+
+        componentList.add('CWXTCOB')
+        componentList.add('CWXTDATE')
+        componentList.add('CWXTSUBC')
+
+        return componentList
+    }
+
+    def determineAssignmentFromSet(String setName)
+    {
+        return 'RXN3000024'
+    }
 /* 
     Determine all assignments in the current container 
 */
