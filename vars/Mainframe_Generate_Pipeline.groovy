@@ -21,6 +21,12 @@ String          mailMessageExtension
 
 def initialize(pipelineParams)
 {
+    // Clean out any previously downloaded source
+    dir(".\\") 
+    {
+        deleteDir()
+    }
+
     def mailListlines
     /* Read list of mailaddresses from "private" Config File */
     /* The configFileProvider creates a temporary file on disk and returns its path as variable */
@@ -56,6 +62,11 @@ def initialize(pipelineParams)
                             steps
                         )
 
+    withCredentials([usernamePassword(credentialsId: "${pConfig.gitCredentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]) 
+    {
+        gitHelper.initialize(gitPassword, gitUsername, pConfig.ispwOwner, pConfig.mailRecipient)
+    }
+
     ispwHelper  = new   IspwHelper(
                             steps, 
                             pConfig
@@ -89,7 +100,6 @@ def call(Map pipelineParams)
         stage("Retrieve Mainframe Code")
         {
             ispwHelper.downloadSources(pConfig.ispwSrcLevel)
-            ispwHelper.downloadCopyBooks(workspace)
         }
         
         /* Retrieve the Tests from Github that match that ISPWW Stream and Application */
@@ -97,17 +107,22 @@ def call(Map pipelineParams)
         {            
             def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttUtRepo}"
             
+            /* Check out unit tests from GitHub */
             gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
-        //}
 
-        /* 
-        This stage executes any Total Test Projects related to the mainframe source that was downloaded
-        */ 
-        //stage("Execute related Unit Tests")
-        //{
-            tttHelper.initialize()                                            
+            /* initialize requires the TTT projects to be present in the Jenkins workspace, therefore it can only execute after downloading from GitHub */
+            tttHelper.initialize()  
+
+            /* Clean up Code Coverage results from previous run */
+            tttHelper.cleanUpCodeCoverageResults()
+
+            /* Execute unit tests */
             tttHelper.loopThruScenarios()
+         
             tttHelper.passResultsToJunit()
+
+            /* push results back to GitHub */
+            //gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
         }
 
         /* 
@@ -124,29 +139,30 @@ def call(Map pipelineParams)
         */ 
         stage("Check SonarQube Quality Gate") 
         {
+            ispwHelper.downloadCopyBooks(workspace)            
+
             sonarHelper.scan("UT")
 
-            // Wait for the results of the SonarQube Quality Gate
-            timeout(time: 2, unit: 'MINUTES') 
-            {                
-                // Wait for webhook call back from SonarQube.  SonarQube webhook for callback to Jenkins must be configured on the SonarQube server.
-                def sonarGate = waitForQualityGate()
-                
-                // Evaluate the status of the Quality Gate
-                if (sonarGate.status != 'OK')
-                {
-                    echo "Sonar quality gate failure: ${sonarGate.status}"
-                    echo "Pipeline will be aborted and ISPW Assignment will be regressed"
+            String sonarGateResult = sonarHelper.checkQualityGate()
 
-                    mailMessageExtension = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
-                    currentBuild.result = "FAILURE"
+            // Evaluate the status of the Quality Gate
+            if (sonarGateResult != 'OK')
+            {
+                echo "Sonar quality gate failure: ${sonarGateResult}"
 
-                    error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
-                }
-                else
-                {
-                    mailMessageExtension = "Generated code passed the Quality gate and may be promoted."
-                }
+                mailMessageExtension = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
+                currentBuild.result = "FAILURE"
+
+                // Exit the pipeline with an error if the SonarQube Quality Gate is failing
+                error "Exiting Pipeline" 
+            }
+            else
+            {
+                mailMessageExtension = "Generated code passed the Quality gate and may be promoted. \n" +
+                    "SonarQube results may be reviewed at " + 
+                    pConfig.sqServerUrl + 
+                    "/dashboard?id=" + 
+                    sonarHelper.determineUtProjectName()
             }   
         }
 

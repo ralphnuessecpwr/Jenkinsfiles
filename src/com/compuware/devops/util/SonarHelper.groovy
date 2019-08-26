@@ -1,11 +1,8 @@
 package com.compuware.devops.util
+import groovy.json.JsonSlurper
 
 /**
- Wrapper around the Git Plugin's Checkout Method
- @param URL - URL for the git server
- @param Branch - The branch that will be checked out of git
- @param Credentials - Jenkins credentials for logging into git
- @param Folder - Folder relative to the workspace that git will check out files into
+ Wrapper around the Sonar Qube activities and the Sonar Scanner
 */
 class SonarHelper implements Serializable {
 
@@ -13,12 +10,13 @@ class SonarHelper implements Serializable {
     def steps
     def scannerHome
     def pConfig
+    def httpRequestAuthorizationHeader
 
     SonarHelper(script, steps, pConfig) 
     {
-        this.script     = script
-        this.steps      = steps
-        this.pConfig    = pConfig
+        this.script                         = script
+        this.steps                          = steps
+        this.pConfig                        = pConfig
     }
 
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
@@ -27,20 +25,33 @@ class SonarHelper implements Serializable {
         this.scannerHome    = steps.tool "${pConfig.sqScannerName}";
     }
 
+    def scan()
+    {
+        def testResults = determineUtResultPath()
+
+        runScan(testResults, script.JOB_NAME)
+    }
+
     def scan(pipelineType)
     {
         def project
+        def testPath
         def resultPath
+        def coveragePath
 
         switch(pipelineType)
         {
             case "UT":
-                project     = determineUtProjectName()
-                resultPath  = determineUtResultPath()
+                project         = determineUtProjectName()
+                testPath        = 'tests'
+                resultPath      = determineUtResultPath()
+                coveragePath    = "Coverage/CodeCoverage.xml"
                 break;
             case "FT":
-                project     = determineFtProjectName()
-                resultPath  = determineFtResultPath()
+                project         = determineFtProjectName()
+                testPath        = '"tests\\' + pConfig.ispwStream + '_' + pConfig.ispwApplication + '_Functional_Tests\\Functional Test"'
+                resultPath      = 'TestResults\\SonarTestReport.xml'
+                coveragePath    = ''
                 break;
             default:
                 steps.echo "SonarHelper.scan received wrong pipelineType: " + pipelineType
@@ -48,15 +59,37 @@ class SonarHelper implements Serializable {
                 break;
         }
 
-        runScan(resultPath, project)
+        runScan(testPath, resultPath, coveragePath, project)
     }
 
-    private String determineUtProjectName()
+    String checkQualityGate()
+    {
+        String result
+
+        // Wait for the results of the SonarQube Quality Gate
+        steps.timeout(time: 2, unit: 'MINUTES') 
+        {                
+            // Wait for webhook call back from SonarQube.  SonarQube webhook for callback to Jenkins must be configured on the SonarQube server.
+            def sonarGate = steps.waitForQualityGate()
+
+            result = sonarGate.status
+        }
+
+        return result
+    }
+
+    String determineUtProjectName()
     {
         return pConfig.ispwOwner + '_' + pConfig.ispwStream + '_' + pConfig.ispwApplication
     }
 
-    String determineUtResultPath()
+    String determineFtProjectName()
+    {
+        return pConfig.ispwStream + '_' + pConfig.ispwApplication
+    }
+
+
+    private String determineUtResultPath()
     {
         // Finds all of the Total Test results files that will be submitted to SonarQube
         def tttListOfResults    = steps.findFiles(glob: 'TTTSonar/*.xml')   // Total Test SonarQube result files are stored in TTTSonar directory
@@ -74,19 +107,20 @@ class SonarHelper implements Serializable {
         return testResults
     }
 
-    def scan()
-    {
-        def testResults = determineUtResultPath()
-
-        runScan(testResults, script.JOB_NAME)
-    }
-
-    private runScan(testResultPath, projectName)
+    private runScan(testPath, testResultPath, coveragePath, projectName)
     {
         steps.withSonarQubeEnv("${pConfig.sqServerName}")       // 'localhost' is the name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section
         {
             // Test and Coverage results
-            def sqScannerProperties   = " -Dsonar.tests=tests -Dsonar.testExecutionReportPaths=${testResultPath} -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"
+            def sqScannerProperties   = ' -Dsonar.tests=' + testPath
+
+            sqScannerProperties       = sqScannerProperties + " -Dsonar.testExecutionReportPaths=${testResultPath}"
+
+            if(coveragePath != '')
+            {
+                sqScannerProperties       = sqScannerProperties + " -Dsonar.coverageReportPaths=${coveragePath}"
+            }
+
             // SonarQube project to load results into
             sqScannerProperties       = sqScannerProperties + " -Dsonar.projectKey=${projectName} -Dsonar.projectName=${projectName} -Dsonar.projectVersion=1.0"
             // Location of the Cobol Source Code to scan
@@ -99,5 +133,113 @@ class SonarHelper implements Serializable {
             // Call the SonarQube Scanner with properties defined above
             steps.bat "${scannerHome}/bin/sonar-scanner" + sqScannerProperties
         }
+    }
+
+    def checkForProject(String projectName)
+    {
+        def response
+
+        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sqHttpRequestAuthHeader]], 
+            ignoreSslErrors:            true, 
+            responseHandle:             'NONE', 
+            consoleLogResponseBody:     true,
+            url:                        "${pConfig.sqServerUrl}/api/projects/search?projects=${projectName}"
+
+        def jsonSlurper = new JsonSlurper()
+        def httpResp    = jsonSlurper.parseText(httpResponse.getContent())
+
+        httpResponse    = null
+        jsonSlurper     = null
+
+        if(httpResp.message != null)
+        {
+            steps.echo "Resp: " + httpResp.message
+            steps.error
+        }
+        else
+        {
+            // Compare the taskIds from the set to all tasks in the release 
+            // Where they match, determine the assignment and add it to the list of assignments 
+            def pagingInfo = httpResp.paging
+            if(pagingInfo.total == 0)
+            {
+                response = "NOT FOUND"
+            }
+            else
+            {
+                response = "FOUND"
+            }
+        }
+
+        return response
+    }
+
+    def createProject(String projectName)
+    {
+        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sqHttpRequestAuthHeader]],
+            httpMode:                   'POST',
+            ignoreSslErrors:            true, 
+            responseHandle:             'NONE', 
+            consoleLogResponseBody:     true,
+            url:                        "${pConfig.sqServerUrl}/api/projects/create?project=${projectName}&name=${projectName}"
+
+        def jsonSlurper = new JsonSlurper()
+        def httpResp    = jsonSlurper.parseText(httpResponse.getContent())
+        
+        httpResponse    = null
+        jsonSlurper     = null
+
+        if(httpResp.message != null)
+        {
+            steps.echo "Resp: " + httpResp.message
+            steps.error
+        }
+        else
+        {
+            steps.echo "Created SonarQube project ${projectName}."
+        }
+    }
+
+    def setQualityGate(String qualityGate, String projectName)
+    {
+        def qualityGateId = getQualityGateId(qualityGate)
+
+        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sqHttpRequestAuthHeader]],
+            httpMode:                   'POST',
+            ignoreSslErrors:            true, 
+            responseHandle:             'NONE', 
+            consoleLogResponseBody:     true,
+            url:                        "${pConfig.sqServerUrl}/api/qualitygates/select?gateId=${qualityGateId}&projectKey=${projectName}"
+
+        steps.echo "Assigned QualityGate ${qualityGate} to project ${projectName}."
+    }
+
+    private getQualityGateId(String qualityGateName)
+    {
+        def response
+
+        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sqHttpRequestAuthHeader]], 
+            ignoreSslErrors:            true, 
+            responseHandle:             'NONE', 
+            consoleLogResponseBody:     true,
+            url:                        "${pConfig.sqServerUrl}/api/qualitygates/show?name=${qualityGateName}"
+
+        def jsonSlurper = new JsonSlurper()
+        def httpResp    = jsonSlurper.parseText(httpResponse.getContent())
+
+        httpResponse    = null
+        jsonSlurper     = null
+
+        if(httpResp.message != null)
+        {
+            steps.echo "Resp: " + httpResp.message
+            steps.error
+        }
+        else
+        {
+            response = httpResp.id 
+        }
+
+        return response
     }
 }

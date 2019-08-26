@@ -100,17 +100,20 @@ class TttHelper implements Serializable {
 
     def executeFunctionalTests(String userId, String password)
     {
-        steps.bat '''
-            cd C:\\TopazCLI190301
-            C:\\TopazCLI190301\\TotalTestFTCLI.bat -e ''' + pConfig.xaTesterEnvId + ''' -f . -s ''' + pConfig.xaTesterUrl +''' -u ''' + userId + '''  -p ''' + password + ''' -r ''' + script.workspace + ''' -R -x -S ''' + pConfig.mfSourceFolder + ''' -g TestResults -G -v 6
-            '''
+        steps.totaltest credentialsId:                "${pConfig.hciTokenId}", 
+            environmentId:                      "${pConfig.xaTesterEnvId}", 
+            folderPath:                         '', 
+            serverUrl:                          "${pConfig.ispwUrl}", 
+            stopIfTestFailsOrThresholdReached:  false,
+            sonarVersion:                       '6'
     }
 
     def passResultsToJunit()
     {
         // Process the Total Test Junit result files into Jenkins
         steps.junit allowEmptyResults:    true, 
-            keepLongStdio:                true, 
+            keepLongStdio:                true,
+            healthScaleFactor:            0.0,  
             testResults:                  "TTTUnit/*.xml"
     }
 
@@ -130,7 +133,20 @@ class TttHelper implements Serializable {
                 connectionId:               "${pConfig.hciConnId}", 
                 credentialsId:              "${pConfig.hciTokenId}"
         ])
-
     }
 
+    def cleanUpCodeCoverageResults()
+    {
+        int testId = Integer.parseInt(script.BUILD_NUMBER) - 1
+
+        steps.echo "Cleaning up Code Coverage results from previous job execution"
+        steps.echo "Determined Test ID " + testId
+
+        def cleanupJcl = jclSkeleton.createCleanUpCcRepo(pConfig.ispwApplication, testId.toString())
+
+        steps.topazSubmitFreeFormJcl connectionId:  pConfig.hciConnId, 
+            credentialsId:                          pConfig.hciTokenId, 
+            jcl:                                    cleanupJcl, 
+            maxConditionCode:                       '8'
+    }
 }
