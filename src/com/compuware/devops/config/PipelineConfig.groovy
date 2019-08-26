@@ -127,6 +127,8 @@ class PipelineConfig implements Serializable
 
         lines.each
         {
+            steps.echo it.toString()
+            /*
             if(it.toString().indexOf('#') != 0)
             {
                 lineToken   = it.toString().tokenize("=")
@@ -167,6 +169,7 @@ class PipelineConfig implements Serializable
                         break;
                 }
             }
+            */
         }
     }
 
