@@ -85,7 +85,7 @@ class SonarHelper implements Serializable {
         switch(projectType)
         {
             case "Component":
-                projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication + '_' + pConfig.ispwAssignment + '_' + pConfig.componentName
+                projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication + '_' + pConfig.ispwAssignment + '_' + componentName
                 break;
             case "UT":
                 projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication + '_' + pConfig.ispwAssignment + '_Unit_Tests'
