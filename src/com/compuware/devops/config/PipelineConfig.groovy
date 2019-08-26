@@ -127,10 +127,7 @@ class PipelineConfig implements Serializable
 
         lines.each
         {
-
-            steps.echo it.toString().indexOf('#').toString()
-
-            if(it.toString().charAt(1) != '#')
+            if(it.toString().indexOf('#') != 0)
             {
                 lineToken   = it.toString().tokenize("=")
                 parmName    = lineToken.get(0).toString()
@@ -184,7 +181,7 @@ class PipelineConfig implements Serializable
 
         lines.each
         {
-            if(it.toString().charAt(0) != '#')
+            if(it.toString().trim().indexOf('#') != 0)
             {
                 lineToken   = it.toString().tokenize("=")
                 parmName    = lineToken.get(0).toString()
