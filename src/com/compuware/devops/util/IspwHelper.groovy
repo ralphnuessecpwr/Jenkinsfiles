@@ -2,6 +2,7 @@ package com.compuware.devops.util
 
 import groovy.json.JsonSlurper
 import jenkins.plugins.http_request.*
+import com.compuware.devops.jclskeleton.*
 
 /* Wrapper class to simplify use of ISPW functions */
 class IspwHelper implements Serializable 

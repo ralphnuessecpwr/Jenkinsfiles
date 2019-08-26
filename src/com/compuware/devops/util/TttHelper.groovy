@@ -1,4 +1,5 @@
 package com.compuware.devops.util
+import com.compuware.devops.jclskeleton.*
 
 class TttHelper implements Serializable {
 
