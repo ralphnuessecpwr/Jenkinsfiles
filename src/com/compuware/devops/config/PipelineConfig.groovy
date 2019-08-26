@@ -125,6 +125,8 @@ class PipelineConfig implements Serializable
 
         def lines = readConfigFile("${pipelineConfigFile}")
 
+        steps.echo "Lines read \n" + lines.toString()
+
         lines.each
         {
             if(it.toString().charAt(0) != '#')
