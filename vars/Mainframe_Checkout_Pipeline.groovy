@@ -6,7 +6,9 @@ import groovy.json.JsonBuilder
 import groovy.json.JsonOutput
 import jenkins.plugins.http_request.*
 import java.net.URL
-import com.compuware.devops.*
+import com.compuware.devops.config.*
+import com.compuware.devops.jclskeleton.*
+import com.compuware.devops.util.*
 
 /**
  Helper Methods for the Pipeline Script
@@ -71,6 +73,8 @@ def initialize(pipelineParams)
 
 def setupSonarProject(String sonarProjectName)
 {
+    println "would create project: " sonarProjectName
+    /*
     if(sonarHelper.checkForProject(sonarProjectName) == 'NOT FOUND')
     {
         echo "Project ${sonarProjectName} does not exist."
@@ -89,6 +93,7 @@ def setupSonarProject(String sonarProjectName)
     {
         echo "Project ${sonarProjectName} already existed."
     }
+    */
 }
 
 /**
@@ -105,7 +110,7 @@ def call(Map pipelineParams)
 
             componentList           = ispwHelper.getComponents(pConfig.ispwContainer, pConfig.ispwContainerType)
 
-            pConfig.ispwAssignment  = ispwHelper.determineAssignment(pConfig.ispwContainer)
+            pConfig.ispwAssignment  = ispwHelper.determineAssignmentFromSet(pConfig.ispwContainer)
         }
 
         /* Download all sources that are part of the container */

@@ -144,9 +144,6 @@ class PipelineConfig implements Serializable
                     case "SQ_SERVER_URL":
                         sqServerUrl     = parmValue
                         break;
-                    case "XA_TESTER_SERVER_URL":
-                        xaTesterUrl     = parmValue
-                        break;
                     case "MF_SOURCE_FOLDER":
                         mfSourceFolder  = parmValue
                         break;
@@ -197,6 +194,9 @@ class PipelineConfig implements Serializable
                         break;
                     case "TTT_GIT_BRANCH": 
                         gitBranch       = parmValue
+                        break;
+                    case "TTT_FT_SERVER_URL":
+                        xaTesterUrl     = parmValue
                         break;
                     case "TTT_FT_ENVIRONMENT_ID":
                         xaTesterEnvId   = parmValue
