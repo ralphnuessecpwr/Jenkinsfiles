@@ -125,55 +125,51 @@ class PipelineConfig implements Serializable
 
         def lines = readConfigFile("${pipelineConfigFile}")
 
-
-        steps.echo lines.getClass().toString()
-
         lines.each
         {
-            steps.echo '*' + it.toString() + '*'
-
-            lineToken   = it.toString().tokenize("=")
-            parmName    = lineToken.get(0).toString()
-            parmValue   = lineToken.get(1).toString().trim()
-
-            switch(parmName)
+            if(it.toString().indexOf('#') != 0)
             {
-                case "SQ_SCANNER_NAME":
-                    sqScannerName   = parmValue
-                    break;
-                case "SQ_SERVER_NAME": 
-                    sqServerName    = parmValue
-                    break;
-                case "SQ_SERVER_URL":
-                    sqServerUrl     = parmValue
-                    break;
-                case "XA_TESTER_SERVER_URL":
-                    xaTesterUrl     = parmValue
-                    break;
-                case "MF_SOURCE_FOLDER":
-                    mfSourceFolder  = parmValue
-                    break;
-                case "XLR_TEMPLATE":
-                    xlrTemplate     = parmValue
-                    break;
-                case "XLR_USER":
-                    xlrUser         = parmValue
-                    break;
-                case "TTT_FOLDER":
-                    tttFolder       = parmValue
-                    break;
-                case "ISPW_URL":
-                    ispwUrl         = parmValue
-                    break;
-                case "ISPW_RUNTIME":
-                    ispwRuntime     = parmValue
-                    break;
-                default:
-                    steps.echo "Found unknown Pipeline Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
-                    break;
+                lineToken   = it.toString().tokenize("=")
+                parmName    = lineToken.get(0).toString()
+                parmValue   = lineToken.get(1).toString().trim()
+
+                switch(parmName)
+                {
+                    case "SQ_SCANNER_NAME":
+                        sqScannerName   = parmValue
+                        break;
+                    case "SQ_SERVER_NAME": 
+                        sqServerName    = parmValue
+                        break;
+                    case "SQ_SERVER_URL":
+                        sqServerUrl     = parmValue
+                        break;
+                    case "MF_SOURCE_FOLDER":
+                        mfSourceFolder  = parmValue
+                        break;
+                    case "XLR_TEMPLATE":
+                        xlrTemplate     = parmValue
+                        break;
+                    case "XLR_USER":
+                        xlrUser         = parmValue
+                        break;
+                    case "TTT_FOLDER":
+                        tttFolder       = parmValue
+                        break;
+                    case "ISPW_URL":
+                        ispwUrl         = parmValue
+                        break;
+                    case "ISPW_RUNTIME":
+                        ispwRuntime     = parmValue
+                        break;
+                    default:
+                        steps.echo "Found unknown Pipeline Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
+                        break;
+                }
             }
         }
     }
+
 
     /* Read configuration values from tttgit.config file */
     def setTttGitConfig()
@@ -186,24 +182,27 @@ class PipelineConfig implements Serializable
 
         lines.each
         {
-            lineToken   = it.toString().tokenize("=")
-            parmName    = lineToken.get(0).toString()
-            parmValue   = lineToken.get(1).toString().trim()
-
-            switch(parmName)
+            if(it.toString().trim().indexOf('#') != 0)
             {
-                case "TTT_GIT_TARGET_BRANCH":
-                    gitTargetBranch = parmValue
-                    break;
-                case "TTT_GIT_BRANCH": 
-                    gitBranch       = parmValue
-                    break;
-                case "TTT_FT_ENVIRONMENT_ID":
-                    xaTesterEnvId   = parmValue
-                    break;
-                default:
-                    steps.echo "Found unknown TTT Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
-                    break;
+                lineToken   = it.toString().tokenize("=")
+                parmName    = lineToken.get(0).toString()
+                parmValue   = lineToken.get(1).toString().trim()
+
+                switch(parmName)
+                {
+                    case "TTT_GIT_TARGET_BRANCH":
+                        gitTargetBranch = parmValue
+                        break;
+                    case "TTT_GIT_BRANCH": 
+                        gitBranch       = parmValue
+                        break;
+                    case "TTT_FT_ENVIRONMENT_ID":
+                        xaTesterEnvId   = parmValue
+                        break;
+                    default:
+                        steps.echo "Found unknown TTT Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
+                        break;
+                }
             }
         }
     }
@@ -232,7 +231,6 @@ class PipelineConfig implements Serializable
         def filePath    = "${configPath}/${fileName}"
         def fileText    = steps.libraryResource filePath
 
-        //return fileText.tokenize("\n")
-        return fileText.tokenize()
+        return fileText.tokenize("\n")
     }
 }
