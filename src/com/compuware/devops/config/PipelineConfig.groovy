@@ -129,8 +129,7 @@ class PipelineConfig implements Serializable
         {
             steps.echo '*' + it.toString() + '*'
 
-            if
-            (
+            if(
                 it.toString().indexOf('#') != 0 &&
                 it.toString().trim() != ''
             )
@@ -188,8 +187,7 @@ class PipelineConfig implements Serializable
 
         lines.each
         {
-            if
-            (
+            if(
                 it.toString().indexOf('#') != 0 &&
                 it.toString().trim() != ''
             )
