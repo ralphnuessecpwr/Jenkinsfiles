@@ -22,6 +22,7 @@ class PipelineConfig implements Serializable
     public String sqScannerName                                 // Sonar Qube Scanner Tool name as defined in "Manage Jenkins" -> "Global Tool Configuration" -> "SonarQube scanner"
     public String sqServerName                                  // Sonar Qube Scanner Server name as defined in "Manage Jenkins" -> "Configure System" -> "SonarQube servers"
     public String sqServerUrl                                   // URL to the SonarQube server
+    public String sqHttpRequestAuthHeader                       // Value for Authorization header for http Requests to SonarQube
     public String xaTesterUrl                                   // URL to the XATester repository
     public String xaTesterEnvId                                 // XATester Environment ID
     public String mfSourceFolder                                // Folder containing sources after downloading from ISPW
@@ -66,8 +67,6 @@ class PipelineConfig implements Serializable
         this.workspace          = workspace
         this.mailListLines      = mailListLines
 
-        this.xaTesterEnvId      = "5b5f2a71787be73b59238d7b"
-
         this.ispwStream         = params.ISPW_Stream
         this.ispwApplication    = params.ISPW_Application
         this.ispwRelease        = params.ISPW_Release
@@ -76,6 +75,8 @@ class PipelineConfig implements Serializable
         this.ispwContainerType  = params.ISPW_Container_Type
         this.ispwOwner          = params.ISPW_Owner        
         this.ispwSrcLevel       = params.ISPW_Src_Level
+
+        this.sqHttpRequestAuthHeader    = params.SQ_SERVER_AUTH_TOKEN
 
         this.applicationPathNum = ispwSrcLevel.charAt(ispwSrcLevel.length() - 1)
         this.ispwTargetLevel    = "QA" + applicationPathNum
@@ -187,10 +188,13 @@ class PipelineConfig implements Serializable
             switch(parmName)
             {
                 case "TTT_GIT_TARGET_BRANCH":
-                    gitTargetBranch   = parmValue
+                    gitTargetBranch = parmValue
                     break;
                 case "TTT_GIT_BRANCH": 
-                    gitBranch    = parmValue
+                    gitBranch       = parmValue
+                    break;
+                case "TTT_FT_ENVIRONMENT_ID":
+                    xaTesterEnvId   = parmValue
                     break;
                 default:
                     steps.echo "Found unknown TTT Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."

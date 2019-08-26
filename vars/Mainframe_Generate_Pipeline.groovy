@@ -100,7 +100,6 @@ def call(Map pipelineParams)
         stage("Retrieve Mainframe Code")
         {
             ispwHelper.downloadSources(pConfig.ispwSrcLevel)
-            //ispwHelper.downloadCopyBooks(workspace)
         }
         
         /* Retrieve the Tests from Github that match that ISPWW Stream and Application */
@@ -114,11 +113,16 @@ def call(Map pipelineParams)
             /* initialize requires the TTT projects to be present in the Jenkins workspace, therefore it can only execute after downloading from GitHub */
             tttHelper.initialize()  
 
+            /* Clean up Code Coverage results from previous run */
+            tttHelper.cleanUpCodeCoverageResults()
+
             /* Execute unit tests */
             tttHelper.loopThruScenarios()
+         
+            tttHelper.passResultsToJunit()
 
             /* push results back to GitHub */
-            gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
+            //gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
         }
 
         /* 
@@ -135,7 +139,8 @@ def call(Map pipelineParams)
         */ 
         stage("Check SonarQube Quality Gate") 
         {
-            ispwHelper.downloadCopyBooks(workspace)
+            ispwHelper.downloadCopyBooks(workspace)            
+
             sonarHelper.scan("UT")
 
             String sonarGateResult = sonarHelper.checkQualityGate()
@@ -153,23 +158,11 @@ def call(Map pipelineParams)
             }
             else
             {
-                mailMessageExtension = "Generated code passed the Quality gate and may be promoted."
-
-                // def jenkinsUrl = "http://sonarqube.nasa.cpwr.corp:8080"
-                // def jenkinsJob = "RNU_FTSDEMO_Promote"
-                // mailMessageExtension = "Generated code passed the Quality gate and may be promoted. \n" +
-                // "Use this link to promote the code immediately: \n" +
-                // jenkinsUrl + 
-                //     '/job/'                 + jenkinsJob + 
-                //     '/buildWithParameters?' +
-                //     'ISPW_Stream='          + pConfig.ispwStream + 
-                //     '&ISPW_Application='    + pConfig.ispwApplication + 
-                //     '&ISPW_Release='        + pConfig.ispwRelease + 
-                //     '&ISPW_Assignment='     + pConfig.ispwAssignment + 
-                //     '&ISPW_Container='      + pConfig.ispwContainer + 
-                //     '&ISPW_Container_Type=' + pConfig.ispwContainerType + 
-                //     '&ISPW_Src_Level='      + pConfig.ispwSrcLevel + 
-                //     '&ISPW_Owner='          + pConfig.ispwOwner
+                mailMessageExtension = "Generated code passed the Quality gate and may be promoted. \n" +
+                    "SonarQube results may be reviewed at " + 
+                    pConfig.sqServerUrl + 
+                    "/dashboard?id=" + 
+                    sonarHelper.determineUtProjectName()
             }   
         }
 

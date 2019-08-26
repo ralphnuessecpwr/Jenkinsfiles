@@ -1,11 +1,8 @@
 package com.compuware.devops.util
+import groovy.json.JsonSlurper
 
 /**
- Wrapper around the Git Plugin's Checkout Method
- @param URL - URL for the git server
- @param Branch - The branch that will be checked out of git
- @param Credentials - Jenkins credentials for logging into git
- @param Folder - Folder relative to the workspace that git will check out files into
+ Wrapper around the Sonar Qube activities and the Sonar Scanner
 */
 class SonarHelper implements Serializable {
 
@@ -13,12 +10,13 @@ class SonarHelper implements Serializable {
     def steps
     def scannerHome
     def pConfig
+    def httpRequestAuthorizationHeader
 
     SonarHelper(script, steps, pConfig) 
     {
-        this.script     = script
-        this.steps      = steps
-        this.pConfig    = pConfig
+        this.script                         = script
+        this.steps                          = steps
+        this.pConfig                        = pConfig
     }
 
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
@@ -47,7 +45,7 @@ class SonarHelper implements Serializable {
                 project         = determineUtProjectName()
                 testPath        = 'tests'
                 resultPath      = determineUtResultPath()
-                coveragePath    = '' //"Coverage/CodeCoverage.xml"
+                coveragePath    = "Coverage/CodeCoverage.xml"
                 break;
             case "FT":
                 project         = determineFtProjectName()
@@ -80,12 +78,12 @@ class SonarHelper implements Serializable {
         return result
     }
 
-    private String determineUtProjectName()
+    String determineUtProjectName()
     {
         return pConfig.ispwOwner + '_' + pConfig.ispwStream + '_' + pConfig.ispwApplication
     }
 
-    private String determineFtProjectName()
+    String determineFtProjectName()
     {
         return pConfig.ispwStream + '_' + pConfig.ispwApplication
     }
@@ -135,5 +133,113 @@ class SonarHelper implements Serializable {
             // Call the SonarQube Scanner with properties defined above
             steps.bat "${scannerHome}/bin/sonar-scanner" + sqScannerProperties
         }
+    }
+
+    def checkForProject(String projectName)
+    {
+        def response
+
+        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sqHttpRequestAuthHeader]], 
+            ignoreSslErrors:            true, 
+            responseHandle:             'NONE', 
+            consoleLogResponseBody:     true,
+            url:                        "${pConfig.sqServerUrl}/api/projects/search?projects=${projectName}"
+
+        def jsonSlurper = new JsonSlurper()
+        def httpResp    = jsonSlurper.parseText(httpResponse.getContent())
+
+        httpResponse    = null
+        jsonSlurper     = null
+
+        if(httpResp.message != null)
+        {
+            steps.echo "Resp: " + httpResp.message
+            steps.error
+        }
+        else
+        {
+            // Compare the taskIds from the set to all tasks in the release 
+            // Where they match, determine the assignment and add it to the list of assignments 
+            def pagingInfo = httpResp.paging
+            if(pagingInfo.total == 0)
+            {
+                response = "NOT FOUND"
+            }
+            else
+            {
+                response = "FOUND"
+            }
+        }
+
+        return response
+    }
+
+    def createProject(String projectName)
+    {
+        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sqHttpRequestAuthHeader]],
+            httpMode:                   'POST',
+            ignoreSslErrors:            true, 
+            responseHandle:             'NONE', 
+            consoleLogResponseBody:     true,
+            url:                        "${pConfig.sqServerUrl}/api/projects/create?project=${projectName}&name=${projectName}"
+
+        def jsonSlurper = new JsonSlurper()
+        def httpResp    = jsonSlurper.parseText(httpResponse.getContent())
+        
+        httpResponse    = null
+        jsonSlurper     = null
+
+        if(httpResp.message != null)
+        {
+            steps.echo "Resp: " + httpResp.message
+            steps.error
+        }
+        else
+        {
+            steps.echo "Created SonarQube project ${projectName}."
+        }
+    }
+
+    def setQualityGate(String qualityGate, String projectName)
+    {
+        def qualityGateId = getQualityGateId(qualityGate)
+
+        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sqHttpRequestAuthHeader]],
+            httpMode:                   'POST',
+            ignoreSslErrors:            true, 
+            responseHandle:             'NONE', 
+            consoleLogResponseBody:     true,
+            url:                        "${pConfig.sqServerUrl}/api/qualitygates/select?gateId=${qualityGateId}&projectKey=${projectName}"
+
+        steps.echo "Assigned QualityGate ${qualityGate} to project ${projectName}."
+    }
+
+    private getQualityGateId(String qualityGateName)
+    {
+        def response
+
+        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sqHttpRequestAuthHeader]], 
+            ignoreSslErrors:            true, 
+            responseHandle:             'NONE', 
+            consoleLogResponseBody:     true,
+            url:                        "${pConfig.sqServerUrl}/api/qualitygates/show?name=${qualityGateName}"
+
+        def jsonSlurper = new JsonSlurper()
+        def httpResp    = jsonSlurper.parseText(httpResponse.getContent())
+
+        httpResponse    = null
+        jsonSlurper     = null
+
+        if(httpResp.message != null)
+        {
+            steps.echo "Resp: " + httpResp.message
+            steps.error
+        }
+        else
+        {
+            response = httpResp.id 
+        }
+
+        return response
     }
 }
