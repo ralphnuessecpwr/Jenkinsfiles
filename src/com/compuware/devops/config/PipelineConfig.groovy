@@ -1,4 +1,4 @@
-package com.compuware.devops.config
+package com.compuware.devops.util
 
 /* 
     Pipeline execution specific and server specific parameters which are use throughout the pipeline
@@ -127,49 +127,46 @@ class PipelineConfig implements Serializable
 
         lines.each
         {
-            steps.echo it.toString()
-            /*
-            if(it.toString().indexOf('#') != 0)
-            {
-                lineToken   = it.toString().tokenize("=")
-                parmName    = lineToken.get(0).toString()
-                parmValue   = lineToken.get(1).toString().trim()
+            lineToken   = it.toString().tokenize("=")
+            parmName    = lineToken.get(0).toString()
+            parmValue   = lineToken.get(1).toString().trim()
 
-                switch(parmName)
-                {
-                    case "SQ_SCANNER_NAME":
-                        sqScannerName   = parmValue
-                        break;
-                    case "SQ_SERVER_NAME": 
-                        sqServerName    = parmValue
-                        break;
-                    case "SQ_SERVER_URL":
-                        sqServerUrl     = parmValue
-                        break;
-                    case "MF_SOURCE_FOLDER":
-                        mfSourceFolder  = parmValue
-                        break;
-                    case "XLR_TEMPLATE":
-                        xlrTemplate     = parmValue
-                        break;
-                    case "XLR_USER":
-                        xlrUser         = parmValue
-                        break;
-                    case "TTT_FOLDER":
-                        tttFolder       = parmValue
-                        break;
-                    case "ISPW_URL":
-                        ispwUrl         = parmValue
-                        break;
-                    case "ISPW_RUNTIME":
-                        ispwRuntime     = parmValue
-                        break;
-                    default:
-                        steps.echo "Found unknown Pipeline Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
-                        break;
-                }
+            switch(parmName)
+            {
+                case "SQ_SCANNER_NAME":
+                    sqScannerName   = parmValue
+                    break;
+                case "SQ_SERVER_NAME": 
+                    sqServerName    = parmValue
+                    break;
+                case "SQ_SERVER_URL":
+                    sqServerUrl     = parmValue
+                    break;
+                case "XA_TESTER_SERVER_URL":
+                    xaTesterUrl     = parmValue
+                    break;
+                case "MF_SOURCE_FOLDER":
+                    mfSourceFolder  = parmValue
+                    break;
+                case "XLR_TEMPLATE":
+                    xlrTemplate     = parmValue
+                    break;
+                case "XLR_USER":
+                    xlrUser         = parmValue
+                    break;
+                case "TTT_FOLDER":
+                    tttFolder       = parmValue
+                    break;
+                case "ISPW_URL":
+                    ispwUrl         = parmValue
+                    break;
+                case "ISPW_RUNTIME":
+                    ispwRuntime     = parmValue
+                    break;
+                default:
+                    steps.echo "Found unknown Pipeline Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
+                    break;
             }
-            */
         }
     }
 
@@ -184,30 +181,24 @@ class PipelineConfig implements Serializable
 
         lines.each
         {
-            if(it.toString().trim().indexOf('#') != 0)
-            {
-                lineToken   = it.toString().tokenize("=")
-                parmName    = lineToken.get(0).toString()
-                parmValue   = lineToken.get(1).toString().trim()
+            lineToken   = it.toString().tokenize("=")
+            parmName    = lineToken.get(0).toString()
+            parmValue   = lineToken.get(1).toString().trim()
 
-                switch(parmName)
-                {
-                    case "TTT_GIT_TARGET_BRANCH":
-                        gitTargetBranch = parmValue
-                        break;
-                    case "TTT_GIT_BRANCH": 
-                        gitBranch       = parmValue
-                        break;
-                    case "TTT_FT_SERVER_URL":
-                        xaTesterUrl     = parmValue
-                        break;
-                    case "TTT_FT_ENVIRONMENT_ID":
-                        xaTesterEnvId   = parmValue
-                        break;
-                    default:
-                        steps.echo "Found unknown TTT Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
-                        break;
-                }
+            switch(parmName)
+            {
+                case "TTT_GIT_TARGET_BRANCH":
+                    gitTargetBranch = parmValue
+                    break;
+                case "TTT_GIT_BRANCH": 
+                    gitBranch       = parmValue
+                    break;
+                case "TTT_FT_ENVIRONMENT_ID":
+                    xaTesterEnvId   = parmValue
+                    break;
+                default:
+                    steps.echo "Found unknown TTT Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
+                    break;
             }
         }
     }
