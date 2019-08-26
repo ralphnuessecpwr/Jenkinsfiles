@@ -204,6 +204,9 @@ class PipelineConfig implements Serializable
                     case "TTT_GIT_BRANCH": 
                         gitBranch       = parmValue
                         break;
+                    case "TTT_FT_SERVER_URL":
+                        xaTesterUrl     = parmValue
+                        break;
                     case "TTT_FT_ENVIRONMENT_ID":
                         xaTesterEnvId   = parmValue
                         break;

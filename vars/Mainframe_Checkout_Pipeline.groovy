@@ -78,7 +78,7 @@ def initialize(pipelineParams)
 
 def setupSonarProject(String sonarProjectName)
 {
-    println "would create project: " sonarProjectName
+    println "would create project: " + sonarProjectName
     /*
     if(sonarHelper.checkForProject(sonarProjectName) == 'NOT FOUND')
     {
