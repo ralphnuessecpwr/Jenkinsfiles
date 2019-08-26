@@ -130,15 +130,15 @@ def call(Map pipelineParams)
                 setupSonarProject(sonarProjectName)
             }
 
-            sonarProjectName = sonarHelper.determineProjectName('UT')
+            sonarProjectName = sonarHelper.determineProjectName('UT', '')
 
             setupSonarProject(sonarProjectName)
 
-            sonarProjectName = sonarHelper.determineProjectName('FT')
+            sonarProjectName = sonarHelper.determineProjectName('FT', '')
 
             setupSonarProject(sonarProjectName)
 
-            sonarProjectName = sonarHelper.determineProjectName('Assignment')
+            sonarProjectName = sonarHelper.determineProjectName('Assignment', '')
 
             setupSonarProject(sonarProjectName)
 
