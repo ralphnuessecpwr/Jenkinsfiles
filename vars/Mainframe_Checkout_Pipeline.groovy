@@ -64,6 +64,11 @@ def initialize(pipelineParams)
 
     pConfig.initialize()                                            
 
+    ispwHelper  = new   IspwHelper(
+                            steps, 
+                            pConfig
+                        )
+
     sonarHelper = new SonarHelper(this, steps, pConfig)
 
     sonarHelper.initialize()
