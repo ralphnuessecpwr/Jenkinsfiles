@@ -145,7 +145,7 @@ class IspwHelper implements Serializable
         }
     }
 
-    def getComponents(String container, String containerType)
+    def getComponents(String cesToken, String container, String containerType)
     {
         def containerTypeText
 

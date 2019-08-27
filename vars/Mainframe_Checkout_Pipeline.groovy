@@ -21,6 +21,8 @@ SonarHelper     sonarHelper
 
 String          mailMessageExtension
 String          sonarQualityGateId
+String          cesToken
+
 def             componentList
 
 def initialize(pipelineParams)
@@ -73,6 +75,13 @@ def initialize(pipelineParams)
 
     sonarHelper.initialize()
 
+    withCredentials(
+        [string(credentialsId: "${CES_Token}", variable: 'cesTokenTemp')]
+    ) 
+    {
+        cesToken = cesTokenTemp
+    }
+
     componentList = []
 }
 
@@ -120,15 +129,12 @@ def call(Map pipelineParams)
 
         stage("Initialize Component Projects")
         {
+            def sonarProjectName
+
             ispwHelper.downloadSources(pConfig.ispwSrcLevel)
             ispwHelper.downloadCopyBooks(workspace)
-            ispwHeleer.getComponents(pConfig.ispwContainer, pConfig.ispwContainerType)
-        }
 
-        /* Download all sources that are part of the container */
-        stage("Setup Sonar Projects")
-        {
-            def sonarProjectName
+            def componentList = ispwHelper.getComponents(cesToken, pConfig.ispwContainer, pConfig.ispwContainerType)
 
             componentList.each
             {
@@ -136,6 +142,12 @@ def call(Map pipelineParams)
             
                 setupSonarProject(sonarProjectName)
             }
+        }
+
+        /* Download all sources that are part of the container */
+        stage("Setup Sonar Projects")
+        {
+            def sonarProjectName
 
             sonarProjectName = sonarHelper.determineProjectName('UT', '')
 
