@@ -76,7 +76,7 @@ def initialize(pipelineParams)
     sonarHelper.initialize()
 
     withCredentials(
-        [string(credentialsId: "${CES_Token}", variable: 'cesTokenTemp')]
+        [string(credentialsId: "${pConfig.cesTokenId}", variable: 'cesTokenTemp')]
     ) 
     {
         cesToken = cesTokenTemp
