@@ -74,6 +74,13 @@ class IspwHelper implements Serializable
     /* Download sources for the ISPW Set which triggered the current pipeline from a given level */
     def downloadSources(String ispwLevel)
     {
+        steps.echo "Using: \n" +
+            "HCI: ${hciConnId} \n" + 
+            "HCI Cred Token: ${hciTokenId} \n" +      
+            "Container: ${ispwContainer} \n" +   
+            "Type: ${ispwContainerType} \n" + 
+            "Level: ${ispwLevel}"
+
         steps.checkout([
             $class:             'IspwContainerConfiguration', 
             componentType:      '',                                 // optional filter for component types in ISPW

@@ -129,6 +129,8 @@ def call(Map pipelineParams)
         {
             def sonarProjectName
 
+            echo "Calling downloadSources, using Level " + pConfig.ispwSrcLevel
+
             ispwHelper.downloadSources(pConfig.ispwSrcLevel)
             ispwHelper.downloadCopyBooks(workspace)
 
