@@ -118,6 +118,13 @@ def call(Map pipelineParams)
             pConfig.ispwAssignment  = ispwHelper.determineAssignmentFromSet(pConfig.ispwContainer)
         }
 
+        stage("Initialize Component Projects")
+        {
+            ispwHelper.downloadSources(pConfig.ispwSrcLevel)
+            ispwHelper.downloadCopyBooks(workspace)
+            ispwHeleer.getComponents(pConfig.ispwContainer, pConfig.ispwContainerType)
+        }
+
         /* Download all sources that are part of the container */
         stage("Setup Sonar Projects")
         {

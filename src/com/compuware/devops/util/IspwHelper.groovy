@@ -147,13 +147,63 @@ class IspwHelper implements Serializable
 
     def getComponents(String container, String containerType)
     {
-        def componentList = []
+        def containerTypeText
 
-        componentList.add('CWXTCOB')
-        componentList.add('CWXTDATE')
-        componentList.add('CWXTSUBC')
+        switch(containerType) 
+        {
+            case 0:
+                containerTypeText = 'assignments'
+            break;
+            case 1:
+                containerTypeText = 'releases'
+            break;
+            case 2:
+                containerTypeText = 'sets'
+            break;
+            default:
+                steps.echo "Invalid containerType " + containerType
+            break;
+        }
 
-        return componentList
+        def returnList      = []
+
+        def response        = steps.httpRequest(
+            url:                        "${ispwUrl}/ispw/${ispwRuntime}/${containerTypeText}/${container}/tasks",
+            consoleLogResponseBody:     false, 
+            customHeaders:              [[
+                                        maskValue:  true, 
+                                        name:       'authorization', 
+                                        value:      "${cesToken}"
+                                        ]]
+            
+            )
+
+        def jsonSlurper = new JsonSlurper()
+        def resp        = jsonSlurper.parseText(response.getContent())
+        response        = null
+        jsonSlurper     = null
+
+        if(resp.message != null)
+        {
+            steps.echo "Resp: " + resp.message
+            steps.error
+        }
+        else
+        {
+            // Compare the taskIds from the set to all tasks in the release 
+            // Where they match, determine the assignment and add it to the list of assignments 
+            def taskList = resp.tasks
+
+            taskList.each
+            {
+                if(it.moduleType == 'COB')
+                {
+                    returnList.add(it.moduleName)
+                }
+            }
+        }
+
+        return returnList
     }
 
     def determineAssignmentFromSet(String setName)
