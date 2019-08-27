@@ -82,6 +82,8 @@ def initialize(pipelineParams)
         cesToken = cesTokenTemp
     }
 
+    echo "Defined cesToken: " + cesToken
+
     componentList = []
 }
 
@@ -121,10 +123,6 @@ def call(Map pipelineParams)
         stage("Initialization")
         {
             initialize(pipelineParams)
-
-            componentList           = ispwHelper.getComponents(pConfig.ispwContainer, pConfig.ispwContainerType)
-
-            pConfig.ispwAssignment  = ispwHelper.determineAssignmentFromSet(pConfig.ispwContainer)
         }
 
         stage("Initialize Component Projects")
