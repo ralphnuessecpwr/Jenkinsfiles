@@ -26,6 +26,7 @@ String          cesToken
 def             componentList
 def             sonarProjectList
 def             messageText
+def             sonarProjectName
 
 def initialize(pipelineParams)
 {
@@ -87,22 +88,12 @@ def initialize(pipelineParams)
     messageText         = ''
 }
 
-def setupSonarProject(String sonarProjectName)
+def setupSonarProject(String sonarProjectName, String sonarProjectGate)
 {   
-    if(sonarHelper.checkForProject(sonarProjectName) == 'NOT FOUND')
-    {
-        echo "Project ${sonarProjectName} does not exist."
-        echo "Creating project: " + sonarProjectName
-
-        sonarHelper.createProject(sonarProjectName)
-        sonarHelper.setQualityGate(sonarQualityGateName, sonarProjectName)
-        sonarHelper.initialScan(sonarProjectName)
-        sonarProjectList.add(sonarProjectName)
-    }
-    else
-    {
-        echo "Project ${sonarProjectName} already existed."
-    }
+    sonarHelper.createProject(sonarProjectName)
+    sonarHelper.setQualityGate(sonarProjectGate, sonarProjectName)
+    sonarHelper.initialScan(sonarProjectName)
+    sonarProjectList.add(sonarProjectName)
 }
 
 /**
@@ -120,38 +111,42 @@ def call(Map pipelineParams)
 
         stage("Download Assignment Sources")
         {
-            def sonarProjectName
-
-            echo "Calling downloadSources, using Level " + pConfig.ispwSrcLevel
+            
 
             ispwHelper.downloadSourcesForAssignment(pConfig.ispwSrcLevel)
             ispwHelper.downloadCopyBooks(workspace)
         }
 
         /* Download all sources that are part of the container */
-        stage("Setup Sonar Assignment Projects")
+        stage("Setup Sonar Project for Unit Tests")
         {
-            def sonarProjectName
-            
-            sonarQualityGateName    = 'RNU_Gate'
-            sonarProjectName        = sonarHelper.determineProjectName('UT', '')
-            setupSonarProject(sonarProjectName)
+            sonarProjectName        = sonarHelper.determineProjectName('UT')
 
-            sonarQualityGateName    = 'RNU_Gate_FT'
-            sonarProjectName        = sonarHelper.determineProjectName('FT', '')
-            setupSonarProject(sonarProjectName)
+            if(sonarHelper.checkForProject(sonarProjectName) == 'NOT FOUND')
+            {
+                setupSonarProject(sonarProjectName, 'RNU_Gate')
+            }
         }
 
-        stage("Download Application Sources")
+        stage("Setup Sonar Project for Functional Tests")
         {
-            ispwHelper.downloadAllSources(pConfig.ispwSrcLevel)
+            sonarProjectName        = sonarHelper.determineProjectName('FT')
+
+            if(sonarHelper.checkForProject(sonarProjectName) == 'NOT FOUND')
+            {
+                setupSonarProject(sonarProjectName, 'RNU_Gate_FT')
+            }
         }
 
         stage("Setup Sonar Application Project")
         {
-            sonarQualityGateName    = 'RNU_Gate'
-            sonarProjectName        = sonarHelper.determineProjectName('Application', '')
-            setupSonarProject(sonarProjectName)
+            sonarProjectName        = sonarHelper.determineProjectName('Application')
+
+            if(sonarHelper.checkForProject(sonarProjectName) == 'NOT FOUND')
+            {
+                ispwHelper.downloadAllSources(pConfig.ispwSrcLevel)
+                setupSonarProject(sonarProjectName, 'RNU_Gate')
+            }
         }
 
         stage("Send notification")

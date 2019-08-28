@@ -122,15 +122,12 @@ class SonarHelper implements Serializable {
         return result
     }
 
-    String determineProjectName(String projectType, String componentName)
+    String determineProjectName(String projectType)
     {
         String projectName = ""
 
         switch(projectType)
         {
-            case "Component":
-                projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication + '_' + pConfig.ispwAssignment + '_' + componentName
-                break;
             case "UT":
                 projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication + '_' + pConfig.ispwAssignment + '_Unit_Tests'
                 break;
