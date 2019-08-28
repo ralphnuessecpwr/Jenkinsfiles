@@ -141,7 +141,7 @@ def call(Map pipelineParams)
             sonarProjectName        = sonarHelper.determineProjectName('UT', '')
             setupSonarProject(sonarProjectName)
 
-            sonarQualityGateName    = 'RNU_Gate_Pass'
+            sonarQualityGateName    = 'RNU_Gate_FT'
             sonarProjectName        = sonarHelper.determineProjectName('FT', '')
             setupSonarProject(sonarProjectName)
 
