@@ -109,7 +109,6 @@ def setupSonarProject(String sonarProjectName)
     {
         echo "Project ${sonarProjectName} already existed."
     }
-    */
 }
 
 /**
