@@ -88,22 +88,22 @@ def initialize(pipelineParams)
 }
 
 def setupSonarProject(String sonarProjectName)
-{
-    println "would create project: " + sonarProjectName
-    /*
+{   
     if(sonarHelper.checkForProject(sonarProjectName) == 'NOT FOUND')
     {
         echo "Project ${sonarProjectName} does not exist."
+        echo "Creating project: " + sonarProjectName
 
-        sonarHelper.createProject(sonarProjectName)
+        //sonarHelper.createProject(sonarProjectName)
 
-        sonarHelper.setQualityGate(sonarQualityGateName, sonarProjectName)
-
+        //sonarHelper.setQualityGate(sonarQualityGateName, sonarProjectName)
+        /*
         emailext subject:   "SonarQube Project created: ${sonarProjectName}",
                 body:       "Due to a checkout activity in application ${pConfig.ispwApplication} SonarQube project" +
                             " ${sonarProjectName} has been created and Quality Gate ${sonarQualityGateName} has been assigned to it.",
                 replyTo:    '$DEFAULT_REPLYTO',
                 to:         "${pConfig.mailRecipient}"
+        */
     }
     else
     {
@@ -125,23 +125,14 @@ def call(Map pipelineParams)
             initialize(pipelineParams)
         }
 
-        stage("Initialize Component Projects")
+        stage("Download Sources")
         {
             def sonarProjectName
 
             echo "Calling downloadSources, using Level " + pConfig.ispwSrcLevel
 
-            ispwHelper.downloadSources(pConfig.ispwSrcLevel)
+            ispwHelper.downloadSources(pConfig.ispwAssignment, "0", pConfig.ispwSrcLevel)
             ispwHelper.downloadCopyBooks(workspace)
-
-            def componentList = ispwHelper.getComponents(cesToken, pConfig.ispwContainer, pConfig.ispwContainerType)
-
-            componentList.each
-            {
-                sonarProjectName = sonarHelper.determineProjectName('Component', it)
-            
-                setupSonarProject(sonarProjectName)
-            }
         }
 
         /* Download all sources that are part of the container */

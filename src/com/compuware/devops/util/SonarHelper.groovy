@@ -32,6 +32,15 @@ class SonarHelper implements Serializable {
         runScan(testResults, script.JOB_NAME)
     }
 
+    def scanComponent(componentName, sonarProjectName)
+    {
+        project         = sonarProjectName
+        testPath        = ''
+        resultPath      = ''
+        coveragePath    = ''
+
+    }
+
     def scan(pipelineType)
     {
         def project

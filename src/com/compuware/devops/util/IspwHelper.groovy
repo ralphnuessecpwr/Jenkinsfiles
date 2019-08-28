@@ -50,7 +50,6 @@ class IspwHelper implements Serializable
     /* Download all sources from ISPW for a given level */
     def downloadAllSources(String ispwLevel)
     {
-
         steps.checkout( 
             changelog: false, 
             poll: false, 
@@ -68,7 +67,6 @@ class IspwHelper implements Serializable
                     serverStream: "${ispwStream}"
                 ]
         )
-
     }
 
     /* Download sources for the ISPW Set which triggered the current pipeline from a given level */
@@ -76,14 +74,29 @@ class IspwHelper implements Serializable
     {
         steps.checkout([
             $class:             'IspwContainerConfiguration', 
-            componentType:      '',                                 // optional filter for component types in ISPW
+            componentType:      '',                         // optional filter for component types in ISPW
             connectionId:       "${hciConnId}",     
             credentialsId:      "${hciTokenId}",      
             containerName:      "${ispwContainer}",   
             containerType:      "${ispwContainerType}",     // 0-Assignment 1-Release 2-Set
-            ispwDownloadAll:    true,                              // false will not download files that exist in the workspace and haven't previous changed
-            serverConfig:       '',                                 // ISPW runtime config.  if blank ISPW will use the default runtime config
-            serverLevel:        "${ispwLevel}"                                  // level to download the components from
+            ispwDownloadAll:    true,                       // false will not download files that exist in the workspace and haven't previous changed
+            serverConfig:       '',                         // ISPW runtime config.  if blank ISPW will use the default runtime config
+            serverLevel:        "${ispwLevel}"              // level to download the components from
+        ])
+    }
+
+    def downloadSources(String ispwContainer, String ispwContainerType, String ispwLevel)
+    {
+        steps.checkout([
+            $class:             'IspwContainerConfiguration', 
+            componentType:      '',                         // optional filter for component types in ISPW
+            connectionId:       "${hciConnId}",     
+            credentialsId:      "${hciTokenId}",      
+            containerName:      "${ispwContainer}",   
+            containerType:      "${ispwContainerType}",     // 0-Assignment 1-Release 2-Set
+            ispwDownloadAll:    true,                       // false will not download files that exist in the workspace and haven't previous changed
+            serverConfig:       '',                         // ISPW runtime config.  if blank ISPW will use the default runtime config
+            serverLevel:        "${ispwLevel}"              // level to download the components from
         ])
     }
 
