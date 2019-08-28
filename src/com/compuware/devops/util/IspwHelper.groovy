@@ -87,6 +87,7 @@ class IspwHelper implements Serializable
         ])
     }
 
+    /* This method will replace downloadSources in future releases */
     def downloadSourcesForSet(String ispwLevel)
     {
         downloadSources(ispwLevel)
@@ -226,70 +227,9 @@ class IspwHelper implements Serializable
         return returnList
     }
 
-    def determineAssignmentFromSet(String setName)
-    {
-        return 'RXN3000024'
-    }
-/* 
-    Determine all assignments in the current container 
-*/
-/* This method is not required anymore since ISPW webhooks now pass assignment ids */
-/*
-    def ArrayList getAssigmentList(String cesToken, String level)
-    {
-        def returnList  = []
-
-        // Get the list of taskIds in the current set 
-        def taskIds     = getSetTaskIdList(cesToken, level)
-
-        // Get all tasks in the corresponding release 
-        def response = steps.httpRequest(
-            url:                        "${ispwUrl}/ispw/${ispwRuntime}/releases/${ispwRelease}/tasks",
-            consoleLogResponseBody:     false, 
-            customHeaders:              [[
-                                        maskValue:  true, 
-                                        name:       'authorization', 
-                                        value:      "${cesToken}"
-                                        ]]
-            )
-
-        def jsonSlurper = new JsonSlurper()
-        def resp        = jsonSlurper.parseText(response.getContent())
-        response        = null
-        jsonSlurper     = null
-
-        if(resp.message != null)
-        {
-            steps.echo "Resp: " + resp.message
-            steps.error
-        }
-        else
-        {
-            // Compare the taskIds from the set to all tasks in the release 
-            // Where they match, determine the assignment and add it to the list of assignments 
-            def taskList = resp.tasks
-
-            taskList.each
-            {
-                if(taskIds.contains(it.taskId))
-                {
-                    // Add assignment only if it not already in the list 
-                    if(!(returnList.contains(it.container)))
-                    {
-                        returnList.add(it.container)        
-                    }
-                }
-            }
-        }
-
-        return returnList    
-
-    }
-
 /* 
     Build and return a list of taskIds in the current container, that belong to the desired level
 */
-/* This method is not required anymore since ISPW webhooks now pass assignment ids */
 /*
     def ArrayList getSetTaskIdList(String cesToken, String level)
     {
@@ -332,124 +272,6 @@ class IspwHelper implements Serializable
 
         return returnList
     
-    }
-*/
-/* 
-    Receive a response from an "Get Tasks in Set"-httpRequest and build and return a list of TaskAsset Objects that belong to the desired level
-*/
-/* This method is not required anymore since ISPW webhooks now pass assignment ids */
-/*
-    def ArrayList getSetTaskList(ResponseContentSupplier response, String level)
-    {
-
-        def jsonSlurper         = new JsonSlurper()
-
-        int ispwTaskCounter     = 0
-
-        def returnList  = []
-
-        def resp = jsonSlurper.parseText(response.getContent())
-
-        if(resp.message != null)
-        {
-            steps.echo "Resp: " + resp.message
-            error
-        }
-        else
-        {
-            def taskList = resp.tasks
-
-            taskList.each
-            {
-                if(it.moduleType == 'COB' && it.level == level)
-                {
-                    returnList[ispwTaskCounter]             = new TaskInfo()                    
-                    returnList[ispwTaskCounter].programName = it.moduleName
-                    returnList[ispwTaskCounter].ispwTaskId  = it.taskId
-
-                    ispwTaskCounter++
-                }
-            }
-        }
-
-        return returnList
-    
-    }
-*/
-/* 
-    Receive a response from an "Get Tasks in Set"-httpRequest and return the List of Releases
-*/
-/* This method is not required anymore since ISPW webhooks now pass assignment ids */
-/*
-    def ArrayList getSetRelease(ResponseContentSupplier response)
-    {
-        def jsonSlurper = new JsonSlurper()
-        def returnList  = []
-        def resp        = jsonSlurper.parseText(response.getContent())
-
-        if(resp.message != null)
-        {
-            steps.echo "Resp: " + resp.message
-            steps.error
-        }
-        else
-        {
-            def taskList = resp.tasks
-
-            taskList.each
-            {
-                if(it.moduleType == 'COB')
-                {
-                    returnList.add(it.release)
-                }
-            }
-        }
-
-        return returnList
-    
-    }
-*/
-/*
-    Receive a list of TaskInfo Objects, the response of an "List tasks of a Release"-httpRequest to build and return a List of TaskInfo Objects
-    that contain the base and internal version
-*/
-/* This method is not required anymore since ISPW webhooks now pass assignment ids */
-/*
-    def setTaskVersions(ArrayList tasks, ResponseContentSupplier response, String level)
-    {
-        def jsonSlurper = new JsonSlurper()
-
-        def resp        = jsonSlurper.parseText(response.getContent())
-
-        def returnList  = []
-
-        if(resp.message != null)
-        {
-            steps.echo "Resp: " + resp.message
-            steps.error
-        }
-        else
-        {
-            def taskList = resp.tasks
-
-            for(int i = 0; i < tasks.size(); i++)
-            {
-                taskList.each
-                {
-                    if(it.taskId == tasks[i].ispwTaskId && it.level == level)
-                    {
-                        returnList[i]               = new TaskInfo()
-                        returnList[i].programName   = tasks[i].programName
-                        returnList[i].baseVersion   = it.baseVersion
-                        returnList[i].targetVersion = it.internalVersion
-                        returnList[i].ispwTaskId    = tasks[i].ispwTaskId
-                    }
-                }
-            }
-        }
-
-        return returnList
-
     }
 */
     /* Parse downloaded sources and get a list of copy books */

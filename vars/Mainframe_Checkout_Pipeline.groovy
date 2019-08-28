@@ -92,7 +92,6 @@ def setupSonarProject(String sonarProjectName, String sonarProjectGate)
 {   
     sonarHelper.createProject(sonarProjectName)
     sonarHelper.setQualityGate(sonarProjectGate, sonarProjectName)
-    sonarHelper.initialScan(sonarProjectName)
     sonarProjectList.add(sonarProjectName)
 }
 
@@ -117,7 +116,9 @@ def call(Map pipelineParams)
             ispwHelper.downloadCopyBooks(workspace)
         }
 
-        /* Download all sources that are part of the container */
+        /* Check if a Unit Test project exists in SonarQube already */
+        /* In case it does not, create a new project and set Quality Gate */
+        /* Run a scan of the sources in any case (for any new sources) */
         stage("Setup Sonar Project for Unit Tests")
         {
             sonarProjectName        = sonarHelper.determineProjectName('UT')
@@ -126,8 +127,13 @@ def call(Map pipelineParams)
             {
                 setupSonarProject(sonarProjectName, 'RNU_Gate')
             }
+
+            sonarHelper.initialScan(sonarProjectName)
         }
 
+        /* Check if a Functional Test project exists in SonarQube already */
+        /* In case it does not, create a new project and set Quality Gate */
+        /* Run a scan of the sources in any case (for any new sources) */
         stage("Setup Sonar Project for Functional Tests")
         {
             sonarProjectName        = sonarHelper.determineProjectName('FT')
@@ -136,8 +142,13 @@ def call(Map pipelineParams)
             {
                 setupSonarProject(sonarProjectName, 'RNU_Gate_FT')
             }
+
+            sonarHelper.initialScan(sonarProjectName)
         }
 
+        /* Check if an Application project exists in SonarQube already */
+        /* In case it does not, create a new project and set Quality Gate and run scan */
+        /* I.e. do not run a scan if the project exists already */
         stage("Setup Sonar Application Project")
         {
             sonarProjectName        = sonarHelper.determineProjectName('Application')
@@ -146,6 +157,7 @@ def call(Map pipelineParams)
             {
                 ispwHelper.downloadAllSources(pConfig.ispwSrcLevel)
                 setupSonarProject(sonarProjectName, 'RNU_Gate')
+                sonarHelper.initialScan(sonarProjectName)
             }
         }
 
