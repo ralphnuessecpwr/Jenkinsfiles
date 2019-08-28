@@ -23,9 +23,9 @@ String          mailMessageExtension
 String          sonarQualityGateId
 String          cesToken
 
-def             componentList       = []
-def             sonarProjectList    = []
-def             messageText         = ''
+def             componentList
+def             sonarProjectList
+def             messageText
 
 def initialize(pipelineParams)
 {
@@ -81,6 +81,10 @@ def initialize(pipelineParams)
     {
         cesToken = cesTokenTemp
     }
+
+    componentList       = []
+    sonarProjectList    = []
+    messageText         = ''
 }
 
 def setupSonarProject(String sonarProjectName)
