@@ -14,6 +14,7 @@ class IspwHelper implements Serializable
     def String ispwStream
     def String ispwApplication
     def String ispwRelease
+    def String ispwAssignment
     def String ispwContainer
     def String ispwContainerType    
     def String applicationPathNum
@@ -34,7 +35,8 @@ class IspwHelper implements Serializable
         this.ispwRuntime        = pConfig.ispwRuntime
         this.ispwStream         = pConfig.ispwStream
         this.ispwApplication    = pConfig.ispwApplication
-        this.ispwRelease        = pConfig.ispwRelease        
+        this.ispwRelease        = pConfig.ispwRelease      
+        this.ispwAssignment     = pConfig.ispwAssignment  
         this.ispwContainer      = pConfig.ispwContainer
         this.ispwContainerType  = pConfig.ispwContainerType
         this.ispwOwner          = pConfig.ispwOwner
