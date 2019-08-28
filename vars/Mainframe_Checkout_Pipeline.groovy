@@ -27,8 +27,6 @@ def             componentList
 
 def initialize(pipelineParams)
 {
-    sonarQualityGateName = 'RNU_Gate'
-
     // Clean out any previously downloaded source
     dir(".\\") 
     {
@@ -94,9 +92,9 @@ def setupSonarProject(String sonarProjectName)
         echo "Project ${sonarProjectName} does not exist."
         echo "Creating project: " + sonarProjectName
 
-        //sonarHelper.createProject(sonarProjectName)
-
-        //sonarHelper.setQualityGate(sonarQualityGateName, sonarProjectName)
+        sonarHelper.createProject(sonarProjectName)
+        sonarHelper.setQualityGate(sonarQualityGateName, sonarProjectName)
+        sonarHelper.initialScan(sonarProjectName)
         /*
         emailext subject:   "SonarQube Project created: ${sonarProjectName}",
                 body:       "Due to a checkout activity in application ${pConfig.ispwApplication} SonarQube project" +
@@ -138,19 +136,18 @@ def call(Map pipelineParams)
         stage("Setup Sonar Projects")
         {
             def sonarProjectName
-
-            sonarProjectName = sonarHelper.determineProjectName('UT', '')
-
+            
+            sonarQualityGateName    = 'RNU_Gate'
+            sonarProjectName        = sonarHelper.determineProjectName('UT', '')
             setupSonarProject(sonarProjectName)
 
-            sonarProjectName = sonarHelper.determineProjectName('FT', '')
-
+            sonarQualityGateName    = 'RNU_Gate_Pass'
+            sonarProjectName        = sonarHelper.determineProjectName('FT', '')
             setupSonarProject(sonarProjectName)
 
-            sonarProjectName = sonarHelper.determineProjectName('Application', '')
-
+            sonarQualityGateName    = 'RNU_Gate'
+            sonarProjectName        = sonarHelper.determineProjectName('Application', '')
             setupSonarProject(sonarProjectName)
-
         }
     }
 }

@@ -32,15 +32,6 @@ class SonarHelper implements Serializable {
         runScan(testResults, script.JOB_NAME)
     }
 
-    def scanComponent(componentName, sonarProjectName)
-    {
-        project         = sonarProjectName
-        testPath        = ''
-        resultPath      = ''
-        coveragePath    = ''
-
-    }
-
     def scan(pipelineType)
     {
         def project
@@ -69,6 +60,50 @@ class SonarHelper implements Serializable {
         }
 
         runScan(testPath, resultPath, coveragePath, project)
+    }
+
+    def initialScan(String projectName)
+    {
+        runScan('', '', '', projectName)
+    }
+
+    private runScan(testPath, testResultPath, coveragePath, projectName)
+    {
+        steps.withSonarQubeEnv("${pConfig.sqServerName}")       // Name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section
+        {
+            // Build Sonar scanner parameters
+            // Project Name and Key
+            def sqScannerProperties     = " -Dsonar.projectKey=${projectName} -Dsonar.projectName=${projectName} -Dsonar.projectVersion=1.0" +
+            // Folder(s) containing Mainframe sources downloaded from ISPW
+                                          " -Dsonar.sources=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}" +
+            // Folder(s) containing Mainframe copybooks
+                                          " -Dsonar.cobol.copy.directories=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}" +
+            // Suffixes to use for copybooks
+                                          " -Dsonar.cobol.copy.suffixes=cpy" +
+                                          " -Dsonar.sourceEncoding=UTF-8"
+
+            // Building suffixes for main sources
+            def sourceSuffixes          = " -Dsonar.cobol.file.suffixes=cbl"
+            
+            // Add parameters if tests and test result paths were passed as well
+            if(testPath != '' && testResultPath != '')
+            {
+                sqScannerProperties     = sqScannerProperties + " -Dsonar.tests= ${testPath} -Dsonar.testExecutionReportPaths=${testResultPath}"
+
+                sourceSuffixes          = sourceSuffixes + ",testsuite,testscenario,stub"
+            }
+
+            // Add parameters if code coverage paths were passed as well
+            if(coveragePath != '')
+            {
+                sqScannerProperties       = sqScannerProperties + " -Dsonar.coverageReportPaths=${coveragePath}"
+            }
+
+            sqScannerProperties         = sqScannerProperties + sourceSuffixes
+            
+            // Call the SonarQube Scanner with properties defined above
+            steps.bat "${scannerHome}/bin/sonar-scanner" + sqScannerProperties
+        }
     }
 
     String checkQualityGate()
@@ -131,34 +166,6 @@ class SonarHelper implements Serializable {
         }
 
         return testResults
-    }
-
-    private runScan(testPath, testResultPath, coveragePath, projectName)
-    {
-        steps.withSonarQubeEnv("${pConfig.sqServerName}")       // 'localhost' is the name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section
-        {
-            // Test and Coverage results
-            def sqScannerProperties   = ' -Dsonar.tests=' + testPath
-
-            sqScannerProperties       = sqScannerProperties + " -Dsonar.testExecutionReportPaths=${testResultPath}"
-
-            if(coveragePath != '')
-            {
-                sqScannerProperties       = sqScannerProperties + " -Dsonar.coverageReportPaths=${coveragePath}"
-            }
-
-            // SonarQube project to load results into
-            sqScannerProperties       = sqScannerProperties + " -Dsonar.projectKey=${projectName} -Dsonar.projectName=${projectName} -Dsonar.projectVersion=1.0"
-            // Location of the Cobol Source Code to scan
-            sqScannerProperties       = sqScannerProperties + " -Dsonar.sources=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}"
-            // Location of the Cobol copybooks to scan
-            sqScannerProperties       = sqScannerProperties + " -Dsonar.cobol.copy.directories=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}"  
-            // File extensions for Cobol and Copybook files.  The Total Test files need that contain tests need to be defined as cobol for SonarQube to process the results
-            sqScannerProperties       = sqScannerProperties + " -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub -Dsonar.cobol.copy.suffixes=cpy -Dsonar.sourceEncoding=UTF-8"
-            
-            // Call the SonarQube Scanner with properties defined above
-            steps.bat "${scannerHome}/bin/sonar-scanner" + sqScannerProperties
-        }
     }
 
     def checkForProject(String projectName)
