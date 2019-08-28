@@ -163,11 +163,11 @@ def call(Map pipelineParams)
 
             if(componentList.size() == 0)
             {
-                componentListMessage = 'No COBOL Components were checked out.\n'
+                componentListMessage = '\nNo COBOL Components were checked out.\n'
             }
             else
             {
-                componentListMessage = 'The Following COBOL components were checked out: \n'
+                componentListMessage = '\nThe Following COBOL components were checked out:\n'
                 componentList.each
                 {
                     componentListMessage = componentListMessage + it + '\n'
@@ -184,6 +184,7 @@ def call(Map pipelineParams)
             }
             else
             {
+                sonarProjectListMessage = 'The following SonarQube projects were defined:\n'
                 sonarProjectList.each
                 {
                     sonarProjectListMessage = sonarProjectListMessage + it + '\n'
