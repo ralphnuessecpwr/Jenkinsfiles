@@ -124,7 +124,7 @@ def call(Map pipelineParams)
 
             echo "Calling downloadSources, using Level " + pConfig.ispwSrcLevel
 
-            ispwHelper.downloadSources(pConfig.ispwAssignment, "0", pConfig.ispwSrcLevel)
+            ispwHelper.downloadSourcesForAssignment(pConfig.ispwSrcLevel)
             ispwHelper.downloadCopyBooks(workspace)
         }
 
@@ -156,7 +156,7 @@ def call(Map pipelineParams)
 
         stage("Send notification")
         {
-            messageText     = "Executed checkout in application ${pConfig.ispwApplication}.\n"
+            messageText     = "Executed checkout in application ${pConfig.ispwApplication}, assignment ${pConfig.ispwAssignment}.\n"
             componentList   = ispwHelper.getComponents(cesToken, pConfig.ispwContainer, pConfig.ispwContainerType)
 
             def componentListMessage = ''
