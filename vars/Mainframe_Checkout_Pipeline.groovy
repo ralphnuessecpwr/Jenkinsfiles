@@ -23,7 +23,9 @@ String          mailMessageExtension
 String          sonarQualityGateId
 String          cesToken
 
-def             componentList
+def             componentList       = []
+def             sonarProjectList    = []
+def             messageText         = ''
 
 def initialize(pipelineParams)
 {
@@ -79,10 +81,6 @@ def initialize(pipelineParams)
     {
         cesToken = cesTokenTemp
     }
-
-    echo "Defined cesToken: " + cesToken
-
-    componentList = []
 }
 
 def setupSonarProject(String sonarProjectName)
@@ -95,13 +93,7 @@ def setupSonarProject(String sonarProjectName)
         sonarHelper.createProject(sonarProjectName)
         sonarHelper.setQualityGate(sonarQualityGateName, sonarProjectName)
         sonarHelper.initialScan(sonarProjectName)
-        /*
-        emailext subject:   "SonarQube Project created: ${sonarProjectName}",
-                body:       "Due to a checkout activity in application ${pConfig.ispwApplication} SonarQube project" +
-                            " ${sonarProjectName} has been created and Quality Gate ${sonarQualityGateName} has been assigned to it.",
-                replyTo:    '$DEFAULT_REPLYTO',
-                to:         "${pConfig.mailRecipient}"
-        */
+        sonarProjectList.add(sonarProjectName)
     }
     else
     {
@@ -156,6 +148,50 @@ def call(Map pipelineParams)
             sonarQualityGateName    = 'RNU_Gate'
             sonarProjectName        = sonarHelper.determineProjectName('Application', '')
             setupSonarProject(sonarProjectName)
+        }
+
+        stage("Send notification")
+        {
+            messageText     = "Executed checkout in application ${pConfig.ispwApplication}.\n"
+            componentList   = ispwHelper.getComponents(cesToken, pConfig.ispwContainer, pConfig.ispwContainerType)
+
+            def componentListMessage = ''
+
+            if(componentList.size() == 0)
+            {
+                componentListMessage = 'No COBOL Components were checked out.\n'
+            }
+            else
+            {
+                componentListMessage = 'The Following COBOL components were checked out: \n'
+                componentList.each
+                {
+                    componentListMessage = componentListMessage + it + '\n'
+                }
+            }
+
+            componentListMessage = componentListMessage + '\n'
+
+            def sonarProjectListMessage = ''
+
+            if(sonarProjectList.size() == 0)
+            {
+                sonarProjectListMessage = 'No new SonarQube projects were defined.'
+            }
+            else
+            {
+                sonarProjectList.each
+                {
+                    sonarProjectListMessage = sonarProjectListMessage + it + '\n'
+                }
+            }
+
+            messageText = messageText + componentListMessage + sonarProjectListMessage
+
+            emailext subject:   "Checkout for Assigmnment ${pConfig.ispwAssignment}",
+                body:       messageText,
+                replyTo:    '$DEFAULT_REPLYTO',
+                to:         pConfig.mailRecipient
         }
     }
 }
