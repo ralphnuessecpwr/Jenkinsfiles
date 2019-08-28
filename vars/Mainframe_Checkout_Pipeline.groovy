@@ -122,7 +122,7 @@ def call(Map pipelineParams)
             initialize(pipelineParams)
         }
 
-        stage("Download Sources")
+        stage("Download Assignment Sources")
         {
             def sonarProjectName
 
@@ -133,7 +133,7 @@ def call(Map pipelineParams)
         }
 
         /* Download all sources that are part of the container */
-        stage("Setup Sonar Projects")
+        stage("Setup Sonar Assignment Projects")
         {
             def sonarProjectName
             
@@ -144,7 +144,15 @@ def call(Map pipelineParams)
             sonarQualityGateName    = 'RNU_Gate_FT'
             sonarProjectName        = sonarHelper.determineProjectName('FT', '')
             setupSonarProject(sonarProjectName)
+        }
 
+        stage("Download Application Sources")
+        {
+            ispwHelper.downloadAllSources(pConfig.ispwSrcLevel)
+        }
+
+        stage("Setup Sonar Application Project")
+        {
             sonarQualityGateName    = 'RNU_Gate'
             sonarProjectName        = sonarHelper.determineProjectName('Application', '')
             setupSonarProject(sonarProjectName)
