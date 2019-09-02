@@ -11,21 +11,12 @@ import com.compuware.devops.*
 
 def call(Map pipelineParams)
 {
-
-    Class c = Mainframe_Generate_Pipeline.getClass();
-
-    echo Mainframe_Generate_Pipeline.getClass().toString();
-
-    for (Method method : c.getDeclaredMethods()) 
-    {
-        echo(method.getName());
-    }
-}
-/*
     node
     {        
+        def generatePipeline = load Mainframe_Generate_Pipeline.groovy
+
         echo "Source Level: ${pipelineParams.ISPW_Src_Level}"
-        pipelineParams.ISPW_Src_Level.replace('DEV', 'QA')
+        pipelineParams.ISPW_Src_Level = pipelineParams.ISPW_Src_Level.replace('DEV', 'QA')
         echo "Source Level: ${pipelineParams.ISPW_Src_Level}"
 
         Mainframe_Generate_Pipeline.call(pipelineParams)
