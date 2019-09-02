@@ -98,13 +98,7 @@ class SonarHelper implements Serializable {
                 break;
         }
 
-        runScan(testPath, resultPath, coveragePath, project)
-    }
-
-
-    def initialScan(String projectName)
-    {
-        runScan('', '', '', projectName)
+        runScan(scanTestPath, scanResultPath, scanCoveragePath, scanProject)
     }
 
     private runScan(testPath, testResultPath, coveragePath, projectName)
