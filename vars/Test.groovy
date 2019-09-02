@@ -13,8 +13,8 @@ def call(Map pipelineParams)
 {
 
     Class c = Mainframe_Generate_Pipeline.getClass();
-    for (Method method : c.getDeclaredMethods()) {
-    if (method.getAnnotation(PostConstruct.class) != null) {
+    for (Method method : c.getDeclaredMethods()) 
+    {
         echo(method.getName());
     }
 }
