@@ -5,9 +5,10 @@ import groovy.json.JsonSlurper
 import groovy.json.JsonBuilder
 import groovy.json.JsonOutput
 import jenkins.plugins.http_request.*
-import java.lang.reflect.*
 import java.net.URL
-import com.compuware.devops.*
+import com.compuware.devops.config.*
+import com.compuware.devops.jclskeleton.*
+import com.compuware.devops.util.*
 
 PipelineConfig  pConfig
 GitHelper       gitHelper
