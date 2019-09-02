@@ -27,4 +27,3 @@ def call(Map pipelineParams)
         }
     }
 }
-*/
