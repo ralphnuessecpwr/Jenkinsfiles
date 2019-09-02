@@ -10,12 +10,20 @@ import com.compuware.devops.*
 
 def call(Map pipelineParams)
 {
+
+    Class c = Mainframe_Generate_Pipeline.getClass();
+    for (Method method : c.getDeclaredMethods()) {
+    if (method.getAnnotation(PostConstruct.class) != null) {
+        echo(method.getName());
+    }
+}
+
     node
     {        
         echo "Source Level: ${pipelineParams.ISPW_Src_Level}"
         pipelineParams.ISPW_Src_Level.replace('DEV', 'QA')
         echo "Source Level: ${pipelineParams.ISPW_Src_Level}"
-        
+
         Mainframe_Generate_Pipeline.call(pipelineParams)
 
         stage("Promote")
