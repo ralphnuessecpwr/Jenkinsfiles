@@ -101,7 +101,7 @@ def setupSonarProject(String sonarProjectType, String sonarProjectGate)
             ispwHelper.downloadAllSources(pConfig.ispwSrcLevel)
         }
 
-        def parmMap = []
+        def parmMap = [:]
 
         parmMap.scanProjectName = sonarProjectName
         parmMap.scanType        = sonarProjectType
