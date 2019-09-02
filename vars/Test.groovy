@@ -9,6 +9,14 @@ import java.lang.reflect.*
 import java.net.URL
 import com.compuware.devops.*
 
+PipelineConfig  pConfig
+GitHelper       gitHelper
+IspwHelper      ispwHelper
+TttHelper       tttHelper
+SonarHelper     sonarHelper 
+
+String          mailMessageExtension
+
 def call(Map pipelineParams)
 {
     node
