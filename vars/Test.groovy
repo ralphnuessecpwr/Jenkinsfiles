@@ -5,7 +5,7 @@ import groovy.json.JsonSlurper
 import groovy.json.JsonBuilder
 import groovy.json.JsonOutput
 import jenkins.plugins.http_request.*
-import java.lang.reflect
+import java.lang.reflect.*
 import java.net.URL
 import com.compuware.devops.*
 
