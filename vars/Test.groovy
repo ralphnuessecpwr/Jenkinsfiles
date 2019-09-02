@@ -12,7 +12,9 @@ def call(Map pipelineParams)
 {
     node
     {        
+        echo "Source Level: ${pipelineParams.ISPW_Src_Level}"
         pipelineParams.ISPW_Src_Level.replace('DEV', 'QA')
+        echo "Source Level: ${pipelineParams.ISPW_Src_Level}"
         
         Mainframe_Generate_Pipeline.call(pipelineParams)
 
