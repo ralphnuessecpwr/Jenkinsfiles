@@ -13,7 +13,7 @@ def call(Map pipelineParams)
 {
     node
     {        
-        def generatePipeline = load Mainframe_Generate_Pipeline.groovy
+        def generatePipeline = load 'Mainframe_Generate_Pipeline.groovy'
 
         echo "Source Level: ${pipelineParams.ISPW_Src_Level}"
         pipelineParams.ISPW_Src_Level = pipelineParams.ISPW_Src_Level.replace('DEV', 'QA')
