@@ -104,7 +104,7 @@ def setupSonarProject(String sonarProjectType, String sonarProjectGate)
         def parmMap = [:]
 
         parmMap.scanProjectName = sonarProjectName
-        parmMap.scanType        = sonarProjectType
+        parmMap.scanType        = 'initial'
 
         sonarHelper.scan(parmMap)
 

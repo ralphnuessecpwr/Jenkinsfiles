@@ -93,7 +93,7 @@ class SonarHelper implements Serializable {
                 scanCoveragePath    = ''
                 break;
             default:
-                steps.echo "SonarHelper.scan received wrong pipelineType: " + pipelineType
+                steps.echo "SonarHelper.scan received wrong pipelineType: " + scanType
                 steps.echo "Valid types are 'UT' or FT"
                 break;
         }
