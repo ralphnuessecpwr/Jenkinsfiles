@@ -13,6 +13,9 @@ def call(Map pipelineParams)
 {
 
     Class c = Mainframe_Generate_Pipeline.getClass();
+
+    echo Mainframe_Generate_Pipeline.getClass().toString();
+
     for (Method method : c.getDeclaredMethods()) 
     {
         echo(method.getName());
