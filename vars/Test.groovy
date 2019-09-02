@@ -12,6 +12,8 @@ def call(Map pipelineParams)
 {
     node
     {        
+        pipelineParams.ISPW_Src_Level.replace('DEV', 'QA')
+        
         Mainframe_Generate_Pipeline.call()
 
         stage("Promote")
