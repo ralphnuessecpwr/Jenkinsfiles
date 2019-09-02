@@ -6,18 +6,17 @@ import groovy.json.JsonBuilder
 import groovy.json.JsonOutput
 import jenkins.plugins.http_request.*
 import java.net.URL
-import com.compuware.devops.config.*
-import com.compuware.devops.jclskeleton.*
-import com.compuware.devops.util.*
+import com.compuware.devops.*
 
-/**
-Call method to execute the pipeline from a shared library
-@param pipelineParams - Map of paramter/value pairs
-*/
-def call()
+def call(Map pipelineParams)
 {
     node
-    {
+    {        
         Mainframe_Generate_Pipeline.call()
+
+        stage("Promote")
+        {
+            echo "Starting Promote"
+        }
     }
 }
