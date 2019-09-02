@@ -26,7 +26,6 @@ String          cesToken
 def             componentList
 def             sonarProjectList
 def             messageText
-def             sonarProjectName
 
 def initialize(pipelineParams)
 {
@@ -88,11 +87,29 @@ def initialize(pipelineParams)
     messageText         = ''
 }
 
-def setupSonarProject(String sonarProjectName, String sonarProjectGate)
+def setupSonarProject(String sonarProjectType, String sonarProjectGate)
 {   
-    sonarHelper.createProject(sonarProjectName)
-    sonarHelper.setQualityGate(sonarProjectGate, sonarProjectName)
-    sonarProjectList.add(sonarProjectName)
+    def sonarProjectName = sonarHelper.determineProjectName(sonarProjectType)
+
+    if(sonarHelper.checkForProject(sonarProjectName) == 'NOT FOUND')
+    {
+        sonarHelper.createProject(sonarProjectName)
+        sonarHelper.setQualityGate(sonarProjectGate, sonarProjectName)
+
+        if(sonarProjectType == 'Application')
+        {
+            ispwHelper.downloadAllSources(pConfig.ispwSrcLevel)
+        }
+
+        def parmMap = []
+
+        parmMap.scanProjectName = sonarProjectName
+        parmMap.scanType        = sonarProjectType
+
+        sonarHelper.scan(parmMap)
+
+        sonarProjectList.add(sonarProjectName)
+    }            
 }
 
 /**
@@ -121,14 +138,7 @@ def call(Map pipelineParams)
         /* Run a scan of the sources in any case (for any new sources) */
         stage("Setup Sonar Project for Unit Tests")
         {
-            sonarProjectName        = sonarHelper.determineProjectName('UT')
-
-            if(sonarHelper.checkForProject(sonarProjectName) == 'NOT FOUND')
-            {
-                setupSonarProject(sonarProjectName, 'RNU_Gate')
-            }
-
-            sonarHelper.initialScan(sonarProjectName)
+            setupSonarProject('UT', 'RNU_Gate')
         }
 
         /* Check if a Functional Test project exists in SonarQube already */
@@ -136,14 +146,7 @@ def call(Map pipelineParams)
         /* Run a scan of the sources in any case (for any new sources) */
         stage("Setup Sonar Project for Functional Tests")
         {
-            sonarProjectName        = sonarHelper.determineProjectName('FT')
-
-            if(sonarHelper.checkForProject(sonarProjectName) == 'NOT FOUND')
-            {
-                setupSonarProject(sonarProjectName, 'RNU_Gate_FT')
-            }
-
-            sonarHelper.initialScan(sonarProjectName)
+            setupSonarProject('FT', 'RNU_Gate_FT')
         }
 
         /* Check if an Application project exists in SonarQube already */
@@ -151,14 +154,7 @@ def call(Map pipelineParams)
         /* I.e. do not run a scan if the project exists already */
         stage("Setup Sonar Application Project")
         {
-            sonarProjectName        = sonarHelper.determineProjectName('Application')
-
-            if(sonarHelper.checkForProject(sonarProjectName) == 'NOT FOUND')
-            {
-                ispwHelper.downloadAllSources(pConfig.ispwSrcLevel)
-                setupSonarProject(sonarProjectName, 'RNU_Gate')
-                sonarHelper.initialScan(sonarProjectName)
-            }
+            setupSonarProject('Application', 'RNU_Gate')
         }
 
         stage("Send notification")
