@@ -143,7 +143,12 @@ def call(Map pipelineParams)
         {
             ispwHelper.downloadCopyBooks(workspace)            
 
-            sonarHelper.scan("UT")
+            def sonarProjectName = sonarHelper.determineUtProjectName('UT')
+            
+            sonarHelper.scan [
+                scanType:       'UT', 
+                scanProject:    sonarProjectName
+                ]
 
             String sonarGateResult = sonarHelper.checkQualityGate()
 
