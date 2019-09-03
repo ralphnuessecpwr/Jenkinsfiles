@@ -169,5 +169,6 @@ def call(Map pipelineParams)
             }   
         }
     }
-    return [pipelineResult: currentBuild.result, pipelineMailText: mailMessageExtension]
+    
+    return [pipelineResult: currentBuild.result, pipelineMailText: mailMessageExtension, pipelineConfig: pConfig]
 }

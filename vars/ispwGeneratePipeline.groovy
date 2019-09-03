@@ -20,6 +20,7 @@ TttHelper       tttHelper
 SonarHelper     sonarHelper 
 
 String          mailMessageExtension
+def             unitTestStepsResult
 def             generatePipelineResult
 
 def call(Map pipelineParams)
@@ -33,6 +34,10 @@ def call(Map pipelineParams)
                 
         stage("End of Unit Tests")
         {
+            unitTestStepsResult     = generatePipelineResult.pipelineResult
+            mailMessageExtension    = generatePipelineResult.pipelineMailText
+            pConfig                 = generatePipelineResult.pipelineConfig
+            
             echo "Unit Test Steps finished \n" +
                 "Result : ${generatePipelineResult.pipelineResult}"
         }
@@ -41,11 +46,10 @@ def call(Map pipelineParams)
         {
             // Send Standard Email
             emailext subject:       '$DEFAULT_SUBJECT',
-                        body:       '$DEFAULT_CONTENT \n' + generatePipelineResult.pipelineMailText,
+                        body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,
                         replyTo:    '$DEFAULT_REPLYTO',
                         to:         "${pConfig.mailRecipient}"
 
         }        
-
     }   
 }
