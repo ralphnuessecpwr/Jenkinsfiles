@@ -33,8 +33,8 @@ def call(Map pipelineParams)
                 
         stage("End of Unit Tests")
         {
-            echo "Result: " + generatePipelineResult.pipelineResult
-            echo "Text: " + generatePipelineResult.pipelineMailText
+            echo "Result: " + generatePipelineResult.toString()
+            //echo "Text: " + generatePipelineResult.pipelineMailText
         }
         
         stage("Send Notification")
