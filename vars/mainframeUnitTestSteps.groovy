@@ -145,15 +145,6 @@ def call(Map pipelineParams)
 
             def sonarProjectName = sonarHelper.determineProjectName('UT')
 
-            /*
-            def parmMap = [:]
-
-            parmMap.scanProjectName = sonarProjectName
-            parmMap.scanType        = 'initial'
-
-            sonarHelper.scan(parmMap)
-            */
-
             sonarHelper.scan([
                 scanType:       'UT', 
                 scanProject:    sonarProjectName
