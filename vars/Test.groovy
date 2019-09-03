@@ -38,6 +38,8 @@ def call(Map pipelineParams)
             echo generatePipelineResult
             if(generatePipelineResult != 'FAILURE')
             {
+                echo "Setting to SUCCESS"
+                currentBuild.currentResult = 'SUCCESS'
                 currentBuild.result = 'SUCCESS'
             }
         }
