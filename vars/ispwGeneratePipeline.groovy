@@ -33,15 +33,15 @@ def call(Map pipelineParams)
                 
         stage("End of Unit Tests")
         {
-            echo "Result: " + generatePipelineResult.toString()
-            //echo "Text: " + generatePipelineResult.pipelineMailText
+            echo "Unit Test Steps finished \n" +
+                "Result : ${generatePipelineResult.pipelineResult}"
         }
         
         stage("Send Notification")
         {
             // Send Standard Email
             emailext subject:       '$DEFAULT_SUBJECT',
-                        body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,
+                        body:       '$DEFAULT_CONTENT \n' + generatePipelineResult.pipelineMailText,
                         replyTo:    '$DEFAULT_REPLYTO',
                         to:         "${pConfig.mailRecipient}"
 
