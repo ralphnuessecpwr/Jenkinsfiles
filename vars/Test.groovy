@@ -22,13 +22,17 @@ def call(Map pipelineParams)
 {
     node
     {        
-        stage("Unit Tests")
+        stage("Unit Tests started")
         {
             echo "Source Level: ${pipelineParams.ISPW_Src_Level}"
             pipelineParams.ISPW_Src_Level = pipelineParams.ISPW_Src_Level.replace('DEV', 'QA')
             echo "Source Level: ${pipelineParams.ISPW_Src_Level}"
 
             def generatePipeline = Mainframe_Generate_Pipeline(pipelineParams)
+        }
+
+        stage("Unit Tests ended")
+        {
             echo generatePipeline.result
         }
 
