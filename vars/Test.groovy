@@ -18,6 +18,8 @@ SonarHelper     sonarHelper
 
 String          mailMessageExtension
 
+def generatePipeline
+
 def call(Map pipelineParams)
 {
     node
@@ -28,7 +30,7 @@ def call(Map pipelineParams)
             pipelineParams.ISPW_Src_Level = pipelineParams.ISPW_Src_Level.replace('DEV', 'QA')
             echo "Source Level: ${pipelineParams.ISPW_Src_Level}"
 
-            def generatePipeline = Mainframe_Generate_Pipeline(pipelineParams)
+            generatePipeline = Mainframe_Generate_Pipeline(pipelineParams)
         }
 
         stage("Unit Tests ended")
