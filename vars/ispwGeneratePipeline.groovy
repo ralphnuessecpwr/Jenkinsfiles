@@ -28,7 +28,7 @@ def call(Map pipelineParams)
     {
         stage("Start of Unit Tests")
         {
-            generatePipelineResult = Mainframe_Generate_Pipeline(pipelineParams)
+            generatePipelineResult = mainframeUnitTestSteps(pipelineParams)
         }
                 
         stage("End of Unit Tests")
