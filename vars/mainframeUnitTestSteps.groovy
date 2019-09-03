@@ -167,7 +167,6 @@ def call(Map pipelineParams)
                 echo "Sonar quality gate failure: ${sonarGateResult}"
 
                 mailMessageExtension = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
-                currentBuild.result = "FAILURE"
             }
             else
             {
