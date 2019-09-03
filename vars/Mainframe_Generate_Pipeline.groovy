@@ -178,7 +178,7 @@ def call(Map pipelineParams)
                     "SonarQube results may be reviewed at " + 
                     pConfig.sqServerUrl + 
                     "/dashboard?id=" + 
-                    sonarHelper.determineUtProjectName('UT')
+                    sonarProjectName
             }   
         }
 
