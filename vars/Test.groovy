@@ -36,11 +36,14 @@ def call(Map pipelineParams)
         stage("Unit Tests ended")
         {
             echo generatePipelineResult
+            if(generatePipelineResult != 'FAILURE')
+            {
+                currentBuild.result = 'SUCCESS'
+            }
         }
 
         stage("Promote")
         {
-            currentBuild.result = generatePipelineResult
             echo "Starting Promote"
         }
     }
