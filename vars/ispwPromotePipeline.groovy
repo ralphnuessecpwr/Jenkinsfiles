@@ -17,14 +17,13 @@ TttHelper       tttHelper
 SonarHelper     sonarHelper 
 
 String          mailMessageExtension
-
 String          generatePipelineResult
 
 def call(Map pipelineParams)
 {
     node
     {        
-        stage("Unit Tests started")
+        stage("Start of Unit Tests")
         {
             echo "Source Level: ${pipelineParams.ISPW_Src_Level}"
             pipelineParams.ISPW_Src_Level = pipelineParams.ISPW_Src_Level.replace('DEV', 'QA')
@@ -33,7 +32,7 @@ def call(Map pipelineParams)
             generatePipelineResult = Mainframe_Generate_Pipeline(pipelineParams)
         }
 
-        stage("Unit Tests ended")
+        stage("End of Unit Tests")
         {
             echo generatePipelineResult
             if(generatePipelineResult != 'FAILURE')
