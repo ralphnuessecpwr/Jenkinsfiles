@@ -147,6 +147,8 @@ def call(Map pipelineParams)
 
             String sonarGateResult = sonarHelper.checkQualityGate()
 
+            echo "Sonar Gate returned. Status is: " + sonarGateResult
+
             // Evaluate the status of the Quality Gate
             if (sonarGateResult != 'OK')
             {
