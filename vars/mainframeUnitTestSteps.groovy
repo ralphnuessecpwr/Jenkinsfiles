@@ -157,18 +157,17 @@ def call(Map pipelineParams)
             {
                 echo "Sonar quality gate failure: ${sonarGateResult}"
 
-                mailMessageExtension = "Generated code FAILED the Quality gate. \nTo review results\n" +
-                    "JUnit reports       : ${BUILD_URL}/testReport/ \n" +
-                    "SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName} \n" +
-                    "Console Log         : ${BUILD_URL}/testReport/console"
+                mailMessageExtension = "\nGenerated code FAILED the Quality gate. \n\nTo review results\n" +
+                    "JUnit reports       : ${BUILD_URL}/testReport/ \n\n" +
+                    "SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}"
             }
             else
             {
-                mailMessageExtension = "Generated code PASSED the Quality gate and may be promoted. \n" +
+                mailMessageExtension = "\nGenerated code PASSED the Quality gate and may be promoted. \n\n" +
                     "SonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}"
             }   
         }
     }
-    
+
     return [pipelineResult: currentBuild.result, pipelineMailText: mailMessageExtension, pipelineConfig: pConfig]
 }

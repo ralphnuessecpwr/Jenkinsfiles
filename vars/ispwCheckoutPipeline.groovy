@@ -127,8 +127,6 @@ def call(Map pipelineParams)
 
         stage("Download Assignment Sources")
         {
-            
-
             ispwHelper.downloadSourcesForAssignment(pConfig.ispwSrcLevel)
             ispwHelper.downloadCopyBooks(workspace)
         }

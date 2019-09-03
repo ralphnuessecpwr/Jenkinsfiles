@@ -1,3 +1,0 @@
-# Mainframe_Checkout_Pipleline.groovy
-
-Description to follow.
