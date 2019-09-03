@@ -147,8 +147,6 @@ def call(Map pipelineParams)
 
             String sonarGateResult = sonarHelper.checkQualityGate()
 
-            echo "Sonar Gate returned. Status is: " + sonarGateResult
-
             // Evaluate the status of the Quality Gate
             if (sonarGateResult != 'OK')
             {
@@ -166,7 +164,7 @@ def call(Map pipelineParams)
                     "SonarQube results may be reviewed at " + 
                     pConfig.sqServerUrl + 
                     "/dashboard?id=" + 
-                    sonarHelper.determineUtProjectName()
+                    sonarHelper.determineUtProjectName('UT')
             }   
         }
 
