@@ -148,7 +148,7 @@ class SonarHelper implements Serializable {
         steps.timeout(time: 3, unit: 'MINUTES') 
         {                
             // Wait for webhook call back from SonarQube.  SonarQube webhook for callback to Jenkins must be configured on the SonarQube server.
-            def sonarGate = steps.waitForQualityGate()
+            def sonarGate = steps.waitForQualityGate(abortPipeline: false)
 
             result = sonarGate.status
         }
