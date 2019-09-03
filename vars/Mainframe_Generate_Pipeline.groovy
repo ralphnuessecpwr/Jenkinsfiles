@@ -145,15 +145,6 @@ def call(Map pipelineParams)
 
             def sonarProjectName = sonarHelper.determineProjectName('UT')
 
-            /*
-            def parmMap = [:]
-
-            parmMap.scanProjectName = sonarProjectName
-            parmMap.scanType        = 'initial'
-
-            sonarHelper.scan(parmMap)
-            */
-
             sonarHelper.scan([
                 scanType:       'UT', 
                 scanProject:    sonarProjectName
@@ -168,9 +159,6 @@ def call(Map pipelineParams)
 
                 mailMessageExtension = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
                 currentBuild.result = "FAILURE"
-
-                // Exit the pipeline with an error if the SonarQube Quality Gate is failing
-                error "Exiting Pipeline" 
             }
             else
             {
