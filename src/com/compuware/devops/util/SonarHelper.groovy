@@ -122,7 +122,7 @@ class SonarHelper implements Serializable {
             // Add parameters if tests and test result paths were passed as well
             if(testPath != '' && testResultPath != '')
             {
-                sqScannerProperties     = sqScannerProperties + " -Dsonar.tests= ${testPath} -Dsonar.testExecutionReportPaths=${testResultPath}"
+                sqScannerProperties     = sqScannerProperties + " -Dsonar.tests=${testPath} -Dsonar.testExecutionReportPaths=${testResultPath}"
 
                 sourceSuffixes          = sourceSuffixes + ",testsuite,testscenario,stub"
             }
