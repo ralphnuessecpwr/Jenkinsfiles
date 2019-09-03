@@ -195,4 +195,6 @@ def call(Map pipelineParams)
 
         }        
     }
+
+    return currentBuild.result
 }
