@@ -143,7 +143,7 @@ def call(Map pipelineParams)
         {
             ispwHelper.downloadCopyBooks(workspace)            
 
-            def sonarProjectName = sonarHelper.determineUtProjectName('UT')
+            def sonarProjectName = sonarHelper.determineProjectName('UT')
 
             /*
             def parmMap = [:]
