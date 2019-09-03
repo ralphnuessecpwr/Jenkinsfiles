@@ -22,14 +22,19 @@ def call(Map pipelineParams)
 {
     node
     {        
-        echo "Source Level: ${pipelineParams.ISPW_Src_Level}"
-        pipelineParams.ISPW_Src_Level = pipelineParams.ISPW_Src_Level.replace('DEV', 'QA')
-        echo "Source Level: ${pipelineParams.ISPW_Src_Level}"
+        stage("Unit Tests")
+        {
+            echo "Source Level: ${pipelineParams.ISPW_Src_Level}"
+            pipelineParams.ISPW_Src_Level = pipelineParams.ISPW_Src_Level.replace('DEV', 'QA')
+            echo "Source Level: ${pipelineParams.ISPW_Src_Level}"
 
-        def generatePipeline = Mainframe_Generate_Pipeline(pipelineParams)
+            def generatePipeline = Mainframe_Generate_Pipeline(pipelineParams)
+            echo generatePipeline.result
+        }
 
         stage("Promote")
         {
+            this.currentBuild.result = generatePipeline.currentBuild.result
             echo "Starting Promote"
         }
     }
