@@ -144,11 +144,20 @@ def call(Map pipelineParams)
             ispwHelper.downloadCopyBooks(workspace)            
 
             def sonarProjectName = sonarHelper.determineUtProjectName('UT')
-            
-            sonarHelper.scan [
+
+            /*
+            def parmMap = [:]
+
+            parmMap.scanProjectName = sonarProjectName
+            parmMap.scanType        = 'initial'
+
+            sonarHelper.scan(parmMap)
+            */
+
+            sonarHelper.scan([
                 scanType:       'UT', 
                 scanProject:    sonarProjectName
-                ]
+                ])
 
             String sonarGateResult = sonarHelper.checkQualityGate()
 
