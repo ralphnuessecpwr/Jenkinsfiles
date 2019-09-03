@@ -39,7 +39,6 @@ def call(Map pipelineParams)
             if(generatePipelineResult != 'FAILURE')
             {
                 echo "Setting to SUCCESS"
-                currentBuild.currentResult = 'SUCCESS'
                 currentBuild.result = 'SUCCESS'
             }
         }
@@ -47,6 +46,8 @@ def call(Map pipelineParams)
         stage("Promote")
         {
             echo "Starting Promote"
+            echo "Result: " + currentBuild.result
+            echo "Current Result: " + currentBuild.currentResult
         }
     }
 }
