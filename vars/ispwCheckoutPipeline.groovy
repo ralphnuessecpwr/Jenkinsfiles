@@ -154,14 +154,6 @@ def call(Map pipelineParams)
             }
         }
 
-        /* Check if an Application project exists in SonarQube already */
-        /* In case it does not, create a new project and set Quality Gate and run scan */
-        /* I.e. do not run a scan if the project exists already */
-        stage("Setup Sonar Application Project")
-        {
-            setupSonarProject('Application', 'RNU_Gate')
-        }
-
         stage("Send notification")
         {
             messageText     = "Executed checkout in application ${pConfig.ispwApplication}, assignment ${pConfig.ispwAssignment}.\n"
