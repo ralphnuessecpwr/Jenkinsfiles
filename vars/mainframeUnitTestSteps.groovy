@@ -20,6 +20,7 @@ TttHelper       tttHelper
 SonarHelper     sonarHelper 
 
 String          mailMessageExtension
+String          cesToken
 
 def initialize(pipelineParams)
 {
@@ -49,6 +50,14 @@ def initialize(pipelineParams)
         }
 
         mailListlines = mailConfigFile.readLines()
+    }
+
+    // Get cesToken from Jenkins internal token provider
+    withCredentials(
+        [string(credentialsId: "${pConfig.cesTokenId}", variable: 'cesTokenTemp')]
+    ) 
+    {
+        cesToken = cesTokenTemp
     }
 
     pConfig     = new   PipelineConfig(
@@ -144,28 +153,33 @@ def call(Map pipelineParams)
             ispwHelper.downloadCopyBooks(workspace)            
 
             def sonarProjectName = sonarHelper.determineProjectName('UT')
+            def componentList    = ispwHelper.getComponents(cesToken, pConfig.ispwContainer, pConfig.ispwContainerType)
 
-            sonarHelper.scan([
-                scanType:       'UT', 
-                scanProject:    sonarProjectName
-                ])
-
-            String sonarGateResult = sonarHelper.checkQualityGate()
-
-            // Evaluate the status of the Quality Gate
-            if (sonarGateResult != 'OK')
+            componentList.each
             {
-                echo "Sonar quality gate failure: ${sonarGateResult}"
+                sonarHelper.scan([
+                    scanType:           'UT', 
+                    scanProgramName:    it,
+                    scanProjectName:    sonarProjectName
+                    ])
 
-                mailMessageExtension = "\nGenerated code FAILED the Quality gate. \n\nTo review results\n" +
-                    "JUnit reports       : ${BUILD_URL}/testReport/ \n\n" +
-                    "SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}"
+                String sonarGateResult = sonarHelper.checkQualityGate()
+
+                // Evaluate the status of the Quality Gate
+                if (sonarGateResult != 'OK')
+                {
+                    echo "Sonar quality gate failure: ${sonarGateResult} \nfor program ${it}"
+
+                    mailMessageExtension = "\nGenerated code for program ${it} FAILED the Quality gate. \n\nTo review results\n" +
+                        "JUnit reports       : ${BUILD_URL}/testReport/ \n\n" +
+                        "SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}"
+                }
+                else
+                {
+                    mailMessageExtension = "\nGenerated code for program ${it} PASSED the Quality gate and may be promoted. \n\n" +
+                        "SonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}\n\n"
+                }   
             }
-            else
-            {
-                mailMessageExtension = "\nGenerated code PASSED the Quality gate and may be promoted. \n\n" +
-                    "SonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}"
-            }   
         }
     }
 

@@ -84,8 +84,8 @@ class SonarHelper implements Serializable {
             case 'initial':
                 break;
             case "UT":
-                scanTestPath        = 'tests'
-                scanResultPath      = determineUtResultPath()
+                scanTestPath        = 'tests\\' + scanProgramName + '*'
+                scanResultPath      = determineUtResultPath(scanProgramName)
                 scanCoveragePath    = "Coverage/CodeCoverage.xml"
                 break;
             case "FT":
@@ -182,10 +182,10 @@ class SonarHelper implements Serializable {
         
     }
 
-    private String determineUtResultPath()
+    private String determineUtResultPath(String programName)
     {
         // Finds all of the Total Test results files that will be submitted to SonarQube
-        def tttListOfResults    = steps.findFiles(glob: 'TTTSonar/*.xml')   // Total Test SonarQube result files are stored in TTTSonar directory
+        def tttListOfResults    = steps.findFiles(glob: 'TTTSonar/' + programName + '.*xml')   // Total Test SonarQube result files are stored in TTTSonar directory
 
         // Build the sonar testExecutionReportsPaths property
         // Start empty
@@ -194,6 +194,7 @@ class SonarHelper implements Serializable {
         // Loop through each result Total Test results file found
         tttListOfResults.each 
         {
+            steps.echo "TTT Result path add ${it.name}"
             testResults         = testResults + "TTTSonar/" + it.name +  ',' // Append the results file to the property
         }
 
