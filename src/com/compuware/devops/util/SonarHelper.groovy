@@ -31,37 +31,7 @@ class SonarHelper implements Serializable {
 
         runScan(testResults, script.JOB_NAME)
     }
-/*
-    def scan(pipelineType)
-    {
-        def project
-        def testPath
-        def resultPath
-        def coveragePath
-
-        switch(pipelineType)
-        {
-            case "UT":
-                project         = determineProjectName("UT")
-                testPath        = 'tests'
-                resultPath      = determineUtResultPath()
-                coveragePath    = "Coverage/CodeCoverage.xml"
-                break;
-            case "FT":
-                project         = determineProjectName("FT")
-                testPath        = '"tests\\' + pConfig.ispwStream + '_' + pConfig.ispwApplication + '_Functional_Tests\\Functional Test"'
-                resultPath      = 'TestResults\\SonarTestReport.xml'
-                coveragePath    = ''
-                break;
-            default:
-                steps.echo "SonarHelper.scan received wrong pipelineType: " + pipelineType
-                steps.echo "Valid types are 'UT' or FT"
-                break;
-        }
-
-        runScan(testPath, resultPath, coveragePath, project)
-    }
-*/
+    
     def scan(Map scanParms)
     {
         def scanType            = ''

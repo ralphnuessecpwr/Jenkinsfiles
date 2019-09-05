@@ -21,6 +21,7 @@ SonarHelper     sonarHelper
 
 String          mailMessageExtension
 String          cesToken
+def             programStatusList
 
 def initialize(pipelineParams)
 {
@@ -91,6 +92,9 @@ def initialize(pipelineParams)
     sonarHelper = new SonarHelper(this, steps, pConfig)
 
     sonarHelper.initialize()
+
+    mailMessageExtension    = ''
+    programStatusList       = [:]
 }
 
 /**
@@ -157,7 +161,7 @@ def call(Map pipelineParams)
             componentList.each
             {
                 sonarProjectName = sonarHelper.determineProjectName('UT', it)
-                
+
                 sonarHelper.scan([
                     scanType:           'UT', 
                     scanProgramName:    it,
@@ -171,18 +175,24 @@ def call(Map pipelineParams)
                 {
                     echo "Sonar quality gate failure: ${sonarGateResult} \nfor program ${it}"
 
-                    mailMessageExtension = "\nGenerated code for program ${it} FAILED the Quality gate. \n\nTo review results\n" +
+                    mailMessageExtension = mailMessageExtension +
+                        "\nGenerated code for program ${it} FAILED the Quality gate. \n\nTo review results\n" +
                         "JUnit reports       : ${BUILD_URL}/testReport/ \n\n" +
                         "SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}"
+
+                    programStatusList.it = 'FAILED'
                 }
                 else
                 {
-                    mailMessageExtension = "\nGenerated code for program ${it} PASSED the Quality gate and may be promoted. \n\n" +
+                    mailMessageExtension = mailMessageExtension +
+                        "\nGenerated code for program ${it} PASSED the Quality gate and may be promoted. \n\n" +
                         "SonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}\n\n"
+                    
+                    programStatusList.it = 'PASSED'
                 }   
             }
         }
     }
 
-    return [pipelineResult: currentBuild.result, pipelineMailText: mailMessageExtension, pipelineConfig: pConfig]
+    return [pipelineResult: currentBuild.result, pipelineMailText: mailMessageExtension, pipelineConfig: pConfig, pipelineProgramStatusList: programStatusList]
 }

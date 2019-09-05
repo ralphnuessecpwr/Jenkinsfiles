@@ -22,6 +22,7 @@ SonarHelper     sonarHelper
 String          mailMessageExtension
 def             unitTestStepsResult
 def             generatePipelineResult
+def             programStatusList
 
 def call(Map pipelineParams)
 {
@@ -37,6 +38,7 @@ def call(Map pipelineParams)
             unitTestStepsResult     = generatePipelineResult.pipelineResult
             mailMessageExtension    = generatePipelineResult.pipelineMailText
             pConfig                 = generatePipelineResult.pipelineConfig
+            programStatusList       = generatePipelineResult.pipelineProgramStatusList
             
             echo "Unit Test Steps finished \n" +
                 "Result : ${generatePipelineResult.pipelineResult}"
