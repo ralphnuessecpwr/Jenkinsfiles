@@ -52,14 +52,6 @@ def initialize(pipelineParams)
         mailListlines = mailConfigFile.readLines()
     }
 
-    // Get cesToken from Jenkins internal token provider
-    withCredentials(
-        [string(credentialsId: "${pConfig.cesTokenId}", variable: 'cesTokenTemp')]
-    ) 
-    {
-        cesToken = cesTokenTemp
-    }
-
     pConfig     = new   PipelineConfig(
                             steps, 
                             workspace,
@@ -76,6 +68,13 @@ def initialize(pipelineParams)
     withCredentials([usernamePassword(credentialsId: "${pConfig.gitCredentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]) 
     {
         gitHelper.initialize(gitPassword, gitUsername, pConfig.ispwOwner, pConfig.mailRecipient)
+    }
+
+    withCredentials(
+        [string(credentialsId: "${pConfig.cesTokenId}", variable: 'cesTokenTemp')]
+    ) 
+    {
+        cesToken = cesTokenTemp
     }
 
     ispwHelper  = new   IspwHelper(
