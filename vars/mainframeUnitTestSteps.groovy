@@ -180,7 +180,7 @@ def call(Map pipelineParams)
                         "JUnit reports       : ${BUILD_URL}/testReport/ \n\n" +
                         "SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}"
 
-                    programStatusList.(it) = 'FAILED'
+                    programStatusList[it] = 'FAILED'
                 }
                 else
                 {
@@ -188,7 +188,7 @@ def call(Map pipelineParams)
                         "\nGenerated code for program ${it} PASSED the Quality gate and may be promoted. \n\n" +
                         "SonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}\n\n"
                     
-                    programStatusList.(it) = 'PASSED'
+                    programStatusList[it] = 'PASSED'
                 }   
             }
         }
