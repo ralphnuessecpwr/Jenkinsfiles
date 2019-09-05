@@ -97,7 +97,7 @@ class SonarHelper implements Serializable {
                 break;
         }
 
-        runScan(scanTestPath, scanResultPath, scanCoveragePath, scanProject)
+        runScan(scanTestPath, scanResultPath, scanCoveragePath, scanProjectName)
     }
 
     private runScan(testPath, testResultPath, coveragePath, projectName)
