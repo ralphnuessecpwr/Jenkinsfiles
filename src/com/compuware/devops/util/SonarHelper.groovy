@@ -102,7 +102,7 @@ class SonarHelper implements Serializable {
         runScan(scanTestPath, scanResultPath, scanCoveragePath, scanProjectName, scanProgramName)
     }
 
-    private runScan(testPath, testResultPath, coveragePath, projectName)
+    private runScan(testPath, testResultPath, coveragePath, projectName, programName)
     {
         steps.withSonarQubeEnv("${pConfig.sqServerName}")       // Name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section
         {
@@ -112,7 +112,7 @@ class SonarHelper implements Serializable {
             // Folder(s) containing Mainframe sources downloaded from ISPW
                                           " -Dsonar.sources=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}" +
             // Folder(s) containing Mainframe copybooks
-                                          " -Dsonar.cobol.copy.directories=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}\\${scanProgramName}" +
+                                          " -Dsonar.cobol.copy.directories=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}\\${programName}" +
             // Suffixes to use for copybooks
                                           " -Dsonar.cobol.copy.suffixes=cpy" +
                                           " -Dsonar.sourceEncoding=UTF-8"
