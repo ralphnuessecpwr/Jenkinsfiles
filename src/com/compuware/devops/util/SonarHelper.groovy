@@ -65,7 +65,7 @@ class SonarHelper implements Serializable {
     def scan(Map scanParms)
     {
         def scanType            = ''
-        def scanProject         = ''
+        def scanProjectName     = ''
         def scanTestPath        = ''
         def scanResultPath      = ''
         def scanCoveragePath    = ''
