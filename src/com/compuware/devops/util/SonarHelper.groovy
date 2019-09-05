@@ -75,10 +75,6 @@ class SonarHelper implements Serializable {
         scanProgramName     = scanParms.scanProgramName
         scanProjectName     = scanParms.scanProjectName
 
-        steps.echo "Scan: Got Parameters"
-        steps.echo "scanType    :" + scanType
-        steps.echo "scanProject :" + scanProjectName
-
         switch(scanType)
         {
             case 'initial':
@@ -186,6 +182,8 @@ class SonarHelper implements Serializable {
     {
         // Finds all of the Total Test results files that will be submitted to SonarQube
         def tttListOfResults    = steps.findFiles(glob: 'TTTSonar/' + programName + '.*xml')   // Total Test SonarQube result files are stored in TTTSonar directory
+
+        steps.echo "After findFiles: " + tttListOfResults.toString()
 
         // Build the sonar testExecutionReportsPaths property
         // Start empty
