@@ -73,9 +73,9 @@ class SonarHelper implements Serializable {
         scanType            = scanParms.scanType
         scanProject         = scanParms.scanProject
 
-        echo "Scan: Got Parameters"
-        echo "scanType    :" + scanType
-        echo "scanProject :" + scanProject
+        steps.echo "Scan: Got Parameters"
+        steps.echo "scanType    :" + scanType
+        steps.echo "scanProject :" + scanProject
 
         switch(scanType)
         {
