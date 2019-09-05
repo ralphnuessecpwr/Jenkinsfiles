@@ -181,7 +181,7 @@ class SonarHelper implements Serializable {
     private String determineUtResultPath(String programName)
     {
         // Finds all of the Total Test results files that will be submitted to SonarQube
-        def tttListOfResults    = steps.findFiles(glob: 'TTTSonar/' + programName + '.*xml')   // Total Test SonarQube result files are stored in TTTSonar directory
+        def tttListOfResults    = steps.findFiles(glob: 'TTTSonar/' + programName + '*.xml')   // Total Test SonarQube result files are stored in TTTSonar directory
 
         steps.echo "After findFiles: " + tttListOfResults.toString()
 
