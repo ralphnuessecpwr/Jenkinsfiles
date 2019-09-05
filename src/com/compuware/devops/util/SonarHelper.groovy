@@ -71,6 +71,7 @@ class SonarHelper implements Serializable {
         def scanCoveragePath    = ''
 
         scanType            = scanParms.scanType
+        scanProgramName     = scanParms.scanProgramName
         scanProjectName     = scanParms.scanProjectName
 
         steps.echo "Scan: Got Parameters"
@@ -97,7 +98,7 @@ class SonarHelper implements Serializable {
                 break;
         }
 
-        runScan(scanTestPath, scanResultPath, scanCoveragePath, scanProjectName)
+        runScan(scanTestPath, scanResultPath, scanCoveragePath, scanProjectName, scanProgramName)
     }
 
     private runScan(testPath, testResultPath, coveragePath, projectName)
@@ -110,7 +111,7 @@ class SonarHelper implements Serializable {
             // Folder(s) containing Mainframe sources downloaded from ISPW
                                           " -Dsonar.sources=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}" +
             // Folder(s) containing Mainframe copybooks
-                                          " -Dsonar.cobol.copy.directories=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}" +
+                                          " -Dsonar.cobol.copy.directories=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}\\${scanProgramName}" +
             // Suffixes to use for copybooks
                                           " -Dsonar.cobol.copy.suffixes=cpy" +
                                           " -Dsonar.sourceEncoding=UTF-8"

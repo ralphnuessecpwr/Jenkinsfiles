@@ -99,6 +99,7 @@ def setupSonarProject(String sonarProjectType, String componentName, String sona
         def parmMap = [:]
 
         parmMap.scanProjectName = sonarProjectName
+        parmMap.scanProgramName = componentName
         parmMap.scanType        = 'initial'
 
         sonarHelper.scan(parmMap)
