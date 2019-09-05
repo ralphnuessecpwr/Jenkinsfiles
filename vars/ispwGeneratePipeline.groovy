@@ -42,7 +42,12 @@ def call(Map pipelineParams)
             
             echo "Unit Test Steps finished \n" +
                 "Result : ${generatePipelineResult.pipelineResult} \n" +
-                "Program Status: ${programStatusList}"
+                "Program Status: " + programStatusList
+            
+            for (programStatus in programStatusList)
+            {
+                echo "Program ${programStatus.key}, status ${programStatus.value}"
+            }
         }
         
         stage("Send Notification")
