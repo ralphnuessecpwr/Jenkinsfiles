@@ -151,11 +151,13 @@ def call(Map pipelineParams)
         {
             ispwHelper.downloadCopyBooks(workspace)            
 
-            def sonarProjectName = sonarHelper.determineProjectName('UT')
+            def sonarProjectName
             def componentList    = ispwHelper.getComponents(cesToken, pConfig.ispwContainer, pConfig.ispwContainerType)
 
             componentList.each
             {
+                sonarProjectName = sonarHelper.determineProjectName('UT', it)
+                
                 sonarHelper.scan([
                     scanType:           'UT', 
                     scanProgramName:    it,
