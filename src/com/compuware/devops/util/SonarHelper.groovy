@@ -110,9 +110,9 @@ class SonarHelper implements Serializable {
             // Project Name and Key
             def sqScannerProperties     = " -Dsonar.projectKey=${projectName} -Dsonar.projectName=${projectName} -Dsonar.projectVersion=1.0" +
             // Folder(s) containing Mainframe sources downloaded from ISPW
-                                          " -Dsonar.sources=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}" +
+                                          " -Dsonar.sources=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}\\${programName}.cbl" +
             // Folder(s) containing Mainframe copybooks
-                                          " -Dsonar.cobol.copy.directories=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}\\${programName}" +
+                                          " -Dsonar.cobol.copy.directories=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}" +
             // Suffixes to use for copybooks
                                           " -Dsonar.cobol.copy.suffixes=cpy" +
                                           " -Dsonar.sourceEncoding=UTF-8"
