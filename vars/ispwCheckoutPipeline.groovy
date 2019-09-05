@@ -87,9 +87,9 @@ def initialize(pipelineParams)
     messageText         = ''
 }
 
-def setupSonarProject(String sonarProjectType, String sonarProjectGate)
+def setupSonarProject(String sonarProjectType, String componentName, String sonarProjectGate)
 {   
-    def sonarProjectName = sonarHelper.determineProjectName(sonarProjectType)
+    def sonarProjectName = sonarHelper.determineProjectName(sonarProjectType, componentName)
 
     if(sonarHelper.checkForProject(sonarProjectName) == 'NOT FOUND')
     {
@@ -123,28 +123,35 @@ def call(Map pipelineParams)
         stage("Initialization")
         {
             initialize(pipelineParams)
+            componentList   = ispwHelper.getComponents(cesToken, pConfig.ispwContainer, pConfig.ispwContainerType)
         }
 
         stage("Download Assignment Sources")
         {
-            ispwHelper.downloadSourcesForAssignment(pConfig.ispwSrcLevel)
+            ispwHelper.downloadSources(pConfig.ispwSrcLevel)
             ispwHelper.downloadCopyBooks(workspace)
         }
 
         /* Check if a Unit Test project exists in SonarQube already */
         /* In case it does not, create a new project and set Quality Gate */
         /* Run a scan of the sources in any case (for any new sources) */
-        stage("Setup Sonar Project for Unit Tests")
+        stage("Setup Sonar Projects for Unit Tests")
         {
-            setupSonarProject('UT', 'RNU_Gate')
+            componentList.each
+            {
+                setupSonarProject('UT', it, 'RNU_Gate')
+            }
         }
 
         /* Check if a Functional Test project exists in SonarQube already */
         /* In case it does not, create a new project and set Quality Gate */
         /* Run a scan of the sources in any case (for any new sources) */
-        stage("Setup Sonar Project for Functional Tests")
+        stage("Setup Sonar Projects for Functional Tests")
         {
-            setupSonarProject('FT', 'RNU_Gate_FT')
+            componentList.each
+            {
+                setupSonarProject('FT', it, 'RNU_Gate_FT')
+            }
         }
 
         /* Check if an Application project exists in SonarQube already */
@@ -158,7 +165,6 @@ def call(Map pipelineParams)
         stage("Send notification")
         {
             messageText     = "Executed checkout in application ${pConfig.ispwApplication}, assignment ${pConfig.ispwAssignment}.\n"
-            componentList   = ispwHelper.getComponents(cesToken, pConfig.ispwContainer, pConfig.ispwContainerType)
 
             def componentListMessage = ''
 
