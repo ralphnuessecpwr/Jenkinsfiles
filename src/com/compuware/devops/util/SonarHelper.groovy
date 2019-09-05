@@ -31,7 +31,7 @@ class SonarHelper implements Serializable {
 
         runScan(testResults, script.JOB_NAME)
     }
-
+/*
     def scan(pipelineType)
     {
         def project
@@ -61,7 +61,7 @@ class SonarHelper implements Serializable {
 
         runScan(testPath, resultPath, coveragePath, project)
     }
-
+*/
     def scan(Map scanParms)
     {
         def scanType            = ''
