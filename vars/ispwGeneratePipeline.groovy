@@ -41,7 +41,8 @@ def call(Map pipelineParams)
             programStatusList       = generatePipelineResult.pipelineProgramStatusList
             
             echo "Unit Test Steps finished \n" +
-                "Result : ${generatePipelineResult.pipelineResult}"
+                "Result : ${generatePipelineResult.pipelineResult} \n" +
+                "Program Status: ${programStatusList}"
         }
         
         stage("Send Notification")
