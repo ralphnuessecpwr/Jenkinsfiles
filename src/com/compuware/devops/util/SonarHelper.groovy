@@ -71,11 +71,11 @@ class SonarHelper implements Serializable {
         def scanCoveragePath    = ''
 
         scanType            = scanParms.scanType
-        scanProject         = scanParms.scanProject
+        scanProjectName     = scanParms.scanProjectName
 
         steps.echo "Scan: Got Parameters"
         steps.echo "scanType    :" + scanType
-        steps.echo "scanProject :" + scanProject
+        steps.echo "scanProject :" + scanProjectName
 
         switch(scanType)
         {
