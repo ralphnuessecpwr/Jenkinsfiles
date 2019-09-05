@@ -96,11 +96,6 @@ def setupSonarProject(String sonarProjectType, String componentName, String sona
         sonarHelper.createProject(sonarProjectName)
         sonarHelper.setQualityGate(sonarProjectGate, sonarProjectName)
 
-        if(sonarProjectType == 'Application')
-        {
-            ispwHelper.downloadAllSources(pConfig.ispwSrcLevel)
-        }
-
         def parmMap = [:]
 
         parmMap.scanProjectName = sonarProjectName
