@@ -132,7 +132,7 @@ def call(Map pipelineParams)
 
             def sonarProjectName
 
-            mailMessageExtension = mailMessageExtension + "\nINITIAL SOURCE SCAN RESULTS\n"
+            mailMessageExtension = mailMessageExtension + "\n\nINITIAL SOURCE SCAN RESULTS\n"
 
             componentList.each
             {
@@ -216,6 +216,7 @@ def call(Map pipelineParams)
         stage("Check Unit Test Quality Gate") 
         {
             def sonarProjectName
+            mailMessageExtension    = mailMessageExtension + "\n\nUNIT TEST RESULTS\n"
 
             componentList.each
             {
@@ -225,7 +226,6 @@ def call(Map pipelineParams)
                 def sonarGate           = 'RNU_Gate_UT'
                 
                 sonarProjectName        = sonarHelper.determineProjectName('UT', it)
-                mailMessageExtension    = mailMessageExtension + "\nUNIT TEST RESULTS\n"
 
                 // Check if the component had unit tests
                 // In that case scan with unit test results
@@ -269,7 +269,7 @@ def call(Map pipelineParams)
                 else
                 {
                     mailMessageExtension = mailMessageExtension +
-                        "\nNo Unit Tests were executed for program ${it}, and only the source was be validated. \n\n"
+                        "\nNo Unit Tests were executed for program ${it}, and only the source was validated. \n\n"
                     
                     programStatusList[it] = 'PASSED'
                 } 
@@ -317,7 +317,11 @@ def call(Map pipelineParams)
                         replyTo:    '$DEFAULT_REPLYTO',
                         to:         "${pConfig.mailRecipient}"
         }
-    }
 
+        if(pipelineFail)
+        {
+            currentBuild.reult = 'FAILURE'
+        }
+    }
     //return [pipelineResult: currentBuild.result, pipelineMailText: mailMessageExtension, pipelineConfig: pConfig, pipelineProgramStatusList: programStatusList]
 }
