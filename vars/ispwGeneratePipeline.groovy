@@ -41,12 +41,12 @@ def call(Map pipelineParams)
             programStatusList       = generatePipelineResult.pipelineProgramStatusList
             
             echo "Unit Test Steps finished \n" +
-                "Result : ${generatePipelineResult.pipelineResult} \n" +
-                "Program Status: " + programStatusList
+                "Result : ${unitTestStepsResult} \n" +
+                "Program Status:"
             
             for (programStatus in programStatusList)
             {
-                echo "Program ${programStatus.key}, status ${programStatus.value}"
+                echo "Program ${programStatus.key} - ${programStatus.value}"
             }
         }
         

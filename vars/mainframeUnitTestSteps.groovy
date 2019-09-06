@@ -90,7 +90,6 @@ def initialize(pipelineParams)
                         )
 
     sonarHelper = new SonarHelper(this, steps, pConfig)
-
     sonarHelper.initialize()
 
     mailMessageExtension    = ''
@@ -136,7 +135,7 @@ def call(Map pipelineParams)
             tttHelper.passResultsToJunit()
 
             /* push results back to GitHub */
-            //gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
+            gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
         }
 
         /* 

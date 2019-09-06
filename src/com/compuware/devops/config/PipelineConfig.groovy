@@ -51,7 +51,7 @@ class PipelineConfig implements Serializable
     public String gitTttUtRepo        
     public String gitTttFtRepo        
 
-    public String cesTokenId        
+    public String cesTokenId
     public String hciConnId         
     public String hciTokenId        
     public String ccRepository      
@@ -90,11 +90,10 @@ class PipelineConfig implements Serializable
         this.gitTttUtRepo       = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
         this.gitTttFtRepo       = "${ispwStream}_${ispwApplication}_Functional_Tests.git"
 
-        this.cesTokenId         = params.CES_Token       
+        this.cesTokenId         = params.CES_Token
         this.hciConnId          = params.HCI_Conn_ID
         this.hciTokenId         = params.HCI_Token
         this.ccRepository       = params.CC_repository
-
     }
 
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */

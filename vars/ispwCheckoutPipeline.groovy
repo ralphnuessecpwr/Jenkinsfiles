@@ -94,15 +94,14 @@ def setupSonarProject(String sonarProjectType, String componentName, String sona
     if(sonarHelper.checkForProject(sonarProjectName) == 'NOT FOUND')
     {
         sonarHelper.createProject(sonarProjectName)
+        
         sonarHelper.setQualityGate(sonarProjectGate, sonarProjectName)
 
-        def parmMap = [:]
-
-        parmMap.scanProjectName = sonarProjectName
-        parmMap.scanProgramName = componentName
-        parmMap.scanType        = 'initial'
-
-        sonarHelper.scan(parmMap)
+        sonarHelper.scan([
+            scanType:           'initial', 
+            scanProgramName:    componentName,
+            scanProjectName:    sonarProjectName
+            ])
 
         sonarProjectList.add(sonarProjectName)
     }            

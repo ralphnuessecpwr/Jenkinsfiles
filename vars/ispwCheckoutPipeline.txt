@@ -1,16 +1,16 @@
 ### ispwCheckoutPipeline.groovy
 
 Pipeline to be triggered by checking out a task/component in ISPW to an assignment.
-Based on information from ISPW three SonarQube project names will be determined
+For each component in the corresponding set, it will check if SonarQube projects already exists. 
+The will be two projects project per component, one for unit testing and one for functional testing.
 
-- *stream*_*application*_*assignment*_Unit_Tests
-- *stream*_*application*_*assignment*_Functional_Tests
-- *stream*_*application*
+<stream>_<application>_<component_name>_Unit_Tests
+<stream>_<application>_<component_name>_Functional_Tests
 
-The projects are supposed to inspect sources and unit test results, or functional test results or the whole application, respectively. 
-The pipeline will check if the corresponding projects already exist in SonarQube. 
+If a project does not exist, the pipeline will 
 
-If not the projects will be created and Quality Gates assigned to them and initial scans will be performed for the corresponding sources. 
-For the first two projects based on the components checked out to the assignment. For the last project based on the whole ISPW application.
+- create the two projects
+- assign Quality Gates
+- run an initial scan for the source
 
 This process will allow for initial scans and determining new code during the life cycle.
