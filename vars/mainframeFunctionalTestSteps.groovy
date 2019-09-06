@@ -292,8 +292,6 @@ def call(Map pipelineParams)
                     mailMessageExtension = mailMessageExtension +
                         it + "\n"
                 }
-
-                error "Pipeline aborted due to failing QualityGates"
             }
             else
             {
