@@ -358,7 +358,7 @@ class IspwHelper implements Serializable
         }'''
 
         steps.httpRequest(
-                url:                    "${ispwUrl}/ispw/${ispwRuntime}/assignments/${assignment}/tasks/regress?level=${ispwTargetLevel}&mname=${taskName}",
+                url:                    "${ispwUrl}/ispw/${ispwRuntime}/assignments/${ispwAssignment}/tasks/regress?level=${ispwTargetLevel}&mname=${taskName}",
                 httpMode:               'POST',
                 consoleLogResponseBody: true,
                 contentType:            'APPLICATION_JSON',
