@@ -27,7 +27,7 @@ def             listOfExecutedTargets
 def             programStatusList
 def             listOfFailingComponents
 
-Boolean         pipelineFail = false
+def             pipelineFail = false
 
 def initialize(pipelineParams)
 {
