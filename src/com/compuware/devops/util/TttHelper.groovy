@@ -11,14 +11,16 @@ class TttHelper implements Serializable {
 
     def listOfScenarios
     def listOfSources
-    def listOfPrograms 
+    def listOfPrograms
+    def listOfExecutedTargets 
 
     TttHelper(script, steps, pConfig, componentList) 
     {
-        this.script         = script
-        this.steps          = steps
-        this.pConfig        = pConfig
-        this.listOfPrograms = componentList
+        this.script                 = script
+        this.steps                  = steps
+        this.pConfig                = pConfig
+        this.listOfPrograms         = componentList
+        this.listOfExecutedTargets  = []
 
         jclSkeleton     = new JclSkeleton(steps, script.workspace, pConfig.ispwApplication, pConfig.applicationPathNum)
     }
@@ -77,8 +79,13 @@ class TttHelper implements Serializable {
                         projectFolder:  "${projectName}",            // Name of the Folder in the file system that contains the Total Test Project.  
                         testSuite:      "${scenarioFullName}",       // Name of the Total Test Scenario to execute
                         useStubs:       true                            // (true|false) - Execute with or without stubs
-                ])                   
+                ])   
+
+                listOfExecutedTargets.add(scenarioTarget)                
             }
+        
+        return listOfExecutedTargets
+
         }
     }
 

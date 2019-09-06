@@ -22,6 +22,7 @@ SonarHelper     sonarHelper
 String          mailMessageExtension
 String          cesToken
 def             componentList
+def             listOfExecutedTargets
 def             programStatusList
 
 def initialize(pipelineParams)
@@ -133,8 +134,8 @@ def call(Map pipelineParams)
             /* Clean up Code Coverage results from previous run */
             tttHelper.cleanUpCodeCoverageResults()
 
-            /* Execute unit tests */
-            tttHelper.loopThruScenarios()
+            /* Execute unit tests and retrieve list of programs that had unit tests*/
+            listOfExecutedTargets = tttHelper.loopThruScenarios()
          
             tttHelper.passResultsToJunit()
 
@@ -162,10 +163,29 @@ def call(Map pipelineParams)
 
             componentList.each
             {
+                def scanType
+                def sonarGate
+
                 sonarProjectName = sonarHelper.determineProjectName('UT', it)
 
+                // Check if the component had unit tests
+                // In that case scan with unit test results
+                // Otherwise only scan the source
+                if(listOfExecutedTargets.contains(it))
+                {
+                    scanType    = 'UT'
+                    sonarGate   = 'RNU_Gate_UT'
+                }
+                else
+                {
+                    scanType    = 'source'
+                    sonarGate   = 'RNU_Gate_Source'
+                }
+
+                sonarHelper.setQualityGate(sonarGate, sonarProjectName)
+
                 sonarHelper.scan([
-                    scanType:           'UT', 
+                    scanType:           scanType, 
                     scanProgramName:    it,
                     scanProjectName:    sonarProjectName
                     ])
@@ -178,7 +198,7 @@ def call(Map pipelineParams)
                     echo "Sonar quality gate failure: ${sonarGateResult} \nfor program ${it}"
 
                     mailMessageExtension = mailMessageExtension +
-                        "\nGenerated code for program ${it} FAILED the Quality gate. \n\nTo review results\n" +
+                        "\nGenerated code for program ${it} FAILED the Quality gate ${sonarGate}. \n\nTo review results\n" +
                         "JUnit reports       : ${BUILD_URL}/testReport/ \n\n" +
                         "SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}"
 
@@ -187,7 +207,7 @@ def call(Map pipelineParams)
                 else
                 {
                     mailMessageExtension = mailMessageExtension +
-                        "\nGenerated code for program ${it} PASSED the Quality gate and may be promoted. \n\n" +
+                        "\nGenerated code for program ${it} PASSED the Quality gate ${sonarGate} and may be promoted. \n\n" +
                         "SonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}\n\n"
                     
                     programStatusList[it] = 'PASSED'

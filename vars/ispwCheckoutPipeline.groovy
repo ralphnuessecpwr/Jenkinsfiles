@@ -133,7 +133,7 @@ def call(Map pipelineParams)
         {
             componentList.each
             {
-                setupSonarProject('UT', it, 'RNU_Gate')
+                setupSonarProject('UT', it, 'RNU_Gate_UT')
             }
         }
 
