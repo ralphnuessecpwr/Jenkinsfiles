@@ -267,7 +267,7 @@ def call(Map pipelineParams)
                 else
                 {
                     mailMessageExtension = mailMessageExtension +
-                        "\nNo Unit Tests were executed for program ${it}, and only the source was be validated. \n\n" +
+                        "\nNo Unit Tests were executed for program ${it}, and only the source was be validated. \n\n"
                     
                     programStatusList[it] = 'PASSED'
                 }  
