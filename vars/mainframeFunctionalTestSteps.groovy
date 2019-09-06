@@ -250,10 +250,6 @@ def call(Map pipelineParams)
                             "SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}"
 
                         listOfFailingComponents.add(it)
-                        componentList.remove(it)
-
-                        echo "Fails " + listOfFailingComponents.toString()
-                        echo "Stil in " + componentList.toString()
 
                         pipelineFail            = true                    
                         programStatusList[it]   = 'FAILED'
@@ -274,9 +270,12 @@ def call(Map pipelineParams)
                     
                     programStatusList[it] = 'PASSED'
                 } 
-                echo "Loop end" 
             }
-            echo "Stage end"
+            
+            listOfFailingComponents.each
+            {
+                componentList.remove(it)
+            }
         }
 
         stage("React on previous results")
