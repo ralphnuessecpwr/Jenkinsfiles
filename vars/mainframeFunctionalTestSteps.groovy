@@ -27,10 +27,12 @@ def             listOfExecutedTargets
 def             programStatusList
 def             listOfFailingComponents
 
-def             pipelineFail = false
+def             pipelineFail
 
 def initialize(pipelineParams)
 {
+    pipelineFail = false
+
     // Clean out any previously downloaded source
     dir(".\\") 
     {
