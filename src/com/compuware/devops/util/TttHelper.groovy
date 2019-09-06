@@ -14,7 +14,7 @@ class TttHelper implements Serializable {
     def listOfPrograms
     def listOfExecutedTargets 
 
-    TttHelper(script, steps, pConfig, componentList) 
+    TttHelper(script, steps, pConfig) 
     {
         this.script                 = script
         this.steps                  = steps

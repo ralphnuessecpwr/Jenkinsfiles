@@ -217,7 +217,10 @@ class IspwHelper implements Serializable
 
             taskList.each
             {
-                if(it.moduleType == 'COB')
+                if(
+                    it.moduleType == 'COB' &&
+                    not(returnList.contains(it.name))
+                )
                 {
                     returnList.add(it.moduleName)
                 }

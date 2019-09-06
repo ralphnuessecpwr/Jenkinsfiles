@@ -96,8 +96,7 @@ def initialize(pipelineParams)
     tttHelper   = new   TttHelper(
                             this,
                             steps,
-                            pConfig, 
-                            componentList
+                            pConfig
                         )
 
     sonarHelper = new SonarHelper(this, steps, pConfig)
@@ -156,7 +155,6 @@ def call(Map pipelineParams)
 
                     mailMessageExtension = mailMessageExtension +
                         "\nGenerated code for program ${it} FAILED the Quality gate ${sonarGate}. \n\nTo review results\n" +
-                        "JUnit reports       : ${BUILD_URL}/testReport/ \n\n" +
                         "SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}"
 
                     listOfFailingComponents.add(it)
@@ -168,7 +166,7 @@ def call(Map pipelineParams)
                 else
                 {
                     mailMessageExtension = mailMessageExtension +
-                        "\nGenerated code for program ${it} PASSED the Quality gate ${sonarGate} and may be promoted. \n\n" +
+                        "\nGenerated code for program ${it} PASSED the Quality gate ${sonarGate}. \n\n" +
                         "SonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}\n\n"
                     
                     programStatusList[it] = 'PASSED'
@@ -217,8 +215,8 @@ def call(Map pipelineParams)
 
             componentList.each
             {
-                def scanType
-                def sonarGate
+                def scanType    = 'UT'
+                def sonarGate   = 'RNU_Gate_UT'
 
                 sonarProjectName = sonarHelper.determineProjectName('UT', it)
 
@@ -227,9 +225,6 @@ def call(Map pipelineParams)
                 // Otherwise only scan the source has already be scanned, and we can ignore it
                 if(listOfExecutedTargets.contains(it))
                 {
-                    scanType    = 'UT'
-                    sonarGate   = 'RNU_Gate_UT'
-
                     sonarHelper.setQualityGate(sonarGate, sonarProjectName)
 
                     sonarHelper.scan([
@@ -260,7 +255,7 @@ def call(Map pipelineParams)
                 else
                 {
                     mailMessageExtension = mailMessageExtension +
-                        "\nGenerated code for program ${it} PASSED the Quality gate ${sonarGate} and may be promoted. \n\n" +
+                        "\nGenerated code for program ${it} PASSED the Quality gate ${sonarGate}. \n\n" +
                         "SonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}\n\n"
                     
                     programStatusList[it] = 'PASSED'
