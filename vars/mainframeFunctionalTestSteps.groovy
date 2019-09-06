@@ -133,8 +133,9 @@ def call(Map pipelineParams)
 
             componentList.each
             {
-                def scanType    = 'source'
-                def sonarGate   = 'RNU_Gate_Source'
+                def scanType        = 'source'
+                def sonarGate       = 'RNU_Gate_Source'
+                sonarProjectName    = sonarHelper.determineProjectName('UT', it)
 
                 sonarHelper.setQualityGate(sonarGate, sonarProjectName)
 

@@ -348,6 +348,26 @@ class IspwHelper implements Serializable
 
     }      
 
+    def regressTask(taskName, cesToken)
+    {
+        def requestBodyParm = '''{
+            "runtimeConfiguration": "''' + ispwRuntime + '''"
+        }'''
+
+        steps.httpRequest(
+                url:                    "${ispwUrl}/ispw/${ispwRuntime}/assignments/${assignment}/tasks/regress?level=${ispwTargetLevel}&mname=${taskName}",
+                httpMode:               'POST',
+                consoleLogResponseBody: true,
+                contentType:            'APPLICATION_JSON',
+                requestBody:            requestBodyParm,
+                customHeaders:          [[
+                                        maskValue:  true, 
+                                        name:       'authorization', 
+                                        value:      "${cesToken}"
+                                        ]]
+            )
+    }
+
     /* Regress a list of assignments */
     def regressAssignmentList(assignmentList, cesToken)
     {
