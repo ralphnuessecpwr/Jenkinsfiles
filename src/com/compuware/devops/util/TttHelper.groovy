@@ -48,7 +48,7 @@ class TttHelper implements Serializable {
             def scenarioName        = it.name.trim().split("\\.")[0]  // Get the name of the scenario file without ".testscenario"
             def scenarioTarget      = scenarioName.split("\\_")[0]  // Target Program will be the first part of the scenario name (convention)
     
-            // For each of the scenarios walk through the list of source files and determine if the target matches one of the programs
+            // For each of the scenarios go through the list of source files and determine if the target matches one of the programs
             // In that case, execute the unit test.  Determine if the program name matches the target of the Total Test scenario
             if(listOfPrograms.contains(scenarioTarget))
             {
