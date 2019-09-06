@@ -132,6 +132,8 @@ def call(Map pipelineParams)
 
             def sonarProjectName
 
+            mailMessageExtension = mailMessageExtension + "\nINITIAL SOURCE SCAN RESULTS\n"
+
             componentList.each
             {
                 def scanType        = 'source'
@@ -219,10 +221,11 @@ def call(Map pipelineParams)
             {
                 echo "Component: " + it
 
-                def scanType    = 'UT'
-                def sonarGate   = 'RNU_Gate_UT'
-
-                sonarProjectName = sonarHelper.determineProjectName('UT', it)
+                def scanType            = 'UT'
+                def sonarGate           = 'RNU_Gate_UT'
+                
+                sonarProjectName        = sonarHelper.determineProjectName('UT', it)
+                mailMessageExtension    = mailMessageExtension + "\nUNIT TEST RESULTS\n"
 
                 // Check if the component had unit tests
                 // In that case scan with unit test results
@@ -283,7 +286,7 @@ def call(Map pipelineParams)
             if(pipelineFail)
             {
                 mailMessageExtension = mailMessageExtension +
-                    "Initial scans or unit tests failed. The pipeline will be aborted, and the following components will be regressed: \n"
+                    "\n\nFINAL RESULTS\nInitial scans or unit tests failed. The pipeline will be aborted, and the following components will be regressed: \n"
 
                 listOfFailingComponents.each
                 {
