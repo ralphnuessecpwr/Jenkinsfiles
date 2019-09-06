@@ -219,7 +219,7 @@ class IspwHelper implements Serializable
             {
                 if(
                     it.moduleType == 'COB' &&
-                    not(returnList.contains(it.name))
+                    !(returnList.contains(it.name))
                 )
                 {
                     returnList.add(it.moduleName)
