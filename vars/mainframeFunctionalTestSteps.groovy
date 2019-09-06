@@ -287,11 +287,11 @@ def call(Map pipelineParams)
 
                 listOfFailingComponents.each
                 {
+                    ispwHelper.regressTask(it, cesToken)
+
                     mailMessageExtension = mailMessageExtension +
                         it + "\n"
                 }
-
-                ispwHelper.regressTask(it, cesToken)
 
                 error "Pipeline aborted due to failing QualityGates"
             }
