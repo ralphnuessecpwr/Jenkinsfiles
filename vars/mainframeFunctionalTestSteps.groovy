@@ -26,7 +26,6 @@ def             componentList
 def             listOfExecutedTargets
 def             programStatusList
 def             listOfFailingComponents
-
 def             pipelineFail
 
 def initialize(pipelineParams)
@@ -104,6 +103,7 @@ def initialize(pipelineParams)
 
     mailMessageExtension    = ''
     programStatusList       = [:]
+    listOfFailingComponents = []
 }
 
 /**
