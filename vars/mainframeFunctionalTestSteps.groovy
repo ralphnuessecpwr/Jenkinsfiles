@@ -242,7 +242,7 @@ def call(Map pipelineParams)
                     // Evaluate the status of the Quality Gate
                     if (sonarGateResult != 'OK')
                     {
-                        echo "Sonar quality gate failure: ${sonarGateResult} \nfor program ${it}"
+                        echo "Sonar quality gate failure: ${sonarGateResult} for program ${it}"
 
                         mailMessageExtension = mailMessageExtension +
                             "\nGenerated code for program ${it} FAILED the Quality gate ${sonarGate}. \n\nTo review results\n" +
@@ -251,6 +251,9 @@ def call(Map pipelineParams)
 
                         listOfFailingComponents.add(it)
                         componentList.remove(it)
+
+                        echo "Fails " + listOfFailingComponents.toString()
+                        echo "Stil in " + componentList.toString()
 
                         pipelineFail            = true                    
                         programStatusList[it]   = 'FAILED'
@@ -270,8 +273,10 @@ def call(Map pipelineParams)
                         "\nNo Unit Tests were executed for program ${it}, and only the source was be validated. \n\n"
                     
                     programStatusList[it] = 'PASSED'
-                }  
+                } 
+                echo "Loop end" 
             }
+            echo "Stage end"
         }
 
         stage("React on previous results")

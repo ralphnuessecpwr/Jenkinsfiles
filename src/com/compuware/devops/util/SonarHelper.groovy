@@ -153,8 +153,6 @@ class SonarHelper implements Serializable {
         // Finds all of the Total Test results files that will be submitted to SonarQube
         def tttListOfResults    = steps.findFiles(glob: 'TTTSonar/' + programName + '*.xml')   // Total Test SonarQube result files are stored in TTTSonar directory
 
-        steps.echo "After findFiles: " + tttListOfResults.toString()
-
         // Build the sonar testExecutionReportsPaths property
         // Start empty
         def testResults         = ""    
@@ -162,7 +160,6 @@ class SonarHelper implements Serializable {
         // Loop through each result Total Test results file found
         tttListOfResults.each 
         {
-            steps.echo "TTT Result path add ${it.name}"
             testResults         = testResults + "TTTSonar/" + it.name +  ',' // Append the results file to the property
         }
 
