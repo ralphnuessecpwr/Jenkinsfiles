@@ -190,6 +190,8 @@ def call(Map pipelineParams)
 
             /* Execute unit tests and retrieve list of programs that had unit tests*/
             listOfExecutedTargets = tttHelper.loopThruScenarios()
+
+            echo "Exectuted targets " + listOfExecutedTargets.toString()
          
             tttHelper.passResultsToJunit()
 
@@ -215,6 +217,8 @@ def call(Map pipelineParams)
 
             componentList.each
             {
+                echo "Component: " + it
+
                 def scanType    = 'UT'
                 def sonarGate   = 'RNU_Gate_UT'
 
@@ -232,34 +236,41 @@ def call(Map pipelineParams)
                         scanProgramName:    it,
                         scanProjectName:    sonarProjectName
                         ])
-                }
+                    
+                    String sonarGateResult = sonarHelper.checkQualityGate()
 
-                String sonarGateResult = sonarHelper.checkQualityGate()
+                    // Evaluate the status of the Quality Gate
+                    if (sonarGateResult != 'OK')
+                    {
+                        echo "Sonar quality gate failure: ${sonarGateResult} \nfor program ${it}"
 
-                // Evaluate the status of the Quality Gate
-                if (sonarGateResult != 'OK')
-                {
-                    echo "Sonar quality gate failure: ${sonarGateResult} \nfor program ${it}"
+                        mailMessageExtension = mailMessageExtension +
+                            "\nGenerated code for program ${it} FAILED the Quality gate ${sonarGate}. \n\nTo review results\n" +
+                            "JUnit reports       : ${BUILD_URL}/testReport/ \n\n" +
+                            "SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}"
 
-                    mailMessageExtension = mailMessageExtension +
-                        "\nGenerated code for program ${it} FAILED the Quality gate ${sonarGate}. \n\nTo review results\n" +
-                        "JUnit reports       : ${BUILD_URL}/testReport/ \n\n" +
-                        "SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}"
+                        listOfFailingComponents.add(it)
+                        componentList.remove(it)
 
-                    listOfFailingComponents.add(it)
-                    componentList.remove(it)
-
-                    pipelineFail            = true                    
-                    programStatusList[it]   = 'FAILED'
+                        pipelineFail            = true                    
+                        programStatusList[it]   = 'FAILED'
+                    }
+                    else
+                    {
+                        mailMessageExtension = mailMessageExtension +
+                            "\nGenerated code for program ${it} PASSED the Quality gate ${sonarGate}. \n\n" +
+                            "SonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}\n\n"
+                        
+                        programStatusList[it] = 'PASSED'
+                    } 
                 }
                 else
                 {
                     mailMessageExtension = mailMessageExtension +
-                        "\nGenerated code for program ${it} PASSED the Quality gate ${sonarGate}. \n\n" +
-                        "SonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}\n\n"
+                        "\nNo Unit Tests were executed for program ${it}, and only the source was be validated. \n\n" +
                     
                     programStatusList[it] = 'PASSED'
-                }   
+                }  
             }
         }
 
