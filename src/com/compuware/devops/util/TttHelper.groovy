@@ -19,22 +19,23 @@ class TttHelper implements Serializable {
         this.script                 = script
         this.steps                  = steps
         this.pConfig                = pConfig
-        this.listOfPrograms         = componentList
         this.listOfExecutedTargets  = []
 
         jclSkeleton     = new JclSkeleton(steps, script.workspace, pConfig.ispwApplication, pConfig.applicationPathNum)
     }
 
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
-    def initialize()
+    def initialize(componentList)
     {
         jclSkeleton.initialize()
 
         // findFiles method requires the "Pipeline Utilities Plugin"
         // Get all testscenario files in the current workspace into an array
-        this.listOfScenarios  = steps.findFiles(glob: '**/*.testscenario')
+        this.listOfScenarios    = steps.findFiles(glob: '**/*.testscenario')
 
         steps.echo "Found Scenarios " + listOfScenarios.toString()
+
+        this.listOfPrograms     = componentList
     }
 
     def loopThruScenarios()

@@ -90,8 +90,7 @@ def initialize(pipelineParams)
     tttHelper   = new   TttHelper(
                             this,
                             steps,
-                            pConfig, 
-                            componentList
+                            pConfig
                         )
 
     sonarHelper = new SonarHelper(this, steps, pConfig)
@@ -129,7 +128,7 @@ def call(Map pipelineParams)
             gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
 
             /* initialize requires the TTT projects to be present in the Jenkins workspace, therefore it can only execute after downloading from GitHub */
-            tttHelper.initialize()  
+            tttHelper.initialize(componentList)  
 
             /* Clean up Code Coverage results from previous run */
             tttHelper.cleanUpCodeCoverageResults()
