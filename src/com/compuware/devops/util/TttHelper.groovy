@@ -86,6 +86,7 @@ class TttHelper implements Serializable {
                 steps.echo "Add Target " + scenarioTarget
             }
         
+        steps.echo "List of Targets " + listOfExecutedTargets.toString()
         return listOfExecutedTargets
 
         }
