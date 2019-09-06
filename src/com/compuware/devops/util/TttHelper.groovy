@@ -87,9 +87,9 @@ class TttHelper implements Serializable {
             }
         
         steps.echo "List of Targets " + listOfExecutedTargets.toString()
-        return listOfExecutedTargets
-
         }
+        
+        return listOfExecutedTargets        
     }
 
     def executeFunctionalTests(String userId, String password)
