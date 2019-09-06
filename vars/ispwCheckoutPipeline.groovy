@@ -82,7 +82,7 @@ def initialize(pipelineParams)
         cesToken = cesTokenTemp
     }
 
-    componentList       = []
+    componentList       = ispwHelper.getComponents(cesToken, pConfig.ispwContainer, pConfig.ispwContainerType)
     sonarProjectList    = []
     messageText         = ''
 }
@@ -98,7 +98,7 @@ def setupSonarProject(String sonarProjectType, String componentName, String sona
         sonarHelper.setQualityGate(sonarProjectGate, sonarProjectName)
 
         sonarHelper.scan([
-            scanType:           'initial', 
+            scanType:           'source', 
             scanProgramName:    componentName,
             scanProjectName:    sonarProjectName
             ])
@@ -117,8 +117,7 @@ def call(Map pipelineParams)
     {
         stage("Initialization")
         {
-            initialize(pipelineParams)
-            componentList   = ispwHelper.getComponents(cesToken, pConfig.ispwContainer, pConfig.ispwContainerType)
+            initialize(pipelineParams)            
         }
 
         stage("Download Assignment Sources")

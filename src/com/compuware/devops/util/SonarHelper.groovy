@@ -47,7 +47,7 @@ class SonarHelper implements Serializable {
 
         switch(scanType)
         {
-            case 'initial':
+            case 'source':
                 break;
             case "UT":
                 scanTestPath        = 'tests\\' + scanProgramName + '_Unit_Tests'

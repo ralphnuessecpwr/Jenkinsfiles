@@ -13,11 +13,12 @@ class TttHelper implements Serializable {
     def listOfSources
     def listOfPrograms 
 
-    TttHelper(script, steps, pConfig) 
+    TttHelper(script, steps, pConfig, componentList) 
     {
-        this.script     = script
-        this.steps      = steps
-        this.pConfig    = pConfig
+        this.script         = script
+        this.steps          = steps
+        this.pConfig        = pConfig
+        this.listOfPrograms = componentList
 
         jclSkeleton     = new JclSkeleton(steps, script.workspace, pConfig.ispwApplication, pConfig.applicationPathNum)
     }
@@ -32,24 +33,6 @@ class TttHelper implements Serializable {
         this.listOfScenarios  = steps.findFiles(glob: '**/*.testscenario')
 
         steps.echo "Found Scenarios " + listOfScenarios.toString()
-
-        // Get all Cobol Sources in the MF_Source folder into an array 
-        this.listOfSources       = steps.findFiles(glob: "**/${pConfig.ispwApplication}/${pConfig.mfSourceFolder}/*.cbl")
-
-        steps.echo "Found Sources " + listOfSources.toString()
-
-        // Define a empty array for the list of programs
-        this.listOfPrograms      = []
-
-        // Determine program names for each source member
-        listOfSources.each
-        {
-            // The split method uses regex to search for patterns, therefore
-            // Backslashes, Dots and Underscores which mean certain patterns in regex need to be escaped 
-            // The backslash in Windows paths is duplicated in Java, therefore it need to be escaped twice
-            // Trim ./cbl from the Source members to populate the array of program names
-            listOfPrograms.add(it.name.trim().split("\\.")[0])
-        }
     }
 
     def loopThruScenarios()

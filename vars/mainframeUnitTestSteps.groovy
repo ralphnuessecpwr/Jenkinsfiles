@@ -21,6 +21,7 @@ SonarHelper     sonarHelper
 
 String          mailMessageExtension
 String          cesToken
+def             componentList
 def             programStatusList
 
 def initialize(pipelineParams)
@@ -83,10 +84,13 @@ def initialize(pipelineParams)
                             pConfig
                         )
 
+    componentList           = ispwHelper.getComponents(cesToken, pConfig.ispwContainer, pConfig.ispwContainerType)
+
     tttHelper   = new   TttHelper(
                             this,
                             steps,
-                            pConfig
+                            pConfig, 
+                            componentList
                         )
 
     sonarHelper = new SonarHelper(this, steps, pConfig)
@@ -155,7 +159,6 @@ def call(Map pipelineParams)
             ispwHelper.downloadCopyBooks(workspace)            
 
             def sonarProjectName
-            def componentList    = ispwHelper.getComponents(cesToken, pConfig.ispwContainer, pConfig.ispwContainerType)
 
             componentList.each
             {
@@ -191,7 +194,15 @@ def call(Map pipelineParams)
                 }   
             }
         }
+
+        stage("Send Notifications")
+        {
+            emailext subject:       '$DEFAULT_SUBJECT',
+                        body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,
+                        replyTo:    '$DEFAULT_REPLYTO',
+                        to:         "${pConfig.mailRecipient}"
+        }
     }
 
-    return [pipelineResult: currentBuild.result, pipelineMailText: mailMessageExtension, pipelineConfig: pConfig, pipelineProgramStatusList: programStatusList]
+    //return [pipelineResult: currentBuild.result, pipelineMailText: mailMessageExtension, pipelineConfig: pConfig, pipelineProgramStatusList: programStatusList]
 }
