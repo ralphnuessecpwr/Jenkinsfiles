@@ -29,13 +29,7 @@ class TttHelper implements Serializable {
     {
         jclSkeleton.initialize()
 
-        // findFiles method requires the "Pipeline Utilities Plugin"
-        // Get all testscenario files in the current workspace into an array
-        this.listOfScenarios    = steps.findFiles(glob: '**/*.testscenario')
-
-        steps.echo "Found Scenarios " + listOfScenarios.toString()
-
-        this.listOfPrograms     = componentList
+        listOfPrograms     = componentList
     }
 
     def loopThruScenarios()
@@ -44,8 +38,11 @@ class TttHelper implements Serializable {
         // In that case execte the scenarios in a loop and add the component to the list of executed targets
         listOfPrograms.each
         {
+            def programName = it
             // Search for any .testscenario file that contains the component name as part of its name
-            listOfScenarios         = steps.findFiles(glob: '**/'+ it + '*.testscenario')
+            listOfScenarios = steps.findFiles(glob: '**/'+ it + '*.testscenario')
+
+            steps.echo "Found scenarios " + listOfScenarios.toString()
 
             listOfScenarios.each
             {
@@ -55,7 +52,7 @@ class TttHelper implements Serializable {
                 def jclFolder           = script.workspace + "\\" + projectName + '\\Unit Test\\JCL'                // Path containing Runner.jcl
                 def scenarioFullName    = it.name                                                                   // Get the full name of the testscenario file i.e. "name.testscenario"
                 def scenarioName        = it.name.trim().split("\\.")[0]                                            // Get the name of the scenario file without ".testscenario"
-                def scenarioTarget      = scenarioName.split("\\_")[0]                                              // Target Program will be the first part of the scenario name (convention)
+                //def scenarioTarget      = scenarioName.split("\\_")[0]                                              // Target Program will be the first part of the scenario name (convention)
         
                 // Log which 
                 steps.echo "*************************\n"    +
@@ -84,7 +81,7 @@ class TttHelper implements Serializable {
                         useStubs:       true                                    // (true|false) - Execute with or without stubs
                 ])   
 
-                listOfExecutedTargets.add(scenarioTarget)                
+                listOfExecutedTargets.add(programName)
             }
         }
         
