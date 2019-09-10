@@ -119,35 +119,62 @@ private initialize(pipelineParams)
 /* private method to build the report (mail content) at the end of execution */
 private buildReport(componentStatusList)
 {
-    def failMessage             =   "\nThe program FAILED the Quality gate <sonarGate>. An attempt to promote the component will not be successful." +
+    def failMessage             =   "\nThe program FAILED the Quality gate <sonarGate>, and will be regressed." +
                                     "\nTo review results" +
                                     "\n\n- JUnit reports       : ${BUILD_URL}/testReport/" +
                                     "\n\n- SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
-                                    "\n\nThe component will be regressed."
                                     "\n\n"
 
-    def passMessage             =   "\nThe program PASSED the Quality gate <sonarGate> and may be promoted." +
+    def passMessage             =   "\nThe program PASSED the Quality gate <sonarGate> and may reside in QA." +
                                     "\n\nSonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
                                     "\n\n"
 
     def mailMessageExtension = '\nDETAIL REPORTS' +
-        "\n\nSOURCE SCANS"
+        "\n\nPrograms FAILING Quality Gates"
 
     componentStatusList.each
     {
         def componentMessage
 
-        mailMessageExtension = mailMessageExtension + "\n\nProgram ${it.key}: "
-
-        if(it.value.sourceStatus == 'FAIL') 
+        if(it.value.status == 'FAIL')
         {
+            mailMessageExtension = mailMessageExtension + "\n\nProgram ${it.key}: "
+
+            if(it.value.utStatus == 'UNKNOWN')
+            {
+                mailMessageExtension = mailMessageExtension + "\n\nNo unit tests were found. Only the source scan was taken into consideration."
+            }
+            else
+            {
+                mailMessageExtension = mailMessageExtension + "\n\nUnit tests were found and executed."
+            }
+
             componentMessage    = failMessage.replace('<sonarGate>', it.value.sonarGate)
             componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
 
             mailMessageExtension = mailMessageExtension + componentMessage
         }
-        else
+    }
+
+    mailMessageExtension = mailMessageExtension + "\n\nPrograms PASSING Quality Gates"
+
+    componentStatusList.each
+    {
+        def componentMessage
+
+        if(it.value.status == 'PASS')
         {
+            mailMessageExtension = mailMessageExtension + "\n\nProgram ${it.key}: "
+
+            if(it.value.utStatus == 'UNKNOWN')
+            {
+                mailMessageExtension = mailMessageExtension + "\n\nNo unit tests were found. Only the source scan was taken into consideration."
+            }
+            else
+            {
+                mailMessageExtension = mailMessageExtension + "\n\nUnit tests were found and executed."
+            }
+
             componentMessage    = passMessage.replace('<sonarGate>', it.value.sonarGate)
             componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
 
@@ -155,41 +182,6 @@ private buildReport(componentStatusList)
         }
     }
 
-    mailMessageExtension = mailMessageExtension + 
-            "\n\nUNIT TESTS"
-
-    componentStatusList.each
-    {
-        def componentMessage
-
-        mailMessageExtension = mailMessageExtension + "\n\nProgram ${it.key}: "
-
-        switch(it.value.utStatus) 
-        {
-            case 'FAIL':
-                componentMessage    = failMessage.replace('<sonarGate>', it.value.sonarGate)
-                componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
-
-                mailMessageExtension = mailMessageExtension +
-                    "\n\nUnit tests were found and executed." + 
-                    componentMessage
-            break
-
-            case 'PASS':
-                componentMessage    = passMessage.replace('<sonarGate>', it.value.sonarGate)
-                componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
-
-                mailMessageExtension = mailMessageExtension +
-                    "\n\nUnit tests were found and executed." + 
-                    componentMessage
-            break
-
-            case 'UNKNOWN':
-                mailMessageExtension = mailMessageExtension + 
-                    "\n\nNo unit tests were found. Only the source scan was taken into consideration."
-            break
-        }
-    }
     return mailMessageExtension
 }
 
