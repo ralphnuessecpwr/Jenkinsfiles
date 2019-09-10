@@ -55,10 +55,8 @@ class TttHelper implements Serializable {
                 //def scenarioTarget      = scenarioName.split("\\_")[0]                                              // Target Program will be the first part of the scenario name (convention)
         
                 // Log which 
-                steps.echo "*************************\n"    +
-                    "Scenario " + scenarioFullName + '\n'   +
-                    "Path " + scenarioPath + '\n'           +
-                    "Project " + projectName + '\n'         +
+                steps.echo "*************************\n"        +
+                    "Execute Scenario ${scenarioFullName}\n"    +
                     "*************************"
             
                 def jclJobCardPath = jclFolder + '\\JobCard.jcl' 

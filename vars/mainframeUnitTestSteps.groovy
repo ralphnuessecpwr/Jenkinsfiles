@@ -120,11 +120,9 @@ private initialize(pipelineParams)
                             pConfig
                         )
 
-    // Instantiate and initialize the TTT Helper
+    // Instantiate and initialize the Sonar Helper
     sonarHelper = new SonarHelper(this, steps, pConfig)
     sonarHelper.initialize()
-
-    programStatusList       = [:]
 }
 
 /* private method to build the report (mail content) at the end of execution */

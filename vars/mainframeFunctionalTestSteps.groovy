@@ -13,21 +13,24 @@ import com.compuware.devops.util.*
 /**
  Helper Methods for the Pipeline Script
 */
-PipelineConfig  pConfig
-GitHelper       gitHelper
-IspwHelper      ispwHelper
-TttHelper       tttHelper
-SonarHelper     sonarHelper 
-XlrHelper       xlrHelper
+PipelineConfig  pConfig         // Pipeline configuration parameters
+GitHelper       gitHelper       // Helper class for interacting with git and GitHub
+IspwHelper      ispwHelper      // Helper class for interacting with ISPW
+TttHelper       tttHelper       // Helper class for interacting with Topaz for Total Test
+SonarHelper     sonarHelper     // Helper class for interacting with SonarQube
 
-String          mailMessageExtension
-String          cesToken
-def             componentList
-def             listOfExecutedTargets
-def             programStatusList
-def             pipelinePass
+def             componentList           // List of components in the triggering set
+def             componentStatusList     // List/Map of comonents and their corresponding componentStatus
+                                        //  each entry will be of the for [componentName:componentStatus]
+                                        //  with componentStatus being an instance of ComponentStatus
+                                        //  to get to a status value use
+                                        //  componentStatusList[componentName].value.<property>
+                                        //  with <property> being one of the properties of a ComponentStatus
 
-def initialize(pipelineParams)
+def             listOfExecutedTargets   // List of program names for which unit tests have been found and executed
+String          cesToken                // Clear text token from CES
+
+private initialize(pipelineParams)
 {
     pipelinePass = true
 
@@ -37,9 +40,10 @@ def initialize(pipelineParams)
         deleteDir()
     }
 
-    def mailListlines
     /* Read list of mailaddresses from "private" Config File */
     /* The configFileProvider creates a temporary file on disk and returns its path as variable */
+    def mailListlines
+
     configFileProvider(
         [
             configFile(
@@ -59,6 +63,7 @@ def initialize(pipelineParams)
         mailListlines = mailConfigFile.readLines()
     }
 
+    // Instantiate and initialize Pipeline Configuration settings
     pConfig     = new   PipelineConfig(
                             steps, 
                             workspace,
@@ -68,15 +73,19 @@ def initialize(pipelineParams)
 
     pConfig.initialize()                                            
 
+    // Instantiate and initialize Git Helper
     gitHelper   = new   GitHelper(
                             steps
                         )
 
+    // Use Jenkins Credentials Provider plugin to retrieve GitHub userid and password from gitCredentials token before intializing the Git Helper
     withCredentials([usernamePassword(credentialsId: "${pConfig.gitCredentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]) 
     {
         gitHelper.initialize(gitPassword, gitUsername, pConfig.ispwOwner, pConfig.mailRecipient)
     }
 
+    // Use Jenkins Credentials Provider plugin to retrieve CES token in clear text from the Jenkins token for the CES token
+    // The clear text token is needed for native http REST requests against the ISPW API
     withCredentials(
         [string(credentialsId: "${pConfig.cesTokenId}", variable: 'cesTokenTemp')]
     ) 
@@ -84,6 +93,7 @@ def initialize(pipelineParams)
         cesToken = cesTokenTemp
     }
 
+    // Instanatiate and initialize the ISPW Helper
     ispwHelper  = new   IspwHelper(
                             steps, 
                             pConfig
@@ -91,27 +101,93 @@ def initialize(pipelineParams)
 
     componentList           = ispwHelper.getComponents(cesToken, pConfig.ispwContainer, pConfig.ispwContainerType)
 
-    componentStatusList     = [:]
+    // Build list of status for each component
+    componentStatusList = [:]
 
     componentList.each
     {
-        componentStatusList[it]                 = [:]
-        componentStatusList[it]['sourceStatus'] = 'UNKNOWN'
-        componentStatusList[it]['utStatus']     = 'UNKNOWN'
-        componentStatusList[it]['ftStatus']     = 'UNKNOWN'
+        ComponentStatus componentStatus = new ComponentStatus()
+        
+        componentStatusList[it] = componentStatus
     }
 
+    // Instantiate the TTT Helper - initialization will happen at a later point
     tttHelper   = new   TttHelper(
                             this,
                             steps,
                             pConfig
                         )
 
+    // Instantiate and initialize the Sonar Helper
     sonarHelper = new SonarHelper(this, steps, pConfig)
     sonarHelper.initialize()
+}
 
-    mailMessageExtension    = ''
-    programStatusList       = [:]
+/* private method to build the report (mail content) at the end of execution */
+private buildReport(componentStatusList)
+{
+    def failMessage             =   "\nThe program FAILED the Quality gate <sonarGate>. An attempt to promote the component will not be successful." +
+                                    "\nTo review results" +
+                                    "\n\n- JUnit reports       : ${BUILD_URL}/testReport/" +
+                                    "\n\n- SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
+                                    "\n\n"
+
+    def passMessage             =   "\nThe program PASSED the Quality gate <sonarGate> and may be promoted." +
+                                    "\n\nSonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
+                                    "\n\n"
+
+    def mailMessageExtension = '\nDETAIL REPORTS' + '\n\nUNIT TEST RESULTS\n'
+
+    componentStatusList.each
+    {
+        def componentMessage
+
+        mailMessageExtension = mailMessageExtension + "\nProgram ${it.key}: "
+
+        switch(it.value.utStatus) 
+        {
+            case 'FAIL':
+                componentMessage    = failMessage.replace('<sonarGate>', it.value.sonarGate)
+                componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
+
+                mailMessageExtension = mailMessageExtension +
+                    "Unit tests were found and executed." + 
+                    componentMessage
+            break
+
+            case 'PASS':
+                componentMessage    = passMessage.replace('<sonarGate>', it.value.sonarGate)
+                componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
+
+                mailMessageExtension = mailMessageExtension +
+                    "Unit tests were found and executed." + 
+                    componentMessage
+            break
+
+            case 'UNKNOWN':
+                mailMessageExtension = mailMessageExtension + 
+                    "No unit tests were found. Only the source scan was taken into consideration."
+                
+                if(it.value.sourceStatus == 'FAIL')
+                {
+                    componentMessage    = failMessage.replace('<sonarGate>', it.value.sonarGate)
+                    componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
+
+                    mailMessageExtension = mailMessageExtension +
+                        componentMessage
+                }
+                else
+                {
+                    componentMessage    = passMessage.replace('<sonarGate>', it.value.sonarGate)
+                    componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
+
+                    mailMessageExtension = mailMessageExtension +
+                        componentMessage
+                }
+            break
+        }
+    }
+    return mailMessageExtension
 }
 
 /**
@@ -138,29 +214,16 @@ def call(Map pipelineParams)
         {
             ispwHelper.downloadCopyBooks(workspace)            
 
-            mailMessageExtension = mailMessageExtension + "\n\nINITIAL SOURCE SCAN RESULTS\n"
-
             componentStatusList = sonarHelper.scanSources(componentList, componentStatusList)
-            
+
+            // if a component fails the source scan it should not be considered for unit testing            
             componentStatusList.each
             {
-                if (it.value['sourceStatus'] == 'FAIL')
+                if (it.value.sourceStatus == 'FAIL')
                 {
-                    echo "Sonar quality gate failure: ${sonarGateResult} \nfor program ${it}"
-
-                    mailMessageExtension = mailMessageExtension +
-                        "\nGenerated code for program ${it} FAILED the Quality gate ${sonarGate}. \n\nTo review results\n" +
-                        "SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}"
-
                     componentList.remove(it)
                     pipelinePass = false
                 }
-                else
-                {
-                    mailMessageExtension = mailMessageExtension +
-                        "\nGenerated code for program ${it} PASSED the Quality gate ${sonarGate}. \n\n" +
-                        "SonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}\n\n"
-                }   
             }
         }
 
@@ -204,31 +267,12 @@ def call(Map pipelineParams)
         */ 
         stage("Check Unit Test Quality Gate") 
         {
-            def sonarProjectName
-            mailMessageExtension    = mailMessageExtension + "\n\nUNIT TEST RESULTS\n"
-
             componentStatusList = sonarHelper.scanUt(componentList, componentStatusList, listOfExecutedTargets)
 
             componentStatusList.each
             {
-                if (it.value['utStatus'] == 'FAIL')
-                {
-                    echo "Sonar quality gate failure: ${sonarGateResult} for program ${it}"
-
-                    mailMessageExtension = mailMessageExtension +
-                        "\nGenerated code for program ${it} FAILED the Quality gate ${sonarGate}. \n\nTo review results\n" +
-                        "JUnit reports       : ${BUILD_URL}/testReport/ \n\n" +
-                        "SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}"
-
-                    componentList.remove[it]
-                    pipelinePass = false
-                }
-                else
-                {
-                    mailMessageExtension = mailMessageExtension +
-                        "\nGenerated code for program ${it} PASSED the Quality gate ${sonarGate}. \n\n" +
-                        "SonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}\n\n"
-                } 
+                componentList.remove[it]
+                pipelinePass = false
             }
 
             /*
@@ -250,19 +294,11 @@ def call(Map pipelineParams)
             }
             else
             {
-                mailMessageExtension = mailMessageExtension +
-                    "\n\n\nFINAL RESULTS\n\nInitial scans or unit tests failed. The pipeline will be aborted, and the following components will be regressed: \n\n"
-
                 componentStatusList.each
                 {
-                    if(
-                        it.value['sourceStatus']    == 'FAIL' ||
-                        it.value['utStatus']        == 'FAIL'
-                    )
+                    if(it.value.status == 'FAIL')
 
                     ispwHelper.regressTask(it, cesToken)
-                    mailMessageExtension = mailMessageExtension +
-                        it + "\n"
                 }
             }
         }
@@ -288,5 +324,4 @@ def call(Map pipelineParams)
             currentBuild.result = 'FAILURE'
         }
     }
-    //return [pipelineResult: currentBuild.result, pipelineMailText: mailMessageExtension, pipelineConfig: pConfig, pipelineProgramStatusList: programStatusList]
 }

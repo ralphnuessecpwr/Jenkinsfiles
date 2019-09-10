@@ -43,7 +43,8 @@ class SonarHelper implements Serializable {
             def sonarGate                           = 'RNU_Gate_Source'
             def scanType                            = 'source'
             
-            internalStatusList[it]['sourceStatus']  = scanComponent(it, sonarProjectType, sonarGate, scanType)
+            internalStatusList[it].sourceStatus = scanComponent(it, sonarProjectType, sonarGate, scanType)
+            internalStatusList[it].status       = internalStatusList[it].sourceStatus
         }
 
         return internalStatusList
