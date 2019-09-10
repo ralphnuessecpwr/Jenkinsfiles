@@ -22,8 +22,8 @@ SonarHelper     sonarHelper
 String          mailMessageExtension
 String          cesToken
 def             componentList
+def             componentStatusList
 def             listOfExecutedTargets
-def             programStatusList
 
 def initialize(pipelineParams)
 {
@@ -86,6 +86,11 @@ def initialize(pipelineParams)
                         )
 
     componentList           = ispwHelper.getComponents(cesToken, pConfig.ispwContainer, pConfig.ispwContainerType)
+
+    componentList.each
+    {
+        componentStatusList[it] = 'UNKNOWN'
+    }
 
     tttHelper   = new   TttHelper(
                             this,
@@ -158,41 +163,11 @@ def call(Map pipelineParams)
         {
             ispwHelper.downloadCopyBooks(workspace)            
 
-            def sonarProjectName
+            componentStatusList = sonarHelper.scanUt(componentList, componentStatusList, listOfExecutedTargets)
 
-            componentList.each
+            componentStatusList.each
             {
-                def scanType
-                def sonarGate
-
-                sonarProjectName = sonarHelper.determineProjectName('UT', it)
-
-                // Check if the component had unit tests
-                // In that case scan with unit test results
-                // Otherwise only scan the source
-                if(listOfExecutedTargets.contains(it))
-                {
-                    scanType    = 'UT'
-                    sonarGate   = 'RNU_Gate_UT'
-                }
-                else
-                {
-                    scanType    = 'source'
-                    sonarGate   = 'RNU_Gate_Source'
-                }
-
-                sonarHelper.setQualityGate(sonarGate, sonarProjectName)
-
-                sonarHelper.scan([
-                    scanType:           scanType, 
-                    scanProgramName:    it,
-                    scanProjectName:    sonarProjectName
-                    ])
-
-                String sonarGateResult = sonarHelper.checkQualityGate()
-
-                // Evaluate the status of the Quality Gate
-                if (sonarGateResult != 'OK')
+                if(it.value['utStatus'] == 'FAIL')
                 {
                     echo "Sonar quality gate failure: ${sonarGateResult} \nfor program ${it}"
 
@@ -200,16 +175,12 @@ def call(Map pipelineParams)
                         "\nGenerated code for program ${it} FAILED the Quality gate ${sonarGate}. \n\nTo review results\n" +
                         "JUnit reports       : ${BUILD_URL}/testReport/ \n\n" +
                         "SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}"
-
-                    programStatusList[it] = 'FAILED'
                 }
                 else
                 {
                     mailMessageExtension = mailMessageExtension +
                         "\nGenerated code for program ${it} PASSED the Quality gate ${sonarGate} and may be promoted. \n\n" +
-                        "SonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}\n\n"
-                    
-                    programStatusList[it] = 'PASSED'
+                        "SonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}\n\n"                    
                 }   
             }
         }
@@ -222,6 +193,4 @@ def call(Map pipelineParams)
                         to:         "${pConfig.mailRecipient}"
         }
     }
-
-    //return [pipelineResult: currentBuild.result, pipelineMailText: mailMessageExtension, pipelineConfig: pConfig, pipelineProgramStatusList: programStatusList]
 }

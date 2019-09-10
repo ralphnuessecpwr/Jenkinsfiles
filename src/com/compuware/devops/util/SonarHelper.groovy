@@ -25,13 +25,92 @@ class SonarHelper implements Serializable {
         this.scannerHome    = steps.tool "${pConfig.sqScannerName}";
     }
 
+    /* Method soon to be removed */
     def scan()
     {
         def testResults = determineUtResultPath()
 
         runScan(testResults, script.JOB_NAME)
     }
-    
+
+    def scanSources(componentList, componentStatusList)
+    {
+        def internalStatusList = [:]
+
+        componentList.each
+        {
+            def sonarProjectType                    = 'UT'
+            def sonarGate                           = 'RNU_Gate_Source'
+            def scanType                            = 'source'
+            
+            internalStatusList[it]['sourceStatus']  = scanComponent(it, sonarProjectType, sonarGate, scanType)
+        }
+
+        return internalStatusList
+    }
+
+    def scanUt(componentList, componentStatusList, listOfExecutedTargets)
+    {
+        def internalStatusList = [:]
+
+        componentList.each
+        {
+            def sonarProjectType    = 'UT'
+            def scanType            = 'none'
+            def sonarGate
+
+            if(listOfExecutedTargets.contains(it))
+            {
+                scanType    = 'UT'
+                sonarGate   = 'RNU_Gate_UT'
+            }
+            else
+            {
+                if(componentStatusList[it] = 'UNKNOWN')
+                {
+                    scanType    = 'source'
+                    sonarGate   = 'RNU_Gate_Source'
+                }
+            }
+
+            if(scanType != 'none')
+            {
+                internalStatusList[it]['ftStatus'] = scanComponent(it, sonarProjectType, sonarGate, scanType)                
+            }
+        }
+
+        return internalStatusList
+    }
+
+    def scanComponent(component, sonarProjectType, sonarGate, scanType)
+    {
+        def status = ''
+
+        def sonarProjectName = determineProjectName(sonarProjectType, component)
+
+        setQualityGate(sonarGate, sonarProjectName)
+
+        scan([
+            scanType:           scanType, 
+            scanProgramName:    component,
+            scanProjectName:    sonarProjectName
+            ])
+
+        String sonarGateResult = checkQualityGate()
+
+        if (sonarGateResult != 'OK')
+        {
+            status = 'FAIL'
+        }
+        else
+        {
+            status = 'PASS'
+        }   
+
+        return status 
+    }
+
+    /* Method soon to be the only one available */
     def scan(Map scanParms)
     {
         def scanType            = ''
@@ -86,7 +165,7 @@ class SonarHelper implements Serializable {
             // Building suffixes for main sources
             def sourceSuffixes          = " -Dsonar.cobol.file.suffixes=cbl"
             
-            // Add parameters if tests and test result paths were passed as well
+            // Add parameters if tests and test result paths were PASS as well
             if(testPath != '' && testResultPath != '')
             {
                 sqScannerProperties     = sqScannerProperties + " -Dsonar.tests=${testPath} -Dsonar.testExecutionReportPaths=${testResultPath}"
@@ -94,7 +173,7 @@ class SonarHelper implements Serializable {
                 sourceSuffixes          = sourceSuffixes + ",testsuite,testscenario,stub"
             }
 
-            // Add parameters if code coverage paths were passed as well
+            // Add parameters if code coverage paths were PASS as well
             if(coveragePath != '')
             {
                 sqScannerProperties       = sqScannerProperties + " -Dsonar.coverageReportPaths=${coveragePath}"
