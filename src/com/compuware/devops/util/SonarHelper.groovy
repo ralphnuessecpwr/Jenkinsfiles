@@ -111,8 +111,6 @@ class SonarHelper implements Serializable {
             status = 'PASS'
         }   
 
-        steps.echo "Return Status " + status
-
         return status 
     }
 

@@ -173,18 +173,18 @@ def call(Map pipelineParams)
             {
                 if(it.value.utStatus == 'FAIL')
                 {
-                    echo 'Sonar quality gate failure: ' + it.value.status + ' \nfor program' + it.key
+                    echo 'Sonar quality gate failure: ' + it.value.status + ' for program ' + it.key
 
                     mailMessageExtension = mailMessageExtension +
-                        "\nGenerated code for program ${it.key} FAILED the Quality gate" + it.value.sonarGate + ". \n\nTo review results\n" +
+                        "\nGenerated code for program ${it.key} FAILED the Quality gate " + it.value.sonarGate + ". \n\nTo review results\n" +
                         "JUnit reports       : ${BUILD_URL}/testReport/ \n\n" //+
-                        //"SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}"
+                        "SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=${it.value.sonarProject}"
                 }
                 else
                 {
                     mailMessageExtension = mailMessageExtension +
-                        "\nGenerated code for program ${it.key} PASSED the Quality gate" + it.value.sonarGate + "and may be promoted. \n\n" //+
-                        //"SonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}\n\n"                    
+                        "\nGenerated code for program ${it.key} PASSED the Quality gate " + it.value.sonarGate + " and may be promoted. \n\n" //+
+                        "SonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=${it.value.sonarProject}\n\n"                    
                 }   
             }
         }
