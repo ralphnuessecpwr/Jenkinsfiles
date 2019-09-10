@@ -35,7 +35,7 @@ class SonarHelper implements Serializable {
 
     def scanSources(componentList, componentStatusList)
     {
-        def internalStatusList
+        def internalStatusList = componentStatusList
 
         componentList.each
         {
@@ -51,7 +51,7 @@ class SonarHelper implements Serializable {
 
     def scanUt(componentList, componentStatusList, listOfExecutedTargets)
     {
-        def internalStatusList
+        def internalStatusList = componentStatusList
 
         componentList.each
         {
