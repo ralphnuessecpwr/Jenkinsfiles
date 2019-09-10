@@ -87,8 +87,11 @@ def initialize(pipelineParams)
 
     componentList           = ispwHelper.getComponents(cesToken, pConfig.ispwContainer, pConfig.ispwContainerType)
 
+    componentStatusList     = [:]
+
     componentList.each
     {
+        componentStatusList[it]                 = [:]
         componentStatusList[it]['sourceStatus'] = 'UNKNOWN'
         componentStatusList[it]['utStatus']     = 'UNKNOWN'
         componentStatusList[it]['ftStatus']     = 'UNKNOWN'
