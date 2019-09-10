@@ -89,7 +89,9 @@ def initialize(pipelineParams)
 
     componentList.each
     {
-        componentStatusList[it] = 'UNKNOWN'
+        componentStatusList[it]['sourceStatus'] = 'UNKNOWN'
+        componentStatusList[it]['utStatus']     = 'UNKNOWN'
+        componentStatusList[it]['ftStatus']     = 'UNKNOWN'
     }
 
     tttHelper   = new   TttHelper(

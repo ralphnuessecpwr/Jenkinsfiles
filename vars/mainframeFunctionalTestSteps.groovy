@@ -141,7 +141,7 @@ def call(Map pipelineParams)
             
             componentStatusList.each
             {
-                if (it.value == 'FAIL')
+                if (it.value['sourceStatus'] == 'FAIL')
                 {
                     echo "Sonar quality gate failure: ${sonarGateResult} \nfor program ${it}"
 
@@ -208,7 +208,7 @@ def call(Map pipelineParams)
 
             componentStatusList.each
             {
-                if (it.value == 'FAIL')
+                if (it.value['utStatus'] == 'FAIL')
                 {
                     echo "Sonar quality gate failure: ${sonarGateResult} for program ${it}"
 

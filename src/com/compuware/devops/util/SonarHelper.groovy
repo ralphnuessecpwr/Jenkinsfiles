@@ -35,7 +35,7 @@ class SonarHelper implements Serializable {
 
     def scanSources(componentList, componentStatusList)
     {
-        def internalStatusList = [:]
+        def internalStatusList
 
         componentList.each
         {
@@ -51,7 +51,7 @@ class SonarHelper implements Serializable {
 
     def scanUt(componentList, componentStatusList, listOfExecutedTargets)
     {
-        def internalStatusList = [:]
+        def internalStatusList
 
         componentList.each
         {
@@ -66,7 +66,7 @@ class SonarHelper implements Serializable {
             }
             else
             {
-                if(componentStatusList[it] = 'UNKNOWN')
+                if(componentStatusList[it]['sourceStatus'] == 'UNKNOWN')
                 {
                     scanType    = 'source'
                     sonarGate   = 'RNU_Gate_Source'
