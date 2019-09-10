@@ -91,10 +91,9 @@ def initialize(pipelineParams)
 
     componentList.each
     {
-        componentStatusList[it]                 = [:]
-        componentStatusList[it]['sourceStatus'] = 'UNKNOWN'
-        componentStatusList[it]['utStatus']     = 'UNKNOWN'
-        componentStatusList[it]['ftStatus']     = 'UNKNOWN'
+        ComponentStatus componentStatus = new ComponentStatus()
+        
+        componentStatusList[it] = componentStatus
     }
 
     tttHelper   = new   TttHelper(
@@ -172,20 +171,20 @@ def call(Map pipelineParams)
 
             componentStatusList.each
             {
-                if(it.value['utStatus'] == 'FAIL')
+                if(it.value.utStatus == 'FAIL')
                 {
-                    echo "Sonar quality gate failure: ${sonarGateResult} \nfor program ${it}"
+                    echo 'Sonar quality gate failure: ' + it.value.status + ' \nfor program' + it.key
 
                     mailMessageExtension = mailMessageExtension +
-                        "\nGenerated code for program ${it} FAILED the Quality gate ${sonarGate}. \n\nTo review results\n" +
-                        "JUnit reports       : ${BUILD_URL}/testReport/ \n\n" +
-                        "SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}"
+                        "\nGenerated code for program ${it.key} FAILED the Quality gate" + it.value.sonarGate + ". \n\nTo review results\n" +
+                        "JUnit reports       : ${BUILD_URL}/testReport/ \n\n" //+
+                        //"SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}"
                 }
                 else
                 {
                     mailMessageExtension = mailMessageExtension +
-                        "\nGenerated code for program ${it} PASSED the Quality gate ${sonarGate} and may be promoted. \n\n" +
-                        "SonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}\n\n"                    
+                        "\nGenerated code for program ${it.key} PASSED the Quality gate" + it.value.sonarGate + "and may be promoted. \n\n" //+
+                        //"SonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=${sonarProjectName}\n\n"                    
                 }   
             }
         }

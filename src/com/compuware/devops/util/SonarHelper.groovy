@@ -14,15 +14,15 @@ class SonarHelper implements Serializable {
 
     SonarHelper(script, steps, pConfig) 
     {
-        this.script                         = script
-        this.steps                          = steps
-        this.pConfig                        = pConfig
+        this.script     = script
+        this.steps      = steps
+        this.pConfig    = pConfig
     }
 
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
     def initialize()
     {
-        this.scannerHome    = steps.tool "${pConfig.sqScannerName}";
+        this.scannerHome    = steps.tool "${pConfig.sqScannerName}"
     }
 
     /* Method soon to be removed */
@@ -59,23 +59,28 @@ class SonarHelper implements Serializable {
             def scanType            = 'none'
             def sonarGate
 
+            // If unit tests were executed we scan test results
             if(listOfExecutedTargets.contains(it))
             {
                 scanType    = 'UT'
                 sonarGate   = 'RNU_Gate_UT'
+                
+                internalStatusList[it].utStatus  = scanComponent(it, sonarProjectType, sonarGate, scanType)
+                internalStatusList[it].status    = internalStatusList[it].utStatus
+                internalStatusList[it].sonarGate = sonarGate
             }
+            // Else we scan sources only
             else
             {
-                if(componentStatusList[it]['sourceStatus'] == 'UNKNOWN')
+                if(internalStatusList[it].sourceStatus == 'UNKNOWN')
                 {
                     scanType    = 'source'
                     sonarGate   = 'RNU_Gate_Source'
-                }
-            }
 
-            if(scanType != 'none')
-            {
-                internalStatusList[it]['ftStatus'] = scanComponent(it, sonarProjectType, sonarGate, scanType)                
+                    internalStatusList[it].sourceStatus = scanComponent(it, sonarProjectType, sonarGate, scanType)
+                    internalStatusList[it].status       = internalStatusList[it].sourceStatus
+                    internalStatusList[it].sonarGate    = sonarGate
+                }
             }
         }
 
@@ -84,9 +89,8 @@ class SonarHelper implements Serializable {
 
     def scanComponent(component, sonarProjectType, sonarGate, scanType)
     {
-        def status = ''
-
-        def sonarProjectName = determineProjectName(sonarProjectType, component)
+        def status              = ''
+        def sonarProjectName    = determineProjectName(sonarProjectType, component)
 
         setQualityGate(sonarGate, sonarProjectName)
 
@@ -106,6 +110,8 @@ class SonarHelper implements Serializable {
         {
             status = 'PASS'
         }   
+
+        steps.echo "Return Status " + status
 
         return status 
     }
@@ -176,7 +182,7 @@ class SonarHelper implements Serializable {
             // Add parameters if code coverage paths were PASS as well
             if(coveragePath != '')
             {
-                sqScannerProperties       = sqScannerProperties + " -Dsonar.coverageReportPaths=${coveragePath}"
+                sqScannerProperties     = sqScannerProperties + " -Dsonar.coverageReportPaths=${coveragePath}"
             }
 
             sqScannerProperties         = sqScannerProperties + sourceSuffixes
@@ -224,7 +230,6 @@ class SonarHelper implements Serializable {
         }
 
         return projectName
-        
     }
 
     private String determineUtResultPath(String programName)
