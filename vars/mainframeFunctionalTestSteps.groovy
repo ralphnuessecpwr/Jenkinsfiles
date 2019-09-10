@@ -119,68 +119,69 @@ private initialize(pipelineParams)
 /* private method to build the report (mail content) at the end of execution */
 private buildReport(componentStatusList)
 {
-    def failMessage             =   "\nThe program FAILED the Quality gate <sonarGate>, and will be regressed." +
+    def componentFailMessage    =   "\nThe program FAILED the Quality gate <sonarGate>, and will be regressed." +
                                     "\nTo review results" +
                                     "\n\n- JUnit reports       : ${BUILD_URL}/testReport/" +
                                     "\n\n- SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
                                     "\n\n"
 
-    def passMessage             =   "\nThe program PASSED the Quality gate <sonarGate> and may reside in QA." +
+    def componentPassMessage    =   "\nThe program PASSED the Quality gate <sonarGate> and may reside in QA." +
                                     "\n\nSonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
                                     "\n\n"
 
-    def mailMessageExtension = '\nDETAIL REPORTS' +
-        "\n\nPrograms FAILING Quality Gates"
+    def reportFailMessage       =   "\n\nPrograms FAILING Quality Gates:"
+    def reportPassMessage       =   "\n\nPrograms PASSING Quality Gates:"
+
+    def mailMessageExtension = '\nDETAIL REPORTS'
 
     componentStatusList.each
     {
-        def componentMessage
+        def failingComponentsMessage = '\n\nNone'
+        def passingComponentsMessage = '\n\nNone'
 
         if(it.value.status == 'FAIL')
         {
-            mailMessageExtension = mailMessageExtension + "\n\nProgram ${it.key}: "
+            failingComponentsMessage = "\n\nProgram ${it.key}: "
 
             if(it.value.utStatus == 'UNKNOWN')
             {
-                mailMessageExtension = mailMessageExtension + "\n\nNo unit tests were found. Only the source scan was taken into consideration."
+                failingComponentsMessage = failingComponentsMessage + "\n\nNo unit tests were found. Only the source scan was taken into consideration."
             }
             else
             {
-                mailMessageExtension = mailMessageExtension + "\n\nUnit tests were found and executed."
+                reportFailMessage = reportFailMessage + "\n\nUnit tests were found and executed."
             }
 
             componentMessage    = failMessage.replace('<sonarGate>', it.value.sonarGate)
             componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
 
-            mailMessageExtension = mailMessageExtension + componentMessage
+            failingComponentsMessage = failingComponentsMessage + componentMessage
         }
-    }
-
-    mailMessageExtension = mailMessageExtension + "\n\nPrograms PASSING Quality Gates"
-
-    componentStatusList.each
-    {
-        def componentMessage
-
-        if(it.value.status == 'PASS')
+        else
         {
-            mailMessageExtension = mailMessageExtension + "\n\nProgram ${it.key}: "
+            passingComponentsMessage = "\n\nProgram ${it.key}: "
 
             if(it.value.utStatus == 'UNKNOWN')
             {
-                mailMessageExtension = mailMessageExtension + "\n\nNo unit tests were found. Only the source scan was taken into consideration."
+                passingComponentsMessage = passingComponentsMessage + "\n\nNo unit tests were found. Only the source scan was taken into consideration."
             }
             else
             {
-                mailMessageExtension = mailMessageExtension + "\n\nUnit tests were found and executed."
+                passingComponentsMessage = passingComponentsMessage + "\n\nUnit tests were found and executed."
             }
 
             componentMessage    = passMessage.replace('<sonarGate>', it.value.sonarGate)
             componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
 
-            mailMessageExtension = mailMessageExtension + componentMessage
+            passingComponentsMessage = passingComponentsMessage + passingComponentsMessage
         }
     }
+
+    mailMessageExtension = mailMessageExtension + 
+        reportFailMessage + 
+        failingComponentsMessage +
+        reportPassMessage +
+        passingComponentsMessage
 
     return mailMessageExtension
 }
