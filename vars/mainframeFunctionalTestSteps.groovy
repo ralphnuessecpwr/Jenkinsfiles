@@ -1,11 +1,4 @@
 #!/usr/bin/env groovy
-import hudson.model.*
-import hudson.EnvVars
-import groovy.json.JsonSlurper
-import groovy.json.JsonBuilder
-import groovy.json.JsonOutput
-import jenkins.plugins.http_request.*
-import java.net.URL
 import com.compuware.devops.config.*
 import com.compuware.devops.jclskeleton.*
 import com.compuware.devops.util.*
@@ -190,6 +183,19 @@ private buildReport(componentStatusList)
     return mailMessageExtension
 }
 
+private checkStatus(componentStatusList)
+{
+    // if a component fails the source scan it should not be considered for unit testing            
+    componentStatusList.each
+    {
+        if (it.value.status == 'FAIL')
+        {
+            componentList.remove(it)
+            pipelinePass = false
+        }
+    }
+}
+
 /**
 Call method to execute the pipeline from a shared library
 @param pipelineParams - Map of paramter/value pairs
@@ -216,15 +222,7 @@ def call(Map pipelineParams)
 
             componentStatusList = sonarHelper.scanSources(componentList, componentStatusList)
 
-            // if a component fails the source scan it should not be considered for unit testing            
-            componentStatusList.each
-            {
-                if (it.value.sourceStatus == 'FAIL')
-                {
-                    componentList.remove(it)
-                    pipelinePass = false
-                }
-            }
+            checkStatus(componentStatusList)
         }
 
         /* Retrieve the Tests from Github that match that ISPWW Stream and Application */
@@ -269,11 +267,7 @@ def call(Map pipelineParams)
         {
             componentStatusList = sonarHelper.scanUt(componentList, componentStatusList, listOfExecutedTargets)
 
-            componentStatusList.each
-            {
-                componentList.remove[it]
-                pipelinePass = false
-            }
+            checkStatus(componentStatusList)
 
             /*
                 else
