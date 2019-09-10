@@ -40,26 +40,28 @@ class TttHelper implements Serializable {
 
     def loopThruScenarios()
     {
-        // Loop through all downloaded Topaz for Total Test scenarios
-        listOfScenarios.each
+        // Loop through list of programs/components and determine if there are testscenarios available
+        // In that case execte the scenarios in a loop and add the component to the list of executed targets
+        listOfPrograms.each
         {
-            // Get root node of the path, i.e. the name of the Total Test project
-            def scenarioPath        = it.path // Fully qualified name of the Total Test Scenario file
-            def projectName         = it.path.trim().split("\\\\")[0] + "\\"+ it.path.trim().split("\\\\")[1]  // Total Test Project name is the root folder of the full path to the testscenario 
-            def jclFolder           = script.workspace + "\\" + projectName + '\\Unit Test\\JCL'   // Path containing Runner.jcl
-            def scenarioFullName    = it.name  // Get the full name of the testscenario file i.e. "name.testscenario"
-            def scenarioName        = it.name.trim().split("\\.")[0]  // Get the name of the scenario file without ".testscenario"
-            def scenarioTarget      = scenarioName.split("\\_")[0]  // Target Program will be the first part of the scenario name (convention)
-    
-            // For each of the scenarios go through the list of source files and determine if the target matches one of the programs
-            // In that case, execute the unit test.  Determine if the program name matches the target of the Total Test scenario
-            if(listOfPrograms.contains(scenarioTarget))
+            // Search for any .testscenario file that contains the component name as part of its name
+            listOfScenarios         = steps.findFiles(glob: '**/'+ it + '*.testscenario')
+
+            listOfScenarios.each
             {
+                // Get root node of the path, i.e. the name of the Total Test project
+                def scenarioPath        = it.path                                                                   // Fully qualified name of the Total Test Scenario file
+                def projectName         = it.path.trim().split("\\\\")[0] + "\\"+ it.path.trim().split("\\\\")[1]   // Total Test Project name is the root folder of the full path to the testscenario 
+                def jclFolder           = script.workspace + "\\" + projectName + '\\Unit Test\\JCL'                // Path containing Runner.jcl
+                def scenarioFullName    = it.name                                                                   // Get the full name of the testscenario file i.e. "name.testscenario"
+                def scenarioName        = it.name.trim().split("\\.")[0]                                            // Get the name of the scenario file without ".testscenario"
+                def scenarioTarget      = scenarioName.split("\\_")[0]                                              // Target Program will be the first part of the scenario name (convention)
+        
                 // Log which 
-                steps.echo "*************************\n" +
-                    "Scenario " + scenarioFullName + '\n' +
-                    "Path " + scenarioPath + '\n' +
-                    "Project " + projectName + '\n' +
+                steps.echo "*************************\n"    +
+                    "Scenario " + scenarioFullName + '\n'   +
+                    "Path " + scenarioPath + '\n'           +
+                    "Project " + projectName + '\n'         +
                     "*************************"
             
                 def jclJobCardPath = jclFolder + '\\JobCard.jcl' 
@@ -68,22 +70,22 @@ class TttHelper implements Serializable {
 
                 steps.step([
                     $class:       'TotalTestBuilder', 
-                        ccClearStats:   false,                          // Clear out any existing Code Coverage stats for the given ccSystem and ccTestId
+                        ccClearStats:   false,                                  // Clear out any existing Code Coverage stats for the given ccSystem and ccTestId
                         ccRepo:         "${pConfig.ccRepository}",
                         ccSystem:       "${pConfig.ispwApplication}", 
-                        ccTestId:       "${script.BUILD_NUMBER}",              // Jenkins environment variable, resolves to build number, i.e. #177 
+                        ccTestId:       "${script.BUILD_NUMBER}",               // Jenkins environment variable, resolves to build number, i.e. #177 
                         credentialsId:  "${pConfig.hciTokenId}", 
-                        deleteTemp:     true,                           // (true|false) Automatically delete any temp files created during the execution
-                        hlq:            '',                             // Optional - high level qualifier used when allocation datasets
+                        deleteTemp:     true,                                   // (true|false) Automatically delete any temp files created during the execution
+                        hlq:            '',                                     // Optional - high level qualifier used when allocation datasets
                         connectionId:   "${pConfig.hciConnId}",    
-                        jcl:            "${pConfig.tttJcl}",            // Name of the JCL file in the Total Test Project to execute
-                        projectFolder:  "${projectName}",            // Name of the Folder in the file system that contains the Total Test Project.  
-                        testSuite:      "${scenarioFullName}",       // Name of the Total Test Scenario to execute
-                        useStubs:       true                            // (true|false) - Execute with or without stubs
+                        jcl:            "${pConfig.tttJcl}",                    // Name of the JCL file in the Total Test Project to execute
+                        projectFolder:  "${projectName}",                       // Name of the Folder in the file system that contains the Total Test Project.  
+                        testSuite:      "${scenarioFullName}",                  // Name of the Total Test Scenario to execute
+                        useStubs:       true                                    // (true|false) - Execute with or without stubs
                 ])   
 
                 listOfExecutedTargets.add(scenarioTarget)                
-            }        
+            }
         }
         
         return listOfExecutedTargets        
