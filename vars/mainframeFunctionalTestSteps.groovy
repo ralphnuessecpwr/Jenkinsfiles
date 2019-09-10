@@ -292,7 +292,7 @@ def call(Map pipelineParams)
                 {
                     if(it.value.status == 'FAIL')
 
-                    ispwHelper.regressTask(it, cesToken)
+                    ispwHelper.regressTask(it.key, cesToken)
                 }
             }
         }
