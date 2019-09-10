@@ -123,19 +123,40 @@ private buildReport(componentStatusList)
                                     "\nTo review results" +
                                     "\n\n- JUnit reports       : ${BUILD_URL}/testReport/" +
                                     "\n\n- SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
+                                    "\n\nThe component will be regressed."
                                     "\n\n"
 
     def passMessage             =   "\nThe program PASSED the Quality gate <sonarGate> and may be promoted." +
                                     "\n\nSonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
                                     "\n\n"
 
-    def mailMessageExtension = '\nDETAIL REPORTS' + '\n\nUNIT TEST RESULTS\n'
+    def mailMessageExtension = '\nDETAIL REPORTS' +
+        "\n\nSOURCE SCANS"
 
     componentStatusList.each
     {
         def componentMessage
 
-        mailMessageExtension = mailMessageExtension + "\nProgram ${it.key}: "
+        mailMessageExtension = mailMessageExtension + 
+            "\nProgram ${it.key}: "
+
+        if(it.value.sourceStatus == 'FAIL') 
+        {
+            componentMessage    = failMessage.replace('<sonarGate>', it.value.sonarGate)
+            componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
+
+            mailMessageExtension = mailMessageExtension + componentMessage
+        }
+        else
+        {
+            componentMessage    = passMessage.replace('<sonarGate>', it.value.sonarGate)
+            componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
+
+            mailMessageExtension = mailMessageExtension + componentMessage
+        }
+
+        def mailMessageExtension = mailMessageExtension +
+            "\n\nSOURCE SCANS"
 
         switch(it.value.utStatus) 
         {
@@ -160,23 +181,6 @@ private buildReport(componentStatusList)
             case 'UNKNOWN':
                 mailMessageExtension = mailMessageExtension + 
                     "No unit tests were found. Only the source scan was taken into consideration."
-                
-                if(it.value.sourceStatus == 'FAIL')
-                {
-                    componentMessage    = failMessage.replace('<sonarGate>', it.value.sonarGate)
-                    componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
-
-                    mailMessageExtension = mailMessageExtension +
-                        componentMessage
-                }
-                else
-                {
-                    componentMessage    = passMessage.replace('<sonarGate>', it.value.sonarGate)
-                    componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
-
-                    mailMessageExtension = mailMessageExtension +
-                        componentMessage
-                }
             break
         }
     }
@@ -307,6 +311,8 @@ def call(Map pipelineParams)
         
         stage("Send Notifications")
         {
+            def mailMessageExtension = buildReport(componentStatusList)
+
             emailext subject:       '$DEFAULT_SUBJECT',
                         body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,
                         replyTo:    '$DEFAULT_REPLYTO',
