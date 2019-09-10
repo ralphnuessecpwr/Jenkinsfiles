@@ -137,8 +137,7 @@ private buildReport(componentStatusList)
     {
         def componentMessage
 
-        mailMessageExtension = mailMessageExtension + 
-            "\nProgram ${it.key}: "
+        mailMessageExtension = mailMessageExtension + "\n\nProgram ${it.key}: "
 
         if(it.value.sourceStatus == 'FAIL') 
         {
@@ -154,9 +153,16 @@ private buildReport(componentStatusList)
 
             mailMessageExtension = mailMessageExtension + componentMessage
         }
+    }
 
-        mailMessageExtension = mailMessageExtension +
-            "\n\nSOURCE SCANS"
+    mailMessageExtension = mailMessageExtension + 
+            "\n\nUNIT TESTS"
+
+    componentStatusList.each
+    {
+        def componentMessage
+
+        mailMessageExtension = mailMessageExtension + "\n\nProgram ${it.key}: "
 
         switch(it.value.utStatus) 
         {
@@ -165,7 +171,7 @@ private buildReport(componentStatusList)
                 componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
 
                 mailMessageExtension = mailMessageExtension +
-                    "Unit tests were found and executed." + 
+                    "\n\nUnit tests were found and executed." + 
                     componentMessage
             break
 
@@ -174,13 +180,13 @@ private buildReport(componentStatusList)
                 componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
 
                 mailMessageExtension = mailMessageExtension +
-                    "Unit tests were found and executed." + 
+                    "\n\nUnit tests were found and executed." + 
                     componentMessage
             break
 
             case 'UNKNOWN':
                 mailMessageExtension = mailMessageExtension + 
-                    "No unit tests were found. Only the source scan was taken into consideration."
+                    "\n\nNo unit tests were found. Only the source scan was taken into consideration."
             break
         }
     }

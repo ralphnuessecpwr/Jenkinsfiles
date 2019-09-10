@@ -45,6 +45,7 @@ class SonarHelper implements Serializable {
             
             internalStatusList[it].sourceStatus = scanComponent(it, sonarProjectType, sonarGate, scanType)
             internalStatusList[it].status       = internalStatusList[it].sourceStatus
+            internalStatusList[it].sonarGate    = sonarGate
         }
 
         return internalStatusList
