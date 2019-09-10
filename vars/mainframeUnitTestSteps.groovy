@@ -130,7 +130,7 @@ private initialize(pipelineParams)
 /* private method to build the report (mail content) at the end of execution */
 private buildReport(componentStatusList)
 {
-    def failMessage             =   "\nThe program FAILED the Quality gate <sonarGate>. An attempt to promote the component will not be successful."
+    def failMessage             =   "\nThe program FAILED the Quality gate <sonarGate>. An attempt to promote the component will not be successful." +
                                     "\nTo review results" +
                                     "\n\n- JUnit reports       : ${BUILD_URL}/testReport/" +
                                     "\n\n- SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
@@ -140,12 +140,13 @@ private buildReport(componentStatusList)
                                     "\n\nSonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
                                     "\n\n"
 
-    def mailMessageExtension = '\nDETAIL REPORTS' + '\n\nUNIT TEST RESULTS'
+    def mailMessageExtension = '\nDETAIL REPORTS' + '\n\nUNIT TEST RESULTS\n'
 
     componentStatusList.each
     {
         def componentMessage
-        mailMessageExtension = mailMessageExtension + "\nProgram ${it.key}:"
+
+        mailMessageExtension = mailMessageExtension + "\nProgram ${it.key}: "
 
         switch(it.value.utStatus) 
         {
@@ -154,7 +155,7 @@ private buildReport(componentStatusList)
                 componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
 
                 mailMessageExtension = mailMessageExtension +
-                    "\nUnit tests were found and executed." + 
+                    "Unit tests were found and executed." + 
                     componentMessage
             break
 
@@ -163,12 +164,13 @@ private buildReport(componentStatusList)
                 componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
 
                 mailMessageExtension = mailMessageExtension +
-                    "\nUnit tests were found and executed." + 
+                    "Unit tests were found and executed." + 
                     componentMessage
+            break
 
             case 'UNKNOWN':
                 mailMessageExtension = mailMessageExtension + 
-                    "\nNo unit tests were found. Only the source scan was taken into consideration."
+                    "No unit tests were found. Only the source scan was taken into consideration."
                 
                 if(it.value.sourceStatus == 'FAIL')
                 {
@@ -186,6 +188,7 @@ private buildReport(componentStatusList)
                     mailMessageExtension = mailMessageExtension +
                         componentMessage
                 }
+            break
         }
     }
     return mailMessageExtension
