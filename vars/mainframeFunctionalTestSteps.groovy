@@ -155,7 +155,7 @@ private buildReport(componentStatusList)
             mailMessageExtension = mailMessageExtension + componentMessage
         }
 
-        def mailMessageExtension = mailMessageExtension +
+        mailMessageExtension = mailMessageExtension +
             "\n\nSOURCE SCANS"
 
         switch(it.value.utStatus) 
