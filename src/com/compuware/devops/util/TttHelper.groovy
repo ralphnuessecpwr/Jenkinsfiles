@@ -95,6 +95,7 @@ class TttHelper implements Serializable {
             def listOfScenarioFullPaths = steps.findFiles(glob: '**/'+ it + '*.xactx')
 
             steps.echo "List:" + listOfScenarioFullPaths.toString()
+            steps.echo listOfScenarioFullPaths.isEmpty
 
             if(!listOfScenarioFullPaths.isEmpty)
             {
