@@ -101,7 +101,7 @@ class TttHelper implements Serializable {
             {
                 steps.totaltest credentialsId:          "${pConfig.hciTokenId}", 
                     environmentId:                      "${pConfig.xaTesterEnvId}", 
-                    folderPath:                         "${it}_Functional_Tests", 
+                    folderPath:                         "tests/${it}_Functional_Tests", 
                     serverUrl:                          "${pConfig.ispwUrl}", 
                     stopIfTestFailsOrThresholdReached:  false,
                     sonarVersion:                       '6'
