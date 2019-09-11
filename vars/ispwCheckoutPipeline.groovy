@@ -31,11 +31,12 @@ def             sourceResidenceLevel    // ISPW level at which the sources resid
 def initialize(pipelineParams)
 {
     // Clean out any previously downloaded source
+    /*
     dir(".\\") 
     {
         deleteDir()
     }
-
+    */
     def mailListlines
     /* Read list of mailaddresses from "private" Config File */
     /* The configFileProvider creates a temporary file on disk and returns its path as variable */
