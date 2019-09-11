@@ -134,11 +134,11 @@ private buildReport(componentStatusList)
 
     def mailMessageExtension = '\nDETAIL REPORTS'
 
+    def failingComponentsMessage = '\n\nNone'
+    def passingComponentsMessage = '\n\nNone'
+
     componentStatusList.each
     {
-        def failingComponentsMessage = '\n\nNone'
-        def passingComponentsMessage = '\n\nNone'
-
         if(it.value.status == 'FAIL')
         {
             failingComponentsMessage = "\n\nProgram ${it.key}: "
