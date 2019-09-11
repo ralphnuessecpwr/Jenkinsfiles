@@ -25,22 +25,22 @@ class IspwHelper implements Serializable
 
     IspwHelper(steps, pConfig) 
     {
-        steps              = steps
-        ispwUrl            = pConfig.ispwUrl
-        ispwRuntime        = pConfig.ispwRuntime
-        ispwStream         = pConfig.ispwStream
-        ispwApplication    = pConfig.ispwApplication
-        ispwRelease        = pConfig.ispwRelease      
-        ispwAssignment     = pConfig.ispwAssignment  
-        ispwSetId          = pConfig.ispwSetId
-        ispwOwner          = pConfig.ispwOwner
-        ispwTargetLevel    = pConfig.ispwTargetLevel
-        applicationPathNum = pConfig.applicationPathNum
+        this.steps              = steps
+        this.ispwUrl            = pConfig.ispwUrl
+        this.ispwRuntime        = pConfig.ispwRuntime
+        this.ispwStream         = pConfig.ispwStream
+        this.ispwApplication    = pConfig.ispwApplication
+        this.ispwRelease        = pConfig.ispwRelease      
+        this.ispwAssignment     = pConfig.ispwAssignment  
+        this.ispwSetId          = pConfig.ispwSetId
+        this.ispwOwner          = pConfig.ispwOwner
+        this.ispwTargetLevel    = pConfig.ispwTargetLevel
+        this.applicationPathNum = pConfig.applicationPathNum
 
-        mfSourceFolder     = pConfig.mfSourceFolder
+        this.mfSourceFolder     = pConfig.mfSourceFolder
 
-        hciConnId          = pConfig.hciConnId
-        hciTokenId         = pConfig.hciTokenId
+        this.hciConnId          = pConfig.hciConnId
+        this.hciTokenId         = pConfig.hciTokenId
     }
 
     /* Download all sources from ISPW for a given level */
@@ -153,7 +153,6 @@ class IspwHelper implements Serializable
 
     def getComponents(String cesToken, String container, String containerType)
     {
-        steps.echo "Got cesToken ${cesToken}, container ${container}, type ${containerType}"
         def containerTypeText
 
         switch(containerType) 

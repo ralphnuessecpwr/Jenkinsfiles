@@ -84,8 +84,6 @@ def initialize(pipelineParams)
         cesToken = cesTokenTemp
     }
 
-    echo "Using cesToken ${cesToken}, setId ${pConfig.ispwSetId}, 2"
-
     componentList        = ispwHelper.getComponents(cesToken, pConfig.ispwSetId, '2')
     sonarProjectList     = []
     messageText          = ''

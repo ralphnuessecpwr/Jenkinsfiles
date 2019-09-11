@@ -62,37 +62,37 @@ class PipelineConfig implements Serializable
     def PipelineConfig(steps, workspace, params, mailListLines)
     {
         //configGitBranch    = params.Config_Git_Branch
-        steps                       = steps
-        workspace                   = workspace
-        mailListLines               = mailListLines
+        this.steps                       = steps
+        this.workspace                   = workspace
+        this.mailListLines               = mailListLines
 
-        ispwStream                  = params.ISPW_Stream
-        ispwApplication             = params.ISPW_Application
-        ispwRelease                 = params.ISPW_Release
-        ispwAssignment              = params.ISPW_Assignment
-        ispwSetId                   = params.ISPW_Set_Id
-        ispwOwner                   = params.ISPW_Owner        
-        ispwSrcLevel                = params.ISPW_Src_Level
+        this.ispwStream                  = params.ISPW_Stream
+        this.ispwApplication             = params.ISPW_Application
+        this.ispwRelease                 = params.ISPW_Release
+        this.ispwAssignment              = params.ISPW_Assignment
+        this.ispwSetId                   = params.ISPW_Set_Id
+        this.ispwOwner                   = params.ISPW_Owner        
+        this.ispwSrcLevel                = params.ISPW_Src_Level
 
-        applicationPathNum          = ispwSrcLevel.charAt(ispwSrcLevel.length() - 1)
+        this.applicationPathNum          = ispwSrcLevel.charAt(ispwSrcLevel.length() - 1)
 
-        ispwTargetLevel             = "QA" + applicationPathNum
-        tttJcl                      = "Runner_PATH" + applicationPathNum + ".jcl"
+        this.ispwTargetLevel             = "QA" + applicationPathNum
+        this.tttJcl                      = "Runner_PATH" + applicationPathNum + ".jcl"
 
-        sqHttpRequestAuthHeader     = params.SQ_SERVER_AUTH_TOKEN
+        this.sqHttpRequestAuthHeader     = params.SQ_SERVER_AUTH_TOKEN
 
-        gitProject                  = params.Git_Project
-        gitCredentials              = params.Git_Credentials
+        this.gitProject                  = params.Git_Project
+        this.gitCredentials              = params.Git_Credentials
         
-        gitUrl                      = "https://github.com/${gitProject}"
-        gitTttRepo                  = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
-        gitTttUtRepo                = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
-        gitTttFtRepo                = "${ispwStream}_${ispwApplication}_Functional_Tests.git"
+        this.gitUrl                      = "https://github.com/${gitProject}"
+        this.gitTttRepo                  = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
+        this.gitTttUtRepo                = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
+        this.gitTttFtRepo                = "${ispwStream}_${ispwApplication}_Functional_Tests.git"
 
-        cesTokenId                  = params.CES_Token
-        hciConnId                   = params.HCI_Conn_ID
-        hciTokenId                  = params.HCI_Token
-        ccRepository                = params.CC_repository
+        this.cesTokenId                  = params.CES_Token
+        this.hciConnId                   = params.HCI_Conn_ID
+        this.hciTokenId                  = params.HCI_Token
+        this.ccRepository                = params.CC_repository
     }
 
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
@@ -162,7 +162,6 @@ class PipelineConfig implements Serializable
         }
     }
 
-
     /* Read configuration values from tttgit.config file */
     def setTttGitConfig()
     {
@@ -228,9 +227,6 @@ class PipelineConfig implements Serializable
     {        
         
         def filePath    = "${configPath}/${fileName}"
-
-        steps.echo "Path: " + filePath
-
         def fileText    = steps.libraryResource filePath
 
         return fileText.tokenize("\n")
