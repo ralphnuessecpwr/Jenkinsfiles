@@ -52,7 +52,7 @@ class TttHelper implements Serializable {
                 def jclFolder           = script.workspace + "\\" + projectName + '\\Unit Test\\JCL'                // Path containing Runner.jcl
                 def scenarioFullName    = it.name                                                                   // Get the full name of the testscenario file i.e. "name.testscenario"
                 def scenarioName        = it.name.trim().split("\\.")[0]                                            // Get the name of the scenario file without ".testscenario"
-                //def scenarioTarget      = scenarioName.split("\\_")[0]                                              // Target Program will be the first part of the scenario name (convention)
+                def scenarioTarget      = scenarioName.split("\\_")[0]                                              // Target Program will be the first part of the scenario name (convention)
         
                 // Log which 
                 steps.echo "*************************\n"        +
@@ -90,12 +90,17 @@ class TttHelper implements Serializable {
     {
         listOfPrograms.each
         {
-            steps.totaltest credentialsId:          "${pConfig.hciTokenId}", 
-                environmentId:                      "${pConfig.xaTesterEnvId}", 
-                folderPath:                         "${it}_Functional_Tests", 
-                serverUrl:                          "${pConfig.ispwUrl}", 
-                stopIfTestFailsOrThresholdReached:  false,
-                sonarVersion:                       '6'
+            def listOfScenarioFullPaths = steps.findFiles(glob: '**/'+ it + '*.xactx')
+
+            if(listOfScenarioFullPaths != null)
+            {
+                steps.totaltest credentialsId:          "${pConfig.hciTokenId}", 
+                    environmentId:                      "${pConfig.xaTesterEnvId}", 
+                    folderPath:                         "${it}_Functional_Tests", 
+                    serverUrl:                          "${pConfig.ispwUrl}", 
+                    stopIfTestFailsOrThresholdReached:  false,
+                    sonarVersion:                       '6'
+            }
         }
     }
 
