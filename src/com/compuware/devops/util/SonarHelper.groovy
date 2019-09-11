@@ -39,15 +39,6 @@ class SonarHelper implements Serializable {
 
         componentList.each
         {
-            steps.echo "Before Source Scan"
-            steps.echo "Component " + it.key
-            steps.echo "status        : " + it.value.status
-            steps.echo "source status : " + it.value.sourceStatus
-            steps.echo "ut status     : " + it.value.utStatus
-            steps.echo "ft status     : " + it.value.ftStatus
-            steps.echo "gate          : " + it.value.sonarGate
-            steps.echo "project       : " + it.value.sonarProject
-
             def sonarProjectType                    = 'UT'
             def sonarGate                           = 'RNU_Gate_Source'
             def scanType                            = 'source'
@@ -55,15 +46,6 @@ class SonarHelper implements Serializable {
             internalStatusList[it].sourceStatus = scanComponent(it, sonarProjectType, sonarGate, scanType)
             internalStatusList[it].status       = internalStatusList[it].sourceStatus
             internalStatusList[it].sonarGate    = sonarGate
-
-            steps.echo "After Source Scan"
-            steps.echo "Component " + it.key
-            steps.echo "status        : " + it.value.status
-            steps.echo "source status : " + it.value.sourceStatus
-            steps.echo "ut status     : " + it.value.utStatus
-            steps.echo "ft status     : " + it.value.ftStatus
-            steps.echo "gate          : " + it.value.sonarGate
-            steps.echo "project       : " + it.value.sonarProject
         }
 
         return internalStatusList
@@ -78,15 +60,6 @@ class SonarHelper implements Serializable {
             def sonarProjectType    = 'UT'
             def scanType            = 'none'
             def sonarGate
-
-            steps.echo "Before UT Scan"
-            steps.echo "Component " + it.key
-            steps.echo "status        : " + it.value.status
-            steps.echo "source status : " + it.value.sourceStatus
-            steps.echo "ut status     : " + it.value.utStatus
-            steps.echo "ft status     : " + it.value.ftStatus
-            steps.echo "gate          : " + it.value.sonarGate
-            steps.echo "project       : " + it.value.sonarProject
 
             // If unit tests were executed we scan test results
             if(listOfExecutedTargets.contains(it))
@@ -115,15 +88,6 @@ class SonarHelper implements Serializable {
                     internalStatusList[it].sonarGate    = sonarGate
                 }
             }
-
-            steps.echo "After UT Scan"
-            steps.echo "Component " + it.key
-            steps.echo "status        : " + it.value.status
-            steps.echo "source status : " + it.value.sourceStatus
-            steps.echo "ut status     : " + it.value.utStatus
-            steps.echo "ft status     : " + it.value.ftStatus
-            steps.echo "gate          : " + it.value.sonarGate
-            steps.echo "project       : " + it.value.sonarProject
         }
 
         return internalStatusList
