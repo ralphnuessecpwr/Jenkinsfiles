@@ -93,7 +93,7 @@ private initialize(pipelineParams)
                             pConfig
                         )
 
-    componentList           = ispwHelper.getComponents(cesToken, pConfig.ispwSetId, '2')
+    componentList           = ispwHelper.getComponents(cesToken, pConfig.ispwAssignment, '0')
 
     // Build list of status for each component
     componentStatusList = [:]
@@ -142,6 +142,16 @@ private buildReport(componentStatusList)
 
     componentStatusList.each
     {
+        /*
+        echo "Component " + it.key
+        echo "status        : " + it.value.status
+        echo "source status : " + it.value.sourceStatus
+        echo "ut status     : " + it.value.utStatus
+        echo "ft status     : " + it.value.ftStatus
+        echo "gate          : " + it.value.sonarGate
+        echo "project       : " + it.value.sonarProject
+        */
+
         if(it.value.status == 'FAIL')
         {
             failingComponentsMessage = failingComponentsMessage + "\n\nProgram ${it.key}: "
@@ -228,23 +238,14 @@ def call(Map pipelineParams)
         /* Download all sources that are part of the container  */
         stage("Retrieve Mainframe Code")
         {
-            ispwHelper.downloadSourcesForSet(sourceResidenceLevel)
-        }
-
-        // Scan sources and fail fast
-        stage("Scan Sources Only")
-        {
-            ispwHelper.downloadCopyBooks(workspace)            
-
-            componentStatusList = sonarHelper.scanSources(componentList, componentStatusList)
-
-            checkStatus(componentStatusList)
+            ispwHelper.downloadSourcesForAssignment(sourceResidenceLevel)
+            ispwHelper.downloadCopyBooks(workspace)                        
         }
 
         /* Retrieve the Tests from Github that match that ISPWW Stream and Application */
-        stage("Execute Unit Tests")
+        stage("Execute Functional Tests")
         {            
-            def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttUtRepo}"
+            def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttFtRepo}"
             
             /* Check out unit tests from GitHub */
             gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
@@ -254,59 +255,48 @@ def call(Map pipelineParams)
             tttHelper.initialize(componentList)  
 
             /* Clean up Code Coverage results from previous run */
-            tttHelper.cleanUpCodeCoverageResults()
+            //No CodeCoverage yet 
+            //tttHelper.cleanUpCodeCoverageResults()
 
             /* Execute unit tests and retrieve list of programs that had unit tests*/
-            listOfExecutedTargets = tttHelper.loopThruScenarios()
+            //listOfExecutedTargets = tttHelper.executeFunctionalTests()
 
-            echo "Executed targets " + listOfExecutedTargets.toString()
+            //echo "Executed targets " + listOfExecutedTargets.toString()
          
-            tttHelper.passResultsToJunit()
+            //tttHelper.passResultsToJunit()
 
             /* push results back to GitHub */
-            gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
+            //gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
         }
 
         /* 
         This stage retrieve Code Coverage metrics from Xpediter Code Coverage for the test executed in the Pipeline
         */ 
+        /*
         stage("Collect Metrics")
         {
             tttHelper.collectCodeCoverageResults()
         }
+        */
 
         /* 
         This stage pushes the Source Code, Test Metrics and Coverage metrics into SonarQube and then checks the status of the SonarQube Quality Gate.  
         If the SonarQube quality date fails, the Pipeline fails and stops
         */ 
-        stage("Check Unit Test Quality Gate") 
+        /*
+        stage("Check Functional Test Quality Gate") 
         {
             componentStatusList = sonarHelper.scanUt(componentList, componentStatusList, listOfExecutedTargets)
 
             checkStatus(componentStatusList)
         }
-
+        */
+        /*
         stage("React on previous results")
         {
             if(pipelinePass)
             {
                 echo "I would run Functional tests now!"
-
-                build job: "RNU_Functional_Tests", parameters: [
-                    string(name: 'ISPW_Stream',         value: pConfig.ispwStream),
-                    string(name: 'ISPW_Application',    value: pConfig.ispwApplication),
-                    string(name: 'ISPW_Release',        value: pConfig.ispwRelease),
-                    string(name: 'ISPW_Assignment',     value: pConfig.ispwAssignment),
-                    string(name: 'ISPW_Set_Id',         value: pConfig.ispwSetId),
-                    string(name: 'ISPW_Src_Level',      value: pConfig.ispwSrcLevel),
-                    string(name: 'ISPW_Owner',          value: pConfig.ispwOwner),
-                    string(name: 'Git_Project',         value: pConfig.gitProject),
-                    string(name: 'Git_Credentials',     value: pConfig.gitCredentials),
-                    string(name: 'CES_Token',           value: pConfig.cesTokenId),
-                    string(name: 'HCI_Conn_ID',         value: pConfig.hciConnId),
-                    string(name: 'HCI_Token',           value: pConfig.hciTokenId),
-                    string(name: 'CC_repository',       value: pConfig.ccRepository)
-                    ]
             }
             else
             {
@@ -318,21 +308,14 @@ def call(Map pipelineParams)
                 }
             }
         }
+        */
 
-//        stage("Trigger XL Release")
-//        {
-//            /* 
-//            This stage triggers a XL Release Pipeline that will move code into the high levels in the ISPW Lifecycle  
-//            */
-//            xlrHelper.triggerRelease()            
-//        }
-        
         stage("Send Notifications")
         {
             def mailMessageExtension = buildReport(componentStatusList)
 
             emailext subject:       '$DEFAULT_SUBJECT',
-                        body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,
+                        body:       '$DEFAULT_CONTENT \n' + "Executed Funtional Tests",
                         replyTo:    '$DEFAULT_REPLYTO',
                         to:         "${pConfig.mailRecipient}"
         }
