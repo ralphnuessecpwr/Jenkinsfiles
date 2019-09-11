@@ -152,7 +152,7 @@ private buildReport(componentStatusList)
                 reportFailMessage = reportFailMessage + "\n\nUnit tests were found and executed."
             }
 
-            componentMessage    = failMessage.replace('<sonarGate>', it.value.sonarGate)
+            componentMessage    = componentFailMessage.replace('<sonarGate>', it.value.sonarGate)
             componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
 
             failingComponentsMessage = failingComponentsMessage + componentMessage
@@ -170,7 +170,7 @@ private buildReport(componentStatusList)
                 passingComponentsMessage = passingComponentsMessage + "\n\nUnit tests were found and executed."
             }
 
-            componentMessage    = passMessage.replace('<sonarGate>', it.value.sonarGate)
+            componentMessage    = componentPassMessage.replace('<sonarGate>', it.value.sonarGate)
             componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
 
             passingComponentsMessage = passingComponentsMessage + passingComponentsMessage
