@@ -9,48 +9,42 @@ class IspwHelper implements Serializable
 {
     def steps
 
-    def String ispwUrl
-    def String ispwRuntime
-    def String ispwStream
-    def String ispwApplication
-    def String ispwRelease
-    def String ispwAssignment
-    def String ispwContainer
-    def String ispwContainerType    
-    def String applicationPathNum
-    def String ispwOwner
-    def String ispwTargetLevel
-
-
-    def String mfSourceFolder
-
-    def String hciConnId
-    def String hciTokenId
+    String ispwUrl
+    String ispwRuntime
+    String ispwStream
+    String ispwApplication
+    String ispwRelease
+    String ispwAssignment
+    String ispwSetId
+    String applicationPathNum
+    String ispwOwner
+    String ispwTargetLevel
+    String mfSourceFolder
+    String hciConnId
+    String hciTokenId
 
     IspwHelper(steps, pConfig) 
     {
+        steps              = steps
+        ispwUrl            = pConfig.ispwUrl
+        ispwRuntime        = pConfig.ispwRuntime
+        ispwStream         = pConfig.ispwStream
+        ispwApplication    = pConfig.ispwApplication
+        ispwRelease        = pConfig.ispwRelease      
+        ispwAssignment     = pConfig.ispwAssignment  
+        ispwSetId          = pConfig.ispwSetId
+        ispwOwner          = pConfig.ispwOwner
+        ispwTargetLevel    = pConfig.ispwTargetLevel
+        applicationPathNum = pConfig.applicationPathNum
 
-        this.steps              = steps
-        this.ispwUrl            = pConfig.ispwUrl
-        this.ispwRuntime        = pConfig.ispwRuntime
-        this.ispwStream         = pConfig.ispwStream
-        this.ispwApplication    = pConfig.ispwApplication
-        this.ispwRelease        = pConfig.ispwRelease      
-        this.ispwAssignment     = pConfig.ispwAssignment  
-        this.ispwContainer      = pConfig.ispwContainer
-        this.ispwContainerType  = pConfig.ispwContainerType
-        this.ispwOwner          = pConfig.ispwOwner
-        this.ispwTargetLevel    = pConfig.ispwTargetLevel
-        this.applicationPathNum = pConfig.applicationPathNum
+        mfSourceFolder     = pConfig.mfSourceFolder
 
-        this.mfSourceFolder     = pConfig.mfSourceFolder
-
-        this.hciConnId          = pConfig.hciConnId
-        this.hciTokenId         = pConfig.hciTokenId
+        hciConnId          = pConfig.hciConnId
+        hciTokenId         = pConfig.hciTokenId
     }
 
     /* Download all sources from ISPW for a given level */
-    def downloadAllSources(String ispwLevel)
+    def downloadAllSources(String level)
     {
         steps.checkout( 
             changelog: false, 
@@ -65,47 +59,38 @@ class IspwHelper implements Serializable
                     levelOption: '0', 
                     serverApplication: "${ispwApplication}",
                     serverConfig: "${ispwRuntime}", 
-                    serverLevel: "${ispwLevel}", 
+                    serverLevel: "${level}", 
                     serverStream: "${ispwStream}"
                 ]
         )
     }
 
-    /* Download sources for the ISPW Set which triggered the current pipeline from a given level */
-    def downloadSources(String ispwLevel)
+    /* Download sources for a container and level */
+    private downloadSources(String level, String container, String containerType)
     {
         steps.checkout([
             $class:             'IspwContainerConfiguration', 
             componentType:      '',                         // optional filter for component types in ISPW
             connectionId:       "${hciConnId}",     
             credentialsId:      "${hciTokenId}",      
-            containerName:      "${ispwContainer}",   
-            containerType:      "${ispwContainerType}",     // 0-Assignment 1-Release 2-Set
+            containerName:      "${container}",   
+            containerType:      "${containerType}",     // 0-Assignment 1-Release 2-Set
             ispwDownloadAll:    true,                       // false will not download files that exist in the workspace and haven't previous changed
             serverConfig:       '',                         // ISPW runtime config.  if blank ISPW will use the default runtime config
-            serverLevel:        "${ispwLevel}"              // level to download the components from
+            serverLevel:        "${level}"              // level to download the components from
         ])
     }
 
-    /* This method will replace downloadSources in future releases */
+    /* Download sources for the ISPW Set which triggered the current pipeline from a given level */
     def downloadSourcesForSet(String ispwLevel)
     {
-        downloadSources(ispwLevel)
+        downloadSources(ispwLevel, pConfig.ispwSetId, '2')
     }
 
+    /* Download sources for the ISPW assignment from a given level */
     def downloadSourcesForAssignment(String ispwLevel)
     {
-        steps.checkout([
-            $class:             'IspwContainerConfiguration', 
-            componentType:      '',                         // optional filter for component types in ISPW
-            connectionId:       "${hciConnId}",     
-            credentialsId:      "${hciTokenId}",      
-            containerName:      "${ispwAssignment}",   
-            containerType:      "0",                        // 0-Assignment 1-Release 2-Set
-            ispwDownloadAll:    true,                       // false will not download files that exist in the workspace and haven't previous changed
-            serverConfig:       '',                         // ISPW runtime config.  if blank ISPW will use the default runtime config
-            serverLevel:        "${ispwLevel}"              // level to download the components from
-        ])
+        downloadSources(ispwLevel, pConfig.ispwAssignment, '0')
     }
 
     /* Download copy books used in the downloaded sources  */
@@ -168,6 +153,7 @@ class IspwHelper implements Serializable
 
     def getComponents(String cesToken, String container, String containerType)
     {
+        steps.echo "Got cesToken ${cesToken}, container ${container}, type ${containerType}"
         def containerTypeText
 
         switch(containerType) 
@@ -183,6 +169,7 @@ class IspwHelper implements Serializable
             break;
             default:
                 steps.echo "Invalid containerType " + containerType
+                steps.error "Aborting pipeline"
             break;
         }
 

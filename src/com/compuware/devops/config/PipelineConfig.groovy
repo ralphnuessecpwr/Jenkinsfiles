@@ -37,8 +37,7 @@ class PipelineConfig implements Serializable
     public String ispwApplication
     public String ispwRelease
     public String ispwAssignment
-    public String ispwContainer
-    public String ispwContainerType
+    public String ispwSetId
     public String ispwSrcLevel
     public String ispwTargetLevel
     public String ispwOwner         
@@ -62,38 +61,38 @@ class PipelineConfig implements Serializable
 
     def PipelineConfig(steps, workspace, params, mailListLines)
     {
-        //this.configGitBranch    = params.Config_Git_Branch
-        this.steps              = steps
-        this.workspace          = workspace
-        this.mailListLines      = mailListLines
+        //configGitBranch    = params.Config_Git_Branch
+        steps                       = steps
+        workspace                   = workspace
+        mailListLines               = mailListLines
 
-        this.ispwStream         = params.ISPW_Stream
-        this.ispwApplication    = params.ISPW_Application
-        this.ispwRelease        = params.ISPW_Release
-        this.ispwAssignment     = params.ISPW_Assignment
-        this.ispwContainer      = params.ISPW_Container
-        this.ispwContainerType  = params.ISPW_Container_Type
-        this.ispwOwner          = params.ISPW_Owner        
-        this.ispwSrcLevel       = params.ISPW_Src_Level
+        ispwStream                  = params.ISPW_Stream
+        ispwApplication             = params.ISPW_Application
+        ispwRelease                 = params.ISPW_Release
+        ispwAssignment              = params.ISPW_Assignment
+        ispwSetId                   = params.ISPW_Set_Id
+        ispwOwner                   = params.ISPW_Owner        
+        ispwSrcLevel                = params.ISPW_Src_Level
 
-        this.sqHttpRequestAuthHeader    = params.SQ_SERVER_AUTH_TOKEN
+        applicationPathNum          = ispwSrcLevel.charAt(ispwSrcLevel.length() - 1)
 
-        this.applicationPathNum = ispwSrcLevel.charAt(ispwSrcLevel.length() - 1)
-        this.ispwTargetLevel    = "QA" + applicationPathNum
-        this.tttJcl             = "Runner_PATH" + applicationPathNum + ".jcl"
+        ispwTargetLevel             = "QA" + applicationPathNum
+        tttJcl                      = "Runner_PATH" + applicationPathNum + ".jcl"
 
-        this.gitProject         = params.Git_Project
-        this.gitCredentials     = params.Git_Credentials
+        sqHttpRequestAuthHeader     = params.SQ_SERVER_AUTH_TOKEN
+
+        gitProject                  = params.Git_Project
+        gitCredentials              = params.Git_Credentials
         
-        this.gitUrl             = "https://github.com/${gitProject}"
-        this.gitTttRepo         = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
-        this.gitTttUtRepo       = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
-        this.gitTttFtRepo       = "${ispwStream}_${ispwApplication}_Functional_Tests.git"
+        gitUrl                      = "https://github.com/${gitProject}"
+        gitTttRepo                  = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
+        gitTttUtRepo                = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
+        gitTttFtRepo                = "${ispwStream}_${ispwApplication}_Functional_Tests.git"
 
-        this.cesTokenId         = params.CES_Token
-        this.hciConnId          = params.HCI_Conn_ID
-        this.hciTokenId         = params.HCI_Token
-        this.ccRepository       = params.CC_repository
+        cesTokenId                  = params.CES_Token
+        hciConnId                   = params.HCI_Conn_ID
+        hciTokenId                  = params.HCI_Token
+        ccRepository                = params.CC_repository
     }
 
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
@@ -228,10 +227,10 @@ class PipelineConfig implements Serializable
             tsoUser         = lineToken.get(0).toString()
             emailAddress    = lineToken.get(1).toString().trim()
 
-            this.mailListMap."${tsoUser}" = "${emailAddress}"
+            mailListMap."${tsoUser}" = "${emailAddress}"
         }
 
-        this.mailRecipient  = mailListMap[(ispwOwner.toUpperCase())]
+        mailRecipient  = mailListMap[(ispwOwner.toUpperCase())]
     }
     
     def readConfigFile(String fileName)

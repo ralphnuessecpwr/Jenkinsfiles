@@ -26,6 +26,7 @@ String          cesToken
 def             componentList
 def             sonarProjectList
 def             messageText
+def             sourceResidenceLevel    // ISPW level at which the sources reside at the moment
 
 def initialize(pipelineParams)
 {
@@ -82,9 +83,12 @@ def initialize(pipelineParams)
         cesToken = cesTokenTemp
     }
 
-    componentList       = ispwHelper.getComponents(cesToken, pConfig.ispwContainer, pConfig.ispwContainerType)
-    sonarProjectList    = []
-    messageText         = ''
+    echo "Using cesToken ${cesToken}, setId ${pConfig.ispwSetId}, 2"
+
+    componentList        = ispwHelper.getComponents(cesToken, pConfig.ispwSetId, '2')
+    sonarProjectList     = []
+    messageText          = ''
+    sourceResidenceLevel = pConfig.ispwSrcLevel
 }
 
 def setupSonarProject(String sonarProjectType, String componentName, String sonarProjectGate)
@@ -122,7 +126,7 @@ def call(Map pipelineParams)
 
         stage("Download Assignment Sources")
         {
-            ispwHelper.downloadSources(pConfig.ispwSrcLevel)
+            ispwHelper.downloadSourcesForAssignment(sourceResidenceLevel)
             ispwHelper.downloadCopyBooks(workspace)
         }
 
