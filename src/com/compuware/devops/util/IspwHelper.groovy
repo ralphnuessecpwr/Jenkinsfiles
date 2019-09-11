@@ -153,6 +153,7 @@ class IspwHelper implements Serializable
 
     def getComponents(String cesToken, String container, String containerType)
     {
+        steps.echo "Got cesToken ${cesToken}, container ${container}, type ${containerType}"
         def containerTypeText
 
         switch(containerType) 
@@ -168,7 +169,7 @@ class IspwHelper implements Serializable
             break;
             default:
                 steps.echo "Invalid containerType " + containerType
-                steps.error "Aborting pipeline"
+                error "Aborting pipeline"
             break;
         }
 
