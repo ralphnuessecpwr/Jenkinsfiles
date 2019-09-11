@@ -125,20 +125,21 @@ private buildReport(componentStatusList)
                                         "\n\n- SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
                                         "\n\n"
 
-    def componentPassMessage        =   "\nThe program PASSED the Quality gate <sonarGate> and may reside in QA." +
+    def componentPassMessage        =   "\nThe program PASSED the Quality gate <sonarGate> and may remain in QA." +
                                         "\n\nSonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
                                         "\n\n"
 
     def reportFailMessage           =   "\n\n\nPrograms FAILING Quality Gates:"
-    def failingComponentsMessage    =   '\n\nNone'
+    def failingComponentsMessage    =   ''
 
     def reportPassMessage           =   "\n\n\nPrograms PASSING Quality Gates:"
-    def passingComponentsMessage    =   '\n\nNone'
+    def passingComponentsMessage    =   ''
 
     def mailMessageExtension        =   '\n\nDETAIL REPORTS'
 
     componentStatusList.each
     {
+        /*
         echo "Component " + it.key
         echo "status        : " + it.value.status
         echo "source status : " + it.value.sourceStatus
@@ -146,10 +147,11 @@ private buildReport(componentStatusList)
         echo "ft status     : " + it.value.ftStatus
         echo "gate          : " + it.value.sonarGate
         echo "project       : " + it.value.sonarProject
-
+        */
+        
         if(it.value.status == 'FAIL')
         {
-            failingComponentsMessage = "\n\nProgram ${it.key}: "
+            failingComponentsMessage = failingComponentsMessage + "\n\nProgram ${it.key}: "
 
             if(it.value.utStatus == 'UNKNOWN')
             {
@@ -167,7 +169,7 @@ private buildReport(componentStatusList)
         }
         else
         {
-            passingComponentsMessage = "\n\nProgram ${it.key}: "
+            passingComponentsMessage = passingComponentsMessage + "\n\nProgram ${it.key}: "
 
             if(it.value.utStatus == 'UNKNOWN')
             {
@@ -183,6 +185,16 @@ private buildReport(componentStatusList)
 
             passingComponentsMessage = passingComponentsMessage + componentMessage
         }
+    }
+
+    if(failingComponentsMessage == '')
+    {
+        failingComponentsMessage = '\nNone.'
+    }
+
+    if(passingComponentsMessage == '')
+    {
+        passingComponentsMessage = '\nNone.'
     }
 
     mailMessageExtension = mailMessageExtension + 

@@ -43,9 +43,12 @@ class SonarHelper implements Serializable {
             def sonarGate                           = 'RNU_Gate_Source'
             def scanType                            = 'source'
             
-            internalStatusList[it].sourceStatus = scanComponent(it, sonarProjectType, sonarGate, scanType)
+            def sonarProjectName    = determineProjectName(sonarProjectType, it) 
+
+            internalStatusList[it].sourceStatus = scanComponent(it, sonarProjectName, sonarGate, scanType)
             internalStatusList[it].status       = internalStatusList[it].sourceStatus
             internalStatusList[it].sonarGate    = sonarGate
+            internalStatusList[it].sonarProject = sonarProjectName
         }
 
         return internalStatusList
@@ -61,6 +64,8 @@ class SonarHelper implements Serializable {
             def scanType            = 'none'
             def sonarGate
 
+            def sonarProjectName    = determineProjectName(sonarProjectType, it) 
+
             // If unit tests were executed we scan test results
             if(listOfExecutedTargets.contains(it))
             {
@@ -69,9 +74,10 @@ class SonarHelper implements Serializable {
                 
                 steps.echo "Found Unit Tests"
 
-                internalStatusList[it].utStatus  = scanComponent(it, sonarProjectType, sonarGate, scanType)
-                internalStatusList[it].status    = internalStatusList[it].utStatus
-                internalStatusList[it].sonarGate = sonarGate
+                internalStatusList[it].utStatus     = scanComponent(it, sonarProjectName, sonarGate, scanType)
+                internalStatusList[it].status       = internalStatusList[it].utStatus
+                internalStatusList[it].sonarGate    = sonarGate
+                internalStatusList[it].sonarProject = sonarProjectName
             }
             // Else we scan sources only
             else
@@ -83,9 +89,10 @@ class SonarHelper implements Serializable {
 
                     steps.echo "No Unit Tests"
 
-                    internalStatusList[it].sourceStatus = scanComponent(it, sonarProjectType, sonarGate, scanType)
+                    internalStatusList[it].sourceStatus = scanComponent(it, sonarProjectName, sonarGate, scanType)
                     internalStatusList[it].status       = internalStatusList[it].sourceStatus
                     internalStatusList[it].sonarGate    = sonarGate
+                    internalStatusList[it].sonarProject = sonarProjectName
                 }
             }
         }
@@ -93,10 +100,9 @@ class SonarHelper implements Serializable {
         return internalStatusList
     }
 
-    def scanComponent(component, sonarProjectType, sonarGate, scanType)
+    def scanComponent(component, sonarProjectName, sonarGate, scanType)
     {
         def status              = ''
-        def sonarProjectName    = determineProjectName(sonarProjectType, component)
 
         setQualityGate(sonarGate, sonarProjectName)
 
