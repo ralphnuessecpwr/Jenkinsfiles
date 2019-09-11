@@ -139,6 +139,14 @@ private buildReport(componentStatusList)
 
     componentStatusList.each
     {
+        echo "Component " + it.key
+        echo "status        : " + it.value.status
+        echo "source status : " + it.value.sourceStatus
+        echo "ut status     : " + it.value.utStatus
+        echo "ft status     : " + it.value.ftStatus
+        echo "gate          : " + it.value.sonarGate
+        echo "project       : " + it.value.sonarProject
+
         if(it.value.status == 'FAIL')
         {
             failingComponentsMessage = "\n\nProgram ${it.key}: "
