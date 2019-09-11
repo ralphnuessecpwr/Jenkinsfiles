@@ -119,23 +119,23 @@ private initialize(pipelineParams)
 /* private method to build the report (mail content) at the end of execution */
 private buildReport(componentStatusList)
 {
-    def componentFailMessage    =   "\nThe program FAILED the Quality gate <sonarGate>, and will be regressed." +
-                                    "\nTo review results" +
-                                    "\n\n- JUnit reports       : ${BUILD_URL}/testReport/" +
-                                    "\n\n- SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
-                                    "\n\n"
+    def componentFailMessage        =   "\nThe program FAILED the Quality gate <sonarGate>, and will be regressed." +
+                                        "\nTo review results" +
+                                        "\n\n- JUnit reports       : ${BUILD_URL}/testReport/" +
+                                        "\n\n- SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
+                                        "\n\n"
 
-    def componentPassMessage    =   "\nThe program PASSED the Quality gate <sonarGate> and may reside in QA." +
-                                    "\n\nSonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
-                                    "\n\n"
+    def componentPassMessage        =   "\nThe program PASSED the Quality gate <sonarGate> and may reside in QA." +
+                                        "\n\nSonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
+                                        "\n\n"
 
-    def reportFailMessage       =   "\n\nPrograms FAILING Quality Gates:"
-    def reportPassMessage       =   "\n\nPrograms PASSING Quality Gates:"
+    def reportFailMessage           =   "\n\n\nPrograms FAILING Quality Gates:"
+    def failingComponentsMessage    =   '\n\nNone'
 
-    def mailMessageExtension = '\nDETAIL REPORTS'
+    def reportPassMessage           =   "\n\n\nPrograms PASSING Quality Gates:"
+    def passingComponentsMessage    =   '\n\nNone'
 
-    def failingComponentsMessage = '\n\nNone'
-    def passingComponentsMessage = '\n\nNone'
+    def mailMessageExtension        =   '\n\nDETAIL REPORTS'
 
     componentStatusList.each
     {
@@ -149,7 +149,7 @@ private buildReport(componentStatusList)
             }
             else
             {
-                reportFailMessage = reportFailMessage + "\n\nUnit tests were found and executed."
+                failingComponentsMessage = failingComponentsMessage + "\n\nUnit tests were found and executed."
             }
 
             componentMessage    = componentFailMessage.replace('<sonarGate>', it.value.sonarGate)
@@ -173,7 +173,7 @@ private buildReport(componentStatusList)
             componentMessage    = componentPassMessage.replace('<sonarGate>', it.value.sonarGate)
             componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
 
-            passingComponentsMessage = passingComponentsMessage + passingComponentsMessage
+            passingComponentsMessage = passingComponentsMessage + componentMessage
         }
     }
 
