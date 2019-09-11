@@ -90,7 +90,11 @@ class TttHelper implements Serializable {
     {
         listOfPrograms.each
         {
+            steps.echo "Checking for: " + it
+
             def listOfScenarioFullPaths = steps.findFiles(glob: '**/'+ it + '*.xactx')
+
+            steps.echo "List:" + listOfScenarioFullPaths.toString()
 
             if(listOfScenarioFullPaths != null)
             {
