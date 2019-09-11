@@ -86,14 +86,17 @@ class TttHelper implements Serializable {
         return listOfExecutedTargets        
     }
 
-    def executeFunctionalTests(String programName)
+    def executeFunctionalTests()
     {
-        steps.totaltest credentialsId:          "${pConfig.hciTokenId}", 
-            environmentId:                      "${pConfig.xaTesterEnvId}", 
-            folderPath:                         "${programName}_Functional_Tests", 
-            serverUrl:                          "${pConfig.ispwUrl}", 
-            stopIfTestFailsOrThresholdReached:  false,
-            sonarVersion:                       '6'
+        listOfPrograms.each
+        {
+            steps.totaltest credentialsId:          "${pConfig.hciTokenId}", 
+                environmentId:                      "${pConfig.xaTesterEnvId}", 
+                folderPath:                         "${it}_Functional_Tests", 
+                serverUrl:                          "${pConfig.ispwUrl}", 
+                stopIfTestFailsOrThresholdReached:  false,
+                sonarVersion:                       '6'
+        }
     }
 
     def passResultsToJunit()
