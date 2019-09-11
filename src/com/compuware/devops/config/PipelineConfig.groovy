@@ -98,15 +98,6 @@ class PipelineConfig implements Serializable
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
     def initialize()
     {
-        steps.dir(".\\") 
-        {
-            steps.deleteDir()
-        }
-
-        //GitHelper gitHelper     = new GitHelper(steps)
-
-        //gitHelper.checkoutPath(gitUrl, configGitBranch, configGitPath, gitCredentials, configGitProject)
-
         setServerConfig()
 
         setTttGitConfig()
