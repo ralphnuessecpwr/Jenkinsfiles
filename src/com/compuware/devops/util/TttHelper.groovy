@@ -95,9 +95,9 @@ class TttHelper implements Serializable {
             def listOfScenarioFullPaths = steps.findFiles(glob: '**/'+ it + '*.xactx')
 
             steps.echo "List:" + listOfScenarioFullPaths.toString()
-            steps.echo listOfScenarioFullPaths.size.toString()
+            steps.echo listOfScenarioFullPaths.size().toString()
 
-            if(listOfScenarioFullPaths.size > 0)
+            if(listOfScenarioFullPaths.size() > 0)
             {
                 steps.totaltest credentialsId:          "${pConfig.hciTokenId}", 
                     environmentId:                      "${pConfig.xaTesterEnvId}", 
