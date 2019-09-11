@@ -96,7 +96,7 @@ class TttHelper implements Serializable {
 
             steps.echo "List:" + listOfScenarioFullPaths.toString()
 
-            if(listOfScenarioFullPaths != null)
+            if(!listOfScenarioFullPaths.isEmpty)
             {
                 steps.totaltest credentialsId:          "${pConfig.hciTokenId}", 
                     environmentId:                      "${pConfig.xaTesterEnvId}", 
