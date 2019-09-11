@@ -260,6 +260,7 @@ def call(Map pipelineParams)
 
             /* Execute unit tests and retrieve list of programs that had unit tests*/
             //listOfExecutedTargets = tttHelper.executeFunctionalTests()
+            tttHelper.executeFunctionalTests()
 
             //echo "Executed targets " + listOfExecutedTargets.toString()
          
