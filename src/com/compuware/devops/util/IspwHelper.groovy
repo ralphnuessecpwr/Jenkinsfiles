@@ -84,13 +84,13 @@ class IspwHelper implements Serializable
     /* Download sources for the ISPW Set which triggered the current pipeline from a given level */
     def downloadSourcesForSet(String ispwLevel)
     {
-        downloadSources(ispwLevel, pConfig.ispwSetId, '2')
+        downloadSources(ispwLevel, ispwSetId, '2')
     }
 
     /* Download sources for the ISPW assignment from a given level */
     def downloadSourcesForAssignment(String ispwLevel)
     {
-        downloadSources(ispwLevel, pConfig.ispwAssignment, '0')
+        downloadSources(ispwLevel, ispwAssignment, '0')
     }
 
     /* Download copy books used in the downloaded sources  */
