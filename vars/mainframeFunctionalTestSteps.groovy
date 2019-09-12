@@ -224,15 +224,11 @@ def call(Map pipelineParams)
         }
         */
 
-        stage("React on previous results")
+        stage("Regress if no success")
         {
-            if(currentBuild.currentResult == 'SUCCESS')
+            if(currentBuild.currentResult != 'SUCCESS')
             {
-                echo "Success"
-            }
-            else
-            {
-                echo "Failures - would regress now"
+                ispwHelper.regressAssignment(pConfig.ispwAssignment, cesToken)
             }
         }
 
