@@ -11,6 +11,7 @@ GitHelper       gitHelper       // Helper class for interacting with git and Git
 IspwHelper      ispwHelper      // Helper class for interacting with ISPW
 TttHelper       tttHelper       // Helper class for interacting with Topaz for Total Test
 SonarHelper     sonarHelper     // Helper class for interacting with SonarQube
+XlrHelper       xlrHelper       // Helper class for interacting with XLRelease
 
 def             componentList           // List of components in the triggering set
 def             componentStatusList     // List/Map of comonents and their corresponding componentStatus
@@ -117,6 +118,9 @@ private initialize(pipelineParams)
     // Instantiate and initialize the Sonar Helper
     sonarHelper = new SonarHelper(this, steps, pConfig)
     sonarHelper.initialize()
+
+    // Instantiate and initialize the XLR Helper
+    xlrHelper   = new XlrHelper(steps, pConfig)
 
     sourceResidenceLevel = pConfig.ispwTargetLevel
 }
