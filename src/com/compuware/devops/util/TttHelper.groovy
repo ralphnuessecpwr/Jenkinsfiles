@@ -102,7 +102,7 @@ class TttHelper implements Serializable {
                     sonarVersion:                       '6'
             }
 
-            listOfExecutedTargets.add(programName)
+            listOfExecutedTargets.add(it)
         }
     }
 
