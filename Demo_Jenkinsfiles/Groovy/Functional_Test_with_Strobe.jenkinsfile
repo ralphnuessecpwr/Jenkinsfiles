@@ -59,8 +59,8 @@ node
                     //EMPFILE  DD  DISP=SHR,DSN=HDDRXM0.DEMO.CWXTDATA
                     //RPTFILE  DD  SYSOUT=*
                     //SYSUDUMP DD  SYSOUT=*
-                    //SYSOUT   DD  SYSOUT=*'''
-                    , maxConditionCode: '4'
+                    //SYSOUT   DD  SYSOUT=*''', 
+            maxConditionCode: '4'
         /*
         topazSubmitJclMembers connectionId: "${HCI_Conn_ID}", 
             credentialsId: "${HCI_Token}", 
