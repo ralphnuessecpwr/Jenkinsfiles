@@ -134,10 +134,10 @@ private buildReport(componentStatusList)
                                         "\n\nSonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
                                         "\n\n"
 
-    def reportFailMessage           =   "\n\n\nPrograms FAILING Quality Gates:"
+    def reportFailMessage           =   "\n\n\nPrograms FAILING Source or Unit Test Quality Gates:"
     def failingComponentsMessage    =   ''
 
-    def reportPassMessage           =   "\n\n\nPrograms PASSING Quality Gates:"
+    def reportPassMessage           =   "\n\n\nPrograms PASSING Source or Unit Test Quality Gates:"
     def passingComponentsMessage    =   ''
 
     def continueMessage             =   ''
@@ -312,6 +312,11 @@ def call(Map pipelineParams)
                     ],
                     propagate:  false,
                     wait:       true
+                
+                if(ftJob.getResult() != 'SUCCESS')
+                {
+                    pipelinePass = false
+                }
             }
             else
             {
@@ -324,13 +329,16 @@ def call(Map pipelineParams)
             }
         }
 
-//        stage("Trigger XL Release")
-//        {
-//            /* 
-//            This stage triggers a XL Release Pipeline that will move code into the high levels in the ISPW Lifecycle  
-//            */
-//            xlrHelper.triggerRelease()            
-//        }
+       stage("Trigger XL Release")
+       {
+           /* 
+           This stage triggers a XL Release Pipeline that will move code into the high levels in the ISPW Lifecycle  
+           */
+           if(pipelinePass)
+           {
+                xlrHelper.triggerRelease()            
+           }
+       }
         
         stage("Send Notifications")
         {
@@ -341,11 +349,9 @@ def call(Map pipelineParams)
                         replyTo:    '$DEFAULT_REPLYTO',
                         to:         "${pConfig.mailRecipient}"
         }
-/*
-        if(pipelineFail)
+        if(!pipelinePass)
         {
             currentBuild.result = 'FAILURE'
         }
-*/        
     }
 }
