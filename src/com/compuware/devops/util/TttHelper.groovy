@@ -115,6 +115,15 @@ class TttHelper implements Serializable {
             testResults:                  "TTTUnit/*.xml"
     }
 
+    def passFtResultsToJunit()
+    {
+        // Process the Total Test Junit result files into Jenkins
+        steps.junit allowEmptyResults:    true, 
+            keepLongStdio:                true,
+            healthScaleFactor:            0.0,  
+            testResults:                  "TTTReport/JUnitReport.xml"
+    }
+
     def collectCodeCoverageResults()
     {
         // Code Coverage needs to match the code coverage metrics back to the source code in order for them to be loaded in SonarQube
