@@ -122,90 +122,21 @@ private initialize(pipelineParams)
 /* private method to build the report (mail content) at the end of execution */
 private buildReport(componentStatusList)
 {
-    def componentFailMessage        =   "\nThe program FAILED the Quality gate <sonarGate>, and will be regressed." +
-                                        "\nTo review results" +
-                                        "\n\n- JUnit reports       : ${BUILD_URL}/testReport/" +
-                                        "\n\n- SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
-                                        "\n\n"
+    def mailMessageExtension    = 'Functional tests were executed for Programs:'
 
-    def componentPassMessage        =   "\nThe program PASSED the Quality gate <sonarGate> and may remain in QA." +
-                                        "\n\nSonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
-                                        "\n\n"
-
-    def reportFailMessage           =   "\n\n\nPrograms FAILING Quality Gates:"
-    def failingComponentsMessage    =   ''
-
-    def reportPassMessage           =   "\n\n\nPrograms PASSING Quality Gates:"
-    def passingComponentsMessage    =   ''
-
-    def mailMessageExtension        =   '\n\nDETAIL REPORTS'
-
-    componentStatusList.each
+    listOfExecutedTargets.each
     {
-        /*
-        echo "Component " + it.key
-        echo "status        : " + it.value.status
-        echo "source status : " + it.value.sourceStatus
-        echo "ut status     : " + it.value.utStatus
-        echo "ft status     : " + it.value.ftStatus
-        echo "gate          : " + it.value.sonarGate
-        echo "project       : " + it.value.sonarProject
-        */
-
-        if(it.value.status == 'FAIL')
-        {
-            failingComponentsMessage = failingComponentsMessage + "\n\nProgram ${it.key}: "
-
-            if(it.value.utStatus == 'UNKNOWN')
-            {
-                failingComponentsMessage = failingComponentsMessage + "\n\nNo unit tests were found. Only the source scan was taken into consideration."
-            }
-            else
-            {
-                failingComponentsMessage = failingComponentsMessage + "\n\nUnit tests were found and executed."
-            }
-
-            componentMessage    = componentFailMessage.replace('<sonarGate>', it.value.sonarGate)
-            componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
-
-            failingComponentsMessage = failingComponentsMessage + componentMessage
-        }
-        else
-        {
-            passingComponentsMessage = passingComponentsMessage + "\n\nProgram ${it.key}: "
-
-            if(it.value.utStatus == 'UNKNOWN')
-            {
-                passingComponentsMessage = passingComponentsMessage + "\n\nNo unit tests were found. Only the source scan was taken into consideration."
-            }
-            else
-            {
-                passingComponentsMessage = passingComponentsMessage + "\n\nUnit tests were found and executed."
-            }
-
-            componentMessage    = componentPassMessage.replace('<sonarGate>', it.value.sonarGate)
-            componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
-
-            passingComponentsMessage = passingComponentsMessage + componentMessage
-        }
+        mailMessageExtension = mailMessageExtension + "\n${it}"
     }
 
-    if(failingComponentsMessage == '')
+    if(currentBuild.currentResult == 'SUCCESS'
     {
-        failingComponentsMessage = '\nNone.'
+        mailMessageExtension = mailMessageExtension + "\n\n All tests were PASSED, and the tasks in assignment ${pConfig.ispwAssignment} and level ${pConfig.ispwTargetLevel} may be deployed."
     }
-
-    if(passingComponentsMessage == '')
+    else
     {
-        passingComponentsMessage = '\nNone.'
+        mailMessageExtension = mailMessageExtension + "\n\n Some tests were FAILED, and the tasks in assignment ${pConfig.ispwAssignment} and level ${pConfig.ispwTargetLevel} will be regressed."
     }
-
-    mailMessageExtension = mailMessageExtension + 
-        reportFailMessage + 
-        failingComponentsMessage +
-        reportPassMessage +
-        passingComponentsMessage
-
     return mailMessageExtension
 }
 
@@ -263,7 +194,7 @@ def call(Map pipelineParams)
 
             //echo "Executed targets " + listOfExecutedTargets.toString()
          
-            //tttHelper.passResultsToJunit()
+            tttHelper.passResultsToJunit()
 
             /* push results back to GitHub */
             //gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
@@ -291,31 +222,25 @@ def call(Map pipelineParams)
             checkStatus(componentStatusList)
         }
         */
-        /*
+
         stage("React on previous results")
         {
-            if(pipelinePass)
+            if(currentBuild.currentResult == 'SUCCESS')
             {
-                echo "I would run Functional tests now!"
+                echo "Success"
             }
             else
             {
-                componentStatusList.each
-                {
-                    if(it.value.status == 'FAIL')
-
-                    ispwHelper.regressTask(it.key, cesToken)
-                }
+                echo "Failures - would regress now"
             }
         }
-        */
 
         stage("Send Notifications")
         {
             def mailMessageExtension = buildReport(componentStatusList)
 
             emailext subject:       '$DEFAULT_SUBJECT',
-                        body:       '$DEFAULT_CONTENT \n' + "Executed Funtional Tests",
+                        body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,
                         replyTo:    '$DEFAULT_REPLYTO',
                         to:         "${pConfig.mailRecipient}"
         }
