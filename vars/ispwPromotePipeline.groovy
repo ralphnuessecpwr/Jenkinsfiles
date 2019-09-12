@@ -141,7 +141,7 @@ private buildReport(componentStatusList)
     def passingComponentsMessage    =   ''
 
     def continueMessage             =   ''
-    def mailMessageExtension        =   '\n\nDETAIL REPORTS'
+    def mailMessageExtension        =   '\n\n\nDETAIL REPORTS for initial verifications'
 
     componentStatusList.each
     {
@@ -187,7 +187,7 @@ private buildReport(componentStatusList)
     {
         failingComponentsMessage    = '\nNone.'
         continueMessage             = '\nExecution of functional tests was triggered. The result was: ' + ftJob.getResult() +
-            '\n\n A separated message with details was sent. To review detailed results, use' +
+            '\n\nA separated message with details was sent. To review detailed results, use' +
             '\n' + ftJob.getAbsoluteUrl()
     }
 
@@ -312,8 +312,6 @@ def call(Map pipelineParams)
                     ],
                     propagate:  false,
                     wait:       true
-
-                echo "Result from sub job: " + ftJob.getResult()
             }
             else
             {
