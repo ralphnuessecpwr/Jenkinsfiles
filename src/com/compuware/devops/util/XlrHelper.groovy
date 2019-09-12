@@ -17,7 +17,7 @@ class XlrHelper implements Serializable {
     def triggerRelease()
     {
         // Trigger XL Release Jenkins Plugin to kickoff a Release
-        steps.xlrCreateRelease(
+        def xlr = steps.xlrCreateRelease(
             releaseTitle:       'A Release for $BUILD_TAG',
             serverCredentials:  "${pConfig.xlrUser}",
             startRelease:       true,
@@ -28,6 +28,8 @@ class XlrHelper implements Serializable {
                                     [propertyName:  'CES_Token',        propertyValue: "${pConfig.cesTokenId}"]
                                 ]
         )
+
+        steps.echo "XLR: " + xlr.getClass().toString()
 
     }
 }
