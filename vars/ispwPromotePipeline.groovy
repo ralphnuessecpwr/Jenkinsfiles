@@ -299,7 +299,7 @@ def call(Map pipelineParams)
         {
             if(pipelinePass)
             {
-                ftJob = build job: "RNU_Functional_Tests", parameters: [
+                ftJob = build job: "RNU_FTSDEMO_Functional_Tests", parameters: [
                     string(name: 'ISPW_Stream',         value: pConfig.ispwStream),
                     string(name: 'ISPW_Application',    value: pConfig.ispwApplication),
                     string(name: 'ISPW_Release',        value: pConfig.ispwRelease),
