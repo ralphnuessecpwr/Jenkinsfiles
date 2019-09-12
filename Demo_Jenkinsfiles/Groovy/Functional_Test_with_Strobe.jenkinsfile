@@ -46,7 +46,7 @@ node
        
         topazSubmitJclMembers connectionId: "${HCI_Conn_ID}", 
             credentialsId: "${HCI_Token}", 
-            jclMember: 'HDDRXM0.DEMO.JCL(CWXTJCLC)', 
+            jclMember: 'HDDRXM0.DEMO.JCL(JNKNSJCL)', 
             maxConditionCode: '4'
 
     }
