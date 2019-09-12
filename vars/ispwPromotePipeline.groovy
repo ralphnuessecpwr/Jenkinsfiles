@@ -259,8 +259,6 @@ def call(Map pipelineParams)
             /* Execute unit tests and retrieve list of programs that had unit tests*/
             listOfExecutedTargets = tttHelper.loopThruScenarios()
 
-            echo "Executed targets " + listOfExecutedTargets.toString()
-         
             tttHelper.passResultsToJunit()
 
             /* push results back to GitHub */

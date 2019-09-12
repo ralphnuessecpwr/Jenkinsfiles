@@ -251,8 +251,7 @@ def call(Map pipelineParams)
             gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
 
             /* initialize requires the TTT projects to be present in the Jenkins workspace, therefore it can only execute after downloading from GitHub */
-            /* By now componentList only contains those components that have passed the source scan */
-            tttHelper.initialize(componentList)  
+            listOfExecutedTargets = tttHelper.initialize(componentList)  
 
             /* Clean up Code Coverage results from previous run */
             //No CodeCoverage yet 

@@ -90,12 +90,7 @@ class TttHelper implements Serializable {
     {
         listOfPrograms.each
         {
-            steps.echo "Checking for: " + it
-
             def listOfScenarioFullPaths = steps.findFiles(glob: '**/'+ it + '*.xactx')
-
-            steps.echo "List:" + listOfScenarioFullPaths.toString()
-            steps.echo listOfScenarioFullPaths.size().toString()
 
             if(listOfScenarioFullPaths.size() > 0)
             {
@@ -106,6 +101,8 @@ class TttHelper implements Serializable {
                     stopIfTestFailsOrThresholdReached:  false,
                     sonarVersion:                       '6'
             }
+
+            listOfExecutedTargets.add(programName)
         }
     }
 
