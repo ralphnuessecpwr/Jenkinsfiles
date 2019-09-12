@@ -306,7 +306,7 @@ def call(Map pipelineParams)
                     string(name: 'HCI_Token',           value: pConfig.hciTokenId),
                     string(name: 'CC_repository',       value: pConfig.ccRepository)
                     ],
-                    propagate;  false,
+                    propagate:  false,
                     wait:       true
 
                 echo "Result from sub job: " + ftJob.getResult()
