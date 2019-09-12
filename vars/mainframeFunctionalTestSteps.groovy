@@ -135,7 +135,8 @@ private buildReport(componentStatusList)
     }
     else
     {
-        mailMessageExtension = mailMessageExtension + "\n\n Some tests were FAILED, and the tasks in assignment ${pConfig.ispwAssignment} and level ${pConfig.ispwTargetLevel} will be regressed."
+        mailMessageExtension = mailMessageExtension + "\n\n Some tests were FAILED, and the tasks in assignment ${pConfig.ispwAssignment} and level ${pConfig.ispwTargetLevel} will be regressed." +
+            "\n\nTest results may be reviewed at ${BUILD_URL}/testReport/"
     }
     return mailMessageExtension
 }
