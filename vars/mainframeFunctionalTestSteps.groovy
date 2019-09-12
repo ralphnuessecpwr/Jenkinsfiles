@@ -194,7 +194,7 @@ def call(Map pipelineParams)
 
             //echo "Executed targets " + listOfExecutedTargets.toString()
          
-            tttHelper.passResultsToJunit()
+            tttHelper.passFtResultsToJunit()
 
             /* push results back to GitHub */
             //gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
