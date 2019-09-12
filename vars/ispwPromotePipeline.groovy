@@ -24,6 +24,8 @@ def             listOfExecutedTargets   // List of program names for which unit 
 String          cesToken                // Clear text token from CES
 def             sourceResidenceLevel    // ISPW level at which the sources reside at the moment
 
+def             ftJob                   // Object returned by triggering an external Jenkins job
+
 private initialize(pipelineParams)
 {
     pipelinePass = true
@@ -184,7 +186,9 @@ private buildReport(componentStatusList)
     if(failingComponentsMessage == '')
     {
         failingComponentsMessage    = '\nNone.'
-        continueMessage             = '\nExecution of functional tests will be triggered'
+        continueMessage             = '\nExecution of functional tests was triggered. The result was: ' + ftJob.getResult() +
+            '\n\n A separated message with details was sent. To review detailed results, use' +
+            '\n' + ftJob.getAbsoluteUrl()
     }
 
     if(passingComponentsMessage == '')
@@ -287,11 +291,11 @@ def call(Map pipelineParams)
             checkStatus(componentStatusList)
         }
 
-        stage("React on previous results")
+        stage("Based on results: Trigger Functional Test Job or Regress Failing Tasks")
         {
             if(pipelinePass)
             {
-                def ftJob = build job: "RNU_Functional_Tests", parameters: [
+                ftJob = build job: "RNU_Functional_Tests", parameters: [
                     string(name: 'ISPW_Stream',         value: pConfig.ispwStream),
                     string(name: 'ISPW_Application',    value: pConfig.ispwApplication),
                     string(name: 'ISPW_Release',        value: pConfig.ispwRelease),
