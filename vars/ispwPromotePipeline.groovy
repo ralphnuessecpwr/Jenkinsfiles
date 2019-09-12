@@ -138,6 +138,7 @@ private buildReport(componentStatusList)
     def reportPassMessage           =   "\n\n\nPrograms PASSING Quality Gates:"
     def passingComponentsMessage    =   ''
 
+    def continueMessage             =   ''
     def mailMessageExtension        =   '\n\nDETAIL REPORTS'
 
     componentStatusList.each
@@ -182,7 +183,8 @@ private buildReport(componentStatusList)
 
     if(failingComponentsMessage == '')
     {
-        failingComponentsMessage = '\nNone.'
+        failingComponentsMessage    = '\nNone.'
+        continueMessage             = '\nExecution of functional tests will be triggered'
     }
 
     if(passingComponentsMessage == '')
@@ -190,7 +192,8 @@ private buildReport(componentStatusList)
         passingComponentsMessage = '\nNone.'
     }
 
-    mailMessageExtension = mailMessageExtension + 
+    mailMessageExtension = continueMessage + 
+        mailMessageExtension + 
         reportFailMessage + 
         failingComponentsMessage +
         reportPassMessage +
@@ -288,9 +291,7 @@ def call(Map pipelineParams)
         {
             if(pipelinePass)
             {
-                echo "I would run Functional tests now!"
-
-                build job: "RNU_Functional_Tests", parameters: [
+                def ftJob = build job: "RNU_Functional_Tests", parameters: [
                     string(name: 'ISPW_Stream',         value: pConfig.ispwStream),
                     string(name: 'ISPW_Application',    value: pConfig.ispwApplication),
                     string(name: 'ISPW_Release',        value: pConfig.ispwRelease),
@@ -304,7 +305,11 @@ def call(Map pipelineParams)
                     string(name: 'HCI_Conn_ID',         value: pConfig.hciConnId),
                     string(name: 'HCI_Token',           value: pConfig.hciTokenId),
                     string(name: 'CC_repository',       value: pConfig.ccRepository)
-                    ]
+                    ],
+                    propagate;  false,
+                    wait:       true
+
+                echo "Result from sub job: " + ftJob.getResult()
             }
             else
             {

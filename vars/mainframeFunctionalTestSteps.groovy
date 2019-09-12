@@ -244,11 +244,5 @@ def call(Map pipelineParams)
                         replyTo:    '$DEFAULT_REPLYTO',
                         to:         "${pConfig.mailRecipient}"
         }
-/*
-        if(pipelineFail)
-        {
-            currentBuild.result = 'FAILURE'
-        }
-*/        
     }
 }
