@@ -129,7 +129,7 @@ private buildReport(componentStatusList)
         mailMessageExtension = mailMessageExtension + "\n${it}"
     }
 
-    if(currentBuild.currentResult == 'SUCCESS'
+    if(currentBuild.currentResult == 'SUCCESS')
     {
         mailMessageExtension = mailMessageExtension + "\n\n All tests were PASSED, and the tasks in assignment ${pConfig.ispwAssignment} and level ${pConfig.ispwTargetLevel} may be deployed."
     }
