@@ -145,7 +145,7 @@ class SonarHelper implements Serializable {
             case 'source':
                 break;
             case "UT":
-                scanTestPath        = 'tests\\' + scanProgramName + '_Tech_Summit'
+                scanTestPath        = 'tests\\' + scanProgramName + '_TS_Pipeline'
                 scanResultPath      = determineUtResultPath(scanProgramName)
                 scanCoveragePath    = "Coverage/CodeCoverage.xml"
                 break;
