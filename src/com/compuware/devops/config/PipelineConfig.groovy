@@ -85,8 +85,8 @@ class PipelineConfig implements Serializable
         this.gitCredentials              = params.Git_Credentials
         
         this.gitUrl                      = "https://github.com/${gitProject}"
-        this.gitTttRepo                  = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
-        this.gitTttUtRepo                = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
+        this.gitTttRepo                  = "${ispwStream}_${ispwApplication}_Tech_Summit.git"
+        this.gitTttUtRepo                = "${ispwStream}_${ispwApplication}_Tech_Summit.git"
         this.gitTttFtRepo                = "${ispwStream}_${ispwApplication}_Functional_Tests.git"
 
         this.cesTokenId                  = params.CES_Token
