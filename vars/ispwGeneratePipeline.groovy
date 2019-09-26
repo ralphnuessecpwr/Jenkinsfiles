@@ -233,6 +233,9 @@ def call(Map pipelineParams)
          
             tttHelper.passResultsToJunit()
 
+            echo "After JUnit current Result: " + currentBuild.currentResult
+            echo "After JUnit current Result: " + currentBuild.result
+
             /* push results back to GitHub */
             gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
         }
