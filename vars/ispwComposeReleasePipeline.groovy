@@ -79,14 +79,24 @@ private initialize(pipelineParams)
 
 private createRelease()
 {
-    ispwOperation connectionId: pConfig.hciConnId, 
-        consoleLogResponseBody: true, 
-        credentialsId: pConfig.cesTokenId, 
-        ispwAction: 'CreateRelease', 
-        ispwRequestBody: """stream=${pConfig.ispwStream}
-            application=${pConfig.ispwApplication}
-            releaseId=${pConfig.ispwRelease}
-            description=Default Description"""
+    try
+    {
+        def response = ispwOperation connectionId: pConfig.hciConnId, 
+            consoleLogResponseBody: true, 
+            credentialsId: pConfig.cesTokenId, 
+            ispwAction: 'CreateRelease', 
+            ispwRequestBody: """stream=${pConfig.ispwStream}
+                application=${pConfig.ispwApplication}
+                releaseId=${pConfig.ispwRelease}
+                description=Default Description"""
+    }
+    catch (IllegalStateException e)
+    {
+        if(!response.message.contains('Another Release exists with the identifier')
+        {
+            error
+        }
+    }
 
     mailMessageExtension = mailMessageExtension + "Created release " + pConfig.ispwRelease + ".\n"
 }
