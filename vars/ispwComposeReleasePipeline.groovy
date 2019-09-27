@@ -151,7 +151,7 @@ private addAssignments()
             )
         }
 
-        mailMessageExtension = mailMessageExtension + "Added all tasks in assignment " + pConfig.ispwAssigment + " to Release " + pConfig.ispwRelease + ".\n"
+        mailMessageExtension = mailMessageExtension + "Added all tasks in assignment " + pConfig.ispwAssignment + " to Release " + pConfig.ispwRelease + ".\n"
     }
 }
 
@@ -205,7 +205,7 @@ private removeAssignments()
             )
         }
 
-        mailMessageExtension = mailMessageExtension + "Removed all tasks in assignment " + pConfig.ispwAssigment + " from Release " + pConfig.ispwRelease + ".\n"
+        mailMessageExtension = mailMessageExtension + "Removed all tasks in assignment " + pConfig.ispwAssignment + " from Release " + pConfig.ispwRelease + ".\n"
     }
 }
 
