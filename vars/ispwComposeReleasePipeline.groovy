@@ -205,8 +205,8 @@ private addAssignments()
 
     echo "assigmentList: " + assignmentList.getClass()
 
-//    assignmentList.each
-//    {
+    assignmentList.each
+    {
         def currentAssignment = 'RXN3000022'
         def fail    = false 
 /*
@@ -268,7 +268,7 @@ private addAssignments()
                 echo "Transfer complete"
             }
         }
-//    }
+    }
 }
 
 private removeAssignments()
