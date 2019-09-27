@@ -244,7 +244,7 @@ private addAssignments()
             taskList.each
             {
                 echo "Task " + it.moduleName
-
+                /*
                 httpRequest(
                     httpMode:                   'POST',
                     url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${currentAssignment}/tasks/transfer?mname=${it.moduleName}",
@@ -266,7 +266,7 @@ private addAssignments()
                                                 ]]
                     
                 )
-
+                */
                 echo "Transfer complete"
             }
         }
