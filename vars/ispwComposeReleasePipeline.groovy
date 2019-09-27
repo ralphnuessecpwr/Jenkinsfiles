@@ -207,11 +207,16 @@ private addAssignments()
     {
         def currentAssignent = it
 
-        def response = ispwOperation connectionId: pConfig.hciConnId, 
-            consoleLogResponseBody: true, 
-            credentialsId: pConfig.cesTokenId, 
-            ispwAction: 'GetAssignmentTaskList', 
-            ispwRequestBody: """assignmentId=${it}"""
+        def response        = steps.httpRequest(
+            url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${it}/tasks",
+            consoleLogResponseBody:     false, 
+            customHeaders:              [[
+                                        maskValue:  true, 
+                                        name:       'authorization', 
+                                        value:      "${pConfig.cesToken}"
+                                        ]]
+            
+            )
         
         def jsonSlurper = new JsonSlurper()
         def resp        = jsonSlurper.parseText(response.getContent())
