@@ -209,7 +209,7 @@ private addAssignments()
 
         def response        = httpRequest(
             url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${it}/tasks",
-            consoleLogResponseBody:     false, 
+            consoleLogResponseBody:     true, 
             customHeaders:              [[
                                         maskValue:  true, 
                                         name:       'authorization', 
@@ -270,7 +270,7 @@ private addAssignments()
                                                 value:      "${cesToken}"
                                                 ]]
                     
-                    )
+                )
 
                 echo "Transfer complete"
             }
