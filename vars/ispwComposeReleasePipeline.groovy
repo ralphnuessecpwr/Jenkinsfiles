@@ -246,10 +246,10 @@ private addAssignments()
         if(!fail)
         {
             echo "Will transfer tasks"
-            
+
             taskList.each
             {
-                echo "Task " + it
+                echo "Task " + it.moduleName
 
                 ispwOperation connectionId: pConfig.hciConnId, 
                     consoleLogResponseBody: true, 
@@ -257,11 +257,14 @@ private addAssignments()
                     ispwAction: 'TransferTask', 
                     ispwRequestBody: """runtimeConfiguration=${pConfig.ispwRuntime}
                         assignmentId=${currentAssignment}
-                        mname=${it}
+                        mname=${it.moduleName}
                         containerId=${pConfig.ispwRelease}
                         containerType=R"""
             }
         }
+
+        resp        = null
+        taskList    = null
     }
 }
 
