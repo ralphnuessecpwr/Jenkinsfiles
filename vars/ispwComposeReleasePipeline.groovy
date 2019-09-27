@@ -200,7 +200,12 @@ private createRelease()
 
 private addAssignments()
 {
+    def assignmentList = ISPW_Assignment_List.split(',').collect{it.trim() as String}
 
+    assignmentList.each
+    {
+        echo "Will add assignment " + it
+    }
 }
 
 private removeAssignments()
