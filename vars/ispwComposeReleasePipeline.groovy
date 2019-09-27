@@ -208,7 +208,6 @@ private addAssignments()
     assignmentList.each
     {
         def currentAssignment = it
-        def fail    = false 
 
         def response        = httpRequest(
             url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${it}/tasks",
