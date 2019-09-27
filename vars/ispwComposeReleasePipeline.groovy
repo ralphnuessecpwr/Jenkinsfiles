@@ -213,7 +213,7 @@ private addAssignments()
             customHeaders:              [[
                                         maskValue:  true, 
                                         name:       'authorization', 
-                                        value:      "${pConfig.cesTokenId}"
+                                        value:      "${cesToken}"
                                         ]]
             
             )
