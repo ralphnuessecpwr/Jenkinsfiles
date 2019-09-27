@@ -260,7 +260,7 @@ private addAssignments()
                     customHeaders:              [[
                                                 maskValue:  true, 
                                                 name:       'Authorization', 
-                                                value:      cesToken}
+                                                value:      cesToken
                                                 ]]
                     
                 )
