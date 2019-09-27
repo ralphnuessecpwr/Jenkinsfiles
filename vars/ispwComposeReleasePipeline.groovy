@@ -220,6 +220,8 @@ private addAssignments()
         
         def jsonSlurper = new JsonSlurper()
         def resp        = jsonSlurper.parseText(response.getContent())
+        
+        jsonSlurper = null
 
         if(resp.message != null)
         {
@@ -266,8 +268,6 @@ private addAssignments()
                 }
             }
         }
-
-        jsonSlurper = null
     }
 }
 
