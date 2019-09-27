@@ -9,6 +9,7 @@ import com.compuware.devops.util.*
 */
 PipelineConfig  pConfig         // Pipeline configuration parameters
 IspwHelper      ispwHelper      // Helper class for interacting with ISPW
+XlrHelper       xlrHelper       // Helper class for interacting with XLRelease
 
 String          cesToken                // Clear text token from CES
 String          mailMessageExtension
@@ -73,6 +74,9 @@ private initialize(pipelineParams)
                             steps, 
                             pConfig
                         )
+
+    // Instantiate and initialize the XLR Helper
+    xlrHelper   = new XlrHelper(steps, pConfig)
 
     mailMessageExtension = ''
 }
@@ -210,6 +214,45 @@ private removeAssignments()
     }
 }
 
+private releaseReady()
+{
+    def releaseReady        = true
+
+    def failAssignmentList  = []
+
+    def response        = httpRequest(
+        url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/releases/${pConfig.ispwRelease}/tasks",
+        consoleLogResponseBody:     true, 
+        customHeaders:              [[
+                                    maskValue:  true, 
+                                    name:       'authorization', 
+                                    value:      "${cesToken}"
+                                    ]]
+        
+        )
+
+    def taskList        = new JsonSlurper().parseText(response.getContent()).tasks
+
+    taskList.each
+    {
+        if(
+            it.level = 'DEV1' ||
+            it.level = 'DEV2' ||
+            it.level = 'DEV3'
+        )
+        {
+            releaseReady     = false
+
+            if(!failAssignmentList.contains(it.container))
+            {
+                failAssignmentList.add(it.container)
+            }
+        }
+    }
+
+    return releaseReady
+}
+
 /**
 Call method to execute the pipeline from a shared library
 @param pipelineParams - Map of paramter/value pairs
@@ -242,6 +285,27 @@ def call(Map pipelineParams)
 
                 case "remove Assignments":
                     removeAssignments()
+                break
+
+                case "trigger Release":
+
+                    if(releaseReady())
+                    {
+                        xlrHelper.triggerRelease()
+
+                        mailMessageExtension = mailMessageExtension + "Triggered XL Release for " + pConfig.ispwRelease + ".\n"
+                    }
+                    else
+                    {
+                        mailMessageExtension = mailMessageExtension + "Some assignments for Release " + pConfig.ispwRelease + "still contain tasks in development.\n" +
+                            "The release cannot be triggered. Either remove those tasks from the assignments or remove the assignments from the release:\n\n"
+
+                        failAssignmentList.each
+                        {
+                            mailMessageExtension = mailMessageExtension + it + "\n"
+                        }
+                    }
+
                 break
 
                 default:
