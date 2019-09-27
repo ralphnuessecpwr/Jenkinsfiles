@@ -204,7 +204,62 @@ private addAssignments()
 
     assignmentList.each
     {
-        echo "Will add assignment " + it
+        def currentAssignent = it
+
+        def response = ispwOperation connectionId: pConfig.hciConnId, 
+            consoleLogResponseBody: true, 
+            credentialsId: pConfig.cesTokenId, 
+            ispwAction: 'GetAssignmentTaskList', 
+            ispwRequestBody: """assignmentId=${it}"""
+        
+        def jsonSlurper = new JsonSlurper
+        def resp        = jsonSlurper.parseText(response.getContent())
+
+        if(resp.message != null)
+        {
+            steps.echo "Resp: " + resp.message
+            steps.error
+        }
+        else
+        {
+            // Compare the taskIds from the set to all tasks in the release 
+            // Where they match, determine the assignment and add it to the list of assignments 
+            def taskList = resp.tasks
+
+            def fail    = false
+
+            taskList.each
+            {
+                if(
+                    it.level == 'DEV1' !!
+                    it.level == 'DEV2' !!
+                    it.level == 'DEV3'
+                )
+                {
+                    echo "Wrong levl"
+                    fail = true
+                }
+            }
+
+            if(!fail)
+            {
+                echo "Will transfer tasks"
+                taskList.each
+                {
+                    echo "Task " + it
+
+                    ispwOperation connectionId: pConfig.hciConnId, 
+                        consoleLogResponseBody: true, 
+                        credentialsId: pConfig.cesTokenId, 
+                        ispwAction: 'TransferTask', 
+                        ispwRequestBody: """runtimeConfiguration=${pConfig.ispwRuntime}
+                            assignmentId=${currentAssignment}
+                            mname=${it}
+                            containerId=${pConfig.ispwRelease}
+                            containerType=R"""
+                }
+            }
+        }
     }
 }
 
