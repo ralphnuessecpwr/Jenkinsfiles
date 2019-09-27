@@ -186,6 +186,28 @@ private checkStatus(componentStatusList)
     }
 }
 
+private createRelease()
+{
+    ispwOperation connectionId: pConfig.hciConnId, 
+        consoleLogResponseBody: true, 
+        credentialsId: pCOnfig.cesTokenId, 
+        ispwAction: 'CreateRelease', 
+        ispwRequestBody: """stream=${pConfig.ispwStream}
+            application=${pConfig.ispwApplication}
+            releaseId=${pConfig.ispwRelease}
+            description=Default Description"""
+}
+
+private addAssignments()
+{
+
+}
+
+private removeAssignments()
+{
+
+}
+
 /**
 Call method to execute the pipeline from a shared library
 @param pipelineParams - Map of paramter/value pairs
@@ -205,7 +227,25 @@ def call(Map pipelineParams)
         /* Download all sources that are part of the container  */
         stage("Determine Action")
         {
-            echo "Action :" + pipelineParams.Release_Action
+            switch(pipelineParams.Release_Action) 
+            {
+                case "create Release":
+                    createRelease
+                    addAssignments
+                break
+
+                case "add Assignments":
+                    addAssignments
+                break
+
+                case "remove Assignments":
+                    removeAssignments
+                break
+
+                default:
+                    echo "Wrong Action Code"
+                break
+            }
         }
 
         // Scan sources and fail fast
