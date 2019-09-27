@@ -250,7 +250,7 @@ private releaseReady()
         }
     }
 
-    return releaseReady
+    return failAssignmentList
 }
 
 /**
@@ -289,7 +289,9 @@ def call(Map pipelineParams)
 
                 case "trigger Release":
 
-                    if(releaseReady())
+                    def failAssignmentList = releaseReady()
+
+                    if(failAssignmentList.size() == 0)
                     {
                         xlrHelper.triggerRelease()
 
