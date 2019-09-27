@@ -205,10 +205,11 @@ private addAssignments()
 
     echo "assigmentList: " + assignmentList.getClass()
 
-    assignmentList.each
-    {
-        def currentAssignment = it
-
+//    assignmentList.each
+//    {
+        def currentAssignment = 'RXN3000022'
+        def fail    = false 
+/*
         def response        = httpRequest(
             url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${it}/tasks",
             consoleLogResponseBody:     true, 
@@ -236,7 +237,7 @@ private addAssignments()
                 fail = true
             }
         }
-
+*/
         componentList = ['CWXTCOB','CWXTDATE','CWXTSUBC']
 
         if(!fail)
