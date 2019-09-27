@@ -205,7 +205,7 @@ private addAssignments()
 
     assignmentList.each
     {
-        def currentAssignent = it
+        def currentAssignment = it
 
         def response        = steps.httpRequest(
             url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${it}/tasks",
@@ -242,7 +242,7 @@ private addAssignments()
                     it.level == 'DEV3'
                 )
                 {
-                    echo "Wrong levl"
+                    echo "Wrong level"
                     fail = true
                 }
             }
