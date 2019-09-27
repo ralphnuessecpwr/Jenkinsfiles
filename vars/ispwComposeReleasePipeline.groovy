@@ -91,12 +91,13 @@ private createRelease()
                 application=${pConfig.ispwApplication}
                 releaseId=${pConfig.ispwRelease}
                 description=Default Description"""
+        
+        mailMessageExtension = mailMessageExtension + "Created release " + pConfig.ispwRelease + ".\n"
     }
     catch (IllegalStateException e)
     {
+        mailMessageExtension = mailMessageExtension + "Release " + pConfig.ispwRelease + " already existed. Assignments were added.\n"
     }
-
-    mailMessageExtension = mailMessageExtension + "Created release " + pConfig.ispwRelease + ".\n"
 }
 
 private addAssignments()
