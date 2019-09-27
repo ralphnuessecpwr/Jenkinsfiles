@@ -79,9 +79,11 @@ private initialize(pipelineParams)
 
 private createRelease()
 {
+    def response
+    
     try
     {
-        def response = ispwOperation connectionId: pConfig.hciConnId, 
+        response = ispwOperation connectionId: pConfig.hciConnId, 
             consoleLogResponseBody: true, 
             credentialsId: pConfig.cesTokenId, 
             ispwAction: 'CreateRelease', 
