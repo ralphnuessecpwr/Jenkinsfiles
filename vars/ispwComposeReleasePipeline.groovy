@@ -220,7 +220,9 @@ private addAssignments()
                                         ]]
             
             )
-        /*
+        
+        def componentList = []
+
         def taskList = new JsonSlurper().parseText(response.getContent()).tasks
 
         def fail    = false
@@ -237,7 +239,7 @@ private addAssignments()
                 fail = true
             }
         }
-        */
+
         componentList = ['CWXTCOB','CWXTDATE','CWXTSUBC']
 
         if(!fail)
