@@ -207,7 +207,7 @@ private addAssignments()
     {
         def currentAssignment = it
 
-        def response        = steps.httpRequest(
+        def response        = httpRequest(
             url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${it}/tasks",
             consoleLogResponseBody:     false, 
             customHeaders:              [[
@@ -252,16 +252,25 @@ private addAssignments()
             {
                 echo "Task " + it.moduleName
 
-                ispwOperation connectionId: pConfig.hciConnId, 
-                    consoleLogResponseBody: true, 
-                    credentialsId: pConfig.cesTokenId, 
-                    ispwAction: 'TransferTask', 
-                    ispwRequestBody: """runtimeConfiguration=${pConfig.ispwRuntime}
-                        assignmentId=${currentAssignment}
-                        mname=${it.moduleName}
-                        containerId=${pConfig.ispwRelease}
-                        containerType=R"""
-            
+                def jsonBody = '''{
+                    "runtimeConfiguration": "''' + pConfig.ispwRuntime + '''",
+                    "mname": "''' + it.moduleName + '''",
+                    "containerId": "''' + pConfig.ispwRelease + '''",
+                    "containerType": "R"
+                }'''
+
+                def response        = httpRequest(
+                    url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${currentAssignment}/tasks/transfer",
+                    consoleLogResponseBody:     true, 
+                    requestBody:                jsonBody,
+                    customHeaders:              [[
+                                                maskValue:  true, 
+                                                name:       'authorization', 
+                                                value:      "${cesToken}"
+                                                ]]
+                    
+                    )
+
                 echo "Transfer complete"
             }
         }
