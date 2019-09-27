@@ -207,7 +207,7 @@ private addAssignments()
 
     assignmentList.each
     {
-        def currentAssignment = 'RXN3000022'
+        def currentAssignment = it
         def fail    = false 
 
         def response        = httpRequest(
