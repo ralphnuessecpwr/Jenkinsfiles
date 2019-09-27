@@ -254,20 +254,24 @@ private addAssignments()
 
                 def jsonBody = '''{
                     "runtimeConfiguration": "''' + pConfig.ispwRuntime + '''",
-                    "mname": "''' + it.moduleName + '''",
                     "containerId": "''' + pConfig.ispwRelease + '''",
                     "containerType": "R"
                 }'''
 
                 httpRequest(
                     httpMode:                   'POST',
-                    url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${currentAssignment}/tasks/transfer",
+                    url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${currentAssignment}/tasks/transfer?mname=${it.moduleName}",
                     consoleLogResponseBody:     true, 
                     requestBody:                jsonBody,
                     customHeaders:              [[
                                                 maskValue:  true, 
                                                 name:       'authorization', 
                                                 value:      "${cesToken}"
+                                                ],
+                                                [
+                                                maskValue: false, 
+                                                name: 'content-type', 
+                                                value: 'application/json'
                                                 ]]
                     
                 )
