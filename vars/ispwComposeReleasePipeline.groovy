@@ -194,6 +194,9 @@ def call(Map pipelineParams)
         stage("Initialization")
         {
             initialize(pipelineParams) 
+            echo "Determined"
+            echo "Application   :" + pConfig.ispApplication
+            echo "Release       :" + pConfig.ispRelease
         }
                 
         /* Download all sources that are part of the container  */
