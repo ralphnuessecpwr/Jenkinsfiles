@@ -198,8 +198,8 @@ def call(Map pipelineParams)
         {
             initialize(pipelineParams) 
             echo "Determined"
-            echo "Application   :" + pConfig.ispApplication
-            echo "Release       :" + pConfig.ispRelease
+            echo "Application   :" + pConfig.ispwApplication
+            echo "Release       :" + pConfig.ispwRelease
         }
                 
         /* Download all sources that are part of the container  */
