@@ -212,7 +212,7 @@ private addAssignments()
             ispwAction: 'GetAssignmentTaskList', 
             ispwRequestBody: """assignmentId=${it}"""
         
-        def jsonSlurper = new JsonSlurper
+        def jsonSlurper = new JsonSlurper()
         def resp        = jsonSlurper.parseText(response.getContent())
 
         if(resp.message != null)
