@@ -1,4 +1,5 @@
 #!/usr/bin/env groovy
+import groovy.json.JsonSlurper
 import com.compuware.devops.config.*
 import com.compuware.devops.jclskeleton.*
 import com.compuware.devops.util.*
