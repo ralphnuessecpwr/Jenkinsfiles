@@ -92,7 +92,7 @@ private createRelease()
     }
     catch (IllegalStateException e)
     {
-        if(!response.message.contains('Another Release exists with the identifier')
+        if(!response.message.contains('Another Release exists with the identifier'))
         {
             error
         }
