@@ -80,7 +80,7 @@ private initialize(pipelineParams)
 private createRelease()
 {
     def response
-    
+
     try
     {
         response = ispwOperation connectionId: pConfig.hciConnId, 
@@ -94,10 +94,6 @@ private createRelease()
     }
     catch (IllegalStateException e)
     {
-        if(!response.message.contains('Another Release exists with the identifier'))
-        {
-            error
-        }
     }
 
     mailMessageExtension = mailMessageExtension + "Created release " + pConfig.ispwRelease + ".\n"
