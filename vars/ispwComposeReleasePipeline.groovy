@@ -54,7 +54,11 @@ private initialize(pipelineParams)
         mailListlines = mailConfigFile.readLines()
     }
 
-    pipelineParams.ISPW_Owner = pipelineParams.User_Id
+    pipelineParams.ISPW_Assignment  = ''
+    pipelineParams.ISPW_Set_Id      = ''
+    pipelineParams.ISPW_Owner       = pipelineParams.User_Id
+    pipelineParams.ISPW_Src_Level   = ''
+
 
     // Instantiate and initialize Pipeline Configuration settings
     pConfig     = new   PipelineConfig(
