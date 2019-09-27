@@ -298,7 +298,7 @@ def call(Map pipelineParams)
             switch(pipelineParams.Release_Action) 
             {
                 case "create Release":
-                    createRelease()
+                    //createRelease()
                     addAssignments()
                 break
 
