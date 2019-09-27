@@ -209,7 +209,7 @@ private addAssignments()
     {
         def currentAssignment = 'RXN3000022'
         def fail    = false 
-/*
+
         def response        = httpRequest(
             url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${it}/tasks",
             consoleLogResponseBody:     true, 
@@ -220,7 +220,7 @@ private addAssignments()
                                         ]]
             
             )
-        
+        /*
         def taskList = new JsonSlurper().parseText(response.getContent()).tasks
 
         def fail    = false
@@ -237,7 +237,7 @@ private addAssignments()
                 fail = true
             }
         }
-*/
+        */
         componentList = ['CWXTCOB','CWXTDATE','CWXTSUBC']
 
         if(!fail)
