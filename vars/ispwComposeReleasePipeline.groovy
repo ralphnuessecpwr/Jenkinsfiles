@@ -259,7 +259,7 @@ private addAssignments()
                     "containerType": "R"
                 }'''
 
-                def response        = httpRequest(
+                response        = httpRequest(
                     url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${currentAssignment}/tasks/transfer",
                     consoleLogResponseBody:     true, 
                     requestBody:                jsonBody,
