@@ -266,6 +266,8 @@ private addAssignments()
                 }
             }
         }
+
+        jsonSlurper = null
     }
 }
 
