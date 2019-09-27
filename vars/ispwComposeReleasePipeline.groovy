@@ -227,6 +227,7 @@ private addAssignments()
         // Compare the taskIds from the set to all tasks in the release 
         // Where they match, determine the assignment and add it to the list of assignments 
         def taskList = resp.tasks
+        resp        = null
 
         def fail    = false
 
@@ -260,11 +261,10 @@ private addAssignments()
                         mname=${it.moduleName}
                         containerId=${pConfig.ispwRelease}
                         containerType=R"""
+            
+                echo "Transfer complete"
             }
         }
-
-        resp        = null
-        taskList    = null
     }
 }
 
