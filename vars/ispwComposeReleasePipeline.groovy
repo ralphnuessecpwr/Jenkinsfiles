@@ -237,9 +237,13 @@ private addAssignments()
                 echo "Wrong level"
                 fail = true
             }
+            else
+            {
+                componentList.add(it.moduleName)        
+            }
         }
 
-        componentList = ['CWXTCOB','CWXTDATE','CWXTSUBC']
+        taskList = null
 
         if(!fail)
         {
