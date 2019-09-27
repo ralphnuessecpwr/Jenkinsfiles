@@ -268,7 +268,7 @@ private addAssignments()
                 echo "Transfer complete"
             }
         }
-    }
+//    }
 }
 
 private removeAssignments()
