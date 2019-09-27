@@ -244,29 +244,27 @@ private addAssignments()
             taskList.each
             {
                 echo "Task " + it.moduleName
-                /*
+                
                 httpRequest(
                     httpMode:                   'POST',
                     url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${currentAssignment}/tasks/transfer?mname=${it.moduleName}",
                     consoleLogResponseBody:     true, 
+                    contentType:                'APPLICATION_JSON', 
+                    /*
                     requestBody:                '''{
                                                     "runtimeConfiguration": "''' + pConfig.ispwRuntime + '''",
                                                     "containerId": "''' + pConfig.ispwRelease + '''",
                                                     "containerType": "R"
                                                 }''',
+                    */
                     customHeaders:              [[
                                                 maskValue:  true, 
-                                                name:       'authorization', 
-                                                value:      "${cesToken}"
-                                                ],
-                                                [
-                                                maskValue: false, 
-                                                name: 'content-type', 
-                                                value: 'application/json'
+                                                name:       'Authorization', 
+                                                value:      cesToken}
                                                 ]]
                     
                 )
-                */
+                
                 echo "Transfer complete"
             }
         }
