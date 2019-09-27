@@ -57,8 +57,7 @@ private initialize(pipelineParams)
     pipelineParams.ISPW_Assignment  = ''
     pipelineParams.ISPW_Set_Id      = ''
     pipelineParams.ISPW_Owner       = pipelineParams.User_Id
-    pipelineParams.ISPW_Src_Level   = ''
-
+    pipelineParams.ISPW_Src_Level   = 'DEV1'
 
     // Instantiate and initialize Pipeline Configuration settings
     pConfig     = new   PipelineConfig(
