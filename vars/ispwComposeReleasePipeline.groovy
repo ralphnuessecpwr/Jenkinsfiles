@@ -69,7 +69,7 @@ private initialize(pipelineParams)
 
     pConfig.initialize()                                            
 
-    echo "Set User Id " : pConfig.ispwOwner
+    echo "Set User Id : " + pConfig.ispwOwner
 
     // Use Jenkins Credentials Provider plugin to retrieve CES token in clear text from the Jenkins token for the CES token
     // The clear text token is needed for native http REST requests against the ISPW API
