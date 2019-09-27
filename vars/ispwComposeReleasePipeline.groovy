@@ -237,31 +237,31 @@ private addAssignments()
             }
         }
 
+        componentList = ['CWXTCOB','CWXTDATE','CWXTSUBC']
+
         if(!fail)
         {
             echo "Will transfer tasks"
 
-            taskList.each
+            componentList.each
             {
-                echo "Task " + it.moduleName
+                echo "Task " + it
                 
                 httpRequest(
                     httpMode:                   'POST',
-                    url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${currentAssignment}/tasks/transfer?mname=${it.moduleName}",
+                    url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${currentAssignment}/tasks/transfer?mname=${it}",
                     consoleLogResponseBody:     true, 
                     contentType:                'APPLICATION_JSON', 
                     requestBody:                '''{
                                                     "runtimeConfiguration": "''' + pConfig.ispwRuntime + '''",
                                                     "containerId": "''' + pConfig.ispwRelease + '''",
                                                     "containerType": "R"
-                                                }'''
-                                                /*
+                                                }''',
                     customHeaders:              [[
                                                 maskValue:  true, 
                                                 name:       'Authorization', 
                                                 value:      cesToken
                                                 ]]
-                    */
                 )
                 
                 echo "Transfer complete"
