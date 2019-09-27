@@ -75,9 +75,6 @@ private initialize(pipelineParams)
                             pConfig
                         )
 
-    // Instantiate and initialize the XLR Helper
-    xlrHelper   = new XlrHelper(steps, pConfig)
-
     mailMessageExtension = ''
 }
 
@@ -248,6 +245,10 @@ private releaseReady()
                 failAssignmentList.add(it.container)
             }
         }
+        else
+        {
+            pConfig.ispwTargetLevel = it.level
+        }
     }
 
     return failAssignmentList
@@ -293,6 +294,9 @@ def call(Map pipelineParams)
 
                     if(failAssignmentList.size() == 0)
                     {
+                        // Instantiate and initialize the XLR Helper
+                        xlrHelper   = new XlrHelper(steps, pConfig)
+
                         xlrHelper.triggerRelease()
 
                         mailMessageExtension = mailMessageExtension + "Triggered XL Release for " + pConfig.ispwRelease + ".\n"
