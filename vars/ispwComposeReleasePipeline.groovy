@@ -231,8 +231,8 @@ private addAssignments()
             taskList.each
             {
                 if(
-                    it.level == 'DEV1' !!
-                    it.level == 'DEV2' !!
+                    it.level == 'DEV1' ||
+                    it.level == 'DEV2' ||
                     it.level == 'DEV3'
                 )
                 {
