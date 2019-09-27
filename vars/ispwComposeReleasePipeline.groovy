@@ -259,7 +259,8 @@ private addAssignments()
                     "containerType": "R"
                 }'''
 
-                response        = httpRequest(
+                httpRequest(
+                    httpMode:                   'POST',
                     url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${currentAssignment}/tasks/transfer",
                     consoleLogResponseBody:     true, 
                     requestBody:                jsonBody,
