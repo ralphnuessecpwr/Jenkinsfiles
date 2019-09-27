@@ -190,7 +190,7 @@ private createRelease()
 {
     ispwOperation connectionId: pConfig.hciConnId, 
         consoleLogResponseBody: true, 
-        credentialsId: pCofig.cesTokenId, 
+        credentialsId: pConfig.cesTokenId, 
         ispwAction: 'CreateRelease', 
         ispwRequestBody: """stream=${pConfig.ispwStream}
             application=${pConfig.ispwApplication}
