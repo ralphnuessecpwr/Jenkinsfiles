@@ -76,91 +76,6 @@ private initialize(pipelineParams)
     def mailMessageExtension
 }
 
-/* private method to build the report (mail content) at the end of execution */
-private buildReport(componentStatusList)
-{
-    def componentFailMessage        =   "\nThe program FAILED the Quality gate <sonarGate>, and will be regressed." +
-                                        "\nTo review results" +
-                                        "\n\n- JUnit reports       : ${BUILD_URL}/testReport/" +
-                                        "\n\n- SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
-                                        "\n\n"
-
-    def componentPassMessage        =   "\nThe program PASSED the Quality gate <sonarGate> and may remain in QA." +
-                                        "\n\nSonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
-                                        "\n\n"
-
-    def reportFailMessage           =   "\n\n\nPrograms FAILING Source or Unit Test Quality Gates:"
-    def failingComponentsMessage    =   ''
-
-    def reportPassMessage           =   "\n\n\nPrograms PASSING Source or Unit Test Quality Gates:"
-    def passingComponentsMessage    =   ''
-
-    def continueMessage             =   ''
-    def mailMessageExtension        =   '\n\n\nDETAIL REPORTS for initial verifications'
-
-    componentStatusList.each
-    {
-        if(it.value.status == 'FAIL')
-        {
-            failingComponentsMessage = failingComponentsMessage + "\n\nProgram ${it.key}: "
-
-            if(it.value.utStatus == 'UNKNOWN')
-            {
-                failingComponentsMessage = failingComponentsMessage + "\n\nNo unit tests were found. Only the source scan was taken into consideration."
-            }
-            else
-            {
-                failingComponentsMessage = failingComponentsMessage + "\n\nUnit tests were found and executed."
-            }
-
-            componentMessage    = componentFailMessage.replace('<sonarGate>', it.value.sonarGate)
-            componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
-
-            failingComponentsMessage = failingComponentsMessage + componentMessage
-        }
-        else
-        {
-            passingComponentsMessage = passingComponentsMessage + "\n\nProgram ${it.key}: "
-
-            if(it.value.utStatus == 'UNKNOWN')
-            {
-                passingComponentsMessage = passingComponentsMessage + "\n\nNo unit tests were found. Only the source scan was taken into consideration."
-            }
-            else
-            {
-                passingComponentsMessage = passingComponentsMessage + "\n\nUnit tests were found and executed."
-            }
-
-            componentMessage    = componentPassMessage.replace('<sonarGate>', it.value.sonarGate)
-            componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
-
-            passingComponentsMessage = passingComponentsMessage + componentMessage
-        }
-    }
-
-    if(failingComponentsMessage == '')
-    {
-        failingComponentsMessage    = '\nNone.'
-        continueMessage             = '\nExecution of functional tests was triggered. The result was: ' + ftJob.getResult() +
-            '\n\nA separated message with details was sent. To review detailed results, use' +
-            '\n' + ftJob.getAbsoluteUrl()
-    }
-
-    if(passingComponentsMessage == '')
-    {
-        passingComponentsMessage = '\nNone.'
-    }
-
-    mailMessageExtension = continueMessage + 
-        mailMessageExtension + 
-        reportFailMessage + 
-        failingComponentsMessage +
-        reportPassMessage +
-        passingComponentsMessage
-
-    return mailMessageExtension
-}
-
 private checkStatus(componentStatusList)
 {
     // if a component fails the source scan it should not be considered for unit testing            
@@ -315,12 +230,12 @@ def call(Map pipelineParams)
         }
                 
         /* Download all sources that are part of the container  */
-        stage("Determine Action")
+        stage("Perform Action")
         {
             switch(pipelineParams.Release_Action) 
             {
                 case "create Release":
-                    //createRelease()
+                    createRelease()
                     addAssignments()
                 break
 
@@ -338,15 +253,12 @@ def call(Map pipelineParams)
             }
         }
 
-        // Scan sources and fail fast
-        stage("Perform Action")
-        {
-            echo "Perform Action : " + pipelineParams.Release_Action
-        }
-
         stage("Send Notifications")
         {
-            echo "Send Mail"
+            emailext subject:       'Performed Action ' + pipelineParams.Release_Action + ' on Release ' + pConfig.ispwRelease,
+            body:       mailMessageExtension,
+            replyTo:    '$DEFAULT_REPLYTO',
+            to:         "${pConfig.mailRecipient}"
         }
     }
 }
