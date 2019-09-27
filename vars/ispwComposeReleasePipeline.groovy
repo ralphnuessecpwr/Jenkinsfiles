@@ -245,17 +245,15 @@ private addAssignments()
             {
                 echo "Task " + it.moduleName
 
-                def jsonBody = '''{
-                    "runtimeConfiguration": "''' + pConfig.ispwRuntime + '''",
-                    "containerId": "''' + pConfig.ispwRelease + '''",
-                    "containerType": "R"
-                }'''
-
                 httpRequest(
                     httpMode:                   'POST',
                     url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${currentAssignment}/tasks/transfer?mname=${it.moduleName}",
                     consoleLogResponseBody:     true, 
-                    requestBody:                jsonBody,
+                    requestBody:                '''{
+                                                    "runtimeConfiguration": "''' + pConfig.ispwRuntime + '''",
+                                                    "containerId": "''' + pConfig.ispwRelease + '''",
+                                                    "containerType": "R"
+                                                }''',
                     customHeaders:              [[
                                                 maskValue:  true, 
                                                 name:       'authorization', 
