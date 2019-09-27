@@ -10,19 +10,7 @@ import com.compuware.devops.util.*
 PipelineConfig  pConfig         // Pipeline configuration parameters
 IspwHelper      ispwHelper      // Helper class for interacting with ISPW
 
-def             componentList           // List of components in the triggering set
-def             componentStatusList     // List/Map of comonents and their corresponding componentStatus
-                                        //  each entry will be of the for [componentName:componentStatus]
-                                        //  with componentStatus being an instance of ComponentStatus
-                                        //  to get to a status value use
-                                        //  componentStatusList[componentName].value.<property>
-                                        //  with <property> being one of the properties of a ComponentStatus
-
-def             listOfExecutedTargets   // List of program names for which unit tests have been found and executed
 String          cesToken                // Clear text token from CES
-def             sourceResidenceLevel    // ISPW level at which the sources reside at the moment
-
-def             ftJob                   // Object returned by triggering an external Jenkins job
 
 private initialize(pipelineParams)
 {
@@ -49,7 +37,7 @@ private initialize(pipelineParams)
 
         if(!mailConfigFile.exists())
         {
-            steps.error "File - ${mailListFilePath} - not found! \n Aborting Pipeline"
+            error "File - ${mailListFilePath} - not found! \n Aborting Pipeline"
         }
 
         mailListlines = mailConfigFile.readLines()
@@ -70,8 +58,6 @@ private initialize(pipelineParams)
 
     pConfig.initialize()                                            
 
-    echo "Set User Id : " + pConfig.ispwOwner
-
     // Use Jenkins Credentials Provider plugin to retrieve CES token in clear text from the Jenkins token for the CES token
     // The clear text token is needed for native http REST requests against the ISPW API
     withCredentials(
@@ -87,6 +73,7 @@ private initialize(pipelineParams)
                             pConfig
                         )
 
+    def mailMessageExtension
 }
 
 /* private method to build the report (mail content) at the end of execution */
@@ -197,19 +184,19 @@ private createRelease()
             application=${pConfig.ispwApplication}
             releaseId=${pConfig.ispwRelease}
             description=Default Description"""
+
+    mailMessageExtension = mailMessageExtension + "Created release " + pConfig.ispwRelease + ".\n"
 }
 
 private addAssignments()
 {
     def assignmentList = ISPW_Assignment_List.split(',').collect{it.trim() as String}
 
-    echo "assigmentList: " + assignmentList.getClass()
-
     assignmentList.each
     {
-        def currentAssignment = it
+        def currentAssignment   = it
 
-        def response        = httpRequest(
+        def response            = httpRequest(
             url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${it}/tasks",
             consoleLogResponseBody:     true, 
             customHeaders:              [[
@@ -219,66 +206,96 @@ private addAssignments()
                                         ]]
             
             )
-        
-        def componentList = []
 
-        def taskList = new JsonSlurper().parseText(response.getContent()).tasks
+        def taskList            = new JsonSlurper().parseText(response.getContent()).tasks
 
-        def fail    = false
+        def componentList       = []
 
         taskList.each
         {
-            if(
-                it.level == 'DEV1' ||
-                it.level == 'DEV2' ||
-                it.level == 'DEV3'
-            )
-            {
-                echo "Wrong level"
-                fail = true
-            }
-            else
-            {
-                componentList.add(it.moduleName)        
-            }
+            componentList.add(it.moduleName)        
         }
 
         taskList = null
 
-        if(!fail)
+        componentList.each
         {
-            echo "Will transfer tasks"
-
-            componentList.each
-            {
-                echo "Task " + it
-                
-                httpRequest(
-                    httpMode:                   'POST',
-                    url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${currentAssignment}/tasks/transfer?mname=${it}",
-                    consoleLogResponseBody:     true, 
-                    contentType:                'APPLICATION_JSON', 
-                    requestBody:                '''{
-                                                    "runtimeConfiguration": "''' + pConfig.ispwRuntime + '''",
-                                                    "containerId": "''' + pConfig.ispwRelease + '''",
-                                                    "containerType": "R"
-                                                }''',
-                    customHeaders:              [[
-                                                maskValue:  true, 
-                                                name:       'Authorization', 
-                                                value:      cesToken
-                                                ]]
-                )
-                
-                echo "Transfer complete"
-            }
+            echo "Task " + it
+            
+            httpRequest(
+                httpMode:                   'POST',
+                url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${currentAssignment}/tasks/transfer?mname=${it}",
+                consoleLogResponseBody:     true, 
+                contentType:                'APPLICATION_JSON', 
+                requestBody:                '''{
+                                                "runtimeConfiguration": "''' + pConfig.ispwRuntime + '''",
+                                                "containerId": "''' + pConfig.ispwRelease + '''",
+                                                "containerType": "R"
+                                            }''',
+                customHeaders:              [[
+                                            maskValue:  true, 
+                                            name:       'Authorization', 
+                                            value:      cesToken
+                                            ]]
+            )
         }
+
+        mailMessageExtension = mailMessageExtension + "Added all tasks in assignment " + pConfig.ispwAssigment + " to Release " + pConfig.ispwRelease ".\n"
     }
 }
 
 private removeAssignments()
 {
+    def assignmentList = ISPW_Assignment_List.split(',').collect{it.trim() as String}
 
+    assignmentList.each
+    {
+        def currentAssignment   = it
+
+        def response            = httpRequest(
+            url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${it}/tasks",
+            consoleLogResponseBody:     true, 
+            customHeaders:              [[
+                                        maskValue:  true, 
+                                        name:       'authorization', 
+                                        value:      "${cesToken}"
+                                        ]]
+            
+            )
+
+        def taskList            = new JsonSlurper().parseText(response.getContent()).tasks
+
+        def componentList       = []
+
+        taskList.each
+        {
+            componentList.add(it.moduleName)        
+        }
+
+        taskList = null
+
+        componentList.each
+        {
+            echo "Task " + it
+            
+            httpRequest(
+                httpMode:                   'POST',
+                url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/releases/${pConfig.ispwRelease}/tasks/remove?mname=${it}",
+                consoleLogResponseBody:     true, 
+                contentType:                'APPLICATION_JSON', 
+                requestBody:                '''{
+                                                "runtimeConfiguration": "''' + pConfig.ispwRuntime + '''"
+                                            }''',
+                customHeaders:              [[
+                                            maskValue:  true, 
+                                            name:       'Authorization', 
+                                            value:      cesToken
+                                            ]]
+            )
+        }
+
+        mailMessageExtension = mailMessageExtension + "Removed all tasks in assignment " + pConfig.ispwAssigment + " from Release " + pConfig.ispwRelease ".\n"
+    }
 }
 
 /**
