@@ -250,19 +250,18 @@ private addAssignments()
                     url:                        "${pConfig.ispwUrl}/ispw/${pConfig.ispwRuntime}/assignments/${currentAssignment}/tasks/transfer?mname=${it.moduleName}",
                     consoleLogResponseBody:     true, 
                     contentType:                'APPLICATION_JSON', 
-                    /*
                     requestBody:                '''{
                                                     "runtimeConfiguration": "''' + pConfig.ispwRuntime + '''",
                                                     "containerId": "''' + pConfig.ispwRelease + '''",
                                                     "containerType": "R"
-                                                }''',
-                    */
+                                                }'''
+                                                /*
                     customHeaders:              [[
                                                 maskValue:  true, 
                                                 name:       'Authorization', 
                                                 value:      cesToken
                                                 ]]
-                    
+                    */
                 )
                 
                 echo "Transfer complete"
