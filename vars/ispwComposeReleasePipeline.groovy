@@ -11,6 +11,7 @@ PipelineConfig  pConfig         // Pipeline configuration parameters
 IspwHelper      ispwHelper      // Helper class for interacting with ISPW
 
 String          cesToken                // Clear text token from CES
+String          mailMessageExtension
 
 private initialize(pipelineParams)
 {
@@ -73,20 +74,7 @@ private initialize(pipelineParams)
                             pConfig
                         )
 
-    def mailMessageExtension
-}
-
-private checkStatus(componentStatusList)
-{
-    // if a component fails the source scan it should not be considered for unit testing            
-    componentStatusList.each
-    {
-        if (it.value.status == 'FAIL')
-        {
-            componentList.remove(it)
-            pipelinePass = false
-        }
-    }
+    mailMessageExtension = ''
 }
 
 private createRelease()
