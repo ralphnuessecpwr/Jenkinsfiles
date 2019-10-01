@@ -18,6 +18,7 @@ class PipelineConfig implements Serializable
 /* Environment specific settings, which differ between Jenkins servers and applications, but not between runs */
     public String gitTargetBranch                               // Used for synchronizing TTT project stored in Git with programs stored in ISPW
     public String gitBranch                                     // Used for synchronizing TTT project stored in Git with programs stored in ISPW
+    public String gitFtBranch                                   // Used for synchronizing TTT project stored in Git with programs stored in ISPW
     
     public String sqScannerName                                 // Sonar Qube Scanner Tool name as defined in "Manage Jenkins" -> "Global Tool Configuration" -> "SonarQube scanner"
     public String sqServerName                                  // Sonar Qube Scanner Server name as defined in "Manage Jenkins" -> "Configure System" -> "SonarQube servers"
@@ -189,6 +190,9 @@ class PipelineConfig implements Serializable
                         break;
                     case "TTT_GIT_BRANCH": 
                         gitBranch       = parmValue
+                        break;
+                    case "TTT_TTT_FT_GIT_BRANCH": 
+                        gitFtBranch       = parmValue
                         break;
                     case "TTT_FT_SERVER_URL":
                         xaTesterUrl     = parmValue

@@ -180,7 +180,7 @@ def call(Map pipelineParams)
             def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttFtRepo}"
             
             /* Check out unit tests from GitHub */
-            gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
+            gitHelper.checkout(gitUrlFullPath, pConfig.gitFtBranch, pConfig.gitCredentials, pConfig.tttFolder)
 
             /* initialize requires the TTT projects to be present in the Jenkins workspace, therefore it can only execute after downloading from GitHub */
             listOfExecutedTargets = tttHelper.initialize(componentList)  
