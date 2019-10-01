@@ -191,7 +191,7 @@ class PipelineConfig implements Serializable
                     case "TTT_GIT_BRANCH": 
                         gitBranch       = parmValue
                         break;
-                    case "TTT_TTT_FT_GIT_BRANCH": 
+                    case "TTT_FT_GIT_BRANCH": 
                         gitFtBranch       = parmValue
                         break;
                     case "TTT_FT_SERVER_URL":
