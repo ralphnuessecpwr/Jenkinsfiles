@@ -71,6 +71,7 @@ class GitHelper implements Serializable {
 
         steps.dir(tttFolder)
         {
+            steps.bat(returnStdout: true, script: 'git add -A')
             steps.bat(returnStdout: true, script: 'git commit -a -m ' + message)
             steps.bat(returnStdout: true, script: "git push  https://${gitUser}:${gitPassword}@github.com/${gitProject}/${gitRepo} HEAD:${gitBranch} -f")
         }
