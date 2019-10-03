@@ -198,7 +198,7 @@ def call(Map pipelineParams)
             tttHelper.passFtResultsToJunit()
 
             /* push results back to GitHub */
-            gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitFtBranch, BUILD_NUMBER)
+            //gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitFtBranch, BUILD_NUMBER)
         }
 
         /* 
