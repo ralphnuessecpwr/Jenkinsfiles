@@ -48,12 +48,18 @@ class SonarHelper implements Serializable {
     {
         def scanType            = ''
         def scanProjectName     = ''
+        def scanBranch          = ''
         def scanTestPath        = ''
         def scanResultPath      = ''
         def scanCoveragePath    = ''
 
         scanType            = scanParms.scanType
         scanProjectName     = scanParms.scanProjectName
+        
+        if(scanParms.scanBranch != null)
+        {
+            scanBranch          = scanParms.scanBranch
+        }
 
         switch(scanType)
         {
@@ -75,10 +81,10 @@ class SonarHelper implements Serializable {
                 break;
         }
 
-        runScan(scanTestPath, scanResultPath, scanCoveragePath, scanProjectName)
+        runScan(scanTestPath, scanResultPath, scanCoveragePath, scanProjectName, scanBranch)
     }
 
-    private runScan(testPath, testResultPath, coveragePath, projectName)
+    private runScan(testPath, testResultPath, coveragePath, projectName, scanBranch)
     {
         steps.withSonarQubeEnv("${pConfig.sqServerName}")       // Name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section
         {
@@ -108,6 +114,11 @@ class SonarHelper implements Serializable {
             if(coveragePath != '')
             {
                 sqScannerProperties     = sqScannerProperties + " -Dsonar.coverageReportPaths=${coveragePath}"
+            }
+
+            if(scanBranch != '')
+            {
+                sqScannerProperties     = sqScannerProperties + " -Dsonar.branch.name=${scanBranch}"
             }
 
             sqScannerProperties         = sqScannerProperties + sourceSuffixes

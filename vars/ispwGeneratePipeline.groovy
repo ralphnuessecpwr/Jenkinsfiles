@@ -248,6 +248,7 @@ def call(Map pipelineParams)
             sonarHelper.scan([
                 scanType:           'UT', 
                 scanProjectName:    sonarProjectName
+                scanBranch:         pConfig.ispwSetId
             ])
 
             def qgResult = sonarHelper.checkQualityGate()
