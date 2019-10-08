@@ -66,13 +66,13 @@ class SonarHelper implements Serializable {
             case 'source':
                 break;
             case "UT":
-                scanTestPath        = 'tests\\' + scanProgramName + '_Unit_Tests'
+                scanTestPath        = 'tests/'
                 scanResultPath      = determineUtResultPath()
                 scanCoveragePath    = "Coverage/CodeCoverage.xml"
                 break;
             case "FT":
-                scanTestPath        = '"tests\\' + pConfig.ispwStream + '_' + pConfig.ispwApplication + '_Functional_Tests\\Functional Test"'
-                scanResultPath      = 'TestResults\\SonarTestReport.xml'
+                scanTestPath        = '"tests/' + pConfig.ispwStream + '_' + pConfig.ispwApplication + '_Functional_Tests/Functional Test"'
+                scanResultPath      = 'TestResults/SonarTestReport.xml'
                 scanCoveragePath    = ''
                 break;
             default:
@@ -92,9 +92,9 @@ class SonarHelper implements Serializable {
             // Project Name and Key
             def sqScannerProperties     = " -Dsonar.projectKey=${projectName} -Dsonar.projectName=${projectName} -Dsonar.projectVersion=1.0" +
             // Folder(s) containing Mainframe sources downloaded from ISPW
-                                          " -Dsonar.sources=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}" +
+                                          " -Dsonar.sources=${pConfig.ispwApplication}/${pConfig.mfSourceFolder}" +
             // Folder(s) containing Mainframe copybooks
-                                          " -Dsonar.cobol.copy.directories=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}" +
+                                          " -Dsonar.cobol.copy.directories=${pConfig.ispwApplication}/${pConfig.mfSourceFolder}" +
             // Suffixes to use for copybooks
                                           " -Dsonar.cobol.copy.suffixes=cpy" +
                                           " -Dsonar.sourceEncoding=UTF-8"
