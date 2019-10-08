@@ -10,7 +10,9 @@ class PipelineConfig implements Serializable
     def mailListMap = [:]
 
     private String configPath           = 'pipeline'            // Path containing config files after downloading them from Git Hub Repository 'config\\pipeline'
-    private String pipelineConfigFile   = 'pipeline.config'     // Config file containing pipeline configuration
+    private String ispwConfigFile       = 'ispw.config'         // Config file containing ispw configuration values
+    private String sonarConfigFile      = 'sonar.config'        // Config file containing sonar configuration values
+    private String xlrConfigFile        = 'xlr.config'          // Config file containing XLRelease configuration values
     private String tttGitConfigFile     = 'tttgit.config'       // Config gile containing for TTT projects stroed in Git Hub
 
     private String workspace
@@ -101,21 +103,25 @@ class PipelineConfig implements Serializable
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
     def initialize()
     {
-        setServerConfig()
+        setSonarConfig()
+
+        setIspwConfig()
+
+        setXlrConfig()
 
         setTttGitConfig()
 
         setMailConfig()    
     }
 
-    /* Read configuration values from pipeline.config file */
-    def setServerConfig()
+    /* Read configuration values from sonar.config file */
+    def setSonarConfig()
     {
         def lineToken
         def parmName
         def parmValue
 
-        def lines = readConfigFile("${pipelineConfigFile}")
+        def lines = readConfigFile("${sonarConfigFile}")
 
         lines.each
         {
@@ -142,20 +148,80 @@ class PipelineConfig implements Serializable
                     case "MF_SOURCE_FOLDER":
                         mfSourceFolder      = parmValue
                         break;
-                    case "XLR_TEMPLATE":
-                        xlrTemplate         = parmValue
-                        break;
-                    case "XLR_USER":
-                        xlrUser             = parmValue
-                        break;
                     case "TTT_FOLDER":
                         tttFolder           = parmValue
                         break;
+                    default:
+                        steps.echo "Found unknown Pipeline Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
+                        break;
+                }
+            }
+        }
+    }
+
+    /* Read configuration values from ispw.config file */
+    def setIspwConfig()
+    {
+        def lineToken
+        def parmName
+        def parmValue
+
+        def lines = readConfigFile("${ispwConfigFile}")
+
+        lines.each
+        {
+            if(
+                it.toString().indexOf('#') != 0 &&
+                it.toString().trim() != ''
+            )
+            {
+                lineToken   = it.toString().tokenize("=")
+                parmName    = lineToken.get(0).toString()
+                parmValue   = lineToken.get(1).toString().trim()
+
+                switch(parmName)
+                {
                     case "ISPW_URL":
                         ispwUrl             = parmValue
                         break;
                     case "ISPW_RUNTIME":
                         ispwRuntime         = parmValue
+                        break;
+                    default:
+                        steps.echo "Found unknown Pipeline Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
+                        break;
+                }
+            }
+        }
+    }
+
+    /* Read configuration values from ispw.config file */
+    def setXlrConfig()
+    {
+        def lineToken
+        def parmName
+        def parmValue
+
+        def lines = readConfigFile("${xlrConfigFile}")
+
+        lines.each
+        {
+            if(
+                it.toString().indexOf('#') != 0 &&
+                it.toString().trim() != ''
+            )
+            {
+                lineToken   = it.toString().tokenize("=")
+                parmName    = lineToken.get(0).toString()
+                parmValue   = lineToken.get(1).toString().trim()
+
+                switch(parmName)
+                {
+                    case "XLR_TEMPLATE":
+                        xlrTemplate         = parmValue
+                        break;
+                    case "XLR_USER":
+                        xlrUser             = parmValue
                         break;
                     default:
                         steps.echo "Found unknown Pipeline Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
