@@ -1,13 +1,4 @@
 #!/usr/bin/env groovy
-/*
-import hudson.model.*
-import hudson.EnvVars
-import groovy.json.JsonSlurper
-import groovy.json.JsonBuilder
-import groovy.json.JsonOutput
-import jenkins.plugins.http_request.*
-import java.net.URL
-*/
 import com.compuware.devops.config.*
 import com.compuware.devops.jclskeleton.*
 import com.compuware.devops.util.*
@@ -218,23 +209,27 @@ def call(Map pipelineParams)
         stage("Execute Unit Tests")
         {            
             def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttUtRepo}"
-            
-            /* Check out unit tests from GitHub */
-            gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
 
+            // Downnload Unit Test project for each component in the set
+            componentList.each
+            {
+                def gitFolderName   = "${it}_Unit_Tests"
+                gitHelper.checkoutPath(gitUrlFullPath, pConfig.gitBranch, gitFolderName, pConfig.gitCredentials, pConfig.tttFolder)
+            }
+            
             /* initialize requires the TTT projects to be present in the Jenkins workspace, therefore it can only execute after downloading from GitHub */
-            tttHelper.initialize(componentList)  
+            //tttHelper.initialize(componentList)  
 
             /* Clean up Code Coverage results from previous run */
-            tttHelper.cleanUpCodeCoverageResults()
+            //tttHelper.cleanUpCodeCoverageResults()
 
             /* Execute unit tests and retrieve list of programs that had unit tests*/
-            listOfExecutedTargets = tttHelper.loopThruScenarios()
+            //listOfExecutedTargets = tttHelper.loopThruScenarios()
          
-            tttHelper.passResultsToJunit()
+            //tttHelper.passResultsToJunit()
 
             /* push results back to GitHub */
-            gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
+            //gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
         }
 
         /* 
@@ -242,7 +237,7 @@ def call(Map pipelineParams)
         */ 
         stage("Collect Metrics")
         {
-            tttHelper.collectCodeCoverageResults()
+            //tttHelper.collectCodeCoverageResults()
         }
 
         /* 
@@ -251,14 +246,15 @@ def call(Map pipelineParams)
         */ 
         stage("Check SonarQube Quality Gate") 
         {
-            ispwHelper.downloadCopyBooks(workspace)            
+            //ispwHelper.downloadCopyBooks(workspace)            
 
-            componentStatusList = sonarHelper.scanUt(componentList, componentStatusList, listOfExecutedTargets)
+            //componentStatusList = sonarHelper.scanUt(componentList, componentStatusList, listOfExecutedTargets)
         }
 
         stage("Send Notifications")
         {
-            def mailMessageExtension = buildReport(componentStatusList)
+            //def mailMessageExtension = buildReport(componentStatusList)
+            def mailMessageExtension = "DUMMY TEXT"
 
             emailext subject:       '$DEFAULT_SUBJECT',
                         body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,

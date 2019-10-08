@@ -43,7 +43,7 @@ class GitHelper implements Serializable {
         )
     }
 
-    def checkoutPath(String gitUrl, String gitBranch, String path, String gitCredentials, String gitProject)
+    def checkoutPath(String gitUrl, String gitBranch, String path, String gitCredentials, String tttFolder)
     {
         steps.checkout(
         changelog: false, 
@@ -52,14 +52,21 @@ class GitHelper implements Serializable {
                 $class: 'GitSCM', 
                 branches: [[name: "*/${gitBranch}"]], 
                 doGenerateSubmoduleConfigurations: false, 
-                extensions: [[
+                extensions: [
+                    [
                     $class: 'SparseCheckoutPaths', 
-                    sparseCheckoutPaths: [[path: "${path}/*"]]
+                    sparseCheckoutPaths: [[path: "${path}/*"
+                    ],
+                    [
+                    $class: 'RelativeTargetDirectory', 
+                    relativeTargetDir: "${tttFolder}"
+                    ]
+                    ]
                 ]], 
                 submoduleCfg: [], 
                 userRemoteConfigs: [[
                     credentialsId: "${gitCredentials}", 
-                    url: "${gitUrl}/${gitProject}.git"
+                    url: "${gitUrl}"
                 ]]
             ]
         )
