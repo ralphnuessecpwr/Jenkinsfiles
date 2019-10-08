@@ -225,10 +225,11 @@ def call(Map pipelineParams)
             tttHelper.initialize(componentList)  
 
             /* Clean up Code Coverage results from previous run */
-            tttHelper.cleanUpCodeCoverageResults()
+            //Determine better way to clean up
+            //tttHelper.cleanUpCodeCoverageResults()
 
             /* Execute unit tests and retrieve list of programs that had unit tests*/
-            //listOfExecutedTargets = tttHelper.loopThruScenarios()
+            listOfExecutedTargets = tttHelper.loopThruScenarios()
          
             tttHelper.passResultsToJunit()
 
