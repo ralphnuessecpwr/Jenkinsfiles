@@ -55,7 +55,7 @@ class GitHelper implements Serializable {
                 extensions: [
                     [
                     $class: 'SparseCheckoutPaths', 
-                    sparseCheckoutPaths: [[path: "${path}/*"
+                    sparseCheckoutPaths: [[path: "${path}/*"]]
                     ],
                     [
                     $class: 'RelativeTargetDirectory', 
