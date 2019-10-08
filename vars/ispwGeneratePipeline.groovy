@@ -95,16 +95,6 @@ private initialize(pipelineParams)
     // After each Sonar scan the list will be modified to contain only those components that passed the previous quality gate
     componentList       = ispwHelper.getComponents(cesToken, pConfig.ispwSetId, '2')
 
-    // Build list of status for each component
-    componentStatusList = [:]
-
-    componentList.each
-    {
-        ComponentStatus componentStatus = new ComponentStatus()
-        
-        componentStatusList[it] = componentStatus
-    }
-
     // Instantiate the TTT Helper - initialization will happen at a later point
     tttHelper   = new   TttHelper(
                             this,
@@ -251,9 +241,18 @@ def call(Map pipelineParams)
         */ 
         stage("Check SonarQube Quality Gate") 
         {
-            //ispwHelper.downloadCopyBooks(workspace)            
+            ispwHelper.downloadCopyBooks(workspace)            
 
-            //componentStatusList = sonarHelper.scanUt(componentList, componentStatusList, listOfExecutedTargets)
+            def sonarProjectName = "${pConfig.ispwStream}_${pConfig.ispwApplication}"
+
+            sonarHelper.scan([
+                scanType:           'UT', 
+                scanProjectName:    sonarProjectName
+            ])
+
+            def qgResult = sonarHelper.checkQualityGate()
+
+            echo "Quality Gate Result " + qgResult
         }
 
         stage("Send Notifications")

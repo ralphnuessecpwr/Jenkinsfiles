@@ -25,108 +25,34 @@ class SonarHelper implements Serializable {
         this.scannerHome    = steps.tool "${pConfig.sqScannerName}"
     }
 
-    /* Method soon to be removed */
-    def scan()
+    private String determineUtResultPath()
     {
-        def testResults = determineUtResultPath()
+        // Finds all of the Total Test results files that will be submitted to SonarQube
+        def tttListOfResults    = steps.findFiles(glob: 'TTTSonar/*.xml')   // Total Test SonarQube result files are stored in TTTSonar directory
 
-        runScan(testResults, script.JOB_NAME)
-    }
+        // Build the sonar testExecutionReportsPaths property
+        // Start empty
+        def testResults         = ""    
 
-    def scanSources(String sonarProjectName)
-    {
-        scan([
-            scanType:           'source', 
-            scanProjectName:    sonarProjectName
-            ])
-    }
-
-    def scanUt(componentList, componentStatusList, listOfExecutedTargets)
-    {
-        def internalStatusList = componentStatusList
-
-        componentList.each
+        // Loop through each result Total Test results file found
+        tttListOfResults.each 
         {
-            def sonarProjectType    = 'UT'
-            def scanType            = 'none'
-            def sonarGate
-
-            def sonarProjectName    = determineProjectName(sonarProjectType, it) 
-
-            // If unit tests were executed we scan test results
-            if(listOfExecutedTargets.contains(it))
-            {
-                scanType    = 'UT'
-                sonarGate   = 'RNU_Gate_UT'
-                
-                steps.echo "Found Unit Tests"
-
-                internalStatusList[it].utStatus     = scanComponent(it, sonarProjectName, sonarGate, scanType)
-                internalStatusList[it].status       = internalStatusList[it].utStatus
-                internalStatusList[it].sonarGate    = sonarGate
-                internalStatusList[it].sonarProject = sonarProjectName
-            }
-            // Else we scan sources only
-            else
-            {
-                if(internalStatusList[it].sourceStatus == 'UNKNOWN')
-                {
-                    scanType    = 'source'
-                    sonarGate   = 'RNU_Gate_Source'
-
-                    steps.echo "No Unit Tests"
-
-                    internalStatusList[it].sourceStatus = scanComponent(it, sonarProjectName, sonarGate, scanType)
-                    internalStatusList[it].status       = internalStatusList[it].sourceStatus
-                    internalStatusList[it].sonarGate    = sonarGate
-                    internalStatusList[it].sonarProject = sonarProjectName
-                }
-            }
+            testResults         = testResults + "TTTSonar/" + it.name +  ',' // Append the results file to the property
         }
 
-        return internalStatusList
+        return testResults
     }
-
-    /*
-    def scanComponent(component, sonarProjectName, sonarGate, scanType)
-    {
-        def status              = ''
-
-        setQualityGate(sonarGate, sonarProjectName)
-
-        scan([
-            scanType:           scanType, 
-            scanProgramName:    component,
-            scanProjectName:    sonarProjectName
-            ])
-
-        String sonarGateResult = checkQualityGate()
-
-        if (sonarGateResult != 'OK')
-        {
-            status = 'FAIL'
-        }
-        else
-        {
-            status = 'PASS'
-        }   
-
-        return status 
-    }
-    */
 
     /* Method soon to be the only one available */
     def scan(Map scanParms)
     {
         def scanType            = ''
         def scanProjectName     = ''
-        //def scanProgramName     = ''
         def scanTestPath        = ''
         def scanResultPath      = ''
         def scanCoveragePath    = ''
 
         scanType            = scanParms.scanType
-        //scanProgramName     = scanParms.scanProgramName
         scanProjectName     = scanParms.scanProjectName
 
         switch(scanType)
@@ -135,8 +61,7 @@ class SonarHelper implements Serializable {
                 break;
             case "UT":
                 scanTestPath        = 'tests\\' + scanProgramName + '_Unit_Tests'
-                //Needs to be determined new
-                //scanResultPath      = determineUtResultPath(scanProgramName)
+                scanResultPath      = determineUtResultPath()
                 scanCoveragePath    = "Coverage/CodeCoverage.xml"
                 break;
             case "FT":
@@ -150,7 +75,6 @@ class SonarHelper implements Serializable {
                 break;
         }
 
-        //runScan(scanTestPath, scanResultPath, scanCoveragePath, scanProjectName, scanProgramName)
         runScan(scanTestPath, scanResultPath, scanCoveragePath, scanProjectName)
     }
 

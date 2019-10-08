@@ -82,7 +82,10 @@ def call(Map pipelineParams)
                 
                 sonarHelper.setQualityGate(pConfig.sqQualityGateName, sonarProjectName)
 
-                sonarHelper.scanSources(sonarProjectName)
+                sonarHelper.scan([
+                    scanType:           'source', 
+                    scanProjectName:    sonarProjectName
+                ])
             }            
         }
     }
