@@ -208,14 +208,18 @@ def call(Map pipelineParams)
         /* Retrieve the Tests from Github that match that ISPWW Stream and Application */
         stage("Execute Unit Tests")
         {            
-            def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttUtRepo}"
+            def gitUrlFullPath  = "${pConfig.gitUrl}/${pConfig.gitTttUtRepo}"
+
+            def gitPathList     = []
 
             // Downnload Unit Test project for each component in the set
             componentList.each
             {
-                def gitFolderName   = "${it}_Unit_Tests"
-                gitHelper.checkoutPath(gitUrlFullPath, pConfig.gitBranch, gitFolderName, pConfig.gitCredentials, pConfig.tttFolder)
+                gitPathListadd("${it}_Unit_Tests")
+                
             }
+
+            gitHelper.checkoutPath(gitUrlFullPath, pConfig.gitBranch, gitPathList, pConfig.gitCredentials, pConfig.tttFolder)
             
             /* initialize requires the TTT projects to be present in the Jenkins workspace, therefore it can only execute after downloading from GitHub */
             //tttHelper.initialize(componentList)  

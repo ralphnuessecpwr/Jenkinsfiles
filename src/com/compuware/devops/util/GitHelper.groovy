@@ -43,13 +43,16 @@ class GitHelper implements Serializable {
         )
     }
 
-    def checkoutPath(String gitUrl, String gitBranch, String pathList, String gitCredentials, String tttFolder)
+    def checkoutPath(String gitUrl, String gitBranch, String subProjectList, String gitCredentials, String tttFolder)
     {
-        def pathListParm = ''
+        def pathListParms = []
 
-        pathList.each
+        subProjectList.each
         {
-            pathListParm = '[path: "' + it + '/*"],'
+            def pathParm    = [:]
+            pathParm.path   = it + '/*'
+
+            pathListParms.add(pathParm)
         }
 
         steps.checkout(
@@ -62,7 +65,7 @@ class GitHelper implements Serializable {
                 extensions: [
                     [
                     $class: 'SparseCheckoutPaths', 
-                    sparseCheckoutPaths: ["${pathListParm}"]
+                    sparseCheckoutPaths: pathListParms
                     ],
                     [
                     $class: 'RelativeTargetDirectory', 
