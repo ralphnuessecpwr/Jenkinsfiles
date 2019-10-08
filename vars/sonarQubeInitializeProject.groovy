@@ -26,7 +26,7 @@ private initialize(pipelineParams)
                             steps, 
                             workspace,
                             pipelineParams,
-                            mailListlines
+                            ''
                         )
 
     pConfig.initialize()                                            
