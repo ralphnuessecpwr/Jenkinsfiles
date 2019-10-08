@@ -222,18 +222,18 @@ def call(Map pipelineParams)
             gitHelper.checkoutPath(gitUrlFullPath, pConfig.gitBranch, gitPathList, pConfig.gitCredentials, pConfig.tttFolder)
             
             /* initialize requires the TTT projects to be present in the Jenkins workspace, therefore it can only execute after downloading from GitHub */
-            //tttHelper.initialize(componentList)  
+            tttHelper.initialize(componentList)  
 
             /* Clean up Code Coverage results from previous run */
-            //tttHelper.cleanUpCodeCoverageResults()
+            tttHelper.cleanUpCodeCoverageResults()
 
             /* Execute unit tests and retrieve list of programs that had unit tests*/
             //listOfExecutedTargets = tttHelper.loopThruScenarios()
          
-            //tttHelper.passResultsToJunit()
+            tttHelper.passResultsToJunit()
 
             /* push results back to GitHub */
-            //gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
+            gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
         }
 
         /* 
@@ -241,7 +241,7 @@ def call(Map pipelineParams)
         */ 
         stage("Collect Metrics")
         {
-            //tttHelper.collectCodeCoverageResults()
+            tttHelper.collectCodeCoverageResults()
         }
 
         /* 
