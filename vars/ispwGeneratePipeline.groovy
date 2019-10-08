@@ -215,7 +215,7 @@ def call(Map pipelineParams)
             // Downnload Unit Test project for each component in the set
             componentList.each
             {
-                gitPathListadd("${it}_Unit_Tests")
+                gitPathList.add("${it}_Unit_Tests")
                 
             }
 
