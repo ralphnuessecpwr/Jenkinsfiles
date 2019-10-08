@@ -76,12 +76,13 @@ class PipelineConfig implements Serializable
         this.ispwOwner                   = params.ISPW_Owner        
         this.ispwSrcLevel                = params.ISPW_Src_Level
 
+        this.sqQualityGateName           = params.Sonar_Gate
+        this.sqHttpRequestAuthHeader     = params.SQ_Server_Auth_Token
+
         this.applicationPathNum          = ispwSrcLevel.charAt(ispwSrcLevel.length() - 1)
 
         this.ispwTargetLevel             = "QA" + applicationPathNum
         this.tttJcl                      = "Runner_PATH" + applicationPathNum + ".jcl"
-
-        this.sqHttpRequestAuthHeader     = params.SQ_SERVER_AUTH_TOKEN
 
         this.gitProject                  = params.Git_Project
         this.gitCredentials              = params.Git_Credentials
@@ -137,9 +138,6 @@ class PipelineConfig implements Serializable
                         break;
                     case "SQ_SERVER_URL":
                         sqServerUrl         = parmValue
-                        break;
-                    case "SQ_GATE_NAME":
-                        sqQualityGateName   = parmValue
                         break;
                     case "MF_SOURCE_FOLDER":
                         mfSourceFolder      = parmValue
