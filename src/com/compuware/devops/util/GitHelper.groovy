@@ -43,7 +43,7 @@ class GitHelper implements Serializable {
         )
     }
 
-    def checkoutPath(String gitUrl, String gitBranch, String subProjectList, String gitCredentials, String tttFolder)
+    def checkoutPath(String gitUrl, String gitBranch, subProjectList, String gitCredentials, String tttFolder)
     {
         def pathListParms = []
 
