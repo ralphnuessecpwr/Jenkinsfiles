@@ -247,7 +247,7 @@ def call(Map pipelineParams)
 
             sonarHelper.scan([
                 scanType:           'UT', 
-                scanProjectName:    sonarProjectName
+                scanProjectName:    sonarProjectName,
                 scanBranch:         pConfig.ispwSetId
             ])
 
