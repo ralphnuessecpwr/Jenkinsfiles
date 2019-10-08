@@ -61,8 +61,7 @@ class GitHelper implements Serializable {
                     $class: 'RelativeTargetDirectory', 
                     relativeTargetDir: "${tttFolder}"
                     ]
-                    ]
-                ]], 
+                    ], 
                 submoduleCfg: [], 
                 userRemoteConfigs: [[
                     credentialsId: "${gitCredentials}", 
