@@ -68,7 +68,7 @@ class TttHelper implements Serializable {
                         ccClearStats:   false,                                  // Clear out any existing Code Coverage stats for the given ccSystem and ccTestId
                         ccRepo:         "${pConfig.ccRepository}",
                         ccSystem:       "${pConfig.ispwApplication}", 
-                        ccTestId:       "${script.BUILD_NUMBER}",               // Jenkins environment variable, resolves to build number, i.e. #177 
+                        ccTestId:       "${pConfig.ispwSetId}",               // Jenkins environment variable, resolves to build number, i.e. #177 
                         credentialsId:  "${pConfig.hciTokenId}", 
                         deleteTemp:     true,                                   // (true|false) Automatically delete any temp files created during the execution
                         hlq:            '',                                     // Optional - high level qualifier used when allocation datasets
@@ -131,7 +131,7 @@ class TttHelper implements Serializable {
         def sources="${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}"
 
         // The Code Coverage Plugin passes it's primary configuration in the string or a file
-        def ccproperties = 'cc.sources=' + sources + '\rcc.repos=' + pConfig.ccRepository + '\rcc.system=' + pConfig.ispwApplication  + '\rcc.test=' + script.BUILD_NUMBER
+        def ccproperties = 'cc.sources=' + sources + '\rcc.repos=' + pConfig.ccRepository + '\rcc.system=' + pConfig.ispwApplication  + '\rcc.test=' + pConfig.ispwSetId
 
         steps.step([
             $class:                   'CodeCoverageBuilder',
