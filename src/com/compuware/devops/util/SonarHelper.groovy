@@ -33,25 +33,12 @@ class SonarHelper implements Serializable {
         runScan(testResults, script.JOB_NAME)
     }
 
-    def scanSources(componentList, componentStatusList)
+    def scanSources(String sonarProjectName)
     {
-        def internalStatusList = componentStatusList
-
-        componentList.each
-        {
-            def sonarProjectType                    = 'UT'
-            def sonarGate                           = 'RNU_Gate_Source'
-            def scanType                            = 'source'
-            
-            def sonarProjectName    = determineProjectName(sonarProjectType, it) 
-
-            internalStatusList[it].sourceStatus = scanComponent(it, sonarProjectName, sonarGate, scanType)
-            internalStatusList[it].status       = internalStatusList[it].sourceStatus
-            internalStatusList[it].sonarGate    = sonarGate
-            internalStatusList[it].sonarProject = sonarProjectName
-        }
-
-        return internalStatusList
+        scan([
+            scanType:           'source', 
+            scanProjectName:    sonarProjectName
+            ])
     }
 
     def scanUt(componentList, componentStatusList, listOfExecutedTargets)
@@ -100,6 +87,7 @@ class SonarHelper implements Serializable {
         return internalStatusList
     }
 
+    /*
     def scanComponent(component, sonarProjectName, sonarGate, scanType)
     {
         def status              = ''
@@ -125,19 +113,20 @@ class SonarHelper implements Serializable {
 
         return status 
     }
+    */
 
     /* Method soon to be the only one available */
     def scan(Map scanParms)
     {
         def scanType            = ''
         def scanProjectName     = ''
-        def scanProgramName     = ''
+        //def scanProgramName     = ''
         def scanTestPath        = ''
         def scanResultPath      = ''
         def scanCoveragePath    = ''
 
         scanType            = scanParms.scanType
-        scanProgramName     = scanParms.scanProgramName
+        //scanProgramName     = scanParms.scanProgramName
         scanProjectName     = scanParms.scanProjectName
 
         switch(scanType)
@@ -146,7 +135,8 @@ class SonarHelper implements Serializable {
                 break;
             case "UT":
                 scanTestPath        = 'tests\\' + scanProgramName + '_Unit_Tests'
-                scanResultPath      = determineUtResultPath(scanProgramName)
+                //Needs to be determined new
+                //scanResultPath      = determineUtResultPath(scanProgramName)
                 scanCoveragePath    = "Coverage/CodeCoverage.xml"
                 break;
             case "FT":
@@ -160,10 +150,11 @@ class SonarHelper implements Serializable {
                 break;
         }
 
-        runScan(scanTestPath, scanResultPath, scanCoveragePath, scanProjectName, scanProgramName)
+        //runScan(scanTestPath, scanResultPath, scanCoveragePath, scanProjectName, scanProgramName)
+        runScan(scanTestPath, scanResultPath, scanCoveragePath, scanProjectName)
     }
 
-    private runScan(testPath, testResultPath, coveragePath, projectName, programName)
+    private runScan(testPath, testResultPath, coveragePath, projectName)
     {
         steps.withSonarQubeEnv("${pConfig.sqServerName}")       // Name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section
         {
@@ -171,7 +162,7 @@ class SonarHelper implements Serializable {
             // Project Name and Key
             def sqScannerProperties     = " -Dsonar.projectKey=${projectName} -Dsonar.projectName=${projectName} -Dsonar.projectVersion=1.0" +
             // Folder(s) containing Mainframe sources downloaded from ISPW
-                                          " -Dsonar.sources=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}\\${programName}.cbl" +
+                                          " -Dsonar.sources=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}" +
             // Folder(s) containing Mainframe copybooks
                                           " -Dsonar.cobol.copy.directories=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}" +
             // Suffixes to use for copybooks
@@ -218,6 +209,7 @@ class SonarHelper implements Serializable {
         return result
     }
 
+    /*
     String determineProjectName(String projectType, String programName)
     {
         String projectName = ""
@@ -241,6 +233,7 @@ class SonarHelper implements Serializable {
 
         return projectName
     }
+    */
 
     private String determineUtResultPath(String programName)
     {

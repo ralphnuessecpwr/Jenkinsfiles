@@ -24,6 +24,7 @@ class PipelineConfig implements Serializable
     public String sqServerName                                  // Sonar Qube Scanner Server name as defined in "Manage Jenkins" -> "Configure System" -> "SonarQube servers"
     public String sqServerUrl                                   // URL to the SonarQube server
     public String sqHttpRequestAuthHeader                       // Value for Authorization header for http Requests to SonarQube
+    public String sqQualityGateName                             // Name of SonarQube uality gate to apply
     public String xaTesterUrl                                   // URL to the XATester repository
     public String xaTesterEnvId                                 // XATester Environment ID
     public String mfSourceFolder                                // Folder containing sources after downloading from ISPW
@@ -129,31 +130,34 @@ class PipelineConfig implements Serializable
                 switch(parmName)
                 {
                     case "SQ_SCANNER_NAME":
-                        sqScannerName   = parmValue
+                        sqScannerName       = parmValue
                         break;
                     case "SQ_SERVER_NAME": 
-                        sqServerName    = parmValue
+                        sqServerName        = parmValue
                         break;
                     case "SQ_SERVER_URL":
-                        sqServerUrl     = parmValue
+                        sqServerUrl         = parmValue
+                        break;
+                    case "SQ_GATE_NAME":
+                        sqQualityGateName   = parmValue
                         break;
                     case "MF_SOURCE_FOLDER":
-                        mfSourceFolder  = parmValue
+                        mfSourceFolder      = parmValue
                         break;
                     case "XLR_TEMPLATE":
-                        xlrTemplate     = parmValue
+                        xlrTemplate         = parmValue
                         break;
                     case "XLR_USER":
-                        xlrUser         = parmValue
+                        xlrUser             = parmValue
                         break;
                     case "TTT_FOLDER":
-                        tttFolder       = parmValue
+                        tttFolder           = parmValue
                         break;
                     case "ISPW_URL":
-                        ispwUrl         = parmValue
+                        ispwUrl             = parmValue
                         break;
                     case "ISPW_RUNTIME":
-                        ispwRuntime     = parmValue
+                        ispwRuntime         = parmValue
                         break;
                     default:
                         steps.echo "Found unknown Pipeline Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
