@@ -293,8 +293,6 @@ def call(Map pipelineParams)
 
         stage("Based on results: Trigger Functional Test Job or Regress Failing Tasks")
         {
-            pipelinePass = true
-
             if(pipelinePass)
             {
                 ftJob = build job: "RNU_FTSDEMO_Functional_Tests", parameters: [
