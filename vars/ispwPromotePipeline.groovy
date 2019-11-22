@@ -293,6 +293,8 @@ def call(Map pipelineParams)
 
         stage("Based on results: Trigger Functional Test Job or Regress Failing Tasks")
         {
+            echo "pipeline Pass Check: " + pipelinePass
+            
             if(pipelinePass)
             {
                 ftJob = build job: "RNU_FTSDEMO_Functional_Tests", parameters: [
