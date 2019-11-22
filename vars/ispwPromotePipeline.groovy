@@ -24,7 +24,7 @@ def             listOfExecutedTargets   // List of program names for which unit 
 String          cesToken                // Clear text token from CES
 def             sourceResidenceLevel    // ISPW level at which the sources reside at the moment
 
-def             ftJob                   // Object returned by triggering an external Jenkins job
+def             ftJob                   // Object returned by triggering an external Jenkins Job
 
 private initialize(pipelineParams)
 {
