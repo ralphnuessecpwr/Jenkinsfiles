@@ -109,7 +109,7 @@ class PipelineConfig implements Serializable
     /* Read configuration values from pipeline.config file */
     def setServerConfig()
     {
-        def tmpConfig = steps.readYaml(file: pipelineConfigFile)
+        def tmpConfig = steps.readYaml(file: "${configPath}/${pipelineConfigFile}")
 
         sqScannerName   = tmpConfig.sqScannerName
         sqServerName    = tmpConfig.sqServerName
