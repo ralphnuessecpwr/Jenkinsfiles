@@ -48,7 +48,7 @@ def initialize(pipelineParams)
             steps.error "File - ${mailListFilePath} - not found! \n Aborting Pipeline"
         }
 
-        mailListlines = mailConfigFile.readLines()
+        mailListlines = mailConfigFile.text
     }
 
     pConfig     = new   PipelineConfig(
