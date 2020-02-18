@@ -124,7 +124,7 @@ class PipelineConfig implements Serializable
     /* Read configuration values from tttgit.config file */
     def setTttGitConfig()
     {
-        def tmpConfig = readConfigFile(pipelineConfigFile)
+        def tmpConfig = readConfigFile(tttGitConfigFile)
 
         steps.echo "Read"
         steps.echo tmpConfig.gitTargetBranch
