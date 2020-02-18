@@ -10,7 +10,7 @@ class PipelineConfig implements Serializable
     def mailListMap = [:]
 
     private String configPath           = 'pipeline'            // Path containing config files after downloading them from Git Hub Repository 'config\\pipeline'
-    private String pipelineConfigFile   = 'pipeline.config'     // Config file containing pipeline configuration
+    private String pipelineConfigFile   = 'pipelineConfig.yml'     // Config file containing pipeline configuration
     private String tttGitConfigFile     = 'tttgit.config'       // Config gile containing for TTT projects stroed in Git Hub
 
     private String workspace
@@ -109,7 +109,7 @@ class PipelineConfig implements Serializable
     /* Read configuration values from pipeline.config file */
     def setServerConfig()
     {
-        def tmpConfig = readConfigFile("${pipelineConfigFile}")
+        def tmpConfig = readYaml(file: pipelineConfigFile)
 
         sqScannerName   = tmpConfig.sqScannerName
         sqServerName    = tmpConfig.sqServerName
