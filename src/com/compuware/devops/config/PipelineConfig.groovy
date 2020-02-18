@@ -137,27 +137,6 @@ class PipelineConfig implements Serializable
     /* Read list of email addresses from config file */
     def setMailConfig()
     {        
-
-        steps.configFileProvider(
-            [
-                managedFiles(
-                    fileId: 'MailList', 
-                    variable: 'mailListFilePath'
-                )
-            ]
-        ) 
-        {
-            File mailConfigFile = new File(mailListFilePath)
-
-            if(!mailConfigFile.exists())
-            {
-                steps.error "File - ${mailListFilePath} - not found! \n Aborting Pipeline"
-            }
-
-            //mailListlines = mailConfigFile.readLines()
-            mailListlines = mailConfigFile.text
-        }
-
         steps.echo mailListLines.toString()
 
         def mailListMapTest = steps.readYaml(text: mailListLines.toString())
