@@ -138,7 +138,7 @@ class PipelineConfig implements Serializable
     def setMailConfig()
     {        
         
-        steps.echo mailListMap.toString()
+        steps.echo mailListLines.toString()
 
         def mailListMapTest = steps.readYaml(text: mailListLines.toString())
         
