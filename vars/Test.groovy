@@ -82,6 +82,5 @@ def call(Map pipelineParams)
             initialize(pipelineParams) 
         }
 
-        echo pConfig.sqScannerName
     }
 }
