@@ -137,27 +137,9 @@ class PipelineConfig implements Serializable
     /* Read list of email addresses from config file */
     def setMailConfig()
     {        
-        steps.echo mailListLines.toString()
-
         def mailListMapTest = steps.readYaml(text: mailListLines.toString())
         
-        steps.echo mailListMapTest.toString()
-        steps.echo mailListMapTest.HDDRXM0
-
-        def lineToken
-        def tsoUser
-        def emailAddress
-
-        mailListLines.each
-        {
-            lineToken       = it.toString().tokenize(":")
-            tsoUser         = lineToken.get(0).toString()
-            emailAddress    = lineToken.get(1).toString().trim()
-
-            mailListMap."${tsoUser}" = "${emailAddress}"
-        }
-
-        mailRecipient  = mailListMap[(ispwOwner.toUpperCase())]
+        mailRecipient       = mailListMap[(ispwOwner.toUpperCase())]
     }
     
     def readConfigFile(String fileName)
