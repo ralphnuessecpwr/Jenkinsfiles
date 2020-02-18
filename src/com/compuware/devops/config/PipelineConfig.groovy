@@ -140,7 +140,7 @@ class PipelineConfig implements Serializable
         def mailListMapTest = steps.readYaml(text: mailListLines.toString())
         
         steps.echo mailListMapTest.toString()
-        steps.echo mailListMaptest.'HDDRXM0'
+        steps.echo mailListMapTest.'HDDRXM0'
 
         def lineToken
         def tsoUser
