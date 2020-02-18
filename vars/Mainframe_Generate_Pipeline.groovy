@@ -69,6 +69,11 @@ def initialize(pipelineParams)
         gitHelper.initialize(gitPassword, gitUsername, pConfig.ispwOwner, pConfig.mailRecipient)
     }
 
+    echo "Instantiate ispwHelper"
+    echo "pConfig"
+    echo "Target Level " + pConfig.ispwTargetLevel
+    echo "Set id " + pConfig.ispwSetId
+
     ispwHelper  = new   IspwHelper(
                             steps, 
                             pConfig
@@ -101,7 +106,7 @@ def call(Map pipelineParams)
         /* Download all sources that are part of the container  */
         stage("Retrieve Mainframe Code")
         {
-            ispwHelper.downloadSourcesForSet(pConfig.ispwSetId)
+            ispwHelper.downloadSourcesForSet(pConfig.ispwTargetLevel)
         }
         
         /* Retrieve the Tests from Github that match that ISPWW Stream and Application */
