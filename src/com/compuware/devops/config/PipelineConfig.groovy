@@ -109,7 +109,7 @@ class PipelineConfig implements Serializable
     /* Read configuration values from pipeline.config file */
     def setServerConfig()
     {
-        def tmpConfig = steps.readYaml(file: "${configPath}/${pipelineConfigFile}")
+        def tmpConfig = readConfigFile(pipelineConfigFile)
 
         sqScannerName   = tmpConfig.sqScannerName
         sqServerName    = tmpConfig.sqServerName
@@ -125,46 +125,13 @@ class PipelineConfig implements Serializable
     /* Read configuration values from tttgit.config file */
     def setTttGitConfig()
     {
-        def lineToken
-        def parmName
-        def parmValue
+        def tmpConfig = readConfigFile(pipelineConfigFile)
 
-        def lines = readConfigFile("${tttGitConfigFile}")
-
-        lines.each
-        {
-            if(
-                it.toString().indexOf('#') != 0 &&
-                it.toString().trim() != ''
-            )
-            {
-                lineToken   = it.toString().tokenize("=")
-                parmName    = lineToken.get(0).toString()
-                parmValue   = lineToken.get(1).toString().trim()
-
-                switch(parmName)
-                {
-                    case "TTT_GIT_TARGET_BRANCH":
-                        gitTargetBranch = parmValue
-                        break;
-                    case "TTT_GIT_BRANCH": 
-                        gitBranch       = parmValue
-                        break;
-                    case "TTT_FT_GIT_BRANCH": 
-                        gitFtBranch       = parmValue
-                        break;
-                    case "TTT_FT_SERVER_URL":
-                        xaTesterUrl     = parmValue
-                        break;
-                    case "TTT_FT_ENVIRONMENT_ID":
-                        xaTesterEnvId   = parmValue
-                        break;
-                    default:
-                        steps.echo "Found unknown TTT Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
-                        break;
-                }
-            }
-        }
+        gitTargetBranch = tmpConfig.gitTargetBranch
+        gitBranch       = tmpConfig.gitBranch
+        gitFtBranch     = tmpConfig.gitFtBranch
+        xaTesterUrl     = tmpConfig.xaTesterUrl
+        xaTesterEnvId   = tmpConfig.xaTesterEnvId
     }
 
     /* Read list of email addresses from config file */
@@ -192,6 +159,6 @@ class PipelineConfig implements Serializable
         def filePath    = "${configPath}/${fileName}"
         def fileText    = steps.libraryResource filePath
 
-        return fileText.tokenize("\n")
+        return steps.readYaml(text: fileText)
     }
 }
