@@ -109,17 +109,58 @@ class PipelineConfig implements Serializable
     /* Read configuration values from pipeline.config file */
     def setServerConfig()
     {
-        def tmpConfig = readConfigFile("${pipelineConfigFile}")
+        def lineToken
+        def parmName
+        def parmValue
 
-        sqScannerName   = tmpConfig.sqScannerName
-        sqServerName    = tmpConfig.sqServerName
-        sqServerUrl     = tmpConfig.sqServerUrl
-        mfSourceFolder  = tmpConfig.mfSourceFolder
-        xlrTemplate     = tmpConfig.xlrTemplate
-        xlrUser         = tmpConfig.xlrUser
-        tttFolder       = tmpConfig.tttFolder
-        ispwUrl         = tmpConfig.ispwUrl
-        ispwRuntime     = tmpConfig.ispwRuntime
+        def lines = readConfigFile("${pipelineConfigFile}")
+
+        lines.each
+        {
+            if(
+                it.toString().indexOf('#') != 0 &&
+                it.toString().trim() != ''
+            )
+            {
+                lineToken   = it.toString().tokenize("=")
+                parmName    = lineToken.get(0).toString()
+                parmValue   = lineToken.get(1).toString().trim()
+
+                switch(parmName)
+                {
+                    case "SQ_SCANNER_NAME":
+                        sqScannerName   = parmValue
+                        break;
+                    case "SQ_SERVER_NAME": 
+                        sqServerName    = parmValue
+                        break;
+                    case "SQ_SERVER_URL":
+                        sqServerUrl     = parmValue
+                        break;
+                    case "MF_SOURCE_FOLDER":
+                        mfSourceFolder  = parmValue
+                        break;
+                    case "XLR_TEMPLATE":
+                        xlrTemplate     = parmValue
+                        break;
+                    case "XLR_USER":
+                        xlrUser         = parmValue
+                        break;
+                    case "TTT_FOLDER":
+                        tttFolder       = parmValue
+                        break;
+                    case "ISPW_URL":
+                        ispwUrl         = parmValue
+                        break;
+                    case "ISPW_RUNTIME":
+                        ispwRuntime     = parmValue
+                        break;
+                    default:
+                        steps.echo "Found unknown Pipeline Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
+                        break;
+                }
+            }
+        }
     }
 
     /* Read configuration values from tttgit.config file */

@@ -1,0 +1,9 @@
+sqScannerName:  scanner
+sqServerName:   localhost
+sqServerUrl:    http://sonarqube.nasa.cpwr.corp:9000
+mfSourceFolder: MF_Source
+tttFolder:      tests   
+xlrTemplate:    A Release from Jenkins - RNU
+xlrUser:        admin  
+ispwUrl:        http://cwcc.compuware.com:2020
+ispwRuntime:    ispw
