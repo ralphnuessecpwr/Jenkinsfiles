@@ -62,7 +62,6 @@ class PipelineConfig implements Serializable
 
     def PipelineConfig(steps, workspace, params, mailListLines)
     {
-        //configGitBranch    = params.Config_Git_Branch
         this.steps                       = steps
         this.workspace                   = workspace
         this.mailListLines               = mailListLines
@@ -126,6 +125,14 @@ class PipelineConfig implements Serializable
     def setTttGitConfig()
     {
         def tmpConfig = readConfigFile(pipelineConfigFile)
+
+        steps.echo "Read"
+        steps.echo tmpConfig.gitTargetBranch
+        steps.echo tmpConfig.gitBranch
+        steps.echo tmpConfig.gitFtBranch
+        steps.echo tmpConfig.xaTesterUrl
+        steps.echo tmpConfig.xaTesterEnvId
+
 
         gitTargetBranch = tmpConfig.gitTargetBranch
         gitBranch       = tmpConfig.gitBranch
