@@ -54,7 +54,9 @@ private initialize(pipelineParams)
         {
             steps.error "File - ${mailListFilePath} - not found! \n Aborting Pipeline"
         }
-        mailListlines = mailConfigFile.readLines()
+
+        //mailListlines = mailConfigFile.readLines()
+        mailListlines = mailConfigFile.text
     }
 
     // Instantiate and initialize Pipeline Configuration settings
