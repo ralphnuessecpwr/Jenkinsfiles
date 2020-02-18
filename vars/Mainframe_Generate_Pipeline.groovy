@@ -69,11 +69,6 @@ def initialize(pipelineParams)
         gitHelper.initialize(gitPassword, gitUsername, pConfig.ispwOwner, pConfig.mailRecipient)
     }
 
-    echo "Instantiate ispwHelper"
-    echo "pConfig"
-    echo "Target Level " + pConfig.ispwTargetLevel
-    echo "Set id " + pConfig.ispwSetId
-
     ispwHelper  = new   IspwHelper(
                             steps, 
                             pConfig
@@ -114,6 +109,8 @@ def call(Map pipelineParams)
         {            
             def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttUtRepo}"
             
+            echo "Call Git with branch " + pConfig.gitBranch
+ 
             /* Check out unit tests from GitHub */
             gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
 

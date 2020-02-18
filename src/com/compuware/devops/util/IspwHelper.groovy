@@ -84,9 +84,6 @@ class IspwHelper implements Serializable
     /* Download sources for the ISPW Set which triggered the current pipeline from a given level */
     def downloadSourcesForSet(String ispwLevel)
     {
-        steps.echo "Level: " + ispwLevel 
-        steps.echo "SetId:" + ispwSetId
-        
         downloadSources(ispwLevel, ispwSetId, '2')
     }
 

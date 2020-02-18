@@ -1,5 +1,5 @@
 gitTargetBranch:  ''
-gitBranch:        full_coverage   
+gitBranch:        master
 gitFtBranch:      master
 xaTesterUrl:      http://cwcc.compuware.com:2020/totaltestapi/
 xaTesterEnvId:    5b508b8a787be73b59238d38
