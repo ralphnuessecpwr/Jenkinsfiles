@@ -101,7 +101,7 @@ def call(Map pipelineParams)
         /* Download all sources that are part of the container  */
         stage("Retrieve Mainframe Code")
         {
-            ispwHelper.downloadSources(pConfig.ispwSrcLevel)
+            ispwHelper.downloadSourcesForSet(pConfig.ispwSetId)
         }
         
         /* Retrieve the Tests from Github that match that ISPWW Stream and Application */
