@@ -140,7 +140,7 @@ class PipelineConfig implements Serializable
 
         steps.configFileProvider(
             [
-                configFile(
+                managedFiles(
                     fileId: 'MailList', 
                     variable: 'mailListFilePath'
                 )
