@@ -126,14 +126,6 @@ class PipelineConfig implements Serializable
     {
         def tmpConfig = readConfigFile(tttGitConfigFile)
 
-        steps.echo "Read"
-        steps.echo tmpConfig.gitTargetBranch
-        steps.echo tmpConfig.gitBranch
-        steps.echo tmpConfig.gitFtBranch
-        steps.echo tmpConfig.xaTesterUrl
-        steps.echo tmpConfig.xaTesterEnvId
-
-
         gitTargetBranch = tmpConfig.gitTargetBranch
         gitBranch       = tmpConfig.gitBranch
         gitFtBranch     = tmpConfig.gitFtBranch

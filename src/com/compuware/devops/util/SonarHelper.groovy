@@ -26,6 +26,7 @@ class SonarHelper implements Serializable {
     }
 
     /* Method soon to be removed */
+    /*
     def scan()
     {
         def testResults = determineUtResultPath()
@@ -125,19 +126,17 @@ class SonarHelper implements Serializable {
 
         return status 
     }
-
+    */
     /* Method soon to be the only one available */
     def scan(Map scanParms)
     {
         def scanType            = ''
         def scanProjectName     = ''
-        def scanProgramName     = ''
         def scanTestPath        = ''
         def scanResultPath      = ''
         def scanCoveragePath    = ''
 
         scanType            = scanParms.scanType
-        scanProgramName     = scanParms.scanProgramName
         scanProjectName     = scanParms.scanProjectName
 
         switch(scanType)
@@ -145,8 +144,8 @@ class SonarHelper implements Serializable {
             case 'source':
                 break;
             case "UT":
-                scanTestPath        = 'tests\\' + scanProgramName + '_Unit_Tests'
-                scanResultPath      = determineUtResultPath(scanProgramName)
+                scanTestPath        = 'tests\\' + pConfig.ispwStream + '_' + pConfig.ispwApplication + '_Unit_Tests'
+                scanResultPath      = determineUtResultPath()
                 scanCoveragePath    = "Coverage/CodeCoverage.xml"
                 break;
             case "FT":
@@ -156,7 +155,7 @@ class SonarHelper implements Serializable {
                 break;
             default:
                 steps.echo "SonarHelper.scan received wrong pipelineType: " + scanType
-                steps.echo "Valid types are 'UT' or FT"
+                steps.echo "Valid types are 'source', 'UT' or FT"
                 break;
         }
 
@@ -168,20 +167,18 @@ class SonarHelper implements Serializable {
         steps.withSonarQubeEnv("${pConfig.sqServerName}")       // Name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section
         {
             // Build Sonar scanner parameters
-            // Project Name and Key
-            def sqScannerProperties     = " -Dsonar.projectKey=${projectName} -Dsonar.projectName=${projectName} -Dsonar.projectVersion=1.0" +
-            // Folder(s) containing Mainframe sources downloaded from ISPW
-                                          " -Dsonar.sources=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}\\${programName}.cbl" +
-            // Folder(s) containing Mainframe copybooks
+            def sqScannerProperties     = " -Dsonar.projectKey=${projectName} " +
+                                          " -Dsonar.projectName=${projectName} " +
+                                          " -Dsonar.projectVersion=1.0" +
+                                          " -Dsonar.sources=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}" +
                                           " -Dsonar.cobol.copy.directories=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}" +
-            // Suffixes to use for copybooks
                                           " -Dsonar.cobol.copy.suffixes=cpy" +
                                           " -Dsonar.sourceEncoding=UTF-8"
 
-            // Building suffixes for main sources
+            // If only source are to be scanned
             def sourceSuffixes          = " -Dsonar.cobol.file.suffixes=cbl"
             
-            // Add parameters if tests and test result paths were PASS as well
+            // Add parameters if tests and test result paths were passed as well
             if(testPath != '' && testResultPath != '')
             {
                 sqScannerProperties     = sqScannerProperties + " -Dsonar.tests=${testPath} -Dsonar.testExecutionReportPaths=${testResultPath}"
@@ -189,7 +186,7 @@ class SonarHelper implements Serializable {
                 sourceSuffixes          = sourceSuffixes + ",testsuite,testscenario,stub"
             }
 
-            // Add parameters if code coverage paths were PASS as well
+            // Add parameters if code coverage paths were passed as well
             if(coveragePath != '')
             {
                 sqScannerProperties     = sqScannerProperties + " -Dsonar.coverageReportPaths=${coveragePath}"
@@ -218,17 +215,17 @@ class SonarHelper implements Serializable {
         return result
     }
 
-    String determineProjectName(String projectType, String programName)
+    String determineProjectName(String projectType)
     {
         String projectName = ""
 
         switch(projectType)
         {
             case "UT":
-                projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication + '_' + programName + '_Unit_Tests'
+                projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication + '_Unit_Tests'
                 break;
             case "FT":
-                projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication + '_' + programName + '_Functional_Tests'
+                projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication '_Functional_Tests'
                 break;
             case "Application":
                 projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication
@@ -242,10 +239,10 @@ class SonarHelper implements Serializable {
         return projectName
     }
 
-    private String determineUtResultPath(String programName)
+    private String determineUtResultPath()
     {
         // Finds all of the Total Test results files that will be submitted to SonarQube
-        def tttListOfResults    = steps.findFiles(glob: 'TTTSonar/' + programName + '*.xml')   // Total Test SonarQube result files are stored in TTTSonar directory
+        def tttListOfResults    = steps.findFiles(glob: 'TTTSonar/*.xml')   // Total Test SonarQube result files are stored in TTTSonar directory
 
         // Build the sonar testExecutionReportsPaths property
         // Start empty
