@@ -27,7 +27,7 @@ class PipelineConfig implements Serializable
     public String xaTesterUrl                                   // URL to the XATester repository
     public String xaTesterEnvId                                 // XATester Environment ID
 
-    public ccDdioOverride   = []
+    public String ccDdioOverride
 
     public String mfSourceFolder                                // Folder containing sources after downloading from ISPW
     public String xlrTemplate                                   // XL Release template to start
@@ -135,11 +135,16 @@ class PipelineConfig implements Serializable
         xaTesterUrl     = tmpConfig.xaTesterUrl
         xaTesterEnvId   = tmpConfig.xaTesterEnvId
 
+        ccDdioOverride  = ''
+
         tmpConfig.ccDdioOverride.each
         {
-            steps.echo it
+            ccDdioOverride = ccDdioOverride + it.replace('<ispwApplication>', ispwApplication) + ','
         }
-        
+
+        ccDdioOverride = ccDdioOverride.substring(0, ccDdioOverride.lastIndexOf(','))
+
+        steps.echo "DDIO Override " + ccDdioOverride
     }
 
     /* Read list of email addresses from config file */
