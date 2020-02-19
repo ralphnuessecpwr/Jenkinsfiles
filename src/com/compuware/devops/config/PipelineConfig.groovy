@@ -26,6 +26,9 @@ class PipelineConfig implements Serializable
     public String sqHttpRequestAuthHeader                       // Value for Authorization header for http Requests to SonarQube
     public String xaTesterUrl                                   // URL to the XATester repository
     public String xaTesterEnvId                                 // XATester Environment ID
+
+    public ccDdioOverride   = []
+
     public String mfSourceFolder                                // Folder containing sources after downloading from ISPW
     public String xlrTemplate                                   // XL Release template to start
     public String xlrUser                                       // XL Release user to use
@@ -131,8 +134,6 @@ class PipelineConfig implements Serializable
         gitFtBranch     = tmpConfig.gitFtBranch
         xaTesterUrl     = tmpConfig.xaTesterUrl
         xaTesterEnvId   = tmpConfig.xaTesterEnvId
-
-        ccDdioOverride  = []
 
         tmpConfig.ccDdioOverride.each
         {
