@@ -132,7 +132,11 @@ class TttHelper implements Serializable {
         def sources="${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}"
 
         // The Code Coverage Plugin passes it's primary configuration in the string or a file
-        def ccproperties = 'cc.sources=' + sources + '\rcc.repos=' + pConfig.ccRepository + '\rcc.system=' + pConfig.ispwApplication  + '\rcc.test=' + script.BUILD_NUMBER
+        def ccproperties = 'cc.sources=' + sources + 
+            '\rcc.repos=' + pConfig.ccRepository + 
+            '\rcc.system=' + pConfig.ispwApplication  + 
+            '\rcc.test=' + script.BUILD_NUMBER +
+            '\rcc.ddio.overrides=' + pConfig.ccDdioOverrides
 
         steps.step([
             $class:                   'CodeCoverageBuilder',

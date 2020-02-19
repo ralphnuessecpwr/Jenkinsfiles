@@ -143,8 +143,6 @@ class PipelineConfig implements Serializable
         }
 
         ccDdioOverride = ccDdioOverride.substring(0, ccDdioOverride.lastIndexOf(','))
-
-        steps.echo "DDIO Override " + ccDdioOverride
     }
 
     /* Read list of email addresses from config file */
