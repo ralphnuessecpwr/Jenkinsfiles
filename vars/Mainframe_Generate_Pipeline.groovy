@@ -147,13 +147,6 @@ def call(Map pipelineParams)
 
             def sonarProjectName = sonarHelper.determineProjectName('UT')
 
-        def scanType            = ''
-        def scanProjectName     = ''
-        def scanProgramName     = ''
-        def scanTestPath        = ''
-        def scanResultPath      = ''
-        def scanCoveragePath    = ''
-
             sonarHelper.scan([
                 scanType:       'UT', 
                 scanProject:    sonarProjectName
