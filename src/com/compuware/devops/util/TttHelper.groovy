@@ -12,16 +12,14 @@ class TttHelper implements Serializable {
     def listOfScenarios
     def listOfSources
     def listOfPrograms
-    def listOfExecutedTargets 
 
     TttHelper(script, steps, pConfig) 
     {
         this.script                 = script
         this.steps                  = steps
         this.pConfig                = pConfig
-        this.listOfExecutedTargets  = []
 
-        jclSkeleton     = new JclSkeleton(steps, script.workspace, pConfig.ispwApplication, pConfig.applicationPathNum)
+        jclSkeleton                 = new JclSkeleton(steps, script.workspace, pConfig.ispwApplication, pConfig.applicationPathNum)
     }
 
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
@@ -29,7 +27,18 @@ class TttHelper implements Serializable {
     {
         jclSkeleton.initialize()
 
-        listOfPrograms     = componentList
+        listOfPrograms = []
+
+        listProgramFiles    = steps.findFiles(glob: '**/*.cbl')
+
+        listProgramFiles.each
+        {
+            def fileName        = it.name             
+
+            steps.echo "ADD: " + fileName.substring(0, fileName.indexOf('.cbl'))
+
+            listOfPrograms.add(fileName.substring(0, fileName.indexOf('.cbl')))
+        }
     }
 
     def loopThruScenarios()
