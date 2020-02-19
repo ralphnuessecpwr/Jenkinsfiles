@@ -225,7 +225,7 @@ class SonarHelper implements Serializable {
                 projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication + '_Unit_Tests'
                 break;
             case "FT":
-                projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication '_Functional_Tests'
+                projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication + '_Functional_Tests'
                 break;
             case "Application":
                 projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication
