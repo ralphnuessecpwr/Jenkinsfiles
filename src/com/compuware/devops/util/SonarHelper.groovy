@@ -159,10 +159,10 @@ class SonarHelper implements Serializable {
                 break;
         }
 
-        runScan(scanTestPath, scanResultPath, scanCoveragePath, scanProjectName, scanProgramName)
+        runScan(scanTestPath, scanResultPath, scanCoveragePath, scanProjectName)
     }
 
-    private runScan(testPath, testResultPath, coveragePath, projectName, programName)
+    private runScan(testPath, testResultPath, coveragePath, projectName)
     {
         steps.withSonarQubeEnv("${pConfig.sqServerName}")       // Name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section
         {
