@@ -143,20 +143,13 @@ def call(Map pipelineParams)
         */ 
         stage("Check SonarQube Quality Gate") 
         {
-
-            echo "Going to download copybooks"
-
             ispwHelper.downloadCopyBooks(workspace)            
-
-            echo "Going to determine Project Name"
 
             def sonarProjectName = sonarHelper.determineProjectName('UT')
 
-            echo "Determined Project Name: " + sonarProjectName
-
             sonarHelper.scan([
-                scanType:       'UT', 
-                scanProject:    sonarProjectName
+                scanType:           'UT', 
+                scanProjectName:    sonarProjectName
                 ])
 
             String sonarGateResult = sonarHelper.checkQualityGate()

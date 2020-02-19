@@ -149,12 +149,10 @@ class IspwHelper implements Serializable
         {
             steps.echo "No Copy Books to download"
         }
-        steps.echo "Finished downloading copybooks"
     }
 
     def getComponents(String cesToken, String container, String containerType)
     {
-        steps.echo "Got cesToken ${cesToken}, container ${container}, type ${containerType}"
         def containerTypeText
 
         switch(containerType) 

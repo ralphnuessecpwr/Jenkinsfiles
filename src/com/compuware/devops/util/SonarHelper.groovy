@@ -130,6 +130,7 @@ class SonarHelper implements Serializable {
     /* Method soon to be the only one available */
     def scan(Map scanParms)
     {
+        
         def scanType            = ''
         def scanProjectName     = ''
         def scanTestPath        = ''
@@ -236,14 +237,11 @@ class SonarHelper implements Serializable {
                 break;
         }
 
-        steps.echo "About to return " + projectName
-
         return projectName
     }
 
     private String determineUtResultPath()
     {
-        steps.echo "Upps shouldn't be here"
         // Finds all of the Total Test results files that will be submitted to SonarQube
         def tttListOfResults    = steps.findFiles(glob: 'TTTSonar/*.xml')   // Total Test SonarQube result files are stored in TTTSonar directory
 
