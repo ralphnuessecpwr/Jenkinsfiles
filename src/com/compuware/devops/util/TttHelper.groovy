@@ -87,12 +87,8 @@ class TttHelper implements Serializable {
                         testSuite:      "${scenarioFullName}",                  // Name of the Total Test Scenario to execute
                         useStubs:       true                                    // (true|false) - Execute with or without stubs
                 ])   
-
-                listOfExecutedTargets.add(programName)
             }
         }
-        
-        return listOfExecutedTargets        
     }
 
     def executeFunctionalTests()
@@ -110,8 +106,6 @@ class TttHelper implements Serializable {
                     stopIfTestFailsOrThresholdReached:  false,
                     sonarVersion:                       '6'
             }
-
-            listOfExecutedTargets.add(it)
         }
     }
 
