@@ -132,7 +132,13 @@ class PipelineConfig implements Serializable
         xaTesterUrl     = tmpConfig.xaTesterUrl
         xaTesterEnvId   = tmpConfig.xaTesterEnvId
 
-        steps.echo "Override " + tmpConfig.ccDdioOverride
+        ccDdioOverride  = []
+
+        tmpConfig.ccDdioOverride.each
+        {
+            steps.echo it
+        }
+        
     }
 
     /* Read list of email addresses from config file */
