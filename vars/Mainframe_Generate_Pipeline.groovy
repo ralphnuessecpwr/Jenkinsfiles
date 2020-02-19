@@ -143,6 +143,9 @@ def call(Map pipelineParams)
         */ 
         stage("Check SonarQube Quality Gate") 
         {
+
+            echo "Going to download copybooks"
+
             ispwHelper.downloadCopyBooks(workspace)            
 
             echo: "Going to determine Project Name"

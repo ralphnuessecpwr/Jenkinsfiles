@@ -149,6 +149,7 @@ class IspwHelper implements Serializable
         {
             steps.echo "No Copy Books to download"
         }
+        steps.echo "Finished downloading copybooks"
     }
 
     def getComponents(String cesToken, String container, String containerType)
@@ -307,8 +308,6 @@ class IspwHelper implements Serializable
                     for(int i=0;i<lineToken.size();i++) 
                     {
                         tokenItem = lineToken.get(i).toString()
-
-                        steps.echo tokenItem
 
                         if (
                             tokenItem == "COPY" && seventhChar != "*" ||
