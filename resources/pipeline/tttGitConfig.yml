@@ -3,3 +3,12 @@ gitBranch:        master
 gitFtBranch:      master
 xaTesterUrl:      http://cwcc.compuware.com:2020/totaltestapi/
 xaTesterEnvId:    5b508b8a787be73b59238d38
+ccDdioOverride:   
+- SALESSUP.<ispwApplication>.DEV1.LOAD.SSD
+- SALESSUP.<ispwApplication>.DEV2.LOAD.SSD
+- SALESSUP.<ispwApplication>.DEV3.LOAD.SSD
+- SALESSUP.<ispwApplication>.QA1.LOAD.SSD
+- SALESSUP.<ispwApplication>.QA2.LOAD.SSD
+- SALESSUP.<ispwApplication>.QA3.LOAD.SSD
+- SALESSUP.<ispwApplication>.STG.LOAD.SSD
+- SALESSUP.<ispwApplication>.PRD.LOAD.SSD

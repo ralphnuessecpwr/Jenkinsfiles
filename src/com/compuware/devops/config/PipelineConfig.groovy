@@ -131,6 +131,8 @@ class PipelineConfig implements Serializable
         gitFtBranch     = tmpConfig.gitFtBranch
         xaTesterUrl     = tmpConfig.xaTesterUrl
         xaTesterEnvId   = tmpConfig.xaTesterEnvId
+
+        steps.echo tmpConfig.ccDdioOverride
     }
 
     /* Read list of email addresses from config file */
