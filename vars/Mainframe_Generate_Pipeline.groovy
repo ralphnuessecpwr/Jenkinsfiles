@@ -147,6 +147,8 @@ def call(Map pipelineParams)
 
             def sonarProjectName = sonarHelper.determineProjectName('UT')
 
+            echo: "Determined Project Name: " + sonarProjectName
+
             sonarHelper.scan([
                 scanType:       'UT', 
                 scanProject:    sonarProjectName

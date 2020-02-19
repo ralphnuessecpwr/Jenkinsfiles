@@ -219,10 +219,16 @@ class SonarHelper implements Serializable {
     {
         String projectName = ""
 
+        steps.echo "determine Project Name"
+        steps.echo "Type: " + projectType
+
         switch(projectType)
         {
             case "UT":
                 projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication + '_Unit_Tests'
+                steps.echo "Found UT"
+                steps.echo "Stream: " + pConfig.ispwStream
+                steps.echo "App:" + pConfig.ispwApplication
                 break;
             case "FT":
                 projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication + '_Functional_Tests'

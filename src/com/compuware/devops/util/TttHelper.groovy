@@ -35,8 +35,6 @@ class TttHelper implements Serializable {
         {
             def fileName        = it.name             
 
-            steps.echo "ADD: " + fileName.substring(0, fileName.indexOf('.cbl'))
-
             listOfPrograms.add(fileName.substring(0, fileName.indexOf('.cbl')))
         }
     }
