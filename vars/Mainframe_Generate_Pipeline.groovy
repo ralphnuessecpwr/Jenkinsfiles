@@ -145,6 +145,8 @@ def call(Map pipelineParams)
         {
             ispwHelper.downloadCopyBooks(workspace)            
 
+            echo: "Going to determine Project Name"
+
             def sonarProjectName = sonarHelper.determineProjectName('UT')
 
             echo: "Determined Project Name: " + sonarProjectName

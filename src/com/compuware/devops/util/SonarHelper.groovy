@@ -219,16 +219,10 @@ class SonarHelper implements Serializable {
     {
         String projectName = ""
 
-        steps.echo "determine Project Name"
-        steps.echo "Type: " + projectType
-
         switch(projectType)
         {
             case "UT":
                 projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication + '_Unit_Tests'
-                steps.echo "Found UT"
-                steps.echo "Stream: " + pConfig.ispwStream
-                steps.echo "App:" + pConfig.ispwApplication
                 break;
             case "FT":
                 projectName = pConfig.ispwStream + '_' + pConfig.ispwApplication + '_Functional_Tests'
@@ -242,11 +236,14 @@ class SonarHelper implements Serializable {
                 break;
         }
 
+        steps.echo "About to return " + projectName
+
         return projectName
     }
 
     private String determineUtResultPath()
     {
+        steps.echo "Upps shouldn't be here"
         // Finds all of the Total Test results files that will be submitted to SonarQube
         def tttListOfResults    = steps.findFiles(glob: 'TTTSonar/*.xml')   // Total Test SonarQube result files are stored in TTTSonar directory
 
