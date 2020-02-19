@@ -130,7 +130,7 @@ class SonarHelper implements Serializable {
     /* Method soon to be the only one available */
     def scan(Map scanParms)
     {
-        
+
         def scanType            = ''
         def scanProjectName     = ''
         def scanTestPath        = ''
@@ -196,7 +196,7 @@ class SonarHelper implements Serializable {
             sqScannerProperties         = sqScannerProperties + sourceSuffixes
             
             // Call the SonarQube Scanner with properties defined above
-            steps.bat "${scannerHome}/bin/sonar-scanner" + sqScannerProperties
+            steps.bat '"${scannerHome}/bin/sonar-scanner"' + sqScannerProperties
         }
     }
 
