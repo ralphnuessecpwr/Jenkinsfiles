@@ -29,9 +29,9 @@ class TttHelper implements Serializable {
 
         listOfPrograms = []
 
-        listProgramFiles    = steps.findFiles(glob: '**/*.cbl')
+        def listOfProgramFiles    = steps.findFiles(glob: '**/*.cbl')
 
-        listProgramFiles.each
+        listOfProgramFiles.each
         {
             def fileName        = it.name             
 
