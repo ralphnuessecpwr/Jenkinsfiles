@@ -71,8 +71,8 @@ class PipelineConfig implements Serializable
         this.ispwApplication    = params.ISPW_Application
         this.ispwRelease        = params.ISPW_Release
         this.ispwAssignment     = params.ISPW_Assignment
-        this.ispwContainer      = params.ISPW_Container
-        this.ispwContainerType  = params.ISPW_Container_Type
+        this.ispwContainer      = params.ISPW_Set_Id
+        this.ispwContainerType  = '2'
         this.ispwOwner          = params.ISPW_Owner        
         this.ispwSrcLevel       = params.ISPW_Src_Level
 
