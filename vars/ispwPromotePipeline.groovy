@@ -49,7 +49,11 @@ private initialize(pipelineParams)
         ]
     ) 
     {
+        echo "Before defining config file"
+        
         File mailConfigFile = new File(mailListFilePath)
+
+        echo "After defining config file"
 
         if(!mailConfigFile.exists())
         {
