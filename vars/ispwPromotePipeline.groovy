@@ -49,23 +49,20 @@ private initialize(pipelineParams)
         ]
     ) 
     {
-        echo "Before defining config file"
-        
+       
         File mailConfigFile = new File(mailListFilePath)
-
-        echo "After defining config file"
 
         if(!mailConfigFile.exists())
         {
             steps.error "File - ${mailListFilePath} - not found! \n Aborting Pipeline"
         }
 
-        echo "Before reading config file"
-
         mailListlines = mailConfigFile.readLines()
 
-        echo "After reading config file"
+        echo "Read " + mailListLines.toString()
     }
+
+    echo "Outside configFileProvider"
 
     // Instantiate and initialize Pipeline Configuration settings
     pConfig     = new   PipelineConfig(
