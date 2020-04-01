@@ -21,6 +21,9 @@ String          mailMessageExtension
 
 def initialize(pipelineParams)
 {
+
+    echo "Parameters " + pipelineParams.toString()
+
     // Clean out any previously downloaded source
     dir(".\\") 
     {
