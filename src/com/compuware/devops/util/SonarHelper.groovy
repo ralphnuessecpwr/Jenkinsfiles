@@ -49,8 +49,8 @@ class SonarHelper implements Serializable {
                 break;
             case "FT":
                 project         = determineFtProjectName()
-                testPath        = '"tests\\' + pConfig.ispwStream + '_' + pConfig.ispwApplication + '_Functional_Tests\\Functional Test"'
-                resultPath      = 'TestResults\\SonarTestReport.xml'
+                testPath        = 'TTTReport'                       //'"tests\\' + pConfig.ispwStream + '_' + pConfig.ispwApplication + '_Functional_Tests\\Functional Test"'
+                resultPath      = 'TTTReport/SonarTestReport.xml'   //'TestResults\\SonarTestReport.xml'
                 coveragePath    = ''
                 break;
             default:
