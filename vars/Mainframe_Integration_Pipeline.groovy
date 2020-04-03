@@ -109,13 +109,13 @@ def call(Map pipelineParams)
             gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
 
 
-            withCredentials(
-                [usernamePassword(credentialsId: "${pConfig.hciTokenId}", usernameVariable: 'userId', passwordVariable: 'password')]
-            ) 
-            {
+            //withCredentials(
+            //    [usernamePassword(credentialsId: "${pConfig.hciTokenId}", usernameVariable: 'userId', passwordVariable: 'password')]
+            //) 
+            //{
                 tttHelper.initialize()
-                tttHelper.executeFunctionalTests(userId, password)
-            }
+                tttHelper.executeFunctionalTests()
+            //}
         }
 
         stage("Check SonarQube Quality Gate") 
