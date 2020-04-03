@@ -131,7 +131,7 @@ def call(Map pipelineParams)
                 echo "Sonar quality gate failure: ${sonarGateResult}"
                 echo "Pipeline will be aborted and ISPW Assignment will be regressed"
 
-                mailMessageExtension    = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
+                mailMessageExtension    = "Promoted code failed the Quality gate. Assignent will be regressed. Review Logs and apply corrections as indicated."
                 currentBuild.result     = "FAILURE"
 
                 ispwHelper.regressAssignment(pConfig.ispwAssignment, pConfig.cesTokenId)
