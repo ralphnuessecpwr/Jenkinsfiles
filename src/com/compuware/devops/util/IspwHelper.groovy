@@ -460,10 +460,22 @@ class IspwHelper implements Serializable
     /* Regress one assigment */
     def regressAssignment(assignment, cesToken)
     {
+        /*
         def requestBodyParm = '''{
             "runtimeConfiguration": "''' + ispwRuntime + '''"
         }'''
+        */
 
+        steps.ispwOperation connectionId: hciConnId, 
+            consoleLogResponseBody: true, 
+            credentialsId: cesToken, 
+            ispwAction: 'RegressAssignment', 
+            ispwRequestBody: """runtimeConfiguration=${ispwRuntime}
+                assignmentId=${assignment}
+                level=${ispwTargetLevel}
+                """
+
+        /*
         steps.httpRequest(
                 url:                    "${ispwUrl}/ispw/${ispwRuntime}/assignments/${assignment}/tasks/regress?level=${ispwTargetLevel}",
                 httpMode:               'POST',
@@ -476,5 +488,6 @@ class IspwHelper implements Serializable
                                         value:      "${cesToken}"
                                         ]]
             )
+        */
     }
 }
