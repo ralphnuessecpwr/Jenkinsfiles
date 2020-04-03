@@ -134,14 +134,19 @@ def call(Map pipelineParams)
                 mailMessageExtension    = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
                 currentBuild.result     = "FAILURE"
 
-                error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
+                ispwHelper.regressAssignment(pConfig.ispwAssignment, pConfig.cesTokenId)
+
+                // error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
             }
             else
             {
                 mailMessageExtension = "Generated code passed the Quality gate. XL Release will be started."
+
+                xlrHelper.triggerRelease()            
             }
         }
 
+        /*
         stage("Trigger XL Release")
         {
             /* 
@@ -149,6 +154,7 @@ def call(Map pipelineParams)
             */
             xlrHelper.triggerRelease()            
         }
+        */
 
         stage("Send Mail")
         {
