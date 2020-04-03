@@ -128,7 +128,7 @@ class SonarHelper implements Serializable {
             // Location of the Cobol copybooks to scan
             sqScannerProperties       = sqScannerProperties + " -Dsonar.cobol.copy.directories=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}"  
             // File extensions for Cobol and Copybook files.  The Total Test files need that contain tests need to be defined as cobol for SonarQube to process the results
-            sqScannerProperties       = sqScannerProperties + " -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub -Dsonar.cobol.copy.suffixes=cpy -Dsonar.sourceEncoding=UTF-8"
+            sqScannerProperties       = sqScannerProperties + " -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub,result -Dsonar.cobol.copy.suffixes=cpy -Dsonar.sourceEncoding=UTF-8"
             
             // Call the SonarQube Scanner with properties defined above
             steps.bat "${scannerHome}/bin/sonar-scanner" + sqScannerProperties
