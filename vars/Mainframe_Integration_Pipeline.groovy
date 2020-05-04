@@ -164,8 +164,6 @@ def call(Map pipelineParams)
                         body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,
                         replyTo:    '$DEFAULT_REPLYTO',
                         to:         "${pConfig.mailRecipient}"
-
-            echo "Result: " + currentBuild.result
         } 
 
     }
