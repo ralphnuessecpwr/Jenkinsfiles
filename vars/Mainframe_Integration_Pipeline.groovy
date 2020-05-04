@@ -20,6 +20,8 @@ XlrHelper       xlrHelper
 
 String          mailMessageExtension
 
+String          pipelineResult
+
 def initialize(pipelineParams)
 {
     def mailListlines
@@ -132,7 +134,8 @@ def call(Map pipelineParams)
                 echo "Pipeline will be aborted and ISPW Assignment will be regressed"
 
                 mailMessageExtension    = "Promoted code failed the Quality gate. Assignent will be regressed. Review Logs and apply corrections as indicated."
-                currentBuild.result     = "FAILURE"
+
+                pipelineResult          = "FAILURE"
 
                 ispwHelper.regressAssignment(pConfig.ispwAssignment, pConfig.cesTokenId)
 
@@ -163,6 +166,10 @@ def call(Map pipelineParams)
                         body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,
                         replyTo:    '$DEFAULT_REPLYTO',
                         to:         "${pConfig.mailRecipient}"
+
+            if(pipelineResult == 'FAILURE'){
+                currentBuild.result     = pipelineResult
+            }
         } 
 
     }
