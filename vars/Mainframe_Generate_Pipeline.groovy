@@ -142,7 +142,7 @@ def call(Map pipelineParams)
         */ 
         stage("Check SonarQube Quality Gate") 
         {
-            ispwHelper.downloadCopyBooks(workspace)            
+            //ispwHelper.downloadCopyBooks(workspace)            
 
             sonarHelper.scan("UT")
 
