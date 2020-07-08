@@ -49,8 +49,8 @@ class TttHelper implements Serializable {
 
     // The testSuite parameter value "All_Scenarios" will execute all .testscenario files found in the projectFolder. 
     // If that folder contains more than one TTT project, recursive true will recursively search through all sub folders for .testscenario files
-    def loopThruScenarios()
-    {
+    def loopThruScenarios(){
+
         steps.totaltestUT ccClearStats:     false,
                 ccRepo:                     "${pConfig.ccRepository}", 
                 ccSystem:                   "${pConfig.ispwApplication}", 
@@ -62,8 +62,7 @@ class TttHelper implements Serializable {
                 projectFolder:              "${pConfig.tttFolder}", 
                 recursive:                  true, 
                 testSuite:                  "All_Scenarios"
-            }
-        }
+    
     }
 
     def executeFunctionalTests()
