@@ -43,24 +43,51 @@ class GitHelper implements Serializable {
         )
     }
 
-    def checkoutPath(String gitUrl, String gitBranch, String path, String gitCredentials, String gitProject)
-    {
+    // def checkoutPath(String gitUrl, String gitBranch, String path, String gitCredentials, String gitProject)
+    // {
+    //     steps.checkout(
+    //     changelog: false, 
+    //     poll: false, 
+    //     scm: [
+    //             $class: 'GitSCM', 
+    //             branches: [[name: "*/${gitBranch}"]], 
+    //             doGenerateSubmoduleConfigurations: false, 
+    //             extensions: [[
+    //                 $class: 'SparseCheckoutPaths', 
+    //                 sparseCheckoutPaths: [[path: "${path}/*"]]
+    //             ]], 
+    //             submoduleCfg: [], 
+    //             userRemoteConfigs: [[
+    //                 credentialsId: "${gitCredentials}", 
+    //                 url: "${gitUrl}/${gitProject}.git"
+    //             ]]
+    //         ]
+    //     )
+    // }
+
+    // Pass a list a TTT projects and only checkout those projects from the Git repo
+    def checkoutTttProjects(String gitUrl, String gitBranch, String gitProject, String tttFolder, tttProjectsList){
+
+        def pathsParm = []
+
+        tttProjectsList.each{
+            pathsParm.add([path: it])
+        }
+
         steps.checkout(
-        changelog: false, 
-        poll: false, 
-        scm: [
-                $class: 'GitSCM', 
-                branches: [[name: "*/${gitBranch}"]], 
-                doGenerateSubmoduleConfigurations: false, 
-                extensions: [[
-                    $class: 'SparseCheckoutPaths', 
-                    sparseCheckoutPaths: [[path: "${path}/*"]]
-                ]], 
-                submoduleCfg: [], 
-                userRemoteConfigs: [[
-                    credentialsId: "${gitCredentials}", 
-                    url: "${gitUrl}/${gitProject}.git"
-                ]]
+            changelog: false, 
+            poll: false, 
+            scm: [
+                    $class: 'GitSCM', 
+                    branches: [[name: "*/${gitBranch}"]], 
+                    doGenerateSubmoduleConfigurations: false, 
+                    extensions: [
+                        [$class: 'RelativeTargetDirectory', relativeTargetDir: "${tttFolder}"], 
+                        [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: pathsParm]
+                    ],
+                    submoduleCfg: [], 
+                    userRemoteConfigs: [[url: "${gitUrl}/${gitProject}"]]
+                ]
             ]
         )
     }
