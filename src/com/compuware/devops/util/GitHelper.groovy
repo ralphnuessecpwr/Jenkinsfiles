@@ -66,7 +66,7 @@ class GitHelper implements Serializable {
     // }
 
     // Pass a list a TTT projects and only checkout those projects from the Git repo
-    def checkoutTttProjects(String gitUrl, String gitBranch, String gitProject, String tttFolder, tttProjectsList){
+    def checkoutTttProjects(String gitRepoUrl, String gitBranch, String tttFolder, tttProjectsList){
 
         def pathsParm = []
 
@@ -86,7 +86,7 @@ class GitHelper implements Serializable {
                     [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: pathsParm]
                 ],
                 submoduleCfg: [], 
-                userRemoteConfigs: [[url: "${gitUrl}/${gitProject}"]]
+                userRemoteConfigs: [[url: "${gitRepoUrl}"]]
             ]
         )
     }
