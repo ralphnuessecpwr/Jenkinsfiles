@@ -79,19 +79,17 @@ class TttHelper implements Serializable {
 
                 steps.writeFile(file: jclJobCardPath, text: jclSkeleton.jobCardJcl)
 
-                steps.step(
-                    totaltestUT ccClearStats:   false,
-                        ccRepo:                 "${pConfig.ccRepository}", 
-                        ccSystem:               "${pConfig.ispwApplication}", 
-                        ccTestId:               "${script.BUILD_NUMBER}", 
-                        connectionId:           "${pConfig.hciConnId}", 
-                        credentialsId:          "${pConfig.hciTokenId}", 
-                        hlq:                    '', 
-                        jcl:                    "${pConfig.tttJcl}", 
-                        projectFolder:          "${projectName}", 
-                        recursive:              true, 
-                        testSuite:              "${scenarioFullName}"
-                )
+                steps.totaltestUT ccClearStats:     false,
+                        ccRepo:                     "${pConfig.ccRepository}", 
+                        ccSystem:                   "${pConfig.ispwApplication}", 
+                        ccTestId:                   "${script.BUILD_NUMBER}", 
+                        connectionId:               "${pConfig.hciConnId}", 
+                        credentialsId:              "${pConfig.hciTokenId}", 
+                        hlq:                        '', 
+                        jcl:                        "${pConfig.tttJcl}", 
+                        projectFolder:              "${projectName}", 
+                        recursive:                  true, 
+                        testSuite:                  "${scenarioFullName}"
 
                 // steps.step([
                 //     $class:       'TotalTestBuilder', 
