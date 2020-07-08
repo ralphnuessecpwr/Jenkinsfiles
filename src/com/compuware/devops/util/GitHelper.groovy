@@ -78,16 +78,15 @@ class GitHelper implements Serializable {
             changelog: false, 
             poll: false, 
             scm: [
-                    $class: 'GitSCM', 
-                    branches: [[name: "*/${gitBranch}"]], 
-                    doGenerateSubmoduleConfigurations: false, 
-                    extensions: [
-                        [$class: 'RelativeTargetDirectory', relativeTargetDir: "${tttFolder}"], 
-                        [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: pathsParm]
-                    ],
-                    submoduleCfg: [], 
-                    userRemoteConfigs: [[url: "${gitUrl}/${gitProject}"]]
-                ]
+                $class: 'GitSCM', 
+                branches: [[name: "*/${gitBranch}"]], 
+                doGenerateSubmoduleConfigurations: false, 
+                extensions: [
+                    [$class: 'RelativeTargetDirectory', relativeTargetDir: "${tttFolder}"], 
+                    [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: pathsParm]
+                ],
+                submoduleCfg: [], 
+                userRemoteConfigs: [[url: "${gitUrl}/${gitProject}"]]
             ]
         )
     }
