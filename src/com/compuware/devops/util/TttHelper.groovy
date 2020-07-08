@@ -79,34 +79,34 @@ class TttHelper implements Serializable {
 
                 steps.writeFile(file: jclJobCardPath, text: jclSkeleton.jobCardJcl)
 
-                steps.totaltestUT ccClearStats:     false,
-                        ccRepo:                     "${pConfig.ccRepository}", 
-                        ccSystem:                   "${pConfig.ispwApplication}", 
-                        ccTestId:                   "${script.BUILD_NUMBER}", 
-                        connectionId:               "${pConfig.hciConnId}", 
-                        credentialsId:              "${pConfig.hciTokenId}", 
-                        hlq:                        '', 
-                        jcl:                        "${pConfig.tttJcl}", 
-                        projectFolder:              "${projectName}", 
-                        recursive:                  true, 
-                        testSuite:                  "${scenarioFullName}"
+                // steps.totaltestUT ccClearStats:     false,
+                //         ccRepo:                     "${pConfig.ccRepository}", 
+                //         ccSystem:                   "${pConfig.ispwApplication}", 
+                //         ccTestId:                   "${script.BUILD_NUMBER}", 
+                //         connectionId:               "${pConfig.hciConnId}", 
+                //         credentialsId:              "${pConfig.hciTokenId}", 
+                //         hlq:                        '', 
+                //         jcl:                        "${pConfig.tttJcl}", 
+                //         projectFolder:              "${projectName}", 
+                //         recursive:                  true, 
+                //         testSuite:                  "${scenarioFullName}"
 
-                // steps.step([
-                //     $class:       'TotalTestBuilder', 
-                //         ccClearStats:   false,                          // Clear out any existing Code Coverage stats for the given ccSystem and ccTestId
-                //         ccRepo:         "${pConfig.ccRepository}",
-                //         ccSystem:       "${pConfig.ispwApplication}", 
-                //         ccTestId:       "${script.BUILD_NUMBER}",              // Jenkins environment variable, resolves to build number, i.e. #177 
-                //         credentialsId:  "${pConfig.hciTokenId}", 
-                //         deleteTemp:     true,                           // (true|false) Automatically delete any temp files created during the execution
-                //         hlq:            '',                             // Optional - high level qualifier used when allocation datasets
-                //         connectionId:   "${pConfig.hciConnId}",    
-                //         jcl:            "${pConfig.tttJcl}",            // Name of the JCL file in the Total Test Project to execute
-                //         projectFolder:  "${projectName}",            // Name of the Folder in the file system that contains the Total Test Project.  
-                //         recursive:      true,
-                //         testSuite:      "${scenarioFullName}",       // Name of the Total Test Scenario to execute
-                //         useStubs:       true                            // (true|false) - Execute with or without stubs
-                // ])                   
+                steps.step([
+                    $class:       'TotalTestBuilder', 
+                        ccClearStats:   false,                          // Clear out any existing Code Coverage stats for the given ccSystem and ccTestId
+                        ccRepo:         "${pConfig.ccRepository}",
+                        ccSystem:       "${pConfig.ispwApplication}", 
+                        ccTestId:       "${script.BUILD_NUMBER}",              // Jenkins environment variable, resolves to build number, i.e. #177 
+                        credentialsId:  "${pConfig.hciTokenId}", 
+                        deleteTemp:     true,                           // (true|false) Automatically delete any temp files created during the execution
+                        hlq:            '',                             // Optional - high level qualifier used when allocation datasets
+                        connectionId:   "${pConfig.hciConnId}",    
+                        jcl:            "${pConfig.tttJcl}",            // Name of the JCL file in the Total Test Project to execute
+                        projectFolder:  "${projectName}",            // Name of the Folder in the file system that contains the Total Test Project.  
+                        recursive:      true,
+                        testSuite:      "${scenarioFullName}",       // Name of the Total Test Scenario to execute
+                        useStubs:       true                            // (true|false) - Execute with or without stubs
+                ])                   
             }
         }
     }
