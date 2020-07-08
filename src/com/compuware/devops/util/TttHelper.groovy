@@ -91,7 +91,7 @@ class TttHelper implements Serializable {
                         connectionId:   "${pConfig.hciConnId}",    
                         jcl:            "${pConfig.tttJcl}",            // Name of the JCL file in the Total Test Project to execute
                         projectFolder:  "${projectName}",            // Name of the Folder in the file system that contains the Total Test Project.  
-                        recursive:      true
+                        recursive:      true,
                         testSuite:      "${scenarioFullName}",       // Name of the Total Test Scenario to execute
                         useStubs:       true                            // (true|false) - Execute with or without stubs
                 ])                   
