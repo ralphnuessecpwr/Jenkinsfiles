@@ -12,6 +12,7 @@ class TttHelper implements Serializable {
     def listOfSources
     def listOfPrograms 
     def listOfTttProjects
+    def cocoDdioOverrides
 
     TttHelper(script, steps, pConfig) 
     {
@@ -45,6 +46,16 @@ class TttHelper implements Serializable {
             listOfPrograms.add(programName)
             listOfTttProjects.add(programName + "_Unit_Tests")
         }
+
+        this.cocoDdioOverrides =    'SALESSUP.RXN3.DEV1.LOAD.SSD,' +
+                                    'SALESSUP.RXN3.DEV2.LOAD.SSD,' + 
+                                    'SALESSUP.RXN3.DEV3.LOAD.SSD,' + 
+                                    'SALESSUP.RXN3.QA1.LOAD.SSD,' + 
+                                    'SALESSUP.RXN3.QA2.LOAD.SSD,' + 
+                                    'SALESSUP.RXN3.QA3.LOAD.SSD,' + 
+                                    'SALESSUP.RXN3.STG.LOAD.SSD,' + 
+                                    'SALESSUP.RXN3.PRD.LOAD.SSD'
+
     }
 
     // The testSuite parameter value "All_Scenarios" will execute all .testscenario files found in the projectFolder. 
@@ -95,14 +106,7 @@ class TttHelper implements Serializable {
             '\rcc.repos=' + pConfig.ccRepository + 
             '\rcc.system=' + pConfig.ispwApplication  + 
             '\rcc.test=' + script.BUILD_NUMBER +
-            '\rcc.ddio.overrides=SALESSUP.RXN3.DEV1.LOAD.SSD,' +
-            'SALESSUP.RXN3.DEV2.LOAD.SSD,' + 
-            'SALESSUP.RXN3.DEV3.LOAD.SSD,' + 
-            'SALESSUP.RXN3.QA1.LOAD.SSD,' + 
-            'SALESSUP.RXN3.QA2.LOAD.SSD,' + 
-            'SALESSUP.RXN3.QA3.LOAD.SSD,' + 
-            'SALESSUP.RXN3.STG.LOAD.SSD,' + 
-            'SALESSUP.RXN3.PRD.LOAD.SSD'
+            '\rcc.ddio.overrides=' + cocoDdioOverrides
 
         steps.step([
             $class:                   'CodeCoverageBuilder',
