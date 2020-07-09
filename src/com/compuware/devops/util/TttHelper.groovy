@@ -20,7 +20,7 @@ class TttHelper implements Serializable {
         this.steps      = steps
         this.pConfig    = pConfig
 
-        jclSkeleton     = new JclSkeleton(steps, script.workspace, pConfig.ispwApplication, pConfig.applicationPathNum)
+        jclSkeleton     = new JclSkeleton(steps, script.workspace, pConfig.ispw.application, pConfig.ispw.applicationPathNum)
     }
 
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
@@ -29,7 +29,7 @@ class TttHelper implements Serializable {
         jclSkeleton.initialize()
 
         // Get all Cobol Sources in the MF_Source folder into an array 
-        this.listOfSources       = steps.findFiles(glob: "**/${pConfig.ispwApplication}/${pConfig.mfSourceFolder}/*.cbl")
+        this.listOfSources       = steps.findFiles(glob: "**/${pConfig.ispw.application}/${pConfig.ispw.localFolder}/*.cbl")
 
         // Define empty arrays for the list of programs and list of unit test projects in Git
         this.listOfPrograms     = []
@@ -63,14 +63,14 @@ class TttHelper implements Serializable {
     def loopThruScenarios(){
 
         steps.totaltestUT ccClearStats:     false,
-                ccRepo:                     "${pConfig.ccRepository}", 
-                ccSystem:                   "${pConfig.ispwApplication}", 
+                ccRepo:                     "${pConfig.ttt.cocoRepository}", 
+                ccSystem:                   "${pConfig.ispw.application}", 
                 ccTestId:                   "${script.BUILD_NUMBER}", 
-                connectionId:               "${pConfig.hciConnId}", 
-                credentialsId:              "${pConfig.hciTokenId}", 
+                connectionId:               "${pConfig.hci.connectionId}", 
+                credentialsId:              "${pConfig.hci.hostToken}", 
                 hlq:                        '', 
-                jcl:                        "${pConfig.tttJcl}", 
-                projectFolder:              "${pConfig.tttFolder}", 
+                jcl:                        "${pConfig.ttt.runnerJcl}", 
+                projectFolder:              "${pConfig.ttt.utFolder}", 
                 recursive:                  true, 
                 testSuite:                  "All_Scenarios"
     
@@ -78,10 +78,10 @@ class TttHelper implements Serializable {
 
     def executeFunctionalTests()
     {
-        steps.totaltest credentialsId:          "${pConfig.hciTokenId}", 
-            environmentId:                      "${pConfig.xaTesterEnvId}", 
+        steps.totaltest credentialsId:          "${pConfig.hci.hostToken}", 
+            environmentId:                      "${pConfig.ttt.ftEnvironment}", 
             folderPath:                         '', 
-            serverUrl:                          "${pConfig.ispwUrl}", 
+            serverUrl:                          "${pConfig.ispw.url}", 
             stopIfTestFailsOrThresholdReached:  false,
             sonarVersion:                       '6'
     }
@@ -99,12 +99,12 @@ class TttHelper implements Serializable {
     {
         // Code Coverage needs to match the code coverage metrics back to the source code in order for them to be loaded in SonarQube
         // The source variable is the location of the source that was downloaded from ISPW
-        def sources="${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}"
+        def sources="${pConfig.ispw.application}/${pConfig.ispw.localFolder}"
 
         // The Code Coverage Plugin passes it's primary configuration in the string or a file
         def ccproperties = 'cc.sources=' + sources + 
-            '\rcc.repos=' + pConfig.ccRepository + 
-            '\rcc.system=' + pConfig.ispwApplication  + 
+            '\rcc.repos=' + pConfig.ttt.cocoRepository + 
+            '\rcc.system=' + pConfig.ispw.application  + 
             '\rcc.test=' + script.BUILD_NUMBER +
             '\rcc.ddio.overrides=' + cocoDdioOverrides
 
@@ -112,8 +112,8 @@ class TttHelper implements Serializable {
             $class:                   'CodeCoverageBuilder',
                 analysisProperties:         ccproperties,           // Pass in the analysisProperties as a string
                 analysisPropertiesPath:     '',                     // Pass in the analysisProperties as a file.  Not used in this example
-                connectionId:               "${pConfig.hciConnId}", 
-                credentialsId:              "${pConfig.hciTokenId}"
+                connectionId:               "${pConfig.hci.connectionId}", 
+                credentialsId:              "${pConfig.hci.hostToken}"
         ])
     }
 
@@ -124,10 +124,10 @@ class TttHelper implements Serializable {
         steps.echo "Cleaning up Code Coverage results from previous job execution"
         steps.echo "Determined Test ID " + testId
 
-        def cleanupJcl = jclSkeleton.createCleanUpCcRepo(pConfig.ispwApplication, testId.toString())
+        def cleanupJcl = jclSkeleton.createCleanUpCcRepo(pConfig.ispw.application, testId.toString())
 
-        steps.topazSubmitFreeFormJcl connectionId:  pConfig.hciConnId, 
-            credentialsId:                          pConfig.hciTokenId, 
+        steps.topazSubmitFreeFormJcl connectionId:  pConfig.hci.connectionId, 
+            credentialsId:                          pConfig.hci.hostToken, 
             jcl:                                    cleanupJcl, 
             maxConditionCode:                       '8'
     }
