@@ -34,8 +34,8 @@ class IspwReleaseConfigurator implements Serializable{
                     description=Default Description
                     """
             )
-        
-        if(response.getStatus() >= 400){
+
+        if(Integer.parseInt(response.getStatus()) >= 400){
             steps.echo "!!!!!!Created!!!!!!"
             mailMessagePart = "Created release " + pConfig.ispw.release + ".\n"
         }
