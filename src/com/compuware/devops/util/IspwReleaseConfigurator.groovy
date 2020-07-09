@@ -99,7 +99,7 @@ class IspwReleaseConfigurator implements Serializable{
                 )
             }
 
-            mailMessagePart = "Added all tasks in assignment " + currentAssignment + " to Release " + pConfig.ispw.release + ".\n"
+            mailMessagePart = mailMessagePart + "Added all tasks in assignment " + currentAssignment + " to Release " + pConfig.ispw.release + ".\n"
 
             return mailMessagePart
         }

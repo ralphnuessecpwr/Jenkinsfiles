@@ -106,15 +106,23 @@ def call(Map pipelineParams)
             {
                 case "create Release":
                     mailMessageExtension = mailMessageExtension + releaseConfigurator.createRelease()
+                    echo "After create Release"
+                    echo mailMessageExtension
                     mailMessageExtension = mailMessageExtension + releaseConfigurator.addAssignments()
+                    echo "After add Assignments"
+                    echo mailMessageExtension
                 break
 
                 case "add Assignments":
                     mailMessageExtension = mailMessageExtension + releaseConfigurator.addAssignments()
+                    echo "After add Assignments"
+                    echo mailMessageExtension
                 break
 
                 case "remove Assignments":
                     mailMessageExtension = mailMessageExtension + releaseConfigurator.removeAssignments()
+                    echo "After remove Assignments"
+                    echo mailMessageExtension
                 break
 
                 case "trigger Release":
