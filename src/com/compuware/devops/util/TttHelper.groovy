@@ -11,7 +11,8 @@ class TttHelper implements Serializable {
     def listOfScenarios
     def listOfSources
     def listOfPrograms 
-    def listOfTttProjects
+    def listOfUtProjects
+    def listOfFtProjects
     def cocoDdioOverrides
 
     TttHelper(script, steps, pConfig) 
@@ -33,7 +34,8 @@ class TttHelper implements Serializable {
 
         // Define empty arrays for the list of programs and list of unit test projects in Git
         this.listOfPrograms     = []
-        this.listOfTttProjects  = []
+        this.listOfUtProjects   = []
+        this.listOfFtProjects   = []
 
         // Determine program names for each source member
         listOfSources.each
@@ -44,7 +46,8 @@ class TttHelper implements Serializable {
             // Trim ./cbl from the Source members to populate the array of program names
             def programName = it.name.trim().split("\\.")[0]
             listOfPrograms.add(programName)
-            listOfTttProjects.add(programName + "_Unit_Tests")
+            listOfUtProjects.add(programName + "_Unit_Tests")
+            listOfUtProjects.add(programName + "_Functional_Tests")
         }
 
         this.cocoDdioOverrides =    'SALESSUP.RXN3.DEV1.LOAD.SSD,' +
@@ -80,7 +83,7 @@ class TttHelper implements Serializable {
     {
         steps.totaltest credentialsId:          "${pConfig.hci.hostToken}", 
             environmentId:                      "${pConfig.ttt.ftEnvironment}", 
-            folderPath:                         '', 
+            folderPath:                         'tests', 
             serverUrl:                          "${pConfig.ispw.url}", 
             stopIfTestFailsOrThresholdReached:  false,
             sonarVersion:                       '6'

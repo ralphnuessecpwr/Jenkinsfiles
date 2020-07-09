@@ -107,7 +107,7 @@ def call(Map pipelineParams){
             tttHelper.initialize()  
 
             /* Check out those unit test projects from GitHub that match downloaded sources*/
-            gitHelper.checkoutTttProjects(gitUrlFullPath, pConfig.ttt.gitBranch, pConfig.ttt.utFolder, tttHelper.listOfTttProjects)
+            gitHelper.checkoutTttProjects(gitUrlFullPath, pConfig.ttt.gitBranch, pConfig.ttt.utFolder, tttHelper.listOfUtProjects)
 
             /* Clean up Code Coverage results from previous run */
             tttHelper.cleanUpCodeCoverageResults()

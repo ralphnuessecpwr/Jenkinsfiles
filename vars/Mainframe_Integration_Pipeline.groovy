@@ -106,8 +106,7 @@ def call(Map pipelineParams)
         {            
             def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttFtRepo}"
             
-            gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
-
+            gitHelper.checkoutTttProjects(gitUrlFullPath, pConfig.ttt.gitBranch, pConfig.ttt.utFolder, tttHelper.listOfFtProjects)
 
             //withCredentials(
             //    [usernamePassword(credentialsId: "${pConfig.hciTokenId}", usernameVariable: 'userId', passwordVariable: 'password')]
