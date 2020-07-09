@@ -126,7 +126,7 @@ def call(Map pipelineParams){
         This stage retrieve Code Coverage metrics from Xpediter Code Coverage for the test executed in the Pipeline
         */ 
         stage("Collect Metrics"){
-            // tttHelper.collectCodeCoverageResults()
+            tttHelper.collectCodeCoverageResults()
         }
 
         /* 
@@ -134,31 +134,30 @@ def call(Map pipelineParams){
         If the SonarQube quality date fails, the Pipeline fails and stops
         */ 
         stage("Check SonarQube Quality Gate"){
-            // //ispwHelper.downloadCopyBooks(workspace)            
 
-            // sonarHelper.scan("UT")
+            sonarHelper.scan("UT")
 
-            // String sonarGateResult = sonarHelper.checkQualityGate()
+            String sonarGateResult = sonarHelper.checkQualityGate()
 
-            // // Evaluate the status of the Quality Gate
-            // if (sonarGateResult != 'OK')
-            // {
-            //     echo "Sonar quality gate failure: ${sonarGateResult}"
+            // Evaluate the status of the Quality Gate
+            if (sonarGateResult != 'OK')
+            {
+                echo "Sonar quality gate failure: ${sonarGateResult}"
 
-            //     mailMessageExtension = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
-            //     currentBuild.result = "FAILURE"
+                mailMessageExtension = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
+                currentBuild.result = "FAILURE"
 
-            //     // Exit the pipeline with an error if the SonarQube Quality Gate is failing
-            //     error "Exiting Pipeline" 
-            // }
-            // else
-            // {
-            //     mailMessageExtension = "Generated code passed the Quality gate and may be promoted. \n" +
-            //         "SonarQube results may be reviewed at " + 
-            //         pConfig.sqServerUrl + 
-            //         "/dashboard?id=" + 
-            //         sonarHelper.determineUtProjectName()
-            // }   
+                // Exit the pipeline with an error if the SonarQube Quality Gate is failing
+                error "Exiting Pipeline" 
+            }
+            else
+            {
+                mailMessageExtension = "Generated code passed the Quality gate and may be promoted. \n" +
+                    "SonarQube results may be reviewed at " + 
+                    pConfig.sqServerUrl + 
+                    "/dashboard?id=" + 
+                    sonarHelper.determineUtProjectName()
+            }   
         }
 
         /* 
@@ -166,10 +165,10 @@ def call(Map pipelineParams){
         */ 
         stage("Send Mail"){
             // Send Standard Email
-            // emailext subject:       '$DEFAULT_SUBJECT',
-            //             body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,
-            //             replyTo:    '$DEFAULT_REPLYTO',
-            //             to:         "${pConfig.mailRecipient}"
+            emailext subject:       '$DEFAULT_SUBJECT',
+                        body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,
+                        replyTo:    '$DEFAULT_REPLYTO',
+                        to:         "${pConfig.mail.recipient}"
 
         }        
     }

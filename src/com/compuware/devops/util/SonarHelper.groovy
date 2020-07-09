@@ -22,7 +22,7 @@ class SonarHelper implements Serializable {
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
     def initialize()
     {
-        this.scannerHome    = steps.tool "${pConfig.sqScannerName}";
+        this.scannerHome    = steps.tool "${pConfig.sonar.scannerName}";
     }
 
     def scan()
@@ -49,8 +49,8 @@ class SonarHelper implements Serializable {
                 break;
             case "FT":
                 project         = determineFtProjectName()
-                testPath        = 'TTTReport'                       //'"tests\\' + pConfig.ispwStream + '_' + pConfig.ispwApplication + '_Functional_Tests\\Functional Test"'
-                resultPath      = 'TTTReport/SonarTestReport.xml'   //'TestResults\\SonarTestReport.xml'
+                testPath        = 'TTTReport'                       
+                resultPath      = 'TTTReport/SonarTestReport.xml'   
                 coveragePath    = ''
                 break;
             default:
@@ -80,12 +80,12 @@ class SonarHelper implements Serializable {
 
     String determineUtProjectName()
     {
-        return pConfig.ispwOwner + '_' + pConfig.ispwStream + '_' + pConfig.ispwApplication
+        return pConfig.ispw.owner + '_' + pConfig.ispw.stream + '_' + pConfig.ispw.application
     }
 
     String determineFtProjectName()
     {
-        return pConfig.ispwStream + '_' + pConfig.ispwApplication
+        return pConfig.ispw.stream + '_' + pConfig.ispw.application
     }
 
 
@@ -109,7 +109,7 @@ class SonarHelper implements Serializable {
 
     private runScan(testPath, testResultPath, coveragePath, projectName)
     {
-        steps.withSonarQubeEnv("${pConfig.sqServerName}")       // 'localhost' is the name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section
+        steps.withSonarQubeEnv("${pConfig.sonar.serverHost}")       // 'localhost' is the name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section
         {
             // Test and Coverage results
             def sqScannerProperties   = ' -Dsonar.tests=' + testPath
@@ -124,9 +124,9 @@ class SonarHelper implements Serializable {
             // SonarQube project to load results into
             sqScannerProperties       = sqScannerProperties + " -Dsonar.projectKey=${projectName} -Dsonar.projectName=${projectName} -Dsonar.projectVersion=1.0"
             // Location of the Cobol Source Code to scan
-            sqScannerProperties       = sqScannerProperties + " -Dsonar.sources=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}"
+            sqScannerProperties       = sqScannerProperties + " -Dsonar.sources=${pConfig.ispw.application}/${pConfig.ispw.localFolder}"
             // Location of the Cobol copybooks to scan
-            sqScannerProperties       = sqScannerProperties + " -Dsonar.cobol.copy.directories=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}"  
+            sqScannerProperties       = sqScannerProperties + " -Dsonar.cobol.copy.directories=${pConfig.ispw.application}/${pConfig.ispw.localFolder}"  
             // File extensions for Cobol and Copybook files.  The Total Test files need that contain tests need to be defined as cobol for SonarQube to process the results
             sqScannerProperties       = sqScannerProperties + " -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub,result -Dsonar.cobol.copy.suffixes=cpy -Dsonar.sourceEncoding=UTF-8"
             
@@ -139,11 +139,11 @@ class SonarHelper implements Serializable {
     {
         def response
 
-        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sqHttpRequestAuthHeader]], 
+        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sonar.httpRequestAuthHeader]], 
             ignoreSslErrors:            true, 
             responseHandle:             'NONE', 
             consoleLogResponseBody:     true,
-            url:                        "${pConfig.sqServerUrl}/api/projects/search?projects=${projectName}"
+            url:                        "${pConfig.sonar.serverUrl}/api/projects/search?projects=${projectName}"
 
         def jsonSlurper = new JsonSlurper()
         def httpResp    = jsonSlurper.parseText(httpResponse.getContent())
@@ -176,12 +176,12 @@ class SonarHelper implements Serializable {
 
     def createProject(String projectName)
     {
-        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sqHttpRequestAuthHeader]],
+        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sonar.httpRequestAuthHeader]],
             httpMode:                   'POST',
             ignoreSslErrors:            true, 
             responseHandle:             'NONE', 
             consoleLogResponseBody:     true,
-            url:                        "${pConfig.sqServerUrl}/api/projects/create?project=${projectName}&name=${projectName}"
+            url:                        "${pConfig.sonar.serverUrl}/api/projects/create?project=${projectName}&name=${projectName}"
 
         def jsonSlurper = new JsonSlurper()
         def httpResp    = jsonSlurper.parseText(httpResponse.getContent())
@@ -204,12 +204,12 @@ class SonarHelper implements Serializable {
     {
         def qualityGateId = getQualityGateId(qualityGate)
 
-        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sqHttpRequestAuthHeader]],
+        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sonar.httpRequestAuthHeader]],
             httpMode:                   'POST',
             ignoreSslErrors:            true, 
             responseHandle:             'NONE', 
             consoleLogResponseBody:     true,
-            url:                        "${pConfig.sqServerUrl}/api/qualitygates/select?gateId=${qualityGateId}&projectKey=${projectName}"
+            url:                        "${pConfig.sonar.serverUrl}/api/qualitygates/select?gateId=${qualityGateId}&projectKey=${projectName}"
 
         steps.echo "Assigned QualityGate ${qualityGate} to project ${projectName}."
     }
@@ -218,11 +218,11 @@ class SonarHelper implements Serializable {
     {
         def response
 
-        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sqHttpRequestAuthHeader]], 
+        def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sonar.httpRequestAuthHeader]], 
             ignoreSslErrors:            true, 
             responseHandle:             'NONE', 
             consoleLogResponseBody:     true,
-            url:                        "${pConfig.sqServerUrl}/api/qualitygates/show?name=${qualityGateName}"
+            url:                        "${pConfig.sonar.serverUrl}/api/qualitygates/show?name=${qualityGateName}"
 
         def jsonSlurper = new JsonSlurper()
         def httpResp    = jsonSlurper.parseText(httpResponse.getContent())
