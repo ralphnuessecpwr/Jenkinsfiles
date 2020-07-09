@@ -10,8 +10,7 @@ class PipelineConfig implements Serializable
     def mailListMap = [:]
 
     private String configPath           = 'pipeline'            // Path containing config files after downloading them from Git Hub Repository 'config\\pipeline'
-    private String pipelineConfigFile   = 'pipeline.config'     // Config file containing pipeline configuration
-    private String tttGitConfigFile     = 'tttgit.config'       // Config gile containing for TTT projects stroed in Git Hub
+    private String pipelineConfigFile   = 'pipeline.yml'        // Config file containing pipeline configuration
 
     private String workspace
 
@@ -76,25 +75,11 @@ class PipelineConfig implements Serializable
         this.ispwOwner          = params.ISPW_Owner        
         this.ispwSrcLevel       = params.ISPW_Src_Level
 
-        this.sqHttpRequestAuthHeader    = params.SQ_SERVER_AUTH_TOKEN
+        //this.sqHttpRequestAuthHeader    = params.SQ_SERVER_AUTH_TOKEN
 
         this.applicationPathNum = ispwSrcLevel.charAt(ispwSrcLevel.length() - 1)
         this.ispwTargetLevel    = "QA" + applicationPathNum
         this.tttJcl             = "Runner_PATH" + applicationPathNum + ".jcl"
-
-        this.gitProject         = params.Git_Project
-        this.gitCredentials     = params.Git_Credentials
-        
-        this.gitUrl             = "https://github.com/${gitProject}"
-        this.gitTttRepo         = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
-        this.gitTttUtRepo       = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
-        this.gitTttFtRepo       = "${ispwStream}_${ispwApplication}_Functional_Tests.git"
-
-        this.cesTokenId         = params.CES_Token       
-        this.hciConnId          = params.HCI_Conn_ID
-        this.hciTokenId         = params.HCI_Token
-        this.ccRepository       = params.CC_repository
-
     }
 
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
@@ -104,10 +89,6 @@ class PipelineConfig implements Serializable
         {
             steps.deleteDir()
         }
-
-        //GitHelper gitHelper     = new GitHelper(steps)
-
-        //gitHelper.checkoutPath(gitUrl, configGitBranch, configGitPath, gitCredentials, configGitProject)
 
         setServerConfig()
 
@@ -119,88 +100,59 @@ class PipelineConfig implements Serializable
     /* Read configuration values from pipeline.config file */
     def setServerConfig()
     {
-        def lineToken
-        def parmName
-        def parmValue
+        def configFilePath      = "${configPath}/${fileName}"
+        def tmpConfig           = readYaml(file: filePath)
 
-        def lines = readConfigFile("${pipelineConfigFile}")
+        this.gitProject         = tmpConfig.git.project
+        this.gitCredentials     = tmpConfig.git.credentials
+        
+        this.gitUrl             = "https://github.com/${gitProject}"
+        this.gitTttRepo         = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
+        this.gitTttUtRepo       = "${ispwStream}_${ispwApplication}_Unit_Tests.git"
+        this.gitTttFtRepo       = "${ispwStream}_${ispwApplication}_Functional_Tests.git"
 
-        lines.each
-        {
-            lineToken   = it.toString().tokenize("=")
-            parmName    = lineToken.get(0).toString()
-            parmValue   = lineToken.get(1).toString().trim()
+        this.cesTokenId         = tmpConfig.ces.jenkinsToken
+        this.hciConnId          = tmpConfig.hci.connectionId
+        this.hciTokenId         = tmpConfig.hci.hostToken
+        this.ccRepository       = tmpConfig.ttt.cocoRepository
 
-            switch(parmName)
-            {
-                case "SQ_SCANNER_NAME":
-                    sqScannerName   = parmValue
-                    break;
-                case "SQ_SERVER_NAME": 
-                    sqServerName    = parmValue
-                    break;
-                case "SQ_SERVER_URL":
-                    sqServerUrl     = parmValue
-                    break;
-                case "XA_TESTER_SERVER_URL":
-                    xaTesterUrl     = parmValue
-                    break;
-                case "MF_SOURCE_FOLDER":
-                    mfSourceFolder  = parmValue
-                    break;
-                case "XLR_TEMPLATE":
-                    xlrTemplate     = parmValue
-                    break;
-                case "XLR_USER":
-                    xlrUser         = parmValue
-                    break;
-                case "TTT_FOLDER":
-                    tttFolder       = parmValue
-                    break;
-                case "ISPW_URL":
-                    ispwUrl         = parmValue
-                    break;
-                case "ISPW_RUNTIME":
-                    ispwRuntime     = parmValue
-                    break;
-                default:
-                    steps.echo "Found unknown Pipeline Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
-                    break;
-            }
-        }
-    }
+        this.sqScannerName      = tmpConfig.sonar.scannerName 
+        this.sqServerName       = tmpConfig.sonar.serverName
+        this.sqServerUrl        = tmpConfig.sonar.serverUrl 
+        this.xaTesterUrl        = tmpConfig.ttt.ftServerUrl 
+        this.mfSourceFolder     = tmpConfig.ispw.localFolder
+        this.xlrTemplate        = tmpConfig.xlr.template
+        this.xlrUser            = tmpConfig.xlr.user 
+        this.tttFolder          = tmpConfig.ttt.utFolder
+        this.ispwUrl            = tmpConfig.ispw.url 
+        this.ispwRuntime        = tmpConfig.ispw.runtime 
+        this.gitBranch          = tmpConfig.ttt.gitBranch
+        this.xaTesterEnvId      = tmpConfig.ttt.ftEnvironment
 
-    /* Read configuration values from tttgit.config file */
-    def setTttGitConfig()
-    {
-        def lineToken
-        def parmName
-        def parmValue
-
-        def lines = readConfigFile("${tttGitConfigFile}")
-
-        lines.each
-        {
-            lineToken   = it.toString().tokenize("=")
-            parmName    = lineToken.get(0).toString()
-            parmValue   = lineToken.get(1).toString().trim()
-
-            switch(parmName)
-            {
-                case "TTT_GIT_TARGET_BRANCH":
-                    gitTargetBranch = parmValue
-                    break;
-                case "TTT_GIT_BRANCH": 
-                    gitBranch       = parmValue
-                    break;
-                case "TTT_FT_ENVIRONMENT_ID":
-                    xaTesterEnvId   = parmValue
-                    break;
-                default:
-                    steps.echo "Found unknown TTT Parameter " + parmName + " " + parmValue + "\nWill ignore and continue."
-                    break;
-            }
-        }
+        steps.echo "*******************************\r" +
+            "Parameters:\r" +
+            "gitProject     : ${gitProject}\r" +    
+            "gitCredentials : ${gitCredentials}\r" +    
+            "gitUrl         : ${gitUrl}\r" +    
+            "gitTttRepo     : ${gitTttRepo}\r" +    
+            "gitTttUtRepo   : ${gitTttUtRepo}\r" +    
+            "gitTttFtRepo   : ${gitTttFtRepo}\r" +    
+            "cesTokenId     : ${cesTokenId}\r" +    
+            "hciConnId      : ${hciConnId}\r" +    
+            "hciTokenId     : ${hciTokenId}\r" +    
+            "ccRepository   : ${ccRepository}\r" +    
+            "sqScannerName  : ${sqScannerName}\r" +    
+            "sqServerName   : ${sqServerName}\r" +    
+            "sqServerUrl    : ${sqServerUrl}\r" +    
+            "xaTesterUrl    : ${xaTesterUrl}\r" +    
+            "mfSourceFolder : ${mfSourceFolder}\r" +    
+            "xlrTemplate    : ${xlrTemplate}\r" +    
+            "xlrUser        : ${xlrUser}\r" +    
+            "tttFolder      : ${tttFolder}\r" +    
+            "ispwUrl        : ${ispwUrl}\r" +    
+            "ispwRuntime    : ${ispwRuntime}\r" +    
+            "gitBranch      : ${gitBranch}\r" +    
+            "xaTesterEnvId  : ${xaTesterEnvId}"
     }
 
     /* Read list of email addresses from config file */
@@ -220,13 +172,5 @@ class PipelineConfig implements Serializable
         }
 
         this.mailRecipient  = mailListMap[(ispwOwner.toUpperCase())]
-    }
-    
-    def readConfigFile(String fileName)
-    {        
-        def filePath    = "${configPath}/${fileName}"
-        def fileText    = steps.libraryResource filePath
-
-        return fileText.tokenize("\n")
     }
 }
