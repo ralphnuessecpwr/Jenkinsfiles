@@ -36,11 +36,9 @@ class IspwReleaseConfigurator implements Serializable{
             )
 
         if(Integer.parseInt(response.getStatus().toString()) < 400){
-            steps.echo "!!!!!!Created!!!!!!"
             mailMessagePart = "Created release " + pConfig.ispw.release + ".\n"
         }
         else{
-            steps.echo "!!!!!!Not Created!!!!!!"
             mailMessagePart = "Release " + pConfig.ispw.release + " already existed. Assignments were added.\n"
         }
 
@@ -99,7 +97,10 @@ class IspwReleaseConfigurator implements Serializable{
                 )
             }
 
-            mailMessagePart = mailMessagePart + "Added all tasks in assignment " + currentAssignment + " to Release " + pConfig.ispw.release + ".\n"
+            mailMessagePart = "Added all tasks in assignment " + currentAssignment + " to Release " + pConfig.ispw.release + ".\n"
+
+            steps.echo "!!!!!Message!!!!!"
+            steps.echo mailMessagePart
 
             return mailMessagePart
         }
