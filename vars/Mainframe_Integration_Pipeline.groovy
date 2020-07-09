@@ -144,13 +144,13 @@ def call(Map pipelineParams)
             }
         }
 
-       stage("Trigger XL Release")
-       {
-           /* 
-           This stage triggers a XL Release Pipeline that will move code into the high levels in the ISPW Lifecycle  
-           */
-           xlrHelper.triggerRelease()            
-       }
+    //    stage("Trigger XL Release")
+    //    {
+    //        /* 
+    //        This stage triggers a XL Release Pipeline that will move code into the high levels in the ISPW Lifecycle  
+    //        */
+    //        xlrHelper.triggerRelease()            
+    //    }
 
         stage("Send Mail")
         {
