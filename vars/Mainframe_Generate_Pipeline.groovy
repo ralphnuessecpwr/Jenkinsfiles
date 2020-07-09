@@ -24,12 +24,6 @@ def initialize(pipelineParams)
 
     echo "Parameters " + pipelineParams.toString()
 
-    // Clean out any previously downloaded source
-    dir(".\\") 
-    {
-        deleteDir()
-    }
-
     def mailListlines
     /* Read list of mailaddresses from "private" Config File */
     /* The configFileProvider creates a temporary file on disk and returns its path as variable */
@@ -84,6 +78,12 @@ def initialize(pipelineParams)
     sonarHelper = new SonarHelper(this, steps, pConfig)
 
     sonarHelper.initialize()
+
+    // Clean out any previously downloaded source
+    dir(".\\") 
+    {
+        deleteDir()
+    }
 }
 
 /**
