@@ -20,7 +20,7 @@ class TttHelper implements Serializable {
         this.steps      = steps
         this.pConfig    = pConfig
 
-        jclSkeleton     = new JclSkeleton(steps, script.workspace, pConfig.ispw.application, pConfig.ispw.applicationPathNum)
+        jclSkeleton     = new JclSkeleton(steps, script.workspace, pConfig.ispw.application, pConfig.ispw.applicationPathNum.toString())
     }
 
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
