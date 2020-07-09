@@ -68,7 +68,7 @@ class PipelineConfig implements Serializable
     public git  
     public sonar     
     public xlr  
-    public mail
+    public mail = [:]
 
     def PipelineConfig(steps, workspace, params, mailListLines)
     {
