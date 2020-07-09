@@ -92,6 +92,6 @@ class PipelineConfig implements Serializable
             this.mailListMap."${tsoUser}" = "${emailAddress}"
         }
 
-        this.mail.recipient = mailListMap[(ispwOwner.toUpperCase())]
+        this.mail.recipient = mailListMap[(ispw.owner.toUpperCase())]
     }
 }
