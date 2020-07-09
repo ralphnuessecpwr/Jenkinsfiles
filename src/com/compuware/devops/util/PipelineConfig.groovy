@@ -150,7 +150,9 @@ class PipelineConfig implements Serializable
             "gitBranch      : ${gitBranch}\r" +    
             "xaTesterEnvId  : ${xaTesterEnvId}"
 
-        this.sonar = tmpConfig.sonar        
+        this.sonar = tmpConfig.sonar      
+        this.ispw = tmpConfig.ispw
+        this.ispw.application = this.ispwApplication
     }
 
     /* Read list of email addresses from config file */
