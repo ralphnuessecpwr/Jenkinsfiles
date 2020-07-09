@@ -59,7 +59,7 @@ class IspwReleaseConfigurator implements Serializable{
                 customHeaders:              [[
                                             maskValue:  true, 
                                             name:       'authorization', 
-                                            value:      "${cesToken}"
+                                            value:      pConfig.ces.token
                                             ]]
                 
             )
@@ -92,7 +92,7 @@ class IspwReleaseConfigurator implements Serializable{
                     customHeaders:              [[
                                                 maskValue:  true, 
                                                 name:       'Authorization', 
-                                                value:      cesToken
+                                                value:      pConfig.ces.token
                                                 ]]
                 )
             }
@@ -113,7 +113,7 @@ class IspwReleaseConfigurator implements Serializable{
                 customHeaders:              [[
                                             maskValue:  true, 
                                             name:       'authorization', 
-                                            value:      "${cesToken}"
+                                            value:      pConfig.ces.token
                                             ]]
                 
             )
@@ -144,7 +144,7 @@ class IspwReleaseConfigurator implements Serializable{
                     customHeaders:              [[
                                                 maskValue:  true, 
                                                 name:       'Authorization', 
-                                                value:      cesToken
+                                                value:      pConfig.ces.token
                                                 ]]
                 )
             }
@@ -165,7 +165,7 @@ class IspwReleaseConfigurator implements Serializable{
             customHeaders:              [[
                                         maskValue:  true, 
                                         name:       'authorization', 
-                                        value:      "${cesToken}"
+                                        value:      pConfig.ces.token
                                         ]]
             
         )
