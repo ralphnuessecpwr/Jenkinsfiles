@@ -35,11 +35,14 @@ class IspwReleaseConfigurator implements Serializable{
                     """
             )
         
-        steps.echo response.getStatus().toString()
-        steps.echo response.getContent().toString()
-
-        mailMessagePart = "Created release " + pConfig.ispw.release + ".\n"
-        //mailMessagePart = "Release " + pConfig.ispw.release + " already existed. Assignments were added.\n"
+        if(response.getStatus() >= 400){
+            steps.echo "!!!!!!Created!!!!!!"
+            mailMessagePart = "Created release " + pConfig.ispw.release + ".\n"
+        }
+        else{
+            steps.echo "!!!!!!Not Created!!!!!!"
+            mailMessagePart = "Release " + pConfig.ispw.release + " already existed. Assignments were added.\n"
+        }
 
         return mailMessagePart
     }    
