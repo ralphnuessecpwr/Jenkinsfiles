@@ -87,8 +87,6 @@ class PipelineConfig implements Serializable
     {
         setServerConfig()
 
-        setTttGitConfig()
-
         setMailConfig()    
     }
 
@@ -96,7 +94,8 @@ class PipelineConfig implements Serializable
     def setServerConfig()
     {
         def configFilePath      = "${configPath}/${pipelineConfigFile}"
-        def tmpConfig           = steps.readYaml(file: configFilePath)
+        def configFileText      = steps.libraryResource configFilePath
+        def tmpConfig           = steps.readYaml(text: configFileText)
 
         this.gitProject         = tmpConfig.git.project
         this.gitCredentials     = tmpConfig.git.credentials

@@ -21,6 +21,11 @@ String          mailMessageExtension
 
 def initialize(pipelineParams)
 {
+    // Clean out any previously downloaded source
+    dir(".\\") 
+    {
+        deleteDir()
+    }
 
     echo "Parameters " + pipelineParams.toString()
 
@@ -79,11 +84,6 @@ def initialize(pipelineParams)
 
     sonarHelper.initialize()
 
-    // Clean out any previously downloaded source
-    dir(".\\") 
-    {
-        deleteDir()
-    }
 }
 
 /**
