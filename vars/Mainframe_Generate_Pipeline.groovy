@@ -60,6 +60,9 @@ def initialize(pipelineParams)
 
     pConfig.initialize()                                            
 
+    echo "PConfig initilized"
+    echo pConfig.sonar.toString()
+
     gitHelper   = new   GitHelper(
                             steps
                         )
@@ -102,31 +105,31 @@ def call(Map pipelineParams)
         /* Download all sources that are part of the container  */
         stage("Retrieve Mainframe Code")
         {
-            ispwHelper.downloadSources(pConfig.ispwSrcLevel)
+            // ispwHelper.downloadSources(pConfig.ispwSrcLevel)
         }
         
         /* Retrieve the Tests from Github that match that ISPWW Stream and Application */
         stage("Execute Unit Tests")
         {            
-            def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttUtRepo}"
+            // def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttUtRepo}"
             
-            /* initialize requires the sources to be present in the Jenkins workspace */
-            tttHelper.initialize()  
+            // /* initialize requires the sources to be present in the Jenkins workspace */
+            // tttHelper.initialize()  
 
-            /* Check out those unit test projects from GitHub that match downloaded sources*/
-            //gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
-            gitHelper.checkoutTttProjects(gitUrlFullPath, pConfig.gitBranch, pConfig.tttFolder, tttHelper.listOfTttProjects)
+            // /* Check out those unit test projects from GitHub that match downloaded sources*/
+            // //gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
+            // gitHelper.checkoutTttProjects(gitUrlFullPath, pConfig.gitBranch, pConfig.tttFolder, tttHelper.listOfTttProjects)
 
-            /* Clean up Code Coverage results from previous run */
-            tttHelper.cleanUpCodeCoverageResults()
+            // /* Clean up Code Coverage results from previous run */
+            // tttHelper.cleanUpCodeCoverageResults()
 
-            /* Execute unit tests */
-            tttHelper.loopThruScenarios()
+            // /* Execute unit tests */
+            // tttHelper.loopThruScenarios()
          
-            tttHelper.passResultsToJunit()
+            // tttHelper.passResultsToJunit()
 
-            /* push results back to GitHub */
-            //gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
+            // /* push results back to GitHub */
+            // //gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
         }
 
         /* 
@@ -134,7 +137,7 @@ def call(Map pipelineParams)
         */ 
         stage("Collect Metrics")
         {
-            tttHelper.collectCodeCoverageResults()
+            // tttHelper.collectCodeCoverageResults()
         }
 
         /* 
@@ -143,31 +146,31 @@ def call(Map pipelineParams)
         */ 
         stage("Check SonarQube Quality Gate") 
         {
-            //ispwHelper.downloadCopyBooks(workspace)            
+            // //ispwHelper.downloadCopyBooks(workspace)            
 
-            sonarHelper.scan("UT")
+            // sonarHelper.scan("UT")
 
-            String sonarGateResult = sonarHelper.checkQualityGate()
+            // String sonarGateResult = sonarHelper.checkQualityGate()
 
-            // Evaluate the status of the Quality Gate
-            if (sonarGateResult != 'OK')
-            {
-                echo "Sonar quality gate failure: ${sonarGateResult}"
+            // // Evaluate the status of the Quality Gate
+            // if (sonarGateResult != 'OK')
+            // {
+            //     echo "Sonar quality gate failure: ${sonarGateResult}"
 
-                mailMessageExtension = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
-                currentBuild.result = "FAILURE"
+            //     mailMessageExtension = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
+            //     currentBuild.result = "FAILURE"
 
-                // Exit the pipeline with an error if the SonarQube Quality Gate is failing
-                error "Exiting Pipeline" 
-            }
-            else
-            {
-                mailMessageExtension = "Generated code passed the Quality gate and may be promoted. \n" +
-                    "SonarQube results may be reviewed at " + 
-                    pConfig.sqServerUrl + 
-                    "/dashboard?id=" + 
-                    sonarHelper.determineUtProjectName()
-            }   
+            //     // Exit the pipeline with an error if the SonarQube Quality Gate is failing
+            //     error "Exiting Pipeline" 
+            // }
+            // else
+            // {
+            //     mailMessageExtension = "Generated code passed the Quality gate and may be promoted. \n" +
+            //         "SonarQube results may be reviewed at " + 
+            //         pConfig.sqServerUrl + 
+            //         "/dashboard?id=" + 
+            //         sonarHelper.determineUtProjectName()
+            // }   
         }
 
         /* 
@@ -176,10 +179,10 @@ def call(Map pipelineParams)
         stage("Send Mail")
         {
             // Send Standard Email
-            emailext subject:       '$DEFAULT_SUBJECT',
-                        body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,
-                        replyTo:    '$DEFAULT_REPLYTO',
-                        to:         "${pConfig.mailRecipient}"
+            // emailext subject:       '$DEFAULT_SUBJECT',
+            //             body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,
+            //             replyTo:    '$DEFAULT_REPLYTO',
+            //             to:         "${pConfig.mailRecipient}"
 
         }        
     }

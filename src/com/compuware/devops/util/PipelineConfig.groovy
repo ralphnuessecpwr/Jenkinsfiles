@@ -59,6 +59,8 @@ class PipelineConfig implements Serializable
       
     public String mailRecipient 
 
+    public sonar
+
     def PipelineConfig(steps, workspace, params, mailListLines)
     {
         //this.configGitBranch    = params.Config_Git_Branch
@@ -71,7 +73,7 @@ class PipelineConfig implements Serializable
         this.ispwRelease        = params.ISPW_Release
         this.ispwAssignment     = params.ISPW_Assignment
         this.ispwContainer      = params.ISPW_Set_Id
-        this.ispwContainerType  = '2'
+        this.ispwContainerType  = params.ISPW_Container_Type
         this.ispwOwner          = params.ISPW_Owner        
         this.ispwSrcLevel       = params.ISPW_Src_Level
 
@@ -147,6 +149,8 @@ class PipelineConfig implements Serializable
             "ispwRuntime    : ${ispwRuntime}\r" +    
             "gitBranch      : ${gitBranch}\r" +    
             "xaTesterEnvId  : ${xaTesterEnvId}"
+
+        this.sonar = tmpConfig.sonar        
     }
 
     /* Read list of email addresses from config file */
