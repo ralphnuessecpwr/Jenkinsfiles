@@ -66,8 +66,8 @@ class PipelineConfig implements Serializable
         this.ispw.srcLevel              = params.ISPW_Src_Level
 
         this.ispw.applicationPathNum    = ispw.srcLevel.charAt(ispw.srcLevel.length() - 1)
-        this.ispw.targetLevel           = "QA" + applicationPathNum
-        this.ttt.runnerJcl              = "Runner_PATH" + applicationPathNum + ".jcl"
+        this.ispw.targetLevel           = "QA" + ispw.applicationPathNum
+        this.ttt.runnerJcl              = "Runner_PATH" + ispw.applicationPathNum + ".jcl"
 
         this.git.url                    = "${this.git.server}/${this.git.project}"
         this.git.tttRepo                = "${this.ispw.stream}_${this.ispw.application}_Unit_Tests.git"
