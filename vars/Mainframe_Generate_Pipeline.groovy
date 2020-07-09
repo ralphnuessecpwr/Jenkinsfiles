@@ -26,11 +26,10 @@ def initialize(pipelineParams){
         deleteDir()
     }
 
-    echo "Parameters " + pipelineParams.toString()
-
-    def mailListlines
     /* Read list of mailaddresses from "private" Config File */
     /* The configFileProvider creates a temporary file on disk and returns its path as variable */
+    def mailListlines
+
     configFileProvider(
         [
             configFile(

@@ -98,7 +98,7 @@ def call(Map pipelineParams)
         stage("Retrieve Mainframe Code")
         {
             ispwHelper.downloadAllSources(pConfig.ispwTargetLevel)
-            ispwHelper.downloadCopyBooks(workspace)
+            //ispwHelper.downloadCopyBooks(workspace)
         }
         
         /* Retrieve the Tests from Github that match that ISPW Stream and Application */
