@@ -60,6 +60,7 @@ class PipelineConfig implements Serializable
     public String mailRecipient 
 
     public sonar
+    public ispw
 
     def PipelineConfig(steps, workspace, params, mailListLines)
     {
