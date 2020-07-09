@@ -19,11 +19,15 @@ class TttHelper implements Serializable {
         this.script     = script
         this.steps      = steps
         this.pConfig    = pConfig
+
+        jclSkeleton     = new JclSkeleton(steps, script.workspace, pConfig.ispwApplication, pConfig.applicationPathNum)
     }
 
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
     def initialize()
     {
+        jclSkeleton.initialize()
+
         // Get all Cobol Sources in the MF_Source folder into an array 
         this.listOfSources       = steps.findFiles(glob: "**/${pConfig.ispwApplication}/${pConfig.mfSourceFolder}/*.cbl")
 
