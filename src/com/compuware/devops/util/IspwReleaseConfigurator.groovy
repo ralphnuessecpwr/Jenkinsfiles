@@ -24,7 +24,7 @@ class IspwReleaseConfigurator implements Serializable{
 
         try
         {
-            ispwOperation(
+            steps.ispwOperation(
                 connectionId:           pConfig.hci.connectionId, 
                 consoleLogResponseBody: true, 
                 credentialsId:          pConfig.ces.jenkinsToken, 
@@ -53,7 +53,7 @@ class IspwReleaseConfigurator implements Serializable{
         {
             def currentAssignment   = it
 
-            def response            = httpRequest(
+            def response            = steps.httpRequest(
                 url:                        "${pConfig.ispw.url}/ispw/${pConfig.ispw.runtime}/assignments/${it}/tasks",
                 consoleLogResponseBody:     true, 
                 customHeaders:              [[
@@ -62,7 +62,7 @@ class IspwReleaseConfigurator implements Serializable{
                                             value:      "${cesToken}"
                                             ]]
                 
-                )
+            )
 
             def taskList            = new JsonSlurper().parseText(response.getContent()).tasks
 
@@ -77,9 +77,9 @@ class IspwReleaseConfigurator implements Serializable{
 
             componentList.each
             {
-                echo "Task " + it
+                steps.echo "Task " + it
                 
-                httpRequest(
+                steps.httpRequest(
                     httpMode:                   'POST',
                     url:                        "${pConfig.ispw.url}/ispw/${pConfig.ispw.runtime}/assignments/${currentAssignment}/tasks/transfer?mname=${it}",
                     consoleLogResponseBody:     true, 
@@ -107,7 +107,7 @@ class IspwReleaseConfigurator implements Serializable{
         {
             def currentAssignment   = it
 
-            def response            = httpRequest(
+            def response            = steps.httpRequest(
                 url:                        "${pConfig.ispw.url}/ispw/${pConfig.ispw.runtime}/assignments/${it}/tasks",
                 consoleLogResponseBody:     true, 
                 customHeaders:              [[
@@ -116,7 +116,7 @@ class IspwReleaseConfigurator implements Serializable{
                                             value:      "${cesToken}"
                                             ]]
                 
-                )
+            )
 
             def taskList            = new JsonSlurper().parseText(response.getContent()).tasks
 
@@ -131,9 +131,9 @@ class IspwReleaseConfigurator implements Serializable{
 
             componentList.each
             {
-                echo "Task " + it
+                steps.echo "Task " + it
                 
-                httpRequest(
+                steps.httpRequest(
                     httpMode:                   'POST',
                     url:                        "${pConfig.ispw.url}/ispw/${pConfig.ispw.runtime}/releases/${pConfig.ispw.release}/tasks/remove?mname=${it}",
                     consoleLogResponseBody:     true, 
@@ -159,7 +159,7 @@ class IspwReleaseConfigurator implements Serializable{
 
         def failAssignmentList  = []
 
-        def response        = httpRequest(
+        def response        = steps.httpRequest(
             url:                        "${pConfig.ispw.url}/ispw/${pConfig.ispw.runtime}/releases/${pConfig.ispw.release}/tasks",
             consoleLogResponseBody:     true, 
             customHeaders:              [[
@@ -168,7 +168,7 @@ class IspwReleaseConfigurator implements Serializable{
                                         value:      "${cesToken}"
                                         ]]
             
-            )
+        )
 
         def taskList        = new JsonSlurper().parseText(response.getContent()).tasks
 
