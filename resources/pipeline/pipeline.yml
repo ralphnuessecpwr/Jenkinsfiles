@@ -14,6 +14,7 @@ ttt:
   ftEnvironment:    '5b508b8a787be73b59238d38'
   cocoRepository:   'HDDRXM0.DEMO.COCO.REPOS'
 git:
+  server:           'https://github.com'
   project:          'ralphnuessecpwr'
   credentials:      '67a3fb18-073f-498b-adee-1a3c75192745'
 sonar:

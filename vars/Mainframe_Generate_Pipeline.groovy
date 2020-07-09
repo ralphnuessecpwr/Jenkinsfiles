@@ -100,14 +100,14 @@ def call(Map pipelineParams){
         }
         
         /* Retrieve the Tests from Github that match that ISPWW Stream and Application */
-        stage("Execute Unit Tests"){            
+        stage("Execute Unit Tests"){      
+                  
             def gitUrlFullPath = "${pConfig.git.url}/${pConfig.git.tttUtRepo}"
             
             /* initialize requires the sources to be present in the Jenkins workspace */
             tttHelper.initialize()  
 
             /* Check out those unit test projects from GitHub that match downloaded sources*/
-            //gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
             gitHelper.checkoutTttProjects(gitUrlFullPath, pConfig.git.branch, pConfig.ttt.folder, tttHelper.listOfTttProjects)
 
             /* Clean up Code Coverage results from previous run */

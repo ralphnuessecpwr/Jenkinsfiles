@@ -154,6 +154,12 @@ class PipelineConfig implements Serializable
         this.ispw.targetLevel           = "QA" + applicationPathNum
 
         this.ttt.runnerJcl              = "Runner_PATH" + applicationPathNum + ".jcl"
+
+        this.git.url                    = "${this.git.server}/${this.git.project}"
+        this.git.tttRepo                = "${this.ispw.stream}_${this.ispw.application}_Unit_Tests.git"
+        this.git.tttUtRepo              = "${this.ispw.stream}_${this.ispw.application}_Unit_Tests.git"
+        this.git.tttFtRepo              = "${this.ispw.stream}_${this.ispw.application}_Functional_Tests.git"
+
     }
 
     /* Read list of email addresses from config file */
