@@ -14,6 +14,8 @@ class PipelineConfig implements Serializable
 
     private String workspace
 
+    private params
+
 /* Environment specific settings, which differ between Jenkins servers and applications, but not between runs */
     public String gitTargetBranch                               // Used for synchronizing TTT project stored in Git with programs stored in ISPW
     public String gitBranch                                     // Used for synchronizing TTT project stored in Git with programs stored in ISPW
@@ -59,8 +61,13 @@ class PipelineConfig implements Serializable
       
     public String mailRecipient 
 
-    public sonar
-    public ispw
+    public ces  
+    public hci  
+    public ispw 
+    public ttt  
+    public git  
+    public sonar     
+    public xlr  
 
     def PipelineConfig(steps, workspace, params, mailListLines)
     {
@@ -68,6 +75,7 @@ class PipelineConfig implements Serializable
         this.steps              = steps
         this.workspace          = workspace
         this.mailListLines      = mailListLines
+        this.params             = params
 
         this.ispwStream         = params.ISPW_Stream
         this.ispwApplication    = params.ISPW_Application
@@ -151,9 +159,26 @@ class PipelineConfig implements Serializable
             "gitBranch      : ${gitBranch}\r" +    
             "xaTesterEnvId  : ${xaTesterEnvId}"
 
-        this.sonar = tmpConfig.sonar      
-        this.ispw = tmpConfig.ispw
-        this.ispw.application = this.ispwApplication
+        this.ces                        = tmpConfig.ces
+        this.hci                        = tmpConfig.hci
+        this.ispw                       = tmpConfig.ispw
+        this.ttt                        = tmpConfig.ttt
+        this.git                        = tmpConfig.git
+        this.sonar                      = tmpConfig.sonar      
+        this.xlr                        = tmpConfig.xlr
+
+        this.ispw.stream                = params.ISPW_Stream
+        this.ispw.application           = params.ISPW_Application
+        this.ispw.release               = params.ISPW_Release
+        this.ispw.assignment            = params.ISPW_Assignment
+        this.ispw.container             = params.ISPW_Set_Id
+        this.ispw.containerType         = params.ISPW_Container_Type
+        this.ispw.owner                 = params.ISPW_Owner        
+        this.ispw.srcLevel              = params.ISPW_Src_Level
+
+        this.ispw.applicationPathNum    = ispwSrcLevel.charAt(ispwSrcLevel.length() - 1)
+        this.ispw.targetLevel           = "QA" + applicationPathNum
+        this.ttt.runnerJcl              = "Runner_PATH" + applicationPathNum + ".jcl"
     }
 
     /* Read list of email addresses from config file */

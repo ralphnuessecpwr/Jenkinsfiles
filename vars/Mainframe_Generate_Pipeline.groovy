@@ -61,8 +61,13 @@ def initialize(pipelineParams)
     pConfig.initialize()                                            
 
     echo "PConfig initilized"
-    echo pConfig.sonar.toString()
+    echo pConfig.ces.toString()
+    echo pConfig.hci.toString()
     echo pConfig.ispw.toString()
+    echo pConfig.ttt.toString()
+    echo pConfig.git.toString()
+    echo pConfig.sonar.toString()
+    echo pConfig.xlr.toString()
 
     gitHelper   = new   GitHelper(
                             steps
