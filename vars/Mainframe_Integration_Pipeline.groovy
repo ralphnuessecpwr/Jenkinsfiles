@@ -97,24 +97,22 @@ def call(Map pipelineParams)
         /* Download all sources that are part of the container  */
         stage("Retrieve Mainframe Code")
         {
-            ispwHelper.downloadAllSources(pConfig.ispwTargetLevel)
+            ispwHelper.downloadAllSources(pConfig.ispw.targetLevel)
             //ispwHelper.downloadCopyBooks(workspace)
         }
         
         /* Retrieve the Tests from Github that match that ISPW Stream and Application */
         stage("Execute Integration Tests")
-        {            
-            def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttFtRepo}"
+        {   
+
+            tttHelper.initialize()
+
+            def gitUrlFullPath = "${pConfig.git.url}/${pConfig.git.tttFtRepo}"
             
             gitHelper.checkoutTttProjects(gitUrlFullPath, pConfig.ttt.gitBranch, pConfig.ttt.utFolder, tttHelper.listOfFtProjects)
 
-            //withCredentials(
-            //    [usernamePassword(credentialsId: "${pConfig.hciTokenId}", usernameVariable: 'userId', passwordVariable: 'password')]
-            //) 
-            //{
-                tttHelper.initialize()
-                tttHelper.executeFunctionalTests()
-            //}
+            tttHelper.executeFunctionalTests()
+
         }
 
         stage("Check SonarQube Quality Gate") 
@@ -134,7 +132,7 @@ def call(Map pipelineParams)
 
                 currentBuild.result     = 'FAILURE'
 
-                ispwHelper.regressAssignment(pConfig.ispwAssignment, pConfig.cesTokenId)
+                ispwHelper.regressAssignment(pConfig.ispw.assignment, pConfig.ces.hostToken)
 
                 // error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
             }
@@ -162,7 +160,7 @@ def call(Map pipelineParams)
             emailext subject:       '$DEFAULT_SUBJECT',
                         body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,
                         replyTo:    '$DEFAULT_REPLYTO',
-                        to:         "${pConfig.mailRecipient}"
+                        to:         "${pConfig.mail.recipient}"
         } 
 
     }
