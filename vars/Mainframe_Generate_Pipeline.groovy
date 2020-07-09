@@ -60,22 +60,13 @@ def initialize(pipelineParams)
 
     pConfig.initialize()                                            
 
-    echo "PConfig initilized"
-    echo pConfig.ces.toString()
-    echo pConfig.hci.toString()
-    echo pConfig.ispw.toString()
-    echo pConfig.ttt.toString()
-    echo pConfig.git.toString()
-    echo pConfig.sonar.toString()
-    echo pConfig.xlr.toString()
-
     gitHelper   = new   GitHelper(
                             steps
                         )
 
-    withCredentials([usernamePassword(credentialsId: "${pConfig.gitCredentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]) 
+    withCredentials([usernamePassword(credentialsId: "${pConfig.git.credentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]) 
     {
-        gitHelper.initialize(gitPassword, gitUsername, pConfig.ispwOwner, pConfig.mailRecipient)
+        gitHelper.initialize(gitPassword, gitUsername, pConfig.ispw.owner, pConfig.mail.recipient)
     }
 
     ispwHelper  = new   IspwHelper(
@@ -111,7 +102,7 @@ def call(Map pipelineParams)
         /* Download all sources that are part of the container  */
         stage("Retrieve Mainframe Code")
         {
-            // ispwHelper.downloadSources(pConfig.ispwSrcLevel)
+            ispwHelper.downloadSources(pConfig.ispw.srcLevel)
         }
         
         /* Retrieve the Tests from Github that match that ISPWW Stream and Application */

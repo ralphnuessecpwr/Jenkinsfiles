@@ -68,6 +68,7 @@ class PipelineConfig implements Serializable
     public git  
     public sonar     
     public xlr  
+    public mail
 
     def PipelineConfig(steps, workspace, params, mailListLines)
     {
@@ -85,8 +86,6 @@ class PipelineConfig implements Serializable
         this.ispwContainerType  = params.ISPW_Container_Type
         this.ispwOwner          = params.ISPW_Owner        
         this.ispwSrcLevel       = params.ISPW_Src_Level
-
-        //this.sqHttpRequestAuthHeader    = params.SQ_SERVER_AUTH_TOKEN
 
         this.applicationPathNum = ispwSrcLevel.charAt(ispwSrcLevel.length() - 1)
         this.ispwTargetLevel    = "QA" + applicationPathNum
@@ -134,31 +133,6 @@ class PipelineConfig implements Serializable
         this.gitBranch          = tmpConfig.ttt.gitBranch
         this.xaTesterEnvId      = tmpConfig.ttt.ftEnvironment
 
-        steps.echo "*******************************\r" +
-            "Parameters:\r" +
-            "gitProject     : ${gitProject}\r" +    
-            "gitCredentials : ${gitCredentials}\r" +    
-            "gitUrl         : ${gitUrl}\r" +    
-            "gitTttRepo     : ${gitTttRepo}\r" +    
-            "gitTttUtRepo   : ${gitTttUtRepo}\r" +    
-            "gitTttFtRepo   : ${gitTttFtRepo}\r" +    
-            "cesTokenId     : ${cesTokenId}\r" +    
-            "hciConnId      : ${hciConnId}\r" +    
-            "hciTokenId     : ${hciTokenId}\r" +    
-            "ccRepository   : ${ccRepository}\r" +    
-            "sqScannerName  : ${sqScannerName}\r" +    
-            "sqServerName   : ${sqServerName}\r" +    
-            "sqServerUrl    : ${sqServerUrl}\r" +    
-            "xaTesterUrl    : ${xaTesterUrl}\r" +    
-            "mfSourceFolder : ${mfSourceFolder}\r" +    
-            "xlrTemplate    : ${xlrTemplate}\r" +    
-            "xlrUser        : ${xlrUser}\r" +    
-            "tttFolder      : ${tttFolder}\r" +    
-            "ispwUrl        : ${ispwUrl}\r" +    
-            "ispwRuntime    : ${ispwRuntime}\r" +    
-            "gitBranch      : ${gitBranch}\r" +    
-            "xaTesterEnvId  : ${xaTesterEnvId}"
-
         this.ces                        = tmpConfig.ces
         this.hci                        = tmpConfig.hci
         this.ispw                       = tmpConfig.ispw
@@ -178,6 +152,7 @@ class PipelineConfig implements Serializable
 
         this.ispw.applicationPathNum    = ispwSrcLevel.charAt(ispwSrcLevel.length() - 1)
         this.ispw.targetLevel           = "QA" + applicationPathNum
+
         this.ttt.runnerJcl              = "Runner_PATH" + applicationPathNum + ".jcl"
     }
 
@@ -198,5 +173,6 @@ class PipelineConfig implements Serializable
         }
 
         this.mailRecipient  = mailListMap[(ispwOwner.toUpperCase())]
+        this.mail.recipient = mailListMap[(ispwOwner.toUpperCase())]
     }
 }
