@@ -111,7 +111,7 @@ class PipelineConfig implements Serializable
         this.ccRepository       = tmpConfig.ttt.cocoRepository
 
         this.sqScannerName      = tmpConfig.sonar.scannerName 
-        this.sqServerName       = tmpConfig.sonar.serverName
+        this.sqServerName       = tmpConfig.sonar.serverHost
         this.sqServerUrl        = tmpConfig.sonar.serverUrl 
         this.xaTesterUrl        = tmpConfig.ttt.ftServerUrl 
         this.mfSourceFolder     = tmpConfig.ispw.localFolder
