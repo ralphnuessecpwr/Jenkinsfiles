@@ -22,9 +22,7 @@ class IspwReleaseConfigurator implements Serializable{
     {
         def mailMessagePart
 
-        try
-        {
-            steps.ispwOperation(
+        def response = steps.ispwOperation(
                 connectionId:           pConfig.hci.connectionId, 
                 consoleLogResponseBody: true, 
                 credentialsId:          pConfig.ces.jenkinsToken, 
@@ -36,13 +34,12 @@ class IspwReleaseConfigurator implements Serializable{
                     description=Default Description
                     """
             )
-            
-            mailMessagePart = "Created release " + pConfig.ispw.release + ".\n"
-        }
-        catch (IllegalStateException e)
-        {
-            mailMessagePart = "Release " + pConfig.ispw.release + " already existed. Assignments were added.\n"
-        }
+        
+        steps.echo response.getStatus().toString()
+        steps.echo response.getContent().toString()
+
+        mailMessagePart = "Created release " + pConfig.ispw.release + ".\n"
+        //mailMessagePart = "Release " + pConfig.ispw.release + " already existed. Assignments were added.\n"
 
         return mailMessagePart
     }    
