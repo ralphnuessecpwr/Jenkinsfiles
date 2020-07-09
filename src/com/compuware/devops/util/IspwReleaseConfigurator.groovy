@@ -37,11 +37,11 @@ class IspwReleaseConfigurator implements Serializable{
                     """
             )
             
-            "Created release " + pConfig.ispw.release + ".\n"
+            mailMessagePart = "Created release " + pConfig.ispw.release + ".\n"
         }
         catch (IllegalStateException e)
         {
-            "Release " + pConfig.ispw.release + " already existed. Assignments were added.\n"
+            mailMessagePart = "Release " + pConfig.ispw.release + " already existed. Assignments were added.\n"
         }
 
         return mailMessagePart
@@ -49,6 +49,8 @@ class IspwReleaseConfigurator implements Serializable{
 
     private addAssignments()
     {
+        def mailMessagePart
+
         assignmentList.each
         {
             def currentAssignment   = it
@@ -97,12 +99,15 @@ class IspwReleaseConfigurator implements Serializable{
                 )
             }
 
-            return "Added all tasks in assignment " + currentAssignment + " to Release " + pConfig.ispw.release + ".\n"
+            mailMessagePart = "Added all tasks in assignment " + currentAssignment + " to Release " + pConfig.ispw.release + ".\n"
+
+            return mailMessagePart
         }
     }
 
     private removeAssignments()
     {
+        def mailMessagePart
         assignmentList.each
         {
             def currentAssignment   = it
@@ -149,7 +154,8 @@ class IspwReleaseConfigurator implements Serializable{
                 )
             }
 
-            return "Removed all tasks in assignment " + currentAssignment + " from Release " + pConfig.ispw.release + ".\n"
+            mailMessagePart = "Removed all tasks in assignment " + currentAssignment + " from Release " + pConfig.ispw.release + ".\n"
+            return mailMessagePart
         }
     }    
 
@@ -174,6 +180,7 @@ class IspwReleaseConfigurator implements Serializable{
 
         taskList.each
         {
+
             if(
                 it.level == 'DEV1' ||
                 it.level == 'DEV2' ||
