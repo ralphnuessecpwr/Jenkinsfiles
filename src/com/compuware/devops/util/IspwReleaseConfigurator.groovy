@@ -47,7 +47,7 @@ class IspwReleaseConfigurator implements Serializable{
 
     private addAssignments()
     {
-        def mailMessagePart
+        def mailMessagePart = ''
 
         assignmentList.each
         {
@@ -77,7 +77,7 @@ class IspwReleaseConfigurator implements Serializable{
 
             componentList.each
             {
-                steps.echo "Task " + it
+                steps.echo "Adding Task - " + it
                 
                 steps.httpRequest(
                     httpMode:                   'POST',
@@ -105,7 +105,8 @@ class IspwReleaseConfigurator implements Serializable{
 
     private removeAssignments()
     {
-        def mailMessagePart
+        def mailMessagePart = ''
+
         assignmentList.each
         {
             def currentAssignment   = it
@@ -134,7 +135,7 @@ class IspwReleaseConfigurator implements Serializable{
 
             componentList.each
             {
-                steps.echo "Task " + it
+                steps.echo "Removing Task - " + it
                 
                 steps.httpRequest(
                     httpMode:                   'POST',
@@ -152,9 +153,10 @@ class IspwReleaseConfigurator implements Serializable{
                 )
             }
 
-            mailMessagePart = "Removed all tasks in assignment " + currentAssignment + " from Release " + pConfig.ispw.release + ".\n"
-            return mailMessagePart
+            mailMessagePart = mailMessagePart + "Removed all tasks in assignment " + currentAssignment + " from Release " + pConfig.ispw.release + ".\n"            
         }
+
+        return mailMessagePart
     }    
 
     private checkReleaseReady()
