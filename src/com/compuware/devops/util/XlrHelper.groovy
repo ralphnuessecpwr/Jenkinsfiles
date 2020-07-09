@@ -19,13 +19,13 @@ class XlrHelper implements Serializable {
         // Trigger XL Release Jenkins Plugin to kickoff a Release
         steps.xlrCreateRelease(
             releaseTitle:       'A Release for $BUILD_TAG',
-            serverCredentials:  "${pConfig.xlrUser}",
+            serverCredentials:  "${pConfig.xlr.user}",
             startRelease:       true,
-            template:           "${pConfig.xlrTemplate}",
+            template:           "${pConfig.xlr.template}",
             variables:          [
-                                    [propertyName:  'ISPW_Dev_level',   propertyValue: "${pConfig.ispwTargetLevel}"], // Level in ISPW that the Code resides currently
-                                    [propertyName:  'ISPW_RELEASE_ID',  propertyValue: "${pConfig.ispwRelease}"],     // ISPW Release value from the ISPW Webhook
-                                    [propertyName:  'CES_Token',        propertyValue: "${pConfig.cesTokenId}"]
+                                    [propertyName:  'ISPW_Dev_level',   propertyValue: "${pConfig.ispw.targetLevel}"], // Level in ISPW that the Code resides currently
+                                    [propertyName:  'ISPW_RELEASE_ID',  propertyValue: "${pConfig.ispw.release}"],     // ISPW Release value from the ISPW Webhook
+                                    [propertyName:  'CES_Token',        propertyValue: "${pConfig.ces.jenkinsToken}"]
                                 ]
         )
 
