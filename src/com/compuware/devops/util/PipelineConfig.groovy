@@ -31,10 +31,6 @@ class PipelineConfig implements Serializable
         this.workspace          = workspace
         this.mailListLines      = mailListLines
         this.params             = params
-
-        this.applicationPathNum = ispwSrcLevel.charAt(ispwSrcLevel.length() - 1)
-        this.ispwTargetLevel    = "QA" + applicationPathNum
-        this.tttJcl             = "Runner_PATH" + applicationPathNum + ".jcl"
     }
 
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
@@ -71,7 +67,6 @@ class PipelineConfig implements Serializable
 
         this.ispw.applicationPathNum    = ispwSrcLevel.charAt(ispwSrcLevel.length() - 1)
         this.ispw.targetLevel           = "QA" + applicationPathNum
-
         this.ttt.runnerJcl              = "Runner_PATH" + applicationPathNum + ".jcl"
 
         this.git.url                    = "${this.git.server}/${this.git.project}"
