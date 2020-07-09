@@ -4,52 +4,19 @@ import groovy.json.JsonSlurper
 import jenkins.plugins.http_request.*
 
 /* Wrapper class to simplify use of ISPW functions */
-class IspwHelper implements Serializable 
-{
+class IspwHelper implements Serializable{
     def steps
     def pConfig
 
-    // def String ispwUrl
-    // def String ispwRuntime
-    // def String ispwStream
-    // def String ispwApplication
-    // def String ispwRelease
-    // def String ispwContainer
-    // def String ispwContainerType    
-    // def String applicationPathNum
-    // def String ispwOwner
-    // def String ispwTargetLevel
-
-
-    // def String mfSourceFolder
-
-    // def String hciConnId
-    // def String hciTokenId
-
-    IspwHelper(steps, pConfig) 
-    {
+    IspwHelper(steps, pConfig){
 
         this.steps              = steps
         this.pConfig            = pConfig
-        // this.ispwRuntime        = pConfig.ispw.runtime
-        // this.ispwStream         = pConfig.ispw.stream
-        // this.ispwApplication    = pConfig.ispw.application
-        // this.ispwRelease        = pConfig.ispw.release        
-        // this.ispwContainer      = pConfig.ispw.container
-        // this.ispwContainerType  = pConfig.ispwContainerType
-        // this.ispwOwner          = pConfig.ispwOwner
-        // this.ispwTargetLevel    = pConfig.ispwTargetLevel
-        // this.applicationPathNum = pConfig.applicationPathNum
 
-        // this.mfSourceFolder     = pConfig.mfSourceFolder
-
-        // this.hciConnId          = pConfig.hciConnId
-        // this.hciTokenId         = pConfig.hciTokenId
     }
 
     /* Download all sources from ISPW for a given level */
-    def downloadAllSources(String ispwLevel)
-    {
+    def downloadAllSources(String ispwLevel){
 
         steps.checkout( 
             changelog: false, 
@@ -72,8 +39,7 @@ class IspwHelper implements Serializable
     }
 
     /* Download sources for the ISPW Set which triggered the current pipeline from a given level */
-    def downloadSources(String ispwLevel)
-    {
+    def downloadSources(String ispwLevel){
         steps.checkout([
             $class:             'IspwContainerConfiguration', 
             componentType:      '',                                 // optional filter for component types in ISPW
@@ -89,8 +55,7 @@ class IspwHelper implements Serializable
     }
 
     /* Regress a list of assignments */
-    def regressAssignmentList(assignmentList, cesToken)
-    {
+    def regressAssignmentList(assignmentList, cesToken){
         for(int i = 0; i < assignmentList.size(); i++)
         {
 
@@ -103,8 +68,7 @@ class IspwHelper implements Serializable
     }
 
     /* Regress one assigment */
-    def regressAssignment(assignment, cesToken)
-    {
+    def regressAssignment(assignment, cesToken){
         steps.ispwOperation connectionId: pConfig.hci.connectionId, 
             consoleLogResponseBody: true, 
             credentialsId: cesToken, 

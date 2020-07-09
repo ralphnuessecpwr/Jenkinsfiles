@@ -19,8 +19,7 @@ SonarHelper     sonarHelper
 
 String          mailMessageExtension
 
-def initialize(pipelineParams)
-{
+def initialize(pipelineParams){
     // Clean out any previously downloaded source
     dir(".\\") 
     {
@@ -64,8 +63,7 @@ def initialize(pipelineParams)
                             steps
                         )
 
-    withCredentials([usernamePassword(credentialsId: "${pConfig.git.credentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]) 
-    {
+    withCredentials([usernamePassword(credentialsId: "${pConfig.git.credentials}", passwordVariable: 'gitPassword', usernameVariable: 'gitUsername')]){
         gitHelper.initialize(gitPassword, gitUsername, pConfig.ispw.owner, pConfig.mail.recipient)
     }
 
@@ -90,50 +88,44 @@ def initialize(pipelineParams)
 Call method to execute the pipeline from a shared library
 @param pipelineParams - Map of paramter/value pairs
 */
-def call(Map pipelineParams)
-{
-    node
-    {
-        stage("Initialization")
-        {
+def call(Map pipelineParams){
+    node{
+        stage("Initialization"){
             initialize(pipelineParams) 
         }
                 
         /* Download all sources that are part of the container  */
-        stage("Retrieve Mainframe Code")
-        {
+        stage("Retrieve Mainframe Code"){
             ispwHelper.downloadSources(pConfig.ispw.srcLevel)
         }
         
         /* Retrieve the Tests from Github that match that ISPWW Stream and Application */
-        stage("Execute Unit Tests")
-        {            
-            // def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttUtRepo}"
+        stage("Execute Unit Tests"){            
+            def gitUrlFullPath = "${pConfig.git.url}/${pConfig.git.tttUtRepo}"
             
-            // /* initialize requires the sources to be present in the Jenkins workspace */
-            // tttHelper.initialize()  
+            /* initialize requires the sources to be present in the Jenkins workspace */
+            tttHelper.initialize()  
 
-            // /* Check out those unit test projects from GitHub that match downloaded sources*/
-            // //gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
-            // gitHelper.checkoutTttProjects(gitUrlFullPath, pConfig.gitBranch, pConfig.tttFolder, tttHelper.listOfTttProjects)
+            /* Check out those unit test projects from GitHub that match downloaded sources*/
+            //gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
+            gitHelper.checkoutTttProjects(gitUrlFullPath, pConfig.git.branch, pConfig.ttt.folder, tttHelper.listOfTttProjects)
 
-            // /* Clean up Code Coverage results from previous run */
-            // tttHelper.cleanUpCodeCoverageResults()
+            /* Clean up Code Coverage results from previous run */
+            tttHelper.cleanUpCodeCoverageResults()
 
-            // /* Execute unit tests */
-            // tttHelper.loopThruScenarios()
+            /* Execute unit tests */
+            tttHelper.loopThruScenarios()
          
-            // tttHelper.passResultsToJunit()
+            tttHelper.passResultsToJunit()
 
-            // /* push results back to GitHub */
-            // //gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
+            /* push results back to GitHub */
+            //gitHelper.pushResults(pConfig.git.project, pConfig.git.tttUtRepo, pConfig.ttt.folder, pConfig.git.branch, BUILD_NUMBER)
         }
 
         /* 
         This stage retrieve Code Coverage metrics from Xpediter Code Coverage for the test executed in the Pipeline
         */ 
-        stage("Collect Metrics")
-        {
+        stage("Collect Metrics"){
             // tttHelper.collectCodeCoverageResults()
         }
 
@@ -141,8 +133,7 @@ def call(Map pipelineParams)
         This stage pushes the Source Code, Test Metrics and Coverage metrics into SonarQube and then checks the status of the SonarQube Quality Gate.  
         If the SonarQube quality date fails, the Pipeline fails and stops
         */ 
-        stage("Check SonarQube Quality Gate") 
-        {
+        stage("Check SonarQube Quality Gate"){
             // //ispwHelper.downloadCopyBooks(workspace)            
 
             // sonarHelper.scan("UT")
@@ -173,8 +164,7 @@ def call(Map pipelineParams)
         /* 
         This stage triggers a XL Release Pipeline that will move code into the high levels in the ISPW Lifecycle  
         */ 
-        stage("Send Mail")
-        {
+        stage("Send Mail"){
             // Send Standard Email
             // emailext subject:       '$DEFAULT_SUBJECT',
             //             body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,
