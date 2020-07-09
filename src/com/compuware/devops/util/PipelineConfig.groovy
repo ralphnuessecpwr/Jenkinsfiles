@@ -101,7 +101,7 @@ class PipelineConfig implements Serializable
     def setServerConfig()
     {
         def configFilePath      = "${configPath}/${pipelineConfigFile}"
-        def tmpConfig           = readYaml(file: configFilePath)
+        def tmpConfig           = steps.readYaml(file: configFilePath)
 
         this.gitProject         = tmpConfig.git.project
         this.gitCredentials     = tmpConfig.git.credentials
