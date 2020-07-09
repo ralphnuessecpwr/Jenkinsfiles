@@ -65,7 +65,7 @@ class PipelineConfig implements Serializable
         this.ispw.owner                 = params.ISPW_Owner        
         this.ispw.srcLevel              = params.ISPW_Src_Level
 
-        this.ispw.applicationPathNum    = ispwSrcLevel.charAt(ispwSrcLevel.length() - 1)
+        this.ispw.applicationPathNum    = ispw.srcLevel.charAt(ispw.srcLevel.length() - 1)
         this.ispw.targetLevel           = "QA" + applicationPathNum
         this.ttt.runnerJcl              = "Runner_PATH" + applicationPathNum + ".jcl"
 
