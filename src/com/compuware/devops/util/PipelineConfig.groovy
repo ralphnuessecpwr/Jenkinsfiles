@@ -76,13 +76,13 @@ class PipelineConfig implements Serializable
         this.git.tttUtRepo              = "${this.ispw.stream}_${this.ispw.application}_Unit_Tests.git"
         this.git.tttFtRepo              = "${this.ispw.stream}_${this.ispw.application}_Functional_Tests.git"
 
-        def ddioOverridesString         = ''
+        this.coco.ddioOverridesCommaList = ''
         
         this.coco.ddioOverrides.ddio.each{
-            ddioOverridesString = ddioOverridesString + it
+            this.coco.ddioOverridesCommaList = this.coco.ddioOverridesCommaList + it
         }
 
-        this.coco.ddioOverrides.commaList = ddioOverridesString
+        //this.coco.ddioOverridesCommaList = ddioOverridesString
 
         steps.echo "Coco Configs\n" + this.coco.toString()
     }
