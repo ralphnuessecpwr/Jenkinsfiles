@@ -79,12 +79,8 @@ class PipelineConfig implements Serializable
         this.coco.ddioOverridesCommaList = ''
         
         this.coco.ddioOverrides.ddio.each{
-            this.coco.ddioOverridesCommaList = this.coco.ddioOverridesCommaList + it
+            this.coco.ddioOverridesCommaList = this.coco.ddioOverridesCommaList + it + ','
         }
-
-        //this.coco.ddioOverridesCommaList = ddioOverridesString
-
-        steps.echo "Coco Configs\n" + this.coco.toString()
     }
 
     /* Read list of email addresses from config file */

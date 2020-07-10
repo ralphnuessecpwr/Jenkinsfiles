@@ -13,7 +13,6 @@ class TttHelper implements Serializable {
     def listOfPrograms 
     def listOfUtProjects
     def listOfFtProjects
-    def cocoDdioOverrides
 
     TttHelper(script, steps, pConfig) 
     {
@@ -49,16 +48,6 @@ class TttHelper implements Serializable {
             listOfUtProjects.add(programName + "_Unit_Tests")
             listOfUtProjects.add(programName + "_Functional_Tests")
         }
-
-        this.cocoDdioOverrides =    'SALESSUP.RXN3.DEV1.LOAD.SSD,' +
-                                    'SALESSUP.RXN3.DEV2.LOAD.SSD,' + 
-                                    'SALESSUP.RXN3.DEV3.LOAD.SSD,' + 
-                                    'SALESSUP.RXN3.QA1.LOAD.SSD,' + 
-                                    'SALESSUP.RXN3.QA2.LOAD.SSD,' + 
-                                    'SALESSUP.RXN3.QA3.LOAD.SSD,' + 
-                                    'SALESSUP.RXN3.STG.LOAD.SSD,' + 
-                                    'SALESSUP.RXN3.PRD.LOAD.SSD'
-
     }
 
     // The testSuite parameter value "All_Scenarios" will execute all .testscenario files found in the projectFolder. 
@@ -109,7 +98,7 @@ class TttHelper implements Serializable {
             '\rcc.repos=' + pConfig.coco.repository + 
             '\rcc.system=' + pConfig.ispw.application  + 
             '\rcc.test=' + script.BUILD_NUMBER +
-            '\rcc.ddio.overrides=' + cocoDdioOverrides
+            '\rcc.ddio.overrides=' + pConfig.coco.ddioOverridesCommaList
 
         steps.step([
             $class:                   'CodeCoverageBuilder',
