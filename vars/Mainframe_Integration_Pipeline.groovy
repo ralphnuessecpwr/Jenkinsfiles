@@ -102,7 +102,7 @@ def call(Map pipelineParams){
 
             tttHelper.executeFunctionalTests()
 
-            tttHelper.collectCodeCoverageResults("FT")
+            //tttHelper.collectCodeCoverageResults("FT")
 
         }
 
