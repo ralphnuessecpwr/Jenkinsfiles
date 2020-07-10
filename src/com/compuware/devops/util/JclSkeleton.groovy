@@ -18,8 +18,7 @@ class JclSkeleton implements Serializable {
     String ispwApplication
     String ispwPathNum
 
-    JclSkeleton(steps, String workspace, String ispwApplication, String ispwPathNum) 
-    {
+    JclSkeleton(steps, String workspace, String ispwApplication, String ispwPathNum){
         this.steps              = steps
         this.workspace          = workspace
         this.ispwApplication    = ispwApplication
@@ -27,15 +26,14 @@ class JclSkeleton implements Serializable {
     }
 
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
-    def initialize()
-    {
+    def initialize(){
         this.jobCardJcl                 = readSkelFile(jobCardSkel).join("\n")
 
         this.cleanUpCcRepoJclSkel       = readSkelFile(cleanUpCcRepoSkel).join("\n")
     }
 
-    def String createCleanUpCcRepo(String systemName, String testId)
-    {
+    def String createCleanUpCcRepo(String systemName, String testId){
+
         def cleanUpJcl  =   buildFinalJcl(jobCardJcl, 
                                 cleanUpCcRepoJclSkel,
                                 [
@@ -53,30 +51,26 @@ class JclSkeleton implements Serializable {
         return cleanUpJcl
     }
 
-    private String buildFinalJcl(jobCard, jclSkel, parametersMap)
-    {
+    private String buildFinalJcl(jobCard, jclSkel, parametersMap){
         String finalJcl
 
         finalJcl    = jobCard
         finalJcl    = finalJcl + "\n" + jclSkel
 
-        parametersMap.each
-        {
+        parametersMap.each{
             finalJcl    = finalJcl.replace(it.parmName, it.parmValue)
         }
 
         return finalJcl
     }
 
-    def readSkelFile(String fileName)
-    {
+    def readSkelFile(String fileName){
         def jclStatements   = []
         def skelFilePath    = "${skeletonPath}\\${fileName}"
         def fileText        = steps.libraryResource skelFilePath
         def lines           = fileText.tokenize("\n")
         
-        lines.each
-        {
+        lines.each{
             jclStatements.add(it.toString())
         }
 

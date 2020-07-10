@@ -18,8 +18,7 @@ class IspwReleaseConfigurator implements Serializable{
 
     }
 
-    private createRelease()
-    {
+    private createRelease(){
         def mailMessagePart
 
         def response = steps.ispwOperation(
@@ -45,12 +44,10 @@ class IspwReleaseConfigurator implements Serializable{
         return mailMessagePart
     }    
 
-    private addAssignments()
-    {
+    private addAssignments(){
         def mailMessagePart = ''
 
-        assignmentList.each
-        {
+        assignmentList.each{
             def currentAssignment   = it
 
             def response            = steps.httpRequest(
@@ -68,15 +65,14 @@ class IspwReleaseConfigurator implements Serializable{
 
             def componentList       = []
 
-            taskList.each
-            {
+            taskList.each{
                 componentList.add(it.moduleName)        
             }
 
             taskList = null
 
-            componentList.each
-            {
+            componentList.each{
+
                 steps.echo "Adding Task - " + it
                 
                 steps.httpRequest(
@@ -103,12 +99,10 @@ class IspwReleaseConfigurator implements Serializable{
         return mailMessagePart
     }
 
-    private removeAssignments()
-    {
+    private removeAssignments(){
         def mailMessagePart = ''
 
-        assignmentList.each
-        {
+        assignmentList.each{
             def currentAssignment   = it
 
             def response            = steps.httpRequest(
@@ -126,15 +120,14 @@ class IspwReleaseConfigurator implements Serializable{
 
             def componentList       = []
 
-            taskList.each
-            {
+            taskList.each{
                 componentList.add(it.moduleName)        
             }
 
             taskList = null
 
-            componentList.each
-            {
+            componentList.each{
+
                 steps.echo "Removing Task - " + it
                 
                 steps.httpRequest(
@@ -159,8 +152,8 @@ class IspwReleaseConfigurator implements Serializable{
         return mailMessagePart
     }    
 
-    private checkReleaseReady()
-    {
+    private checkReleaseReady(){
+
         def releaseReady        = true
 
         def failAssignmentList  = []
@@ -178,24 +171,20 @@ class IspwReleaseConfigurator implements Serializable{
 
         def taskList        = new JsonSlurper().parseText(response.getContent()).tasks
 
-        taskList.each
-        {
+        taskList.each{
 
             if(
                 it.level == 'DEV1' ||
                 it.level == 'DEV2' ||
                 it.level == 'DEV3'
-            )
-            {
+            ){
                 releaseReady     = false
 
-                if(!failAssignmentList.contains(it.container))
-                {
+                if(!failAssignmentList.contains(it.container)){
                     failAssignmentList.add(it.container)
                 }
             }
-            else
-            {
+            else{
                 pConfig.ispw.targetLevel = it.level
             }
         }

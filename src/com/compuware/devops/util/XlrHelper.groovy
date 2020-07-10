@@ -8,14 +8,12 @@ class XlrHelper implements Serializable {
     def steps
     def pConfig
 
-    XlrHelper(steps, pConfig) 
-    {
+    XlrHelper(steps, pConfig){
         this.steps      = steps
         this.pConfig    = pConfig
     }
 
-    def triggerRelease()
-    {
+    def triggerRelease(){
         // Trigger XL Release Jenkins Plugin to kickoff a Release
         steps.xlrCreateRelease(
             releaseTitle:       'A Release for $BUILD_TAG',

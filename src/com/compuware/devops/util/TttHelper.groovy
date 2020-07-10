@@ -14,8 +14,7 @@ class TttHelper implements Serializable {
     def listOfUtProjects
     def listOfFtProjects
 
-    TttHelper(script, steps, pConfig) 
-    {
+    TttHelper(script, steps, pConfig){
         this.script     = script
         this.steps      = steps
         this.pConfig    = pConfig
@@ -24,8 +23,7 @@ class TttHelper implements Serializable {
     }
 
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
-    def initialize()
-    {
+    def initialize(){
         jclSkeleton.initialize()
 
         // Get all Cobol Sources in the MF_Source folder into an array 
@@ -37,8 +35,7 @@ class TttHelper implements Serializable {
         this.listOfFtProjects   = []
 
         // Determine program names for each source member
-        listOfSources.each
-        {
+        listOfSources.each{
             // The split method uses regex to search for patterns, therefore
             // Backslashes, Dots and Underscores which mean certain patterns in regex need to be escaped 
             // The backslash in Windows paths is duplicated in Java, therefore it need to be escaped twice
@@ -68,8 +65,7 @@ class TttHelper implements Serializable {
     
     }
 
-    def executeFunctionalTests()
-    {
+    def executeFunctionalTests(){
         steps.totaltest credentialsId:          "${pConfig.hci.hostToken}", 
             environmentId:                      "${pConfig.ttt.ftEnvironment}", 
             folderPath:                         'tests', 
@@ -78,8 +74,7 @@ class TttHelper implements Serializable {
             sonarVersion:                       '6'
     }
 
-    def passResultsToJunit()
-    {
+    def passResultsToJunit(){
         // Process the Total Test Junit result files into Jenkins
         steps.junit allowEmptyResults:    true, 
             keepLongStdio:                true,
@@ -87,8 +82,7 @@ class TttHelper implements Serializable {
             testResults:                  "TTTUnit/*.xml"
     }
 
-    def collectCodeCoverageResults()
-    {
+    def collectCodeCoverageResults(){
         // Code Coverage needs to match the code coverage metrics back to the source code in order for them to be loaded in SonarQube
         // The source variable is the location of the source that was downloaded from ISPW
         def sources="${pConfig.ispw.application}/${pConfig.ispw.localFolder}"
@@ -100,17 +94,18 @@ class TttHelper implements Serializable {
             '\rcc.test=' + script.BUILD_NUMBER +
             '\rcc.ddio.overrides=' + pConfig.coco.ddioOverridesCommaList
 
-        steps.step([
-            $class:                   'CodeCoverageBuilder',
+        steps.step(
+            [
+                $class:                     'CodeCoverageBuilder',
                 analysisProperties:         ccproperties,           // Pass in the analysisProperties as a string
                 analysisPropertiesPath:     '',                     // Pass in the analysisProperties as a file.  Not used in this example
                 connectionId:               "${pConfig.hci.connectionId}", 
                 credentialsId:              "${pConfig.hci.hostToken}"
-        ])
+            ]
+        )
     }
 
-    def cleanUpCodeCoverageResults()
-    {
+    def cleanUpCodeCoverageResults(){
         int testId = Integer.parseInt(script.BUILD_NUMBER) - 1
 
         steps.echo "Cleaning up Code Coverage results from previous job execution"

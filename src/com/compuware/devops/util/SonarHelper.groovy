@@ -12,63 +12,60 @@ class SonarHelper implements Serializable {
     def pConfig
     def httpRequestAuthorizationHeader
 
-    SonarHelper(script, steps, pConfig) 
-    {
+    SonarHelper(script, steps, pConfig){
         this.script                         = script
         this.steps                          = steps
         this.pConfig                        = pConfig
     }
 
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
-    def initialize()
-    {
+    def initialize(){
         this.scannerHome    = steps.tool "${pConfig.sonar.scannerName}";
     }
 
-    def scan()
-    {
+    def scan(){
         def testResults = determineUtResultPath()
 
         runScan(testResults, script.JOB_NAME)
     }
 
-    def scan(pipelineType)
-    {
+    def scan(pipelineType){
         def project
         def testPath
         def resultPath
         def coveragePath
 
-        switch(pipelineType)
-        {
+        switch(pipelineType){
+
             case "UT":
                 project         = determineUtProjectName()
                 testPath        = 'tests'
                 resultPath      = determineUtResultPath()
                 coveragePath    = "Coverage/CodeCoverage.xml"
-                break;
+            break;
+
             case "FT":
                 project         = determineFtProjectName()
                 testPath        = 'TTTSonar'                       
                 resultPath      = 'TTTSonar/generated.cli.suite.sonar.xml'   
                 coveragePath    = ''
-                break;
+            break;
+
             default:
                 steps.echo "SonarHelper.scan received wrong pipelineType: " + pipelineType
                 steps.echo "Valid types are 'UT' or FT"
-                break;
+            break;
+
         }
 
         runScan(testPath, resultPath, coveragePath, project)
     }
 
-    String checkQualityGate()
-    {
+    String checkQualityGate(){
         String result
 
         // Wait for the results of the SonarQube Quality Gate
-        steps.timeout(time: 2, unit: 'MINUTES') 
-        {                
+        steps.timeout(time: 2, unit: 'MINUTES'){                
             // Wait for webhook call back from SonarQube.  SonarQube webhook for callback to Jenkins must be configured on the SonarQube server.
             def sonarGate = steps.waitForQualityGate()
 
@@ -78,19 +75,16 @@ class SonarHelper implements Serializable {
         return result
     }
 
-    String determineUtProjectName()
-    {
+    String determineUtProjectName(){
         return pConfig.ispw.owner + '_' + pConfig.ispw.stream + '_' + pConfig.ispw.application
     }
 
-    String determineFtProjectName()
-    {
+    String determineFtProjectName(){
         return pConfig.ispw.stream + '_' + pConfig.ispw.application
     }
 
 
-    private String determineUtResultPath()
-    {
+    private String determineUtResultPath(){
         // Finds all of the Total Test results files that will be submitted to SonarQube
         def tttListOfResults    = steps.findFiles(glob: 'TTTSonar/*.xml')   // Total Test SonarQube result files are stored in TTTSonar directory
 
@@ -99,25 +93,21 @@ class SonarHelper implements Serializable {
         def testResults         = ""    
 
         // Loop through each result Total Test results file found
-        tttListOfResults.each 
-        {
+        tttListOfResults.each{
             testResults         = testResults + "TTTSonar/" + it.name +  ',' // Append the results file to the property
         }
 
         return testResults
     }
 
-    private runScan(testPath, testResultPath, coveragePath, projectName)
-    {
-        steps.withSonarQubeEnv("${pConfig.sonar.serverHost}")       // 'localhost' is the name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section
-        {
+    private runScan(testPath, testResultPath, coveragePath, projectName){
+        steps.withSonarQubeEnv("${pConfig.sonar.serverHost}"){
             // Test and Coverage results
             def sqScannerProperties   = ' -Dsonar.tests=' + testPath
 
             sqScannerProperties       = sqScannerProperties + " -Dsonar.testExecutionReportPaths=${testResultPath}"
 
-            if(coveragePath != '')
-            {
+            if(coveragePath != ''){
                 sqScannerProperties       = sqScannerProperties + " -Dsonar.coverageReportPaths=${coveragePath}"
             }
 
@@ -135,8 +125,7 @@ class SonarHelper implements Serializable {
         }
     }
 
-    def checkForProject(String projectName)
-    {
+    def checkForProject(String projectName){
         def response
 
         def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sonar.httpRequestAuthHeader]], 
@@ -151,22 +140,18 @@ class SonarHelper implements Serializable {
         httpResponse    = null
         jsonSlurper     = null
 
-        if(httpResp.message != null)
-        {
+        if(httpResp.message != null){
             steps.echo "Resp: " + httpResp.message
             steps.error
         }
-        else
-        {
+        else{
             // Compare the taskIds from the set to all tasks in the release 
             // Where they match, determine the assignment and add it to the list of assignments 
             def pagingInfo = httpResp.paging
-            if(pagingInfo.total == 0)
-            {
+            if(pagingInfo.total == 0){
                 response = "NOT FOUND"
             }
-            else
-            {
+            else{
                 response = "FOUND"
             }
         }
@@ -174,8 +159,7 @@ class SonarHelper implements Serializable {
         return response
     }
 
-    def createProject(String projectName)
-    {
+    def createProject(String projectName){
         def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sonar.httpRequestAuthHeader]],
             httpMode:                   'POST',
             ignoreSslErrors:            true, 
@@ -189,19 +173,17 @@ class SonarHelper implements Serializable {
         httpResponse    = null
         jsonSlurper     = null
 
-        if(httpResp.message != null)
-        {
+        if(httpResp.message != null){
             steps.echo "Resp: " + httpResp.message
             steps.error
         }
-        else
-        {
+        else{
             steps.echo "Created SonarQube project ${projectName}."
         }
     }
 
-    def setQualityGate(String qualityGate, String projectName)
-    {
+    def setQualityGate(String qualityGate, String projectName){
+
         def qualityGateId = getQualityGateId(qualityGate)
 
         def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sonar.httpRequestAuthHeader]],
@@ -214,8 +196,8 @@ class SonarHelper implements Serializable {
         steps.echo "Assigned QualityGate ${qualityGate} to project ${projectName}."
     }
 
-    private getQualityGateId(String qualityGateName)
-    {
+    private getQualityGateId(String qualityGateName){
+
         def response
 
         def httpResponse = steps.httpRequest customHeaders: [[maskValue: true, name: 'authorization', value: pConfig.sonar.httpRequestAuthHeader]], 
@@ -230,13 +212,11 @@ class SonarHelper implements Serializable {
         httpResponse    = null
         jsonSlurper     = null
 
-        if(httpResp.message != null)
-        {
+        if(httpResp.message != null){
             steps.echo "Resp: " + httpResp.message
             steps.error
         }
-        else
-        {
+        else{
             response = httpResp.id 
         }
 

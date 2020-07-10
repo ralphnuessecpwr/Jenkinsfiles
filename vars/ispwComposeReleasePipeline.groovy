@@ -12,11 +12,9 @@ IspwReleaseConfigurator releaseConfigurator
 String                  cesToken                // Clear text token from CES
 String                  mailMessageExtension
 
-private initialize(pipelineParams)
-{
+private initialize(pipelineParams){
     // Clean out any previously downloaded source
-    dir(".\\") 
-    {
+    dir(".\\"){
         deleteDir()
     }
 
@@ -87,12 +85,9 @@ private initialize(pipelineParams)
 Call method to execute the pipeline from a shared library
 @param pipelineParams - Map of paramter/value pairs
 */
-def call(Map pipelineParams)
-{
-    node
-    {
-        stage("Initialization")
-        {
+def call(Map pipelineParams){
+    node{
+        stage("Initialization"){
             initialize(pipelineParams) 
             echo "Determined"
             echo "Application   :" + pConfig.ispw.application
@@ -100,10 +95,10 @@ def call(Map pipelineParams)
         }
                 
         /* Download all sources that are part of the container  */
-        stage("Perform Action")
-        {
-            switch(pipelineParams.Release_Action) 
-            {
+        stage("Perform Action"){
+
+            switch(pipelineParams.Release_Action){
+
                 case "create Release":
                     mailMessageExtension = mailMessageExtension + releaseConfigurator.createRelease()
                     echo "After create Release"
@@ -129,8 +124,7 @@ def call(Map pipelineParams)
 
                     def failAssignmentList = releaseConfigurator.checkReleaseReady()
 
-                    if(failAssignmentList.size() == 0)
-                    {
+                    if(failAssignmentList.size() == 0){
                         // Instantiate and initialize the XLR Helper
                         xlrHelper   = new XlrHelper(steps, pConfig)
 
@@ -138,8 +132,8 @@ def call(Map pipelineParams)
 
                         mailMessageExtension = mailMessageExtension + "Triggered XL Release for " + pConfig.ispw.release + ".\n"
                     }
-                    else
-                    {
+                    else{
+
                         mailMessageExtension = mailMessageExtension + "Some assignments for Release " + pConfig.ispw.release + "still contain tasks in development.\n" +
                             "The release cannot be triggered. Either remove those tasks from the assignments or remove the assignments from the release:\n\n"
 
@@ -157,8 +151,7 @@ def call(Map pipelineParams)
             }
         }
 
-        stage("Send Notifications")
-        {
+        stage("Send Notifications"){
             emailext subject:       'Performed Action ' + pipelineParams.Release_Action + ' on Release ' + pConfig.ispw.release,
             body:       mailMessageExtension,
             replyTo:    '$DEFAULT_REPLYTO',

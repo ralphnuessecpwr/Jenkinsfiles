@@ -21,8 +21,7 @@ String          mailMessageExtension
 
 def initialize(pipelineParams){
     // Clean out any previously downloaded source
-    dir(".\\") 
-    {
+    dir(".\\"){
         deleteDir()
     }
 
@@ -139,8 +138,7 @@ def call(Map pipelineParams){
             String sonarGateResult = sonarHelper.checkQualityGate()
 
             // Evaluate the status of the Quality Gate
-            if (sonarGateResult != 'OK')
-            {
+            if (sonarGateResult != 'OK'){
                 echo "Sonar quality gate failure: ${sonarGateResult}"
 
                 mailMessageExtension = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
@@ -149,8 +147,7 @@ def call(Map pipelineParams){
                 // Exit the pipeline with an error if the SonarQube Quality Gate is failing
                 error "Exiting Pipeline" 
             }
-            else
-            {
+            else{
                 mailMessageExtension = "Generated code passed the Quality gate and may be promoted. \n" +
                     "SonarQube results may be reviewed at " + 
                     pConfig.sonar.serverUrl + 
@@ -159,9 +156,6 @@ def call(Map pipelineParams){
             }   
         }
 
-        /* 
-        This stage triggers a XL Release Pipeline that will move code into the high levels in the ISPW Lifecycle  
-        */ 
         stage("Send Mail"){
             // Send Standard Email
             emailext subject:       '$DEFAULT_SUBJECT',

@@ -3,8 +3,7 @@ package com.compuware.devops.util
 /* 
     Pipeline execution specific and server specific parameters which are use throughout the pipeline
 */
-class PipelineConfig implements Serializable
-{
+class PipelineConfig implements Serializable {
     def steps
     def mailListLines
     def mailListMap = [:]
@@ -26,8 +25,7 @@ class PipelineConfig implements Serializable
     public xlr  
     public mail = [:]
 
-    def PipelineConfig(steps, workspace, params, mailListLines)
-    {
+    def PipelineConfig(steps, workspace, params, mailListLines){
         this.steps              = steps
         this.workspace          = workspace
         this.mailListLines      = mailListLines
@@ -35,16 +33,14 @@ class PipelineConfig implements Serializable
     }
 
     /* A Groovy idiosynchrasy prevents constructors to use methods, therefore class might require an additional "initialize" method to initialize the class */
-    def initialize()
-    {
+    def initialize(){
         setServerConfig()
 
         setMailConfig()    
     }
 
     /* Read configuration values from pipeline.config file */
-    private setServerConfig()
-    {
+    private setServerConfig(){
         def configFilePath      = "${configPath}/${pipelineConfigFile}"
         def configFileText      = steps.libraryResource configFilePath
         def tmpConfig           = steps.readYaml(text: configFileText)
@@ -84,14 +80,12 @@ class PipelineConfig implements Serializable
     }
 
     /* Read list of email addresses from config file */
-    private setMailConfig()
-    {        
+    private setMailConfig(){        
         def lineToken
         def tsoUser
         def emailAddress
 
-        mailListLines.each
-        {
+        mailListLines.each{
             lineToken       = it.toString().tokenize(":")
             tsoUser         = lineToken.get(0).toString()
             emailAddress    = lineToken.get(1).toString().trim()
