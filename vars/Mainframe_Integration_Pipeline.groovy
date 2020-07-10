@@ -132,12 +132,12 @@ def call(Map pipelineParams)
 
                 currentBuild.result     = 'FAILURE'
                 stageResult             = 'FAILURE'
-                
+
                 ispwHelper.regressAssignment(pConfig.ispw.assignment, pConfig.ces.jenkinsToken)
             }
             else
             {
-                mailMessageExtension = "Generated code passed the Quality gate. XL Release will be started."
+                mailMessageExtension = "Generated code passed the Quality gate. XL Release may be started."
 
                 xlrHelper.triggerRelease()            
             }
