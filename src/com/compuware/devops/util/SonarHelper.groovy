@@ -46,7 +46,7 @@ class SonarHelper implements Serializable {
 
             case "FT":
                 project         = determineFtProjectName()
-                testPath        = 'TTTSonar'                       
+                testPath        = 'tests'                       
                 resultPath      = 'TTTSonar/generated.cli.suite.sonar.xml'   
                 coveragePath    = '' //"Coverage/CodeCoverage.xml"
             break;
