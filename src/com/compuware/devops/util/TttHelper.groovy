@@ -105,6 +105,49 @@ class TttHelper implements Serializable {
         )
     }
 
+    def collectCodeCoverageResults(pipelineType){
+
+        // Code Coverage needs to match the code coverage metrics back to the source code in order for them to be loaded in SonarQube
+        // The source variable is the location of the source that was downloaded from ISPW
+        def sources="${pConfig.ispw.application}/${pConfig.ispw.localFolder}"
+
+        def testId
+
+        switch(pipelineType){
+
+            case "UT":
+                testId          = script.BUILD_NUMBER
+            break;
+
+            case "FT":
+                testId          = "JENKINS"
+            break;
+
+            default:
+                steps.echo "TttHelper.collectCodeCoverageResults received wrong pipelineType: " + pipelineType
+                steps.echo "Valid types are 'UT' or FT"
+            break;
+
+        }
+
+        // The Code Coverage Plugin passes it's primary configuration in the string or a file
+        def ccproperties = 'cc.sources=' + sources + 
+            '\rcc.repos=' + pConfig.coco.repository + 
+            '\rcc.system=' + pConfig.ispw.application  + 
+            '\rcc.test=' + testId +
+            '\rcc.ddio.overrides=' + pConfig.coco.ddioOverridesCommaList
+
+        steps.step(
+            [
+                $class:                     'CodeCoverageBuilder',
+                analysisProperties:         ccproperties,           // Pass in the analysisProperties as a string
+                analysisPropertiesPath:     '',                     // Pass in the analysisProperties as a file.  Not used in this example
+                connectionId:               "${pConfig.hci.connectionId}", 
+                credentialsId:              "${pConfig.hci.hostToken}"
+            ]
+        )
+    }
+
     def cleanUpCodeCoverageResults(){
         int testId = Integer.parseInt(script.BUILD_NUMBER) - 1
 
