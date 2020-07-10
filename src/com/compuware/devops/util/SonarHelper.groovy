@@ -48,7 +48,7 @@ class SonarHelper implements Serializable {
                 project         = determineFtProjectName()
                 testPath        = 'TTTSonar'                       
                 resultPath      = 'TTTSonar/generated.cli.suite.sonar.xml'   
-                coveragePath    = ''
+                coveragePath    = "Coverage/CodeCoverage.xml"
             break;
 
             default:

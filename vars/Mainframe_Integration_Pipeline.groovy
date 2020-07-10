@@ -102,6 +102,8 @@ def call(Map pipelineParams){
 
             tttHelper.executeFunctionalTests()
 
+            tttHelper.collectCodeCoverageResults("FT")
+
         }
 
         stage("Check SonarQube Quality Gate"){
