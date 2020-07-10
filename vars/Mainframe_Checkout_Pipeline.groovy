@@ -94,10 +94,10 @@ def call(Map pipelineParams)
                 sonarHelper.setQualityGate(sonarQualityGateName, sonarProjectName)
 
                 emailext subject:   "SonarQube Project created: ${sonarProjectName}",
-                        body:       "Due to a checkout activity in application ${pConfig.ispwApplication} SonarQube project" +
+                        body:       "Due to a checkout activity in application ${pConfig.ispw.application} SonarQube project" +
                                     " ${sonarProjectName} has been created and Quality Gate ${sonarQualityGateName} has been assigned to it.",
                         replyTo:    '$DEFAULT_REPLYTO',
-                        to:         "${pConfig.mailRecipient}"
+                        to:         "${pConfig.mail.recipient}"
             }
             else
             {

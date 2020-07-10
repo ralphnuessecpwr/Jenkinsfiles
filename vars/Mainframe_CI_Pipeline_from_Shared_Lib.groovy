@@ -77,11 +77,11 @@ def initialize(pipelineParams)
 
     xlrHelper   = new XlrHelper(steps, pConfig)
 
-    //echo "Found Assignment " + pConfig.ispwAssignment
+    //echo "Found Assignment " + pConfig.ispw.assignment
     /*
-    withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
+    withCredentials([string(credentialsId: pConfig.ces.token, variable: 'cesTokenClear')]) 
     {
-        assignmentList = ispwHelper.getAssigmentList(cesTokenClear, pConfig.ispwTargetLevel)
+        assignmentList = ispwHelper.getAssigmentList(cesTokenClear, pConfig.ispw.targetLevel)
     }
     */
 }
@@ -111,9 +111,9 @@ def call(Map pipelineParams)
         /* Retrieve the Tests from Github that match that ISPWW Stream and Application */
         stage("Execute Unit Tests")
         {            
-            def gitUrlFullPath = "${pConfig.gitUrl}/${pConfig.gitTttRepo}"
+            def gitUrlFullPath = "${pConfig.git.url}/${pConfig.git.tttRepo}"
             
-            gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
+            gitHelper.checkout(gitUrlFullPath, pConfig.git.branch, pConfig.git.credentials, pConfig.ttt.utFolder)
 
             tttHelper.initialize()                                            
 
@@ -158,13 +158,13 @@ def call(Map pipelineParams)
                 emailext subject:       '$DEFAULT_SUBJECT',
                             body:       '$DEFAULT_CONTENT',
                             replyTo:    '$DEFAULT_REPLYTO',
-                            to:         "${pConfig.mailRecipient}"
+                            to:         "${pConfig.mail.recipient}"
                 
                 /*
-                withCredentials([string(credentialsId: pConfig.cesTokenId, variable: 'cesTokenClear')]) 
+                withCredentials([string(credentialsId: pConfig.ces.token, variable: 'cesTokenClear')]) 
                 {
                     //ispwHelper.regressAssignmentList(assignmentList, cesTokenClear)
-                    //ispwHelper.regressAssignment(pConfig.ispwAssignment, cesTokenClear)
+                    //ispwHelper.regressAssignment(pConfig.ispw.assignment, cesTokenClear)
                 }
                 */
 
@@ -190,7 +190,7 @@ def call(Map pipelineParams)
             emailext subject:       '$DEFAULT_SUBJECT',
                         body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,
                         replyTo:    '$DEFAULT_REPLYTO',
-                        to:         "${pConfig.mailRecipient}"
+                        to:         "${pConfig.mail.recipient}"
 
         } 
     }

@@ -49,14 +49,14 @@ def call(Map pipelineParams)
         PipelineConfig  pConfig     = new PipelineConfig()
 
         // Store properties values in variables (easier to retrieve during code)
-        def SQ_Scanner_Name      = pConfig.SQ_Scanner_Name
-        def SQ_Server_Name       = pConfig.SQ_Server_Name
-        def MF_Source            = pConfig.MF_Source
-        def XLR_Template         = pConfig.XLR_Template
-        def XLR_User             = pConfig.XLR_User
-        def TTT_Folder           = pConfig.TTT_Folder
-        def ISPW_URL             = pConfig.ISPW_URL
-        def ISPW_Runtime         = pConfig.ISPW_Runtime
+        def SQ_Scanner_Name      = pConfig.sonar.scannerName
+        def SQ_Server_Name       = pConfig.sonar.serverHost
+        def MF_Source            = pConfig.ispw.localFolder
+        def XLR_Template         = pConfig.xlr.template
+        def XLR_User             = pConfig.xlr.user
+        def TTT_Folder           = pConfig.ttt.utFolder
+        def ISPW_URL             = pConfig.ispw.url
+        def ISPW_Runtime         = pConfig.ispw.runtime
 
         GitHelper       gitHelper   = new GitHelper(steps)
         MailList        mailList    = new MailList()
