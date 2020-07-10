@@ -76,6 +76,15 @@ class PipelineConfig implements Serializable
         this.git.tttUtRepo              = "${this.ispw.stream}_${this.ispw.application}_Unit_Tests.git"
         this.git.tttFtRepo              = "${this.ispw.stream}_${this.ispw.application}_Functional_Tests.git"
 
+        def ddioOverridesString  = ''
+
+        this.coco.ddioOverrides.ddio.each{
+            ddioOverridesString  = ddioOverridesString + it + ','
+        }
+
+        this.coco.ddioOverridesString = ddioOverridesString
+
+        steps.echo "Coco Configs\n" + this.coco.toString()
     }
 
     /* Read list of email addresses from config file */
