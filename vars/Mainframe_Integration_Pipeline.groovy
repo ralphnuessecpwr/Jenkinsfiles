@@ -131,10 +131,9 @@ def call(Map pipelineParams)
                 mailMessageExtension    = "Promoted code failed the Quality gate. Assignent will be regressed. Review Logs and apply corrections as indicated."
 
                 currentBuild.result     = 'FAILURE'
-
-                ispwHelper.regressAssignment(pConfig.ispw.assignment, pConfig.ces.hostToken)
-
-                // error "Exiting Pipeline" // Exit the pipeline with an error if the SonarQube Quality Gate is failing
+                stageResult             = 'FAILURE'
+                
+                ispwHelper.regressAssignment(pConfig.ispw.assignment, pConfig.ces.jenkinsToken)
             }
             else
             {
