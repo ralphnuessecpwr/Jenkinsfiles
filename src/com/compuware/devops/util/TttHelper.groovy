@@ -66,7 +66,7 @@ class TttHelper implements Serializable {
     def loopThruScenarios(){
 
         steps.totaltestUT ccClearStats:     false,
-                ccRepo:                     "${pConfig.ttt.cocoRepository}", 
+                ccRepo:                     "${pConfig.coco.repository}", 
                 ccSystem:                   "${pConfig.ispw.application}", 
                 ccTestId:                   "${script.BUILD_NUMBER}", 
                 connectionId:               "${pConfig.hci.connectionId}", 
@@ -106,7 +106,7 @@ class TttHelper implements Serializable {
 
         // The Code Coverage Plugin passes it's primary configuration in the string or a file
         def ccproperties = 'cc.sources=' + sources + 
-            '\rcc.repos=' + pConfig.ttt.cocoRepository + 
+            '\rcc.repos=' + pConfig.coco.repository + 
             '\rcc.system=' + pConfig.ispw.application  + 
             '\rcc.test=' + script.BUILD_NUMBER +
             '\rcc.ddio.overrides=' + cocoDdioOverrides

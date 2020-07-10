@@ -13,7 +13,17 @@ ttt:
   utFolder:               'tests'
   gitBranch:              'master'
   ftEnvironment:          '5b508b8a787be73b59238d38'
-  cocoRepository:         'HDDRXM0.DEMO.COCO.REPOS'
+coco:
+  repository:             'HDDRXM0.DEMO.COCO.REPOS'
+  ddioOverrides:
+  - ddio:                 'SALESSUP.RXN3.DEV1.LOAD.SSD' 
+  - ddio:                 'SALESSUP.RXN3.DEV2.LOAD.SSD' 
+  - ddio:                 'SALESSUP.RXN3.DEV3.LOAD.SSD' 
+  - ddio:                 'SALESSUP.RXN3.QA1.LOAD.SSD' 
+  - ddio:                 'SALESSUP.RXN3.QA2.LOAD.SSD' 
+  - ddio:                 'SALESSUP.RXN3.QA3.LOAD.SSD' 
+  - ddio:                 'SALESSUP.RXN3.STG.LOAD.SSD' 
+  - ddio:                 'SALESSUP.RXN3.PRD.LOAD.SSD' 
 git:
   server:                 'https://github.com'
   project:                'ralphnuessecpwr'

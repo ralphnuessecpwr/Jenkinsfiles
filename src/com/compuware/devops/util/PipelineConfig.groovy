@@ -20,6 +20,7 @@ class PipelineConfig implements Serializable
     public hci  
     public ispw 
     public ttt  
+    public coco
     public git  
     public sonar     
     public xlr  
@@ -52,6 +53,7 @@ class PipelineConfig implements Serializable
         this.hci                        = tmpConfig.hci
         this.ispw                       = tmpConfig.ispw
         this.ttt                        = tmpConfig.ttt
+        this.coco                       = tmpConfig.coco
         this.git                        = tmpConfig.git
         this.sonar                      = tmpConfig.sonar      
         this.xlr                        = tmpConfig.xlr

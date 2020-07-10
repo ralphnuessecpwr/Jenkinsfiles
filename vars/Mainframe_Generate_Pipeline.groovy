@@ -153,7 +153,7 @@ def call(Map pipelineParams){
             {
                 mailMessageExtension = "Generated code passed the Quality gate and may be promoted. \n" +
                     "SonarQube results may be reviewed at " + 
-                    pConfig.sqServerUrl + 
+                    pConfig.sonar.serverUrl + 
                     "/dashboard?id=" + 
                     sonarHelper.determineUtProjectName()
             }   
