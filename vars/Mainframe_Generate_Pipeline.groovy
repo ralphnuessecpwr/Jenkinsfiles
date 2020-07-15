@@ -102,11 +102,11 @@ def call(Map pipelineParams){
 
             def gitUrlFullPath = "${pConfig.git.url}/${pConfig.git.tttUtRepo}"
             
-            /* initialize requires the sources to be present in the Jenkins workspace */
-            tttHelper.initialize()  
-
             /* Check out those unit test projects from GitHub that match downloaded sources*/
             gitHelper.checkoutTttProjects(gitUrlFullPath, pConfig.ttt.gitBranch, pConfig.ttt.utFolder, tttHelper.listOfUtProjects)
+
+            /* initialize requires the sources to be present in the Jenkins workspace */
+            tttHelper.initialize()  
 
             /* Clean up Code Coverage results from previous run */
             tttHelper.cleanUpCodeCoverageResults()
