@@ -26,6 +26,11 @@ class TttHelper implements Serializable {
     def initialize(){
         jclSkeleton.initialize()
 
+        // findFiles method requires the "Pipeline Utilities Plugin"
+        // Get all testscenario files in the current workspace into an array
+        this.listOfScenarios  = steps.findFiles(glob: '**/*.testscenario')
+
+        steps.echo "Found Scenarios " + listOfScenarios.toString()
         // Get all Cobol Sources in the MF_Source folder into an array 
         this.listOfSources       = steps.findFiles(glob: "**/${pConfig.ispw.application}/${pConfig.ispw.localFolder}/*.cbl")
 
