@@ -85,7 +85,7 @@ class TttHelper implements Serializable {
                 steps.step([
                     $class:       'TotalTestBuilder', 
                         ccClearStats:   false,                          // Clear out any existing Code Coverage stats for the given ccSystem and ccTestId
-                        ccRepo:         "${pConfig.coco.epository}",
+                        ccRepo:         "${pConfig.coco.repository}",
                         ccSystem:       "${pConfig.ispw.application}", 
                         ccTestId:       "${script.BUILD_NUMBER}",              // Jenkins environment variable, resolves to build number, i.e. #177 
                         credentialsId:  "${pConfig.hci.hostToken}", 
