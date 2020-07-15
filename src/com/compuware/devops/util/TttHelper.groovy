@@ -51,17 +51,62 @@ class TttHelper implements Serializable {
     // If that folder contains more than one TTT project, recursive true will recursively search through all sub folders for .testscenario files
     def loopThruScenarios(){
 
-        steps.totaltestUT ccClearStats:     false,
-                ccRepo:                     "${pConfig.coco.repository}", 
-                ccSystem:                   "${pConfig.ispw.application}", 
-                ccTestId:                   "${script.BUILD_NUMBER}", 
-                connectionId:               "${pConfig.hci.connectionId}", 
-                credentialsId:              "${pConfig.hci.hostToken}", 
-                hlq:                        '', 
-                jcl:                        "${pConfig.ttt.runnerJcl}", 
-                projectFolder:              "${pConfig.ttt.utFolder}", 
-                recursive:                  true, 
-                testSuite:                  "All_Scenarios"
+        // Loop through all downloaded Topaz for Total Test scenarios
+        listOfScenarios.each
+        {
+            // Get root node of the path, i.e. the name of the Total Test project
+            def scenarioPath        = it.path // Fully qualified name of the Total Test Scenario file
+            def projectName         = it.path.trim().split("\\\\")[0] + "\\"+ it.path.trim().split("\\\\")[1]  // Total Test Project name is the root folder of the full path to the testscenario 
+            def jclFolder           = script.workspace + "\\" + projectName + '\\Unit Test\\JCL'   // Path containing Runner.jcl
+            def scenarioFullName    = it.name  // Get the full name of the testscenario file i.e. "name.testscenario"
+            def scenarioName        = it.name.trim().split("\\.")[0]  // Get the name of the scenario file without ".testscenario"
+            def scenarioTarget      = scenarioName.split("\\_")[0]  // Target Program will be the first part of the scenario name (convention)
+    
+            // For each of the scenarios walk through the list of source files and determine if the target matches one of the programs
+            // In that case, execute the unit test.  Determine if the program name matches the target of the Total Test scenario
+            if(listOfPrograms.contains(scenarioTarget))
+            {
+                // Log which 
+                steps.echo "*************************\n" +
+                    "Scenario " + scenarioFullName + '\n' +
+                    "Path " + scenarioPath + '\n' +
+                    "Project " + projectName + '\n' +
+                    "*************************"
+            
+                def jclJobCardPath = jclFolder + '\\JobCard.jcl' 
+
+                steps.writeFile(file: jclJobCardPath, text: jclSkeleton.jobCardJcl)
+
+                steps.step([
+                    $class:       'TotalTestBuilder', 
+                        ccClearStats:   false,                          // Clear out any existing Code Coverage stats for the given ccSystem and ccTestId
+                        ccRepo:         "${pConfig.coco.epository}",
+                        ccSystem:       "${pConfig.ispw.application}", 
+                        ccTestId:       "${script.BUILD_NUMBER}",              // Jenkins environment variable, resolves to build number, i.e. #177 
+                        credentialsId:  "${pConfig.hci.hostToken}", 
+                        deleteTemp:     true,                           // (true|false) Automatically delete any temp files created during the execution
+                        hlq:            '',                             // Optional - high level qualifier used when allocation datasets
+                        connectionId:   "${pConfig.hci.connectionId}",    
+                        jcl:            "${pConfig.ttt.runnerJcl}",            // Name of the JCL file in the Total Test Project to execute
+                        projectFolder:  "${pConfig.ttt.utFolder}/${projectName}",            // Name of the Folder in the file system that contains the Total Test Project.  
+//                        recursive:      true,
+                        testSuite:      "${scenarioFullName}",       // Name of the Total Test Scenario to execute
+                        useStubs:       true                            // (true|false) - Execute with or without stubs
+                ])                   
+            }
+        }
+
+        // steps.totaltestUT ccClearStats:     false,
+        //         ccRepo:                     "${pConfig.coco.repository}", 
+        //         ccSystem:                   "${pConfig.ispw.application}", 
+        //         ccTestId:                   "${script.BUILD_NUMBER}", 
+        //         connectionId:               "${pConfig.hci.connectionId}", 
+        //         credentialsId:              "${pConfig.hci.hostToken}", 
+        //         hlq:                        '', 
+        //         jcl:                        "${pConfig.ttt.runnerJcl}", 
+        //         projectFolder:              "${pConfig.ttt.utFolder}", 
+        //         recursive:                  true, 
+        //         testSuite:                  "All_Scenarios"
     
     }
 
