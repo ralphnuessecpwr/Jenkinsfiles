@@ -54,6 +54,8 @@ class PipelineConfig implements Serializable {
         this.sonar                      = tmpConfig.sonar      
         this.xlr                        = tmpConfig.xlr
 
+        this.ces.token                  = params.CES_Token
+
         this.ispw.stream                = params.ISPW_Stream
         this.ispw.application           = params.ISPW_Application
         this.ispw.release               = params.ISPW_Release
@@ -62,7 +64,7 @@ class PipelineConfig implements Serializable {
         this.ispw.containerType         = params.ISPW_Container_Type
         this.ispw.owner                 = params.ISPW_Owner        
         this.ispw.srcLevel              = params.ISPW_Src_Level
-
+        
         this.ispw.applicationPathNum    = ispw.srcLevel.charAt(ispw.srcLevel.length() - 1)
         this.ispw.targetLevel           = "QA" + ispw.applicationPathNum
         this.ttt.runnerJcl              = "Runner_PATH" + ispw.applicationPathNum + ".jcl"
