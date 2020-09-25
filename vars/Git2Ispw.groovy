@@ -8,78 +8,77 @@ import jenkins.plugins.http_request.*
 import java.net.URL
 import com.compuware.devops.util.*
 
-def call(Map pipelineParams){
+def ispwConfigFileName      = 'ispwconfig.yml'
+def synchConfigFileName     = 'synchronizationconfig.yml'
+def automaticBuildFileName  = 'automaticBuildParams.txt'
+def testAssetsPath          = 'executedTests'
+def ccDdioOverrides         = ''
 
-    def ispwConfigFileName      = 'ispwconfig.yml'
-    def synchConfigFileName     = 'synchronizationconfig.yml'
-    def automaticBuildFileName  = 'automaticBuildParams.txt'
-    def testAssetsPath          = 'executedTests'
-    def ccDdioOverrides         = ''
+def ispwConfig
+def synchConfig
+def automaticBuildInfo
 
-    def ispwConfig
-    def synchConfig
-    def automaticBuildInfo
+def executionGitBranch      = BRANCH_NAME
+def executionMapRule
+def branchMapping           = ''
 
-    def executionGitBranch      = BRANCH_NAME
-    def executionMapRule
-    def branchMapping           = ''
+def programList
+def tttProjectList
 
-    def programList
-    def tttProjectList
+//************************************************************
+// Method to determine the components from the assignment
+//************************************************************
+def buildProgramList(automaticBuildInfo, synchConfig) {
 
-    //************************************************************
-    // Method to determine the components from the assignment
-    //************************************************************
-    def buildProgramList(automaticBuildInfo, synchConfig) {
+def resp = ispwOperation connectionId: synchConfig.hciConnectionId, 
+    credentialsId: synchConfig.cesCredentialsId,
+    consoleLogResponseBody: true, 
+    ispwAction: 'GetAssignmentTaskList', 
+    ispwRequestBody: """assignmentId=${automaticBuildInfo.containerId}
+    level=${automaticBuildInfo.taskLevel}
+    """ 
 
-    def resp = ispwOperation connectionId: synchConfig.hciConnectionId, 
-        credentialsId: synchConfig.cesCredentialsId,
-        consoleLogResponseBody: true, 
-        ispwAction: 'GetAssignmentTaskList', 
-        ispwRequestBody: """assignmentId=${automaticBuildInfo.containerId}
-        level=${automaticBuildInfo.taskLevel}
-        """ 
+def programList = []
 
-    def programList = []
+def response = readYaml(text: resp.getContent().toString())
 
-    def response = readYaml(text: resp.getContent().toString())
-
-    response.tasks.each
-    {
-        if(automaticBuildInfo.taskIds.contains(it.taskId)) {
-        programList.add(it.moduleName)
-        }
+response.tasks.each
+{
+    if(automaticBuildInfo.taskIds.contains(it.taskId)) {
+    programList.add(it.moduleName)
     }
+}
 
-    return programList
+return programList
+}
+
+//************************************************************
+// Method to build the list of TTT projects to execute from the list of programs 
+//************************************************************
+def buildProjectList(programList) {
+def tttProjectList = []
+
+programList.each {
+    def programName = it
+    // Search for any .testscenario file that contains the component name as part of its name
+    listOfScenarios = findFiles(glob: '**/'+ it + '*.testscenario')
+
+    listOfScenarios.each {
+    def scenarioPath        = it.path
+    def projectName         = scenarioPath.toString().substring(0, scenarioPath.toString().indexOf('\\Unit Test'))
+    def scenarioFullName    = it.name
+
+    // Add project name to project list, if not present already
+    if(!tttProjectList.contains(projectName)) {
+        tttProjectList.add(projectName)
     }
-
-    //************************************************************
-    // Method to build the list of TTT projects to execute from the list of programs 
-    //************************************************************
-    def buildProjectList(programList) {
-    def tttProjectList = []
-
-    programList.each {
-        def programName = it
-        // Search for any .testscenario file that contains the component name as part of its name
-        listOfScenarios = findFiles(glob: '**/'+ it + '*.testscenario')
-
-        listOfScenarios.each {
-        def scenarioPath        = it.path
-        def projectName         = scenarioPath.toString().substring(0, scenarioPath.toString().indexOf('\\Unit Test'))
-        def scenarioFullName    = it.name
-
-        // Add project name to project list, if not present already
-        if(!tttProjectList.contains(projectName)) {
-            tttProjectList.add(projectName)
-        }
-        }
     }
+}
 
-    return tttProjectList
-    }
+return tttProjectList
+}
 
+def call(){
     //**********************************************************************
     // Start of Script
     //**********************************************************************
