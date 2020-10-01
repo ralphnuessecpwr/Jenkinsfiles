@@ -3,21 +3,6 @@ import hudson.model.*
 import hudson.EnvVars
 import java.net.URL
 
-private String ispwConfigFileName      = 'ispwconfig.yml'
-private String synchConfigFileName     = 'synchronizationconfig.yml'
-private String automaticBuildFileName  = 'automaticBuildParams.txt'
-private String testAssetsPath          = 'executedTests'
-private String ccDdioOverrides         = ''
-private String executionGitBranch      = BRANCH_NAME
-private String branchMapping           = ''
-
-def ispwConfig
-def synchConfig
-def automaticBuildInfo
-def executionMapRule
-def programList
-def tttProjectList
-
 //************************************************************
 // Method to determine the components from the assignment
 //************************************************************
@@ -72,6 +57,22 @@ def buildProjectList(programList) {
 }
 
 def call(){
+
+    String ispwConfigFileName      = 'ispwconfig.yml'
+    String synchConfigFileName     = 'synchronizationconfig.yml'
+    String automaticBuildFileName  = 'automaticBuildParams.txt'
+    String testAssetsPath          = 'executedTests'
+    String ccDdioOverrides         = ''
+    String executionGitBranch      = BRANCH_NAME
+    String branchMapping           = ''
+
+    def ispwConfig
+    def synchConfig
+    def automaticBuildInfo
+    def executionMapRule
+    def programList
+    def tttProjectList
+
     //**********************************************************************
     // Start of Script
     //**********************************************************************
