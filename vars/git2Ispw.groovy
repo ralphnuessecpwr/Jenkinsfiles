@@ -30,52 +30,52 @@ def tttProjectList
 //************************************************************
 def buildProgramList(automaticBuildInfo, synchConfig) {
 
-def resp = ispwOperation connectionId: synchConfig.hciConnectionId, 
-    credentialsId: synchConfig.cesCredentialsId,
-    consoleLogResponseBody: true, 
-    ispwAction: 'GetAssignmentTaskList', 
-    ispwRequestBody: """assignmentId=${automaticBuildInfo.containerId}
-    level=${automaticBuildInfo.taskLevel}
-    """ 
+    def resp = ispwOperation connectionId: synchConfig.hciConnectionId, 
+        credentialsId: synchConfig.cesCredentialsId,
+        consoleLogResponseBody: true, 
+        ispwAction: 'GetAssignmentTaskList', 
+        ispwRequestBody: """assignmentId=${automaticBuildInfo.containerId}
+        level=${automaticBuildInfo.taskLevel}
+        """ 
 
-def programList = []
+    def programList = []
 
-def response = readYaml(text: resp.getContent().toString())
+    def response = readYaml(text: resp.getContent().toString())
 
-response.tasks.each
-{
-    if(automaticBuildInfo.taskIds.contains(it.taskId)) {
-    programList.add(it.moduleName)
+    response.tasks.each
+    {
+        if(automaticBuildInfo.taskIds.contains(it.taskId)) {
+        programList.add(it.moduleName)
+        }
     }
-}
 
-return programList
+    return programList
 }
 
 //************************************************************
 // Method to build the list of TTT projects to execute from the list of programs 
 //************************************************************
 def buildProjectList(programList) {
-def tttProjectList = []
+    def tttProjectList = []
 
-programList.each {
-    def programName = it
-    // Search for any .testscenario file that contains the component name as part of its name
-    listOfScenarios = findFiles(glob: '**/'+ it + '*.testscenario')
+    programList.each {
+        def programName = it
+        // Search for any .testscenario file that contains the component name as part of its name
+        listOfScenarios = findFiles(glob: '**/'+ it + '*.testscenario')
 
-    listOfScenarios.each {
-    def scenarioPath        = it.path
-    def projectName         = scenarioPath.toString().substring(0, scenarioPath.toString().indexOf('\\Unit Test'))
-    def scenarioFullName    = it.name
+        listOfScenarios.each {
+            def scenarioPath        = it.path
+            def projectName         = scenarioPath.toString().substring(0, scenarioPath.toString().indexOf('\\Unit Test'))
+            def scenarioFullName    = it.name
 
-    // Add project name to project list, if not present already
-    if(!tttProjectList.contains(projectName)) {
-        tttProjectList.add(projectName)
+            // Add project name to project list, if not present already
+            if(!tttProjectList.contains(projectName)) {
+                tttProjectList.add(projectName)
+            }
+        }
     }
-    }
-}
 
-return tttProjectList
+    return tttProjectList
 }
 
 def call(){
@@ -112,14 +112,14 @@ def call(){
             }
 
             if(branchMapping == '') {
-            error "No branch mapping for branch ${executionGitBranch} was found. Execution will be aborted.\n" +
-                "Correct the synchronizationconfig.yml file in your project's root folder."
+                error "No branch mapping for branch ${executionGitBranch} was found. Execution will be aborted.\n" +
+                    "Correct the synchronizationconfig.yml file in your project's root folder."
             }
 
             // Build DDIO Overrides String for Code Coverage results
             // Replace placeholder for ISPW application name
             synchConfig.ccDdioOverrides.each {
-            ccDdioOverrides = ccDdioOverrides + it.toString().replace('<ispwApplication>', ispwConfig.ispwApplication.application)
+                ccDdioOverrides = ccDdioOverrides + it.toString().replace('<ispwApplication>', ispwConfig.ispwApplication.application)
             }
         }
 
@@ -127,21 +127,21 @@ def call(){
 
             try {
 
-            gitToIspwIntegration app:   ispwConfig.ispwApplication.application, 
-                branchMapping:          branchMapping,
-                connectionId:           synchConfig.hciConnectionId, 
-                credentialsId:          synchConfig.hostCredentialsId, 
-                gitCredentialsId:       synchConfig.gitCredentialsId, 
-                gitRepoUrl:             synchConfig.gitRepoUrl, 
-                runtimeConfig:          ispwConfig.ispwApplication.runtimeConfig, 
-                stream:                 ispwConfig.ispwApplication.stream
+                gitToIspwIntegration app:   ispwConfig.ispwApplication.application, 
+                    branchMapping:          branchMapping,
+                    connectionId:           synchConfig.hciConnectionId, 
+                    credentialsId:          synchConfig.hostCredentialsId, 
+                    gitCredentialsId:       synchConfig.gitCredentialsId, 
+                    gitRepoUrl:             synchConfig.gitRepoUrl, 
+                    runtimeConfig:          ispwConfig.ispwApplication.runtimeConfig, 
+                    stream:                 ispwConfig.ispwApplication.stream
 
             }
             catch(Exception e) {
 
-            echo "No Synchronisation to the mainframe.\n"
-            currentBuild.result = 'SUCCESS'
-            return
+                echo "No Synchronisation to the mainframe.\n"
+                currentBuild.result = 'SUCCESS'
+                return
 
             }
             
@@ -234,11 +234,11 @@ def call(){
             def sqTestResultsParm     = ''
 
             if(tttListOfResults != []) {
-            sqTestResultsParm       = ' -Dsonar.tests="Unit Test" -Dsonar.testExecutionReportPaths='
+                sqTestResultsParm       = ' -Dsonar.tests="Unit Test" -Dsonar.testExecutionReportPaths='
 
-            tttListOfResults.each {
-                sqTestResultsParm     = sqTestResultsParm + 'TTTSonar/' + it.name +  ',' // Append the results file to the parm string
-            }
+                tttListOfResults.each {
+                    sqTestResultsParm     = sqTestResultsParm + 'TTTSonar/' + it.name +  ',' // Append the results file to the parm string
+                }
             }
             
             // Check if Code Coverage data has been cerated
@@ -247,17 +247,17 @@ def call(){
             def sqCoverageResultsParm = ''
 
             if(listOfCoverageFiles != []) {
-            sqCoverageResultsParm = ' -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml'
+                sqCoverageResultsParm = ' -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml'
             }
 
             // For the master branch no target branch parm must be created
             def sqTargetBranchParm
 
             if(BRANCH_NAME == 'master') {
-            sqTargetBranchParm = ''
+                sqTargetBranchParm = ''
             }
             else {
-            sqTargetBranchParm = ' -Dsonar.branch.target=master'
+                sqTargetBranchParm = ' -Dsonar.branch.target=master'
             }
 
             withSonarQubeEnv(synchConfig.sonarServer) {
@@ -279,5 +279,4 @@ def call(){
             }
         }   
     }    
-
 }
