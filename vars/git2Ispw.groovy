@@ -1,12 +1,7 @@
 #!/usr/bin/env groovy
 import hudson.model.*
 import hudson.EnvVars
-import groovy.json.JsonSlurper
-import groovy.json.JsonBuilder
-import groovy.json.JsonOutput
-import jenkins.plugins.http_request.*
 import java.net.URL
-import com.compuware.devops.util.*
 
 def ispwConfigFileName      = 'ispwconfig.yml'
 def synchConfigFileName     = 'synchronizationconfig.yml'
@@ -86,11 +81,12 @@ def call(){
         stage ('Checkout and initialize') {
             // Clear workspace
             dir('./') {
-            deleteDir()
+                deleteDir()
             }
 
             checkout scm
-
+echo BRANCH_NAME
+echo executionGitBranch
             //*********************************************************************************
             // Strip the first line of ispwconfig.yml because readYaml can't handle the !! tag
             //*********************************************************************************
