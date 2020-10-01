@@ -85,8 +85,10 @@ def call(){
             }
 
             checkout scm
-echo BRANCH_NAME
-echo executionGitBranch
+
+            ispwConfig = "A"
+            echo ispwConfig
+
             //*********************************************************************************
             // Strip the first line of ispwconfig.yml because readYaml can't handle the !! tag
             //*********************************************************************************
