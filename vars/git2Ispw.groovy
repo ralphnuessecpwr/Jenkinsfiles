@@ -3,20 +3,18 @@ import hudson.model.*
 import hudson.EnvVars
 import java.net.URL
 
-def ispwConfigFileName      = 'ispwconfig.yml'
-def synchConfigFileName     = 'synchronizationconfig.yml'
-def automaticBuildFileName  = 'automaticBuildParams.txt'
-def testAssetsPath          = 'executedTests'
-def ccDdioOverrides         = ''
+private String ispwConfigFileName      = 'ispwconfig.yml'
+private String synchConfigFileName     = 'synchronizationconfig.yml'
+private String automaticBuildFileName  = 'automaticBuildParams.txt'
+private String testAssetsPath          = 'executedTests'
+private String ccDdioOverrides         = ''
+private String executionGitBranch      = BRANCH_NAME
+private String branchMapping           = ''
 
 def ispwConfig
 def synchConfig
 def automaticBuildInfo
-
-def executionGitBranch      = BRANCH_NAME
 def executionMapRule
-def branchMapping           = ''
-
 def programList
 def tttProjectList
 
@@ -86,8 +84,7 @@ def call(){
 
             checkout scm
 
-            ispwConfig = "A"
-            echo ispwConfig
+
 
             //*********************************************************************************
             // Strip the first line of ispwconfig.yml because readYaml can't handle the !! tag
