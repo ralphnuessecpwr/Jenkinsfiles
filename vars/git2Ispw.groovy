@@ -86,7 +86,16 @@ def call(Map pipelineParms){
                 deleteDir()
             }
 
-            checkout scm
+//            checkout scm
+
+            checkout changelog: false, 
+                poll: false, 
+                scm: [$class: 'GitSCM', 
+                    branches: [[name: '*/feature/new-feature']], 
+                    doGenerateSubmoduleConfigurations: false, 
+                    extensions: [], 
+                    submoduleCfg: [], 
+                    userRemoteConfigs: [[credentialsId: 'Bitbucket', url: 'http://localhost:7990/scm/ftsed/ftsdemo_rxn3_application.git']]]
 
             initialize()
         }
