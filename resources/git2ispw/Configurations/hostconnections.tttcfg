@@ -1,0 +1,34 @@
+<Connections>
+  <Connection>
+    <id>192.168.96.142:16196</id>
+    <ipaddress>192.168.96.142</ipaddress>
+    <port>16196</port>
+    <socketType>HCI</socketType>
+    <databaseUri>jdbc:db2://192.168.96.142:&lt;port&gt;/${database}</databaseUri>
+    <databaseDriver>com.ibm.db2.jcc.DB2Driver</databaseDriver>
+    <databaseName>&lt;database&gt;</databaseName>
+    <description>cwc2</description>
+    <label>cwc2</label>
+    <skeletonDir>JCLSkeletons</skeletonDir>
+    <datasethlq />
+    <jclproperties>
+      <property key="lpar_tttrunner_lib" value="SYS2.CW.CXR17Q.SLCXLOAD" />
+    </jclproperties>
+  </Connection>
+  <Connection>
+    <id>192.168.96.130:16196</id>
+    <ipaddress>192.168.96.130</ipaddress>
+    <port>16196</port>
+    <socketType>HCI</socketType>
+    <databaseUri>jdbc:db2://192.168.96.130:&lt;port&gt;/${database}</databaseUri>
+    <databaseDriver>com.ibm.db2.jcc.DB2Driver</databaseDriver>
+    <databaseName>&lt;database&gt;</databaseName>
+    <description>cwcc</description>
+    <label>cwcc</label>
+    <skeletonDir>JCLSkeletons</skeletonDir>
+    <datasethlq />
+    <jclproperties>
+      <property key="lpar_tttrunner_lib" value="SYS2.CW.CXR17B.SLCXLOAD" />
+    </jclproperties>
+  </Connection>
+</Connections>
