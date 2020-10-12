@@ -87,6 +87,8 @@ def call(Map pipelineParms){
             }
 
             checkout scm
+
+            initialize()
         }
     }
 }
