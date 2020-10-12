@@ -1,13 +1,13 @@
 branchInfo:
-  - feature/FT1:
+  - feature_FT1:
     ispwBranch:     QA1
     mapRule:        per-branch
     loadLib:        SALESSUP.<ispwApplication>.QA1.LOAD
-  - feature/FT2:
+  - feature_FT2:
     ispwBranch:     QA2
     mapRule:        per-branch
     loadLib:        SALESSUP.<ispwApplication>.QA2.LOAD
-  - feature/FT3:
+  - feature_FT3:
     ispwBranch:     QA3
     mapRule:        per-branch
     loadLib:        SALESSUP.<ispwApplication>.QA3.LOAD
