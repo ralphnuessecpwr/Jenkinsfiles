@@ -37,9 +37,8 @@ def initialize(){
     ccDdioOverrides         = ''
     executionGitBranch      = 'feature/FT2-new-feature'
     branchMappingString     = ''
+    tttVtExecutionLoad      = ''
     
-    branchMapping           = [:]
-
     //*********************************************************************************
     // Read ispwconfig.yml
     // Strip the first line of ispwconfig.yml because readYaml can't handle the !! tag
@@ -63,32 +62,30 @@ def initialize(){
     echo synchConfig.branchInfo."feature/FT1".ispwBranch.toString()
 
     synchConfig.branchInfo.each {
-        echo it.toString()
-        echo it.key
-        echo it.value.toString()
-        echo it.value.ispwBranch.toString()
-    }
-/*
-    if(executionGitBranch.contains('feature/FT1')){
-        
-    }
-    else if(executionGitBranch.contains('feature/FT2')) {
 
-    }
-    else if(executionGitBranch.contains('feature/FT3')) {
+        branchMappingString = branchMappingString + it.key + '** => ' + it.value.ispwBranch + ',' + it.value.mapRule + '\n'
 
+        if(executionGitBranch.contains(it.key)) {
+            tttVtExecutionLoad = it.value.loadLib.replace('<ispwApplication>', ispwConfig.ispwApplication.application)
+        }
     }
-    else if(executionGitBranch.contains('bug')) {
 
-    }
-    else if(executionGitBranch.contains('master')) {
+    echo "Mapping"
+    echo branchMappingString
+    echo "Load"
+    echo tttVtExecutionLoad
 
-    }
-    else {
+    if(tttVtExecutionLoad == ''){
         error "No branch mapping for branch ${executionGitBranch} was found. Execution will be aborted.\n" +
             "Correct the branch name to reflect naming conventions."
     }
-*/
+
+    synchConfig.ccDdioOverrides.each {
+        ccDdioOverrides = ccDdioOverrides + it.toString().replace('<ispwApplication>', ispwConfig.ispwApplication.application)
+    }
+
+    echo "DDIO"
+    echo ccDdioOverrides
 }
 
 def call(Map pipelineParms){
