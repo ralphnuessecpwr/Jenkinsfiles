@@ -105,5 +105,29 @@ def call(Map pipelineParms){
             initialize()
 
         }
+
+        stage('Load code to mainframe') {
+
+            try {
+
+                gitToIspwIntegration app:   ispwConfig.ispwApplication.application, 
+                    branchMapping:          branchMappingString,
+                    connectionId:           pipelineParams.hciConnectionId, 
+                    credentialsId:          pipelienParams.hostCredentialsId, 
+                    gitCredentialsId:       pipelineParams.gitCredentialsId, 
+                    gitRepoUrl:             pipelineParams.gitRepoUrl, 
+                    runtimeConfig:          ispwConfig.ispwApplication.runtimeConfig, 
+                    stream:                 ispwConfig.ispwApplication.stream
+
+            }
+            catch(Exception e) {
+
+                echo "No Synchronisation to the mainframe.\n"
+                currentBuild.result = 'SUCCESS'
+                return
+
+            }
+            
+        }
     }
 }
