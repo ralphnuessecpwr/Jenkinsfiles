@@ -91,7 +91,7 @@ def initialize(){
 
     def tmpWorkspace = workspace.replace('\\', '/')
 
-    tttConfigFolder = '../' + tmpWorkspace.substring(tmpWorkspace.lastIndexOf('/')) + '@libs/RNU_Shared_Lib' + '/' + tttConfigFolder
+    tttConfigFolder = '..' + tmpWorkspace.substring(tmpWorkspace.lastIndexOf('/')) + '@libs/RNU_Shared_Lib' + '/' + synchConfig.tttConfigFolder
     echo tttConfigFolder
 }
 
@@ -174,8 +174,8 @@ def call(Map pipelineParms){
                 credentialsId:                      pipelineParms.hostCredentialsId, 
                 environmentId:                      synchConfig.tttEnvironmentId, 
                 localConfig:                        true, 
-                localConfigLocation:                './MainframeTests/Configurations', 
-                folderPath:                         './MainframeTests/Unit Tests', 
+                localConfigLocation:                tttConfigFolder, 
+                folderPath:                         synchConfig.tttUtFolder, 
                 recursive:                          true, 
                 selectProgramsOption:               true, 
                 jsonFile:                           changedProgramsFileName,
