@@ -60,10 +60,12 @@ def initialize(){
     def synchConfig = readYaml(text: fileText)
 
     echo synchConfig.branchInfo.toString()
+    echo synchConfig.branchInfo."feature/FT1".ispwBranch.toString()
 
     synchConfig.branchInfo.each {
         echo it.toString()
         echo it.key
+        echo it.value.toString()
         echo it."${it.key}".ispwBranch.toString()
     }
 /*
