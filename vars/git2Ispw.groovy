@@ -35,7 +35,7 @@ def initialize(){
     automaticBuildFileName  = 'automaticBuildParams.txt'
     testAssetsPath          = 'executedTests'
     ccDdioOverrides         = ''
-    executionGitBranch      = 'feature/FT2-new-feature'
+    executionGitBranch      = BRANCH_NAME
     branchMappingString     = ''
     tttVtExecutionLoad      = ''
     
@@ -108,17 +108,28 @@ def call(Map pipelineParms){
 
         stage('Load code to mainframe') {
 
+                gitToIspwIntegration( 
+                    app:                ispwConfig.ispwApplication.application, 
+                    connectionId:       pipelineParams.hciConnectionId,
+                    credentialsId:      pipelienParams.hostCredentialsId, 
+                    gitCredentialsId:   pipelineParams.gitCredentialsId, 
+                    gitRepoUrl:         pipelineParams.gitRepoUrl, 
+                    ispwConfigPath:     ispwConfigFileName, 
+                    runtimeConfig:      ispwConfig.ispwApplication.runtimeConfig,
+                    stream:             ispwConfig.ispwApplication.stream
+
+/*
             try {
 
                 gitToIspwIntegration( 
-                    app: ispwConfig.ispwApplication.application, 
-                    connectionId: pipelineParams.hciConnectionId,
-                    credentialsId: pipelienParams.hostCredentialsId, 
-                    gitCredentialsId: pipelineParams.gitCredentialsId, 
-                    gitRepoUrl: pipelineParams.gitRepoUrl, 
-                    ispwConfigPath: ispwConfigFileName, 
-                    runtimeConfig: ispwConfig.ispwApplication.runtimeConfig,
-                    stream: ispwConfig.ispwApplication.stream
+                    app:                ispwConfig.ispwApplication.application, 
+                    connectionId:       pipelineParams.hciConnectionId,
+                    credentialsId:      pipelienParams.hostCredentialsId, 
+                    gitCredentialsId:   pipelineParams.gitCredentialsId, 
+                    gitRepoUrl:         pipelineParams.gitRepoUrl, 
+                    ispwConfigPath:     ispwConfigFileName, 
+                    runtimeConfig:      ispwConfig.ispwApplication.runtimeConfig,
+                    stream:             ispwConfig.ispwApplication.stream
                 )
 
             }
@@ -129,7 +140,7 @@ def call(Map pipelineParms){
                 return
 
             }
-            
+*/            
         }
     }
 }
