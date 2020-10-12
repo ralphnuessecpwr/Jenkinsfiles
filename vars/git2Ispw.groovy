@@ -63,7 +63,7 @@ def initialize(){
     echo synchConfig.toString()
     echo synchConfig.branchInfo.toString()
     echo synchConfig.branchInfo.feature_FT1.toString()
-    echo synchConfig.branchInfo.feature_FT1.ispwBranchtoString()
+    echo synchConfig.branchInfo.feature_FT1.ispwBranch.toString()
     echo synchConfig.cesUrl.toString()
 /*
     if(executionGitBranch.contains('feature/FT1')){
