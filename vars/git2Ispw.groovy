@@ -59,15 +59,14 @@ def initialize(){
     def fileText    = libraryResource filePath
     def synchConfig = readYaml(text: fileText)
 
-    echo "Test"
-    echo synchConfig.toString()
-    echo synchConfig.branchInfo.toString()
-    echo synchConfig.branchInfo."feature/FT1".toString()
-    echo synchConfig.branchInfo."feature/FT1".ispwBranch.toString()
-    echo synchConfig.cesUrl.toString()
+    synchConfig.branchInfo.each {
+        echo it.key
+        echo it.toString()
+        echo it.ispwBranch.toString()
+    }
 /*
     if(executionGitBranch.contains('feature/FT1')){
-
+        
     }
     else if(executionGitBranch.contains('feature/FT2')) {
 
@@ -75,7 +74,7 @@ def initialize(){
     else if(executionGitBranch.contains('feature/FT3')) {
 
     }
-    else if(executionGitBranch.contains('Bug/')) {
+    else if(executionGitBranch.contains('bug')) {
 
     }
     else if(executionGitBranch.contains('master')) {
@@ -85,7 +84,6 @@ def initialize(){
         error "No branch mapping for branch ${executionGitBranch} was found. Execution will be aborted.\n" +
             "Correct the branch name to reflect naming conventions."
     }
-
 */
 }
 
