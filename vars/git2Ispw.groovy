@@ -9,7 +9,37 @@ import java.net.URL
 // build load library
 // build DDIO
 
+String ispwConfigFileName     
+String synchConfigFolder      
+String synchConfigFileName    
+String automaticBuildFileName 
+String testAssetsPath         
+String ccDdioOverrides        
+String executionGitBranch     
+String branchMappingString    
+
+def branchMapping             
+
+def ispwConfig
+def synchConfig
+def automaticBuildInfo
+def executionMapRule
+def programList
+def tttProjectList
+
+
 def initialize(){
+
+    ispwConfigFileName      = 'ispwconfig.yml'
+    synchConfigFolder       = 'git2ispw'
+    synchConfigFileName     = 'synchronizationconfig.yml'
+    automaticBuildFileName  = 'automaticBuildParams.txt'
+    testAssetsPath          = 'executedTests'
+    ccDdioOverrides         = ''
+    executionGitBranch      = 'feature/FT2-new-feature'
+    branchMappingString     = ''
+    
+    branchMapping           = [:]
 
     //*********************************************************************************
     // Read ispwconfig.yml
@@ -58,24 +88,6 @@ def initialize(){
 
 def call(Map pipelineParms){
 
-    String ispwConfigFileName      = 'ispwconfig.yml'
-    String synchConfigFolder       = 'git2ispw'
-    String synchConfigFileName     = 'synchronizationconfig.yml'
-    String automaticBuildFileName  = 'automaticBuildParams.txt'
-    String testAssetsPath          = 'executedTests'
-    String ccDdioOverrides         = ''
-    String executionGitBranch      = 'feature/FT2-new-feature'
-    String branchMappingString     = ''
-    
-    def branchMapping              = [:]
-
-    def ispwConfig
-    def synchConfig
-    def automaticBuildInfo
-    def executionMapRule
-    def programList
-    def tttProjectList
-
     //**********************************************************************
     // Start of Script
     //**********************************************************************
@@ -89,7 +101,7 @@ def call(Map pipelineParms){
             checkout scm
 
             initialize()
-            
+
         }
     }
 }
