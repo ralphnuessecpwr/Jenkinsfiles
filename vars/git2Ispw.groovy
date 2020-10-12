@@ -64,7 +64,7 @@ def initialize(){
     synchConfig.branchInfo.each {
         echo it.toString()
         echo it.key
-        echo it."${key}".ispwBranch.toString()
+        echo it."${it.key}".ispwBranch.toString()
     }
 /*
     if(executionGitBranch.contains('feature/FT1')){
