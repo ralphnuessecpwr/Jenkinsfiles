@@ -162,14 +162,18 @@ def call(Map pipelineParms){
 
         stage('Execute Tests') {
 
-            def cliPath     = 'C:/Users/cwde-rnuesse.EMEA/Software/Compuware/TopazCLI_200401'
-
-            def environment = '192.168.96.130:16196'
-            def hu          = 'hddrxm0'      
-            def pw          = 'cpwr2009'
-
-            bat cliPath + '/TotalTestFTCLI.bat --environment ' + environment + ' --file "/MainframeTests/Unit Tests/." --program-names-file /changedPrograms.json --recursive -u ' + hu + ' -p ' + pw
-
+            totaltest(
+                credentialsId: 'hostCredentials', 
+                environmentId: '192.168.96.130:16196', 
+                folderPath: '"./MainframeTests/Unit Tests"', 
+                haltPipelineOnFailure: false, 
+                localConfig: true, 
+                localConfigLocation: './MainframeTests/Configurations', 
+                recursive: true, 
+                selectProgramsOption: true, 
+                serverUrl: 'http://cwcc.compuware.com:2020', 
+                stopIfTestFailsOrThresholdReached: false
+            )
         }
 
     }
