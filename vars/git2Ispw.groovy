@@ -89,7 +89,9 @@ def initialize(){
     echo "DDIO"
     echo ccDdioOverrides
 
-    tttConfigFolder = '../' + workspace.toString().substring(workspace.toString().lastIndexOf('/')) + '@libs\RNU_Shared_Lib' + '/' + tttConfigFolder
+    echo workspace
+
+    tttConfigFolder = '../' + workspace.toString().substring(workspace.toString().lastIndexOf('/')) + '@libs/RNU_Shared_Lib' + '/' + tttConfigFolder
     echo 
 }
 
