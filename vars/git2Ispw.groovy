@@ -149,5 +149,28 @@ def call(Map pipelineParms){
 
         }
 
+        stage('Build mainframe code') {
+
+            ispwOperation(
+                connectionId:           pipelineParms.hciConnectionId, 
+                credentialsId:          pipelineParms.cesCredentialsId,       
+                consoleLogResponseBody: true, 
+                ispwAction:             'BuildTask', 
+                ispwRequestBody:        '''buildautomatically = true'''
+            )
+        }
+
+        stage('Execute Tests') {
+
+            def cliPath     = 'C:/Users/cwde-rnuesse.EMEA/Software/Compuware/TopazCLI_200401'
+
+            def environment = '192.168.96.130:16196'
+            def hu          = 'hddrxm0'      
+            def pw          = 'cpwr2009'
+
+            bat cliPath + '/TotalTestFTCLI.bat --environment ' + environment + ' --file "/MainframeTests/Unit Tests/." --program-names-file /changedPrograms.json --recursive -u ' + hu + ' -p ' + pw
+
+        }
+
     }
 }
