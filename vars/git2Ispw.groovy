@@ -3,7 +3,6 @@ import hudson.model.*
 import hudson.EnvVars
 import java.net.URL
 
-// read config files
 // determine application name
 // determine branch 
 // build load library
@@ -61,7 +60,7 @@ def initialize(){
     def synchConfig = readYaml(text: fileText)
 
     echo "Test"
-    echo synchConfig.branchInfo.feature/FT1.ispwBranch
+    echo synchConfig.branchInfo."feature/FT1".ispwBranch
 /*
     if(executionGitBranch.contains('feature/FT1')){
 
