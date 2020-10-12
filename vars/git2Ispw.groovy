@@ -66,7 +66,7 @@ def initialize(){
         echo it.toString()
         echo it.key
         echo it.value.toString()
-        echo it."${it.key}".ispwBranch.toString()
+        echo it.value.ispwBranch.toString()
     }
 /*
     if(executionGitBranch.contains('feature/FT1')){
