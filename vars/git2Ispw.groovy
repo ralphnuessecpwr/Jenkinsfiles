@@ -64,7 +64,7 @@ def call(Map pipelineParms){
     String automaticBuildFileName  = 'automaticBuildParams.txt'
     String testAssetsPath          = 'executedTests'
     String ccDdioOverrides         = ''
-    String executionGitBranch      = BRANCH_NAME
+    String executionGitBranch      = 'feature/FT2-new-feature'
     String branchMappingString     = ''
     
     def branchMapping              = [:]
