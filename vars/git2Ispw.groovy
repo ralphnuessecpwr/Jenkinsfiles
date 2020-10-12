@@ -110,6 +110,7 @@ def call(Map pipelineParms){
 
                 gitToIspwIntegration( 
                     app:                ispwConfig.ispwApplication.application, 
+                    branchMapping:      branchMappingString,
                     connectionId:       pipelineParms.hciConnectionId,
                     credentialsId:      pipelineParms.hostCredentialsId, 
                     gitCredentialsId:   pipelineParms.gitCredentialsId, 
@@ -122,14 +123,15 @@ def call(Map pipelineParms){
             try {
 
                 gitToIspwIntegration( 
-                    app:                ispwConfig.ispwApplication.application, 
-                    connectionId:       pipelineParms.hciConnectionId,
-                    credentialsId:      pipelineParms.hostCredentialsId, 
-                    gitCredentialsId:   pipelineParms.gitCredentialsId, 
-                    gitRepoUrl:         pipelineParms.gitRepoUrl, 
-                    ispwConfigPath:     ispwConfigFileName, 
+                    connectionId:       pipelineParms.hciConnectionId,                    
+                    credentialsId:      pipelineParms.hostCredentialsId,                     
                     runtimeConfig:      ispwConfig.ispwApplication.runtimeConfig,
-                    stream:             ispwConfig.ispwApplication.stream
+                    stream:             ispwConfig.ispwApplication.stream,
+                    app:                ispwConfig.ispwApplication.application, 
+                    branchMapping:      branchMappingString,
+                    ispwConfigPath:     ispwConfigFileName, 
+                    gitCredentialsId:   pipelineParms.gitCredentialsId, 
+                    gitRepoUrl:         pipelineParms.gitRepoUrl
                 )
 
             }
