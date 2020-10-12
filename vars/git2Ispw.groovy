@@ -165,7 +165,7 @@ def call(Map pipelineParms){
             totaltest(
                 credentialsId: 'hostCredentials', 
                 environmentId: '192.168.96.130:16196', 
-                folderPath: '"./MainframeTests/Unit Tests"', 
+                folderPath: './MainframeTests/Unit Tests', 
                 haltPipelineOnFailure: false, 
                 localConfig: true, 
                 localConfigLocation: './MainframeTests/Configurations', 
@@ -175,6 +175,5 @@ def call(Map pipelineParms){
                 stopIfTestFailsOrThresholdReached: false
             )
         }
-
     }
 }
