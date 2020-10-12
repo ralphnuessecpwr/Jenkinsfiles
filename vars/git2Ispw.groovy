@@ -108,18 +108,6 @@ def call(Map pipelineParms){
 
         stage('Load code to mainframe') {
 
-                gitToIspwIntegration( 
-                    app:                ispwConfig.ispwApplication.application, 
-                    branchMapping:      branchMappingString,
-                    connectionId:       pipelineParms.hciConnectionId,
-                    credentialsId:      pipelineParms.hostCredentialsId, 
-                    gitCredentialsId:   pipelineParms.gitCredentialsId, 
-                    gitRepoUrl:         pipelineParms.gitRepoUrl, 
-                    ispwConfigPath:     ispwConfigFileName, 
-                    runtimeConfig:      ispwConfig.ispwApplication.runtimeConfig,
-                    stream:             ispwConfig.ispwApplication.stream
-                )
-/*
             try {
 
                 gitToIspwIntegration( 
@@ -138,11 +126,28 @@ def call(Map pipelineParms){
             catch(Exception e) {
 
                 echo "No Synchronisation to the mainframe.\n"
+                echo e.toString()
                 currentBuild.result = 'SUCCESS'
                 return
 
             }
-*/            
         }
+
+        // If the automaticBuildParams.txt has not been created, it means no programs
+        // have been changed and the pipeline was triggered for other changes (in configuration files)
+        // These changes do not need to be "built".
+        try {
+            automaticBuildInfo = readJSON(file: automaticBuildFileName)
+        }
+        catch(Exception e) {
+
+            echo "No Automatic Build Params file was found.\n" +
+            "Meaning, no programs have been changed.\n" +
+            "Job gets ended prematurely, but successfully."
+            currentBuild.result = 'SUCCESS'
+            return
+
+        }
+
     }
 }
