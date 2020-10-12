@@ -89,10 +89,10 @@ def initialize(){
     echo "DDIO"
     echo ccDdioOverrides
 
-    echo workspace
+    def tmpWorkspace = workspace.replace('\\', '/')
 
-    tttConfigFolder = '../' + workspace.toString().substring(workspace.toString().lastIndexOf('/')) + '@libs/RNU_Shared_Lib' + '/' + tttConfigFolder
-    echo 
+    tttConfigFolder = '../' + tmpWorkspace.substring(tmpWorkspace.lastIndexOf('/')) + '@libs/RNU_Shared_Lib' + '/' + tttConfigFolder
+    echo tttCOnfigFolder
 }
 
 def call(Map pipelineParms){
