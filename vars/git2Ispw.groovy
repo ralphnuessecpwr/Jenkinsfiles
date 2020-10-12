@@ -58,7 +58,8 @@ def initialize(){
     //*********************************************************************************
     def filePath    = synchConfigFolder + '/' + synchConfigFileName
     def fileText    = libraryResource filePath
-    def synchConfig = readYaml(text: fileText)
+    
+    synchConfig     = readYaml(text: fileText)
 
     echo synchConfig.branchInfo.toString()
     echo synchConfig.branchInfo."feature/FT1".ispwBranch.toString()
