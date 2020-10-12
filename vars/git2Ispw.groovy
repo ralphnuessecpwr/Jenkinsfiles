@@ -12,7 +12,8 @@ String ispwConfigFileName
 String synchConfigFolder      
 String synchConfigFileName    
 String automaticBuildFileName 
-String testAssetsPath         
+String changedProgramsFileName
+String tttConfigFolder
 String ccDdioOverrides        
 String executionGitBranch     
 String branchMappingString    
@@ -33,7 +34,8 @@ def initialize(){
     synchConfigFolder       = 'git2ispw'
     synchConfigFileName     = 'synchronizationconfig.yml'
     automaticBuildFileName  = 'automaticBuildParams.txt'
-    testAssetsPath          = 'executedTests'
+    changedProgramsFileName = 'changedPrograms.json'
+    tttConfigFolder         = ''
     ccDdioOverrides         = ''
     executionGitBranch      = BRANCH_NAME
     branchMappingString     = ''
@@ -86,6 +88,9 @@ def initialize(){
 
     echo "DDIO"
     echo ccDdioOverrides
+
+    tttConfigFolder = '../' + workspace.toString().substring(workspace.toString().lastIndexOf('/')) + '@libs\RNU_Shared_Lib' + '/' + tttConfigFolder
+    echo 
 }
 
 def call(Map pipelineParms){
@@ -163,17 +168,19 @@ def call(Map pipelineParms){
         stage('Execute Tests') {
 
             totaltest(
-                credentialsId: 'hostCredentials', 
-                environmentId: '192.168.96.130:16196', 
-                folderPath: './MainframeTests/Unit Tests', 
-                haltPipelineOnFailure: false, 
-                localConfig: true, 
-                localConfigLocation: './MainframeTests/Configurations', 
-                recursive: true, 
-                selectProgramsOption: true, 
-                serverUrl: 'http://cwcc.compuware.com:2020', 
-                stopIfTestFailsOrThresholdReached: false
+                serverUrl:                          synchConfig.cesUrl, 
+                credentialsId:                      pipelineParms.hostCredentialsId, 
+                environmentId:                      synchConfig.tttEnvironmentId, 
+                localConfig:                        true, 
+                localConfigLocation:                './MainframeTests/Configurations', 
+                folderPath:                         './MainframeTests/Unit Tests', 
+                recursive:                          true, 
+                selectProgramsOption:               true, 
+                jsonFile:                           changedProgramsFileName,
+                haltPipelineOnFailure:              false,                 
+                stopIfTestFailsOrThresholdReached:  false
             )
-        }
+
+         }
     }
 }
