@@ -1,24 +1,24 @@
 branchInfo:
-  - feature_FT1:
-      ispwBranch:     QA1
-      mapRule:        per-branch
-      loadLib:        SALESSUP.<ispwApplication>.QA1.LOAD
-  - feature_FT2:
-      ispwBranch:     QA2
-      mapRule:        per-branch
-      loadLib:        SALESSUP.<ispwApplication>.QA2.LOAD
-  - feature_FT3:
-      ispwBranch:     QA3
-      mapRule:        per-branch
-      loadLib:        SALESSUP.<ispwApplication>.QA3.LOAD
-  - bug:
-      ispwBranch:     EMR
-      mapRule:        per-branch
-      loadLib:        SALESSUP.<ispwApplication>.STG.LOAD
-  - master:
-      ispwBranch:     STG
-      mapRule:        per-branch
-      loadLib:        SALESSUP.<ispwApplication>.STG.LOAD
+  feature_FT1:
+    ispwBranch:     QA1
+    mapRule:        per-branch
+    loadLib:        SALESSUP.<ispwApplication>.QA1.LOAD
+  feature_FT2:
+    ispwBranch:     QA2
+    mapRule:        per-branch
+    loadLib:        SALESSUP.<ispwApplication>.QA2.LOAD
+  feature_FT3:
+    ispwBranch:     QA3
+    mapRule:        per-branch
+    loadLib:        SALESSUP.<ispwApplication>.QA3.LOAD
+  bug:
+    ispwBranch:     EMR
+    mapRule:        per-branch
+    loadLib:        SALESSUP.<ispwApplication>.STG.LOAD
+  master:
+    ispwBranch:     STG
+    mapRule:        per-branch
+    loadLib:        SALESSUP.<ispwApplication>.STG.LOAD
 cesUrl:             cwcc.compuware.com:2020
 sonarScanner:       scanner
 sonarServer:        CWCC
