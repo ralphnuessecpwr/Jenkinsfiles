@@ -59,10 +59,12 @@ def initialize(){
     def fileText    = libraryResource filePath
     def synchConfig = readYaml(text: fileText)
 
+    echo synchConfig.branchInfo.toString()
+
     synchConfig.branchInfo.each {
         echo it.toString()
         echo it.key
-        echo it.key.ispwBranch.toString()
+        echo it.${key}.ispwBranch.toString()
     }
 /*
     if(executionGitBranch.contains('feature/FT1')){
