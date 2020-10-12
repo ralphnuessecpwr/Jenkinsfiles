@@ -92,7 +92,7 @@ def initialize(){
 
     def tmpWorkspace = workspace.replace('\\', '/')
 
-    tttConfigFolder = '..' + tmpWorkspace.substring(tmpWorkspace.lastIndexOf('/')) + '@libs/RNU_Shared_Lib' + '/' + synchConfig.tttConfigFolder
+    tttConfigFolder = '..' + tmpWorkspace.substring(tmpWorkspace.lastIndexOf('/')) + '@libs/RNU_Shared_Lib/resources' + '/' + synchConfig.tttConfigFolder
     echo tttConfigFolder
 }
 
