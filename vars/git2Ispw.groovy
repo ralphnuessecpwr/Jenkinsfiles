@@ -117,7 +117,7 @@ def call(Map pipelineParms){
                     ispwConfigPath:     ispwConfigFileName, 
                     runtimeConfig:      ispwConfig.ispwApplication.runtimeConfig,
                     stream:             ispwConfig.ispwApplication.stream
-
+                )
 /*
             try {
 
