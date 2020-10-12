@@ -110,10 +110,10 @@ def call(Map pipelineParms){
 
                 gitToIspwIntegration( 
                     app:                ispwConfig.ispwApplication.application, 
-                    connectionId:       pipelineParams.hciConnectionId,
-                    credentialsId:      pipelienParams.hostCredentialsId, 
-                    gitCredentialsId:   pipelineParams.gitCredentialsId, 
-                    gitRepoUrl:         pipelineParams.gitRepoUrl, 
+                    connectionId:       pipelineParms.hciConnectionId,
+                    credentialsId:      pipelienParms.hostCredentialsId, 
+                    gitCredentialsId:   pipelineParms.gitCredentialsId, 
+                    gitRepoUrl:         pipelineParms.gitRepoUrl, 
                     ispwConfigPath:     ispwConfigFileName, 
                     runtimeConfig:      ispwConfig.ispwApplication.runtimeConfig,
                     stream:             ispwConfig.ispwApplication.stream
@@ -123,10 +123,10 @@ def call(Map pipelineParms){
 
                 gitToIspwIntegration( 
                     app:                ispwConfig.ispwApplication.application, 
-                    connectionId:       pipelineParams.hciConnectionId,
-                    credentialsId:      pipelienParams.hostCredentialsId, 
-                    gitCredentialsId:   pipelineParams.gitCredentialsId, 
-                    gitRepoUrl:         pipelineParams.gitRepoUrl, 
+                    connectionId:       pipelineParms.hciConnectionId,
+                    credentialsId:      pipelienParms.hostCredentialsId, 
+                    gitCredentialsId:   pipelineParms.gitCredentialsId, 
+                    gitRepoUrl:         pipelineParms.gitRepoUrl, 
                     ispwConfigPath:     ispwConfigFileName, 
                     runtimeConfig:      ispwConfig.ispwApplication.runtimeConfig,
                     stream:             ispwConfig.ispwApplication.stream
