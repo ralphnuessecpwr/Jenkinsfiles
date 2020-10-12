@@ -60,7 +60,7 @@ def initialize(){
     def synchConfig = readYaml(text: fileText)
 
     echo "Test"
-    echo synchConfig.branchInfo."feature/FT1".ispwBranch
+    echo synchConfig.branchInfo."feature/FT1".ispwBranch.toString()
 /*
     if(executionGitBranch.contains('feature/FT1')){
 
