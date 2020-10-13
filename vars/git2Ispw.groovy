@@ -179,13 +179,13 @@ def call(Map pipelineParms){
                 jsonFile:                           changedProgramsFileName,
                 haltPipelineOnFailure:              false,                 
                 stopIfTestFailsOrThresholdReached:  false,
-                collectCodeCoverage:                false,
+                collectCodeCoverage:                true,
                 collectCCRepository:                pipelineParms.ccRepo,
                 collectCCSystem:                    ispwConfig.ispwApplication.application,
                 collectCCTestID:                    ccTestId,
                 clearCodeCoverage:                  true,
                 ccThreshold:                        pipelineParms.ccThreshold,     
-                logLevel:                           'DEBUG'
+                logLevel:                           'INFO'
             )
 
         }
