@@ -183,8 +183,7 @@ def call(Map pipelineParms){
                 selectProgramsOption:               true, 
                 jsonFile:                           changedProgramsFileName,
                 haltPipelineOnFailure:              false,                 
-                stopIfTestFailsOrThresholdReached:  false,
-                logLevel:                           'DEBUG'
+                stopIfTestFailsOrThresholdReached:  false
             )
 
         }
