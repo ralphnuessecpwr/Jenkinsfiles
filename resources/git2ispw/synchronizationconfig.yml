@@ -22,7 +22,7 @@ branchInfo:
 cesUrl:             http://cwcc.compuware.com:2020
 tttEnvironmentId:   192.168.96.130:16196
 tttConfigFolder:    'git2ispw/Configurations'
-tttUtFolder:        'MainframeTests/Unit Test'
+tttUtFolder:        'MainframeTests/Unit Tests'
 sonarScanner:       scanner
 sonarServer:        CWCC
 ccDdioOverrides:
