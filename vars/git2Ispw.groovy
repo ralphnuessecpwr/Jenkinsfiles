@@ -176,7 +176,7 @@ def call(Map pipelineParms){
                 serverUrl:                          synchConfig.cesUrl, 
                 credentialsId:                      pipelineParms.hostCredentialsId, 
                 environmentId:                      synchConfig.tttEnvironmentId, 
-                localConfig:                        false, 
+                localConfig:                        true, 
                 localConfigLocation:                tttConfigFolder, 
                 folderPath:                         synchConfig.tttUtFolder, 
                 recursive:                          true, 
