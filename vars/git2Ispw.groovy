@@ -183,6 +183,19 @@ def call(Map pipelineParms){
                 logLevel:                           'INFO'
             )
 
+            step([
+                $class:             'CodeCoverageBuilder', 
+                connectionId:       pipelineParms.hciConnectionId, 
+                credentialsId:      pipelineParms.hostCredentialsId,
+                analysisProperties: """
+                    cc.sources=${synchConfig.ccSources}
+                    cc.repos=${pipelineParms.ccRepo}
+                    cc.system=${ispwConfig.ispwApplication.application}
+                    cc.test=${ccTestId}
+                    cc.ddio.overrides=${ccDdioOverrides}
+                """
+             ])
+
         }
     }
 }

@@ -23,8 +23,7 @@ cesUrl:             http://cwcc.compuware.com:2020
 tttEnvironmentId:   192.168.96.130:16196
 tttConfigFolder:    'git2ispw/Configurations'
 tttUtFolder:        'MainframeTests/Unit Tests'
-sonarScanner:       scanner
-sonarServer:        CWCC
+ccSources:          'MainframeSources'
 ccDdioOverrides:
   - SALESSUP.<ispwApplication>.FIX.LOAD.SSD,
   - SALESSUP.<ispwApplication>.EMR.LOAD.SSD,
@@ -36,3 +35,5 @@ ccDdioOverrides:
   - SALESSUP.<ispwApplication>.QA3.LOAD.SSD,
   - SALESSUP.<ispwApplication>.STG.LOAD.SSD,
   - SALESSUP.<ispwApplication>.PRD.LOAD.SSD
+sonarScanner:       scanner
+sonarServer:        CWCC
