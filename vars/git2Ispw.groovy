@@ -175,10 +175,10 @@ def call(Map pipelineParms){
             totaltest(
                 serverUrl:                          synchConfig.cesUrl, 
                 credentialsId:                      pipelineParms.hostCredentialsId, 
-                environmentId:                      synchConfig.tttEnvironmentId, 
+                environmentId:                      '5cee98c2d3142c1f90a4976d', //synchConfig.tttEnvironmentId, 
                 localConfig:                        true, 
                 localConfigLocation:                tttConfigFolder, 
-                folderPath:                         synchConfig.tttUtFolder, 
+                folderPath:                         '/MainframeTests/Module Integration Tests', //synchConfig.tttUtFolder, 
                 recursive:                          true, 
                 selectProgramsOption:               true, 
                 jsonFile:                           changedProgramsFileName,
