@@ -178,10 +178,10 @@ def call(Map pipelineParms){
                 environmentId:                      synchConfig.tttEnvironmentId, 
                 localConfig:                        true, 
                 localConfigLocation:                tttConfigFolder, 
-                folderPath:                         synchConfig.tttUtFolder + '/CWXTSUBC/Scenarios/CWXTSUBC_Scenario.context', 
-                recursive:                          false, 
-            //    selectProgramsOption:               true, 
-            //    jsonFile:                           changedProgramsFileName,
+                folderPath:                         synchConfig.tttUtFolder + '/OldV/CWXTSUBC/Scenarios/CWXTSUBC_Scenario.context', 
+                recursive:                          true, 
+                selectProgramsOption:               true, 
+                jsonFile:                           changedProgramsFileName,
                 haltPipelineOnFailure:              false,                 
                 stopIfTestFailsOrThresholdReached:  false
             )
