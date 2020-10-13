@@ -182,9 +182,9 @@ def call(Map pipelineParms){
                 collectCodeCoverage:                false,
                 collectCCRepository:                pipelineParms.ccRepo,
                 collectCCSystem:                    ispwConfig.ispwApplication.application,
-                collectCCTestID:                    'id',
+                collectCCTestID:                    ccTestId,
                 clearCodeCoverage:                  true,
-                ccThreshold:                        70,     
+                ccThreshold:                        pipelineParms.ccThreshold,     
                 logLevel:                           'DEBUG'
             )
 
