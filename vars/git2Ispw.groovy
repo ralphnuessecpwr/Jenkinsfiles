@@ -178,7 +178,7 @@ def call(Map pipelineParms){
                 environmentId:                      synchConfig.tttEnvironmentId, 
                 localConfig:                        true, 
                 localConfigLocation:                tttConfigFolder, 
-                folderPath:                         synchConfig.tttUtFolder + '/OldV/CWXTSUBC/Scenarios/CWXTSUBC_Scenario.context', 
+                folderPath:                         synchConfig.tttUtFolder, 
                 recursive:                          true, 
                 selectProgramsOption:               true, 
                 jsonFile:                           changedProgramsFileName,
