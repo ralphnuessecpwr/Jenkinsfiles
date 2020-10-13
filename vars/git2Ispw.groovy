@@ -18,6 +18,7 @@ String ccDdioOverrides
 String executionGitBranch     
 String branchMappingString    
 String sharedLibName
+String ccTestId
 
 def branchMapping             
 def ispwConfig
@@ -27,6 +28,7 @@ def executionMapRule
 def programList
 def tttProjectList
 
+def CC_TEST_ID_MAX_LEN
 
 def initialize(){
 
@@ -41,6 +43,7 @@ def initialize(){
     branchMappingString     = ''
     tttVtExecutionLoad      = ''
     sharedLibName           = 'RNU_Shared_Lib'
+    CC_TEST_ID_MAX_LEN      = 15
 
 
     //*********************************************************************************
@@ -63,9 +66,6 @@ def initialize(){
     
     synchConfig     = readYaml(text: fileText)
 
-    echo synchConfig.branchInfo.toString()
-    echo synchConfig.branchInfo."feature/FT1".ispwBranch.toString()
-
     synchConfig.branchInfo.each {
 
         branchMappingString = branchMappingString + it.key + '** => ' + it.value.ispwBranch + ',' + it.value.mapRule + '\n'
@@ -74,11 +74,6 @@ def initialize(){
             tttVtExecutionLoad = it.value.loadLib.replace('<ispwApplication>', ispwConfig.ispwApplication.application)
         }
     }
-
-    echo "Mapping"
-    echo branchMappingString
-    echo "Load"
-    echo tttVtExecutionLoad
 
     if(tttVtExecutionLoad == ''){
         error "No branch mapping for branch ${executionGitBranch} was found. Execution will be aborted.\n" +
@@ -89,13 +84,13 @@ def initialize(){
         ccDdioOverrides = ccDdioOverrides + it.toString().replace('<ispwApplication>', ispwConfig.ispwApplication.application)
     }
 
-    echo "DDIO"
-    echo ccDdioOverrides
-
     def tmpWorkspace = workspace.replace('\\', '/')
 
     tttConfigFolder = '..' + tmpWorkspace.substring(tmpWorkspace.lastIndexOf('/')) + '@libs/' + sharedLibName + '/resources' + '/' + synchConfig.tttConfigFolder
-    echo tttConfigFolder
+
+    ccTestId = executionGitBranch.substring(executionGitBranch.length() - (CC_TEST_ID_MAX_LEN - BUILD_NUMBER.length() - 1)) + '_' + BUILD_NUMBER
+    echo "CC Test Id" 
+    echo ccTestId
 }
 
 def call(Map pipelineParms){
@@ -183,7 +178,14 @@ def call(Map pipelineParms){
                 selectProgramsOption:               true, 
                 jsonFile:                           changedProgramsFileName,
                 haltPipelineOnFailure:              false,                 
-                stopIfTestFailsOrThresholdReached:  false
+                stopIfTestFailsOrThresholdReached:  false,
+                collectCodeCoverage:                false,
+                collectCCRepository:                pipelineParms.ccRepo,
+                collectCCSystem:                    ispwConfig.ispwApplication.application,
+                collectCCTestID:                    'id',
+                clearCodeCoverage:                  true,
+                ccThreshold:                        70,     
+                logLevel:                           'DEBUG'
             )
 
         }
