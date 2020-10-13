@@ -17,9 +17,9 @@ String tttConfigFolder
 String ccDdioOverrides        
 String executionGitBranch     
 String branchMappingString    
+String sharedLibName
 
 def branchMapping             
-
 def ispwConfig
 def synchConfig
 def automaticBuildInfo
@@ -40,7 +40,9 @@ def initialize(){
     executionGitBranch      = BRANCH_NAME
     branchMappingString     = ''
     tttVtExecutionLoad      = ''
-    
+    sharedLibName           = 'RNU_Shared_Lib'
+
+
     //*********************************************************************************
     // Read ispwconfig.yml
     // Strip the first line of ispwconfig.yml because readYaml can't handle the !! tag
@@ -92,7 +94,7 @@ def initialize(){
 
     def tmpWorkspace = workspace.replace('\\', '/')
 
-    tttConfigFolder = '..' + tmpWorkspace.substring(tmpWorkspace.lastIndexOf('/')) + '@libs/RNU_Shared_Lib/resources' + '/' + synchConfig.tttConfigFolder
+    tttConfigFolder = '..' + tmpWorkspace.substring(tmpWorkspace.lastIndexOf('/')) + '@libs/' + sharedLibName + '/resources' + '/' + synchConfig.tttConfigFolder
     echo tttConfigFolder
 }
 
@@ -176,10 +178,10 @@ def call(Map pipelineParms){
                 environmentId:                      synchConfig.tttEnvironmentId, 
                 localConfig:                        true, 
                 localConfigLocation:                tttConfigFolder, 
-                folderPath:                         synchConfig.tttUtFolder, 
-                recursive:                          true, 
-                selectProgramsOption:               true, 
-                jsonFile:                           changedProgramsFileName,
+                folderPath:                         synchConfig.tttUtFolder + '/CWXTSUBC/Scenarios/CWXTSUBC_Scenario.context', 
+                recursive:                          false, 
+            //    selectProgramsOption:               true, 
+            //    jsonFile:                           changedProgramsFileName,
                 haltPipelineOnFailure:              false,                 
                 stopIfTestFailsOrThresholdReached:  false
             )
