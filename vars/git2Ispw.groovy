@@ -3,11 +3,6 @@ import hudson.model.*
 import hudson.EnvVars
 import java.net.URL
 
-// determine application name
-// determine branch 
-// build load library
-// build DDIO
-
 String ispwConfigFileName     
 String synchConfigFolder      
 String synchConfigFileName    
@@ -183,7 +178,7 @@ def call(Map pipelineParms){
                 collectCCRepository:                pipelineParms.ccRepo,
                 collectCCSystem:                    ispwConfig.ispwApplication.application,
                 collectCCTestID:                    ccTestId,
-                clearCodeCoverage:                  true,
+                clearCodeCoverage:                  false,
                 ccThreshold:                        pipelineParms.ccThreshold,     
                 logLevel:                           'INFO'
             )
