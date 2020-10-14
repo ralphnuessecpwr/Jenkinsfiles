@@ -198,7 +198,7 @@ def call(Map pipelineParms){
         }
 
         stage("SonarQube Scan") {
-            
+
             def scannerHome           = tool synchConfig.sonarScanner
 
             // Find all of the Total Test results files that will be submitted to SonarQube
@@ -207,7 +207,7 @@ def call(Map pipelineParms){
             def sqTestResultsParm     = ''
 
             if(tttListOfResults != []) {
-            sqTestResultsParm       = ' -Dsonar.tests="Unit Test" -Dsonar.testExecutionReportPaths='
+            sqTestResultsParm       = ' -Dsonar.tests="${synchConfig.tttUtFolder}" -Dsonar.testExecutionReportPaths='
 
             tttListOfResults.each {
                 sqTestResultsParm     = sqTestResultsParm + 'TTTSonar/' + it.name +  ',' // Append the results file to the parm string
