@@ -195,7 +195,62 @@ def call(Map pipelineParms){
                     cc.ddio.overrides=${ccDdioOverrides}
                 """
              ])
-
         }
+
+        stage("SonarQube Scan") {
+            
+            def scannerHome           = tool synchConfig.sonarScanner
+
+            // Find all of the Total Test results files that will be submitted to SonarQube
+            // If result files have been created, build the Sonar parameters to pass test results
+            def tttListOfResults      = findFiles(glob: 'TTTSonar/*.xml')   // Total Test SonarQube result files are stored in TTTSonar directory
+            def sqTestResultsParm     = ''
+
+            if(tttListOfResults != []) {
+            sqTestResultsParm       = ' -Dsonar.tests="Unit Test" -Dsonar.testExecutionReportPaths='
+
+            tttListOfResults.each {
+                sqTestResultsParm     = sqTestResultsParm + 'TTTSonar/' + it.name +  ',' // Append the results file to the parm string
+            }
+            }
+            
+            // Check if Code Coverage data has been cerated
+            // In that case, build the code coverage sonar parameter
+            def listOfCoverageFiles   = findFiles(glob: 'Coverage/CodeCoverage.xml')
+            def sqCoverageResultsParm = ''
+
+            if(listOfCoverageFiles != []) {
+            sqCoverageResultsParm = ' -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml'
+            }
+
+            // For the master branch no target branch parm must be created
+            def sqTargetBranchParm
+
+            if(BRANCH_NAME == 'master') {
+            sqTargetBranchParm = ''
+            }
+            else {
+            sqTargetBranchParm = ' -Dsonar.branch.target=master'
+            }
+
+            withSonarQubeEnv(synchConfig.sonarServer) {
+
+                bat '"' + scannerHome + '/bin/sonar-scanner"' + 
+                " -Dsonar.branch.name=${BRANCH_NAME}" +
+                sqTargetBranchParm +
+                sqTestResultsParm +
+                sqCoverageResultsParm +
+                " -Dsonar.projectKey=RNU_${ispwConfig.ispwApplication.application}" + 
+                " -Dsonar.projectName=RNU_${ispwConfig.ispwApplication.application}" + 
+                " -Dsonar.projectVersion=1.0" +
+                " -Dsonar.sources=Cob" + 
+                " -Dsonar.cobol.copy.directories=CobCopy" +
+                " -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub" + 
+                " -Dsonar.cobol.copy.suffixes=cpy" +
+                " -Dsonar.sourceEncoding=UTF-8"
+
+            }
+        }   
+
     }
 }
