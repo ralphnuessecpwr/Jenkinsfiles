@@ -14,6 +14,8 @@ String executionGitBranch
 String branchMappingString    
 String sharedLibName
 String ccTestId
+String sonarCobolFolder
+String sonarCopybookFolder
 
 def branchMapping             
 def ispwConfig
@@ -38,6 +40,9 @@ def initialize(){
     branchMappingString     = ''
     tttVtExecutionLoad      = ''
     sharedLibName           = 'RNU_Shared_Lib'
+    sonarCobolFolder        = 'MainframeSources/Cobol/Programs'
+    sonarCopybookFolder     = 'MainframeSources/Cobol/Copybooks'
+
     CC_TEST_ID_MAX_LEN      = 15
 
 
@@ -243,8 +248,8 @@ def call(Map pipelineParms){
                 " -Dsonar.projectKey=RNU_${ispwConfig.ispwApplication.application}" + 
                 " -Dsonar.projectName=RNU_${ispwConfig.ispwApplication.application}" + 
                 " -Dsonar.projectVersion=1.0" +
-                " -Dsonar.sources=Cob" + 
-                " -Dsonar.cobol.copy.directories=CobCopy" +
+                " -Dsonar.sources=${sonarCobolFolder}" + 
+                " -Dsonar.cobol.copy.directories=${sonarCopybookFolder}" +
                 " -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub" + 
                 " -Dsonar.cobol.copy.suffixes=cpy" +
                 " -Dsonar.sourceEncoding=UTF-8"
