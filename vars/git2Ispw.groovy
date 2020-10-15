@@ -118,9 +118,6 @@ def setVtLoadlibrary(){
 
     def jclSkeleton = readFile(tttUtJclSkeletonFile).toString().replace('${loadlibraries}', tttVtExecutionLoad)
 
-echo "Writing new skeleton"
-echo jclSkeleton    
-
     writeFile(
         file:   tttUtJclSkeletonFile,
         text:   jclSkeleton
@@ -278,6 +275,7 @@ def call(Map pipelineParms){
                 ' -Dsonar.tests="' + synchConfig.tttRootFolder + '"' +
                 ' -Dsonar.testExecutionReportPaths="' + sonarResults + '"' +
                 ' -Dsonar.coverageReportPaths=' + sonarCodeCoverageFile +
+                ' -Dsonar.ws.timeout = 120' +
                 ' -Dsonar.sourceEncoding=UTF-8'
 
             }
