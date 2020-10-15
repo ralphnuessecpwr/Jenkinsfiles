@@ -121,7 +121,7 @@ echo "Writing new skeleton"
 echo jclSkeleton    
 
     writeFile(
-        file:   tttUtJclSkeletonFile
+        file:   tttUtJclSkeletonFile,
         text:   jclSkeleton
     )    
 
