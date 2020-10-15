@@ -195,8 +195,7 @@ def call(Map pipelineParms){
                 selectProgramsOption:               true, 
                 jsonFile:                           changedProgramsFile,
                 haltPipelineOnFailure:              false,                 
-                stopIfTestFailsOrThresholdReached:  false
-                // ,
+                stopIfTestFailsOrThresholdReached:  false,
                 // collectCodeCoverage:                true,
                 // collectCCRepository:                pipelineParms.ccRepo,
                 // collectCCSystem:                    ispwConfig.ispwApplication.application,
