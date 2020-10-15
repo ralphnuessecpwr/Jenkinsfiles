@@ -3,21 +3,21 @@ import hudson.model.*
 import hudson.EnvVars
 import java.net.URL
 
-String ispwConfigFileName     
-String synchConfigFolder      
-String synchConfigFileName    
-String automaticBuildFileName 
-String changedProgramsFileName
-String tttConfigFolder
-String ccDdioOverrides        
-String executionGitBranch     
-String branchMappingString    
-String sharedLibName
-String ccTestId
-String sonarCobolFolder
-String sonarCopybookFolder
-String sonarResultFile
-String sonarCodeCoverageFile
+String executionGitBranch      
+String sharedLibName           
+String synchConfigFolder       
+String synchConfigFile         
+String ispwConfigFileName      
+String automaticBuildFileName  
+String changedProgramsFileName 
+String branchMappingString     
+String tttConfigFolder         
+String tttVtExecutionLoad      
+String ccDdioOverrides         
+String sonarCobolFolder        
+String sonarCopybookFolder     
+String sonarResultsFile        
+String sonarCodeCoverageFile   
 
 def branchMapping             
 def ispwConfig
@@ -31,24 +31,23 @@ def CC_TEST_ID_MAX_LEN
 
 def initialize(){
 
-    ispwConfigFileName      = 'ispwconfig.yml'
-    synchConfigFolder       = 'git2ispw'
-    synchConfigFileName     = 'synchronizationconfig.yml'
-    automaticBuildFileName  = 'automaticBuildParams.txt'
-    changedProgramsFileName = 'changedPrograms.json'
-    tttConfigFolder         = ''
-    ccDdioOverrides         = ''
-    executionGitBranch      = BRANCH_NAME
-    branchMappingString     = ''
-    tttVtExecutionLoad      = ''
-    sharedLibName           = 'RNU_Shared_Lib'
-    sonarCobolFolder        = 'MainframeSources/Cobol/Programs'
-    sonarCopybookFolder     = 'MainframeSources/Cobol/Copybooks'
-    sonarResultsFolder      = 'generated.cli.suite.sonar.xml'
-    sonarCodeCoverageFile   = 'Coverage/CodeCoverage.xml'
-
     CC_TEST_ID_MAX_LEN      = 15
 
+    executionGitBranch      = BRANCH_NAME
+    sharedLibName           = 'RNU_Shared_Lib'
+    synchConfigFolder       = 'git2ispw'
+    synchConfigFile         = 'synchronizationconfig.yml'
+    ispwConfigFileName      = 'ispwconfig.yml'
+    automaticBuildFileName  = 'automaticBuildParams.txt'
+    changedProgramsFileName = 'changedPrograms.json'
+    branchMappingString     = ''    
+    tttConfigFolder         = ''
+    tttVtExecutionLoad      = ''
+    ccDdioOverrides         = ''
+    sonarCobolFolder        = 'MainframeSources/Cobol/Programs'
+    sonarCopybookFolder     = 'MainframeSources/Cobol/Copybooks'
+    sonarResultsFile        = 'generated.cli.suite.sonar.xml'
+    sonarCodeCoverageFile   = 'Coverage/CodeCoverage.xml'
 
     //*********************************************************************************
     // Read ispwconfig.yml
@@ -70,6 +69,10 @@ def initialize(){
     
     synchConfig     = readYaml(text: fileText)
 
+    //*********************************************************************************
+    // Build branch mapping string to be used as parameter in the gitToIspwIntegration
+    // Build load library name from configuration, replacing application marker by actual name
+    //*********************************************************************************
     synchConfig.branchInfo.each {
 
         branchMappingString = branchMappingString + it.key + '** => ' + it.value.ispwBranch + ',' + it.value.mapRule + '\n'
@@ -79,22 +82,34 @@ def initialize(){
         }
     }
 
+    //*********************************************************************************
+    // If load library name is empty the branch name could not be mapped
+    //*********************************************************************************
     if(tttVtExecutionLoad == ''){
         error "No branch mapping for branch ${executionGitBranch} was found. Execution will be aborted.\n" +
             "Correct the branch name to reflect naming conventions."
     }
 
+    //*********************************************************************************
+    // Build DDIO override parameter for Code Coverage, replacing application marker by actual name
+    //*********************************************************************************
     synchConfig.ccDdioOverrides.each {
         ccDdioOverrides = ccDdioOverrides + it.toString().replace('<ispwApplication>', ispwConfig.ispwApplication.application)
     }
 
+    //*********************************************************************************
+    // The .tttcfg file and JCL skeleton are located in the pipeline shared library, resources folder
+    // Determine path relative to current workspace
+    //*********************************************************************************
     def tmpWorkspace = workspace.replace('\\', '/')
 
     tttConfigFolder = '..' + tmpWorkspace.substring(tmpWorkspace.lastIndexOf('/')) + '@libs/' + sharedLibName + '/resources' + '/' + synchConfig.tttConfigFolder
 
+    //*********************************************************************************
+    // Build Code Coverage Test ID from current branch name and build number
+    // The test id must not be londer than 15 characters
+    //*********************************************************************************
     ccTestId = executionGitBranch.substring(executionGitBranch.length() - (CC_TEST_ID_MAX_LEN - BUILD_NUMBER.length() - 1)) + '_' + BUILD_NUMBER
-    echo "CC Test Id" 
-    echo ccTestId
 }
 
 def call(Map pipelineParms){
@@ -222,7 +237,7 @@ def call(Map pipelineParms){
                 ' -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub' + 
                 ' -Dsonar.cobol.copy.suffixes=cpy' +
                 ' -Dsonar.tests="' + synchConfig.tttUtFolder + '"' +
-                ' -Dsonar.testExecutionReportPaths=' + generated.cli.suite.sonar.xml +
+                ' -Dsonar.testExecutionReportPaths=' + sonarResultsFile +
                 ' -Dsonar.coverageReportPaths=' + sonarCodeCoverageFile +
                 " -Dsonar.sourceEncoding=UTF-8"
 
