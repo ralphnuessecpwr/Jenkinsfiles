@@ -188,23 +188,24 @@ def call(Map pipelineParms){
                 serverUrl:                          synchConfig.cesUrl, 
                 credentialsId:                      pipelineParms.hostCredentialsId, 
                 environmentId:                      synchConfig.tttEnvironmentId, 
-                localConfig:                        true, 
+                localConfig:                        false, 
                 localConfigLocation:                tttConfigFolder, 
-                folderPath:                         synchConfig.tttUtFolder, 
+                folderPath:                         synchConfig.tttRootFolder + '/' + synchConfig.tttNvtFolder, 
                 recursive:                          true, 
                 selectProgramsOption:               true, 
                 jsonFile:                           changedProgramsFile,
                 haltPipelineOnFailure:              false,                 
-                stopIfTestFailsOrThresholdReached:  false,
-                collectCodeCoverage:                true,
-                collectCCRepository:                pipelineParms.ccRepo,
-                collectCCSystem:                    ispwConfig.ispwApplication.application,
-                collectCCTestID:                    ccTestId,
-                clearCodeCoverage:                  false,
-                ccThreshold:                        pipelineParms.ccThreshold,     
+                stopIfTestFailsOrThresholdReached:  false
+                // ,
+                // collectCodeCoverage:                true,
+                // collectCCRepository:                pipelineParms.ccRepo,
+                // collectCCSystem:                    ispwConfig.ispwApplication.application,
+                // collectCCTestID:                    ccTestId,
+                // clearCodeCoverage:                  false,
+                // ccThreshold:                        pipelineParms.ccThreshold,     
                 logLevel:                           'INFO'
             )
-
+        /*
             step([
                 $class:             'CodeCoverageBuilder', 
                 connectionId:       pipelineParms.hciConnectionId, 
@@ -218,7 +219,7 @@ def call(Map pipelineParms){
                 """
              ])
         }
-
+        */
         stage("SonarQube Scan") {
 
             def scannerHome           = tool synchConfig.sonarScanner
@@ -234,10 +235,10 @@ def call(Map pipelineParms){
                 ' -Dsonar.cobol.copy.directories=' + sonarCopybookFolder +
                 ' -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub,result' + 
                 ' -Dsonar.cobol.copy.suffixes=cpy' +
-                ' -Dsonar.tests="' + synchConfig.tttUtFolder + '"' +
+                ' -Dsonar.tests="' + synchConfig.tttRootFolder + '"' +
                 ' -Dsonar.testExecutionReportPaths=' + sonarResultsFile +
-                ' -Dsonar.coverageReportPaths=' + sonarCodeCoverageFile +
-                " -Dsonar.sourceEncoding=UTF-8"
+//                ' -Dsonar.coverageReportPaths=' + sonarCodeCoverageFile +
+                ' -Dsonar.sourceEncoding=UTF-8'
 
             }
         }   
