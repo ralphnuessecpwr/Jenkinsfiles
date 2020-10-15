@@ -119,7 +119,7 @@ def getSonarResults(){
     def xmlSlurper          = new XmlSlurper()
     def testExecutions      = xmlSlurper.parseText(resultsFileContent)
 echo "Read XML"
-echo testExecutions.getClass()
+echo testExecutions.getClass().toString()
 
 echo "File Names"
 
