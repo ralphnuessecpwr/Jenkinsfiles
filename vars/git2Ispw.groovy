@@ -117,23 +117,13 @@ def getSonarResults(){
     def resultsList         = ''
     def resultsFileContent  = readFile(file: sonarResultsFile)
     resultsFileContent      = resultsFileContent.substring(resultsFileContent.indexOf('\n') + 1)
-    def xmlSlurper          = new XmlSlurper()
-
-echo "Parsing"    
-echo resultsFileContent
-
-    def testExecutions      = xmlSlurper.parseText(resultsFileContent)
-
-echo "Read XML"
-echo testExecutions.toString()
-
-echo "File Names"
+    def testExecutions      = new XmlSlurper().parseText(resultsFileContent)
 
     testExecutions.file.each {
-echo it.toString()
-echo "Path"
+
 echo it.@path.toString()
-        resultsList = resultsList + it.@path.replace('.result', '.sonar.xml') + ','
+        resultsList = resultsList + it.@path.toString().replace('.result', '.sonar.xml') + ','
+
     }
 
     return resultsList
