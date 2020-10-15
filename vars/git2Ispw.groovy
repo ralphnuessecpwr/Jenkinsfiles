@@ -119,12 +119,12 @@ def getSonarResults(){
     def resultsXmlText      = new XmlSlurper().parseText(resultsFileContent)
     
 echo "Read"
-echo resultsXmlText
+echo resultsXmlText.toString()
 
 echo "File Names"
 
     resultsXmlText.testExecutions.file.each {
-echo it
+echo it.toString()
 echo "Path"
 echo it.@path
         resultsList = resultsList + it.@path.replace('.result', '.sonar.xml') + ','
