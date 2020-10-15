@@ -226,7 +226,7 @@ def call(Map pipelineParms){
             withSonarQubeEnv(synchConfig.sonarServer) {
 
                 bat '"' + scannerHome + '/bin/sonar-scanner"' + 
-            //    ' -Dsonar.branch.name=${BRANCH_NAME}' +
+                ' -Dsonar.branch.name=' + executionGitBranch +
                 ' -Dsonar.projectKey=' + ispwConfig.ispwApplication.stream + '_' + ispwConfig.ispwApplication.application + 
                 ' -Dsonar.projectName=' + ispwConfig.ispwApplication.stream + '_' + ispwConfig.ispwApplication.application +
                 ' -Dsonar.projectVersion=1.0' +
