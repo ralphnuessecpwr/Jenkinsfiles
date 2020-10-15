@@ -7,9 +7,9 @@ String executionGitBranch
 String sharedLibName           
 String synchConfigFolder       
 String synchConfigFile         
-String ispwConfigFileName      
-String automaticBuildFileName  
-String changedProgramsFileName 
+String ispwConfigFile      
+String automaticBuildFile  
+String changedProgramsFile 
 String branchMappingString     
 String tttConfigFolder         
 String tttVtExecutionLoad      
@@ -37,9 +37,9 @@ def initialize(){
     sharedLibName           = 'RNU_Shared_Lib'
     synchConfigFolder       = 'git2ispw'
     synchConfigFile         = 'synchronizationconfig.yml'
-    ispwConfigFileName      = 'ispwconfig.yml'
-    automaticBuildFileName  = 'automaticBuildParams.txt'
-    changedProgramsFileName = 'changedPrograms.json'
+    ispwConfigFile          = 'ispwconfig.yml'
+    automaticBuildFile      = 'automaticBuildParams.txt'
+    changedProgramsFile     = 'changedPrograms.json'
     branchMappingString     = ''    
     tttConfigFolder         = ''
     tttVtExecutionLoad      = ''
@@ -53,7 +53,7 @@ def initialize(){
     // Read ispwconfig.yml
     // Strip the first line of ispwconfig.yml because readYaml can't handle the !! tag
     //*********************************************************************************
-    def tmpText     = readFile(file: ispwConfigFileName)
+    def tmpText     = readFile(file: ispwConfigFile)
 
     // remove the first line (i.e. the substring following the first carriage return '\n')
     tmpText         = tmpText.substring(tmpText.indexOf('\n') + 1)
@@ -64,7 +64,7 @@ def initialize(){
     //*********************************************************************************
     // Read synchconfig.yml
     //*********************************************************************************
-    def filePath    = synchConfigFolder + '/' + synchConfigFileName
+    def filePath    = synchConfigFolder + '/' + synchConfigFile
     def fileText    = libraryResource filePath
     
     synchConfig     = readYaml(text: fileText)
@@ -141,7 +141,7 @@ def call(Map pipelineParms){
                     stream:             ispwConfig.ispwApplication.stream,
                     app:                ispwConfig.ispwApplication.application, 
                     branchMapping:      branchMappingString,
-                    ispwConfigPath:     ispwConfigFileName, 
+                    ispwConfigPath:     ispwConfigFile, 
                     gitCredentialsId:   pipelineParms.gitCredentialsId, 
                     gitRepoUrl:         pipelineParms.gitRepoUrl
                 )
@@ -161,7 +161,7 @@ def call(Map pipelineParms){
         // have been changed and the pipeline was triggered for other changes (in configuration files)
         // These changes do not need to be "built".
         try {
-            automaticBuildInfo = readJSON(file: automaticBuildFileName)
+            automaticBuildInfo = readJSON(file: automaticBuildFile)
         }
         catch(Exception e) {
 
@@ -195,7 +195,7 @@ def call(Map pipelineParms){
                 folderPath:                         synchConfig.tttUtFolder, 
                 recursive:                          true, 
                 selectProgramsOption:               true, 
-                jsonFile:                           changedProgramsFileName,
+                jsonFile:                           changedProgramsFile,
                 haltPipelineOnFailure:              false,                 
                 stopIfTestFailsOrThresholdReached:  false,
                 collectCodeCoverage:                true,
