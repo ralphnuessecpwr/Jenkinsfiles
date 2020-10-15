@@ -120,13 +120,13 @@ echo "Reading " + sonarResultsFile
 echo "Read Text"
 echo resultsFileContent
 
-    def resultsXmlText      = new XmlSlurper().parseText(resultsFileContent)
+    def testExecutions      = new XmlSlurper().parseText(resultsFileContent)
 echo "Read XML"
-echo resultsXmlText.toString()
+echo testExecutions.toString()
 
 echo "File Names"
 
-    resultsXmlText.testExecutions.file.each {
+    testExecutions.file.each {
 echo it.toString()
 echo "Path"
 echo it.@path
