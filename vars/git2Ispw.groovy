@@ -35,19 +35,18 @@ def initialize(){
 
     executionGitBranch      = BRANCH_NAME
     sharedLibName           = 'RNU_Shared_Lib'
-    synchConfigFolder       = 'git2ispw'
-    synchConfigFile         = 'synchronizationconfig.yml'
-    ispwConfigFile          = 'ispwconfig.yml'
-    automaticBuildFile      = 'automaticBuildParams.txt'
-    changedProgramsFile     = 'changedPrograms.json'
+    synchConfigFile         = './git2ispw/synchronizationconfig.yml'
+    ispwConfigFile          = './ispwconfig.yml'
+    automaticBuildFile      = './automaticBuildParams.txt'
+    changedProgramsFile     = './changedPrograms.json'
     branchMappingString     = ''    
     tttConfigFolder         = ''
     tttVtExecutionLoad      = ''
     ccDdioOverrides         = ''
-    sonarCobolFolder        = 'MainframeSources/Cobol/Programs'
-    sonarCopybookFolder     = 'MainframeSources/Cobol/Copybooks'
-    sonarResultsFile        = 'generated.cli.suite.sonar.xml'
-    sonarCodeCoverageFile   = 'Coverage/CodeCoverage.xml'
+    sonarCobolFolder        = './MainframeSources/Cobol/Programs'
+    sonarCopybookFolder     = './MainframeSources/Cobol/Copybooks'
+    sonarResultsFile        = './TTTSonar/generated.cli.suite.sonar.xml'
+    sonarCodeCoverageFile   = './Coverage/CodeCoverage.xml'
 
     //*********************************************************************************
     // Read ispwconfig.yml
@@ -62,10 +61,9 @@ def initialize(){
     ispwConfig      = readYaml(text: tmpText)
 
     //*********************************************************************************
-    // Read synchconfig.yml
+    // Read synchconfig.yml from Shared Library resources folder
     //*********************************************************************************
-    def filePath    = synchConfigFolder + '/' + synchConfigFile
-    def fileText    = libraryResource filePath
+    def fileText    = libraryResource synchConfigFile
     
     synchConfig     = readYaml(text: fileText)
 
