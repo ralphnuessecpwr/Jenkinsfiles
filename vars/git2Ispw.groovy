@@ -275,7 +275,7 @@ def call(Map pipelineParms){
                 ' -Dsonar.tests="' + synchConfig.tttRootFolder + '"' +
                 ' -Dsonar.testExecutionReportPaths="' + sonarResults + '"' +
                 ' -Dsonar.coverageReportPaths=' + sonarCodeCoverageFile +
-                ' -Dsonar.ws.timeout = 120' +
+                ' -Dsonar.ws.timeout=120' +
                 ' -Dsonar.sourceEncoding=UTF-8'
 
             }
