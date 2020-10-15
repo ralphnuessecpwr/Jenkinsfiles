@@ -187,24 +187,24 @@ def call(Map pipelineParms){
             totaltest(
                 serverUrl:                          synchConfig.cesUrl, 
                 credentialsId:                      pipelineParms.hostCredentialsId, 
-                environmentId:                      synchConfig.tttNvtEnvironmentId, 
-                localConfig:                        false, 
+                environmentId:                      synchConfig.tttVtEnvironmentId, //synchConfig.tttNvtEnvironmentId, 
+                localConfig:                        true, //false,
                 localConfigLocation:                tttConfigFolder, 
-                folderPath:                         synchConfig.tttRootFolder + '/' + synchConfig.tttNvtFolder, 
+                folderPath:                         synchConfig.tttRootFolder + '/' + synchConfig.tttVtFolder, //synchConfig.tttNvtFolder, 
                 recursive:                          true, 
                 selectProgramsOption:               true, 
                 jsonFile:                           changedProgramsFile,
                 haltPipelineOnFailure:              false,                 
                 stopIfTestFailsOrThresholdReached:  false,
-                // collectCodeCoverage:                true,
-                // collectCCRepository:                pipelineParms.ccRepo,
-                // collectCCSystem:                    ispwConfig.ispwApplication.application,
-                // collectCCTestID:                    ccTestId,
-                // clearCodeCoverage:                  false,
-                // ccThreshold:                        pipelineParms.ccThreshold,     
+                collectCodeCoverage:                true,
+                collectCCRepository:                pipelineParms.ccRepo,
+                collectCCSystem:                    ispwConfig.ispwApplication.application,
+                collectCCTestID:                    ccTestId,
+                clearCodeCoverage:                  false,
+                ccThreshold:                        pipelineParms.ccThreshold,     
                 logLevel:                           'INFO'
             )
-        /*
+
             step([
                 $class:             'CodeCoverageBuilder', 
                 connectionId:       pipelineParms.hciConnectionId, 
@@ -217,7 +217,7 @@ def call(Map pipelineParms){
                     cc.ddio.overrides=${ccDdioOverrides}
                 """
              ])
-        */
+
         }
 
         stage("SonarQube Scan") {
@@ -237,7 +237,7 @@ def call(Map pipelineParms){
                 ' -Dsonar.cobol.copy.suffixes=cpy' +
                 ' -Dsonar.tests="' + synchConfig.tttRootFolder + '"' +
                 ' -Dsonar.testExecutionReportPaths=' + sonarResultsFile +
-//                ' -Dsonar.coverageReportPaths=' + sonarCodeCoverageFile +
+                ' -Dsonar.coverageReportPaths=' + sonarCodeCoverageFile +
                 ' -Dsonar.sourceEncoding=UTF-8'
 
             }
