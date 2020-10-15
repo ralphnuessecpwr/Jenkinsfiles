@@ -16,6 +16,8 @@ String sharedLibName
 String ccTestId
 String sonarCobolFolder
 String sonarCopybookFolder
+String sonarResultFile
+String sonarCodeCoverageFile
 
 def branchMapping             
 def ispwConfig
@@ -42,6 +44,8 @@ def initialize(){
     sharedLibName           = 'RNU_Shared_Lib'
     sonarCobolFolder        = 'MainframeSources/Cobol/Programs'
     sonarCopybookFolder     = 'MainframeSources/Cobol/Copybooks'
+    sonarResultsFolder      = 'generated.cli.suite.sonar.xml'
+    sonarCodeCoverageFile   = 'Coverage/CodeCoverage.xml'
 
     CC_TEST_ID_MAX_LEN      = 15
 
@@ -206,42 +210,20 @@ def call(Map pipelineParms){
 
             def scannerHome           = tool synchConfig.sonarScanner
 
-            // Find all of the Total Test results files that will be submitted to SonarQube
-            // If result files have been created, build the Sonar parameters to pass test results
-            def tttListOfResults      = findFiles(glob: 'TTTSonar/*.xml')   // Total Test SonarQube result files are stored in TTTSonar directory
-            def sqTestResultsParm     = ''
-
-            if(tttListOfResults != []) {
-            sqTestResultsParm       = ' -Dsonar.tests="${synchConfig.tttUtFolder}" -Dsonar.testExecutionReportPaths='
-
-            tttListOfResults.each {
-                sqTestResultsParm     = sqTestResultsParm + 'TTTSonar/' + it.name +  ',' // Append the results file to the parm string
-            }
-            }
-            
-            // Check if Code Coverage data has been cerated
-            // In that case, build the code coverage sonar parameter
-            def listOfCoverageFiles   = findFiles(glob: 'Coverage/CodeCoverage.xml')
-            def sqCoverageResultsParm = ''
-
-            if(listOfCoverageFiles != []) {
-            sqCoverageResultsParm = ' -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml'
-            }
-
             withSonarQubeEnv(synchConfig.sonarServer) {
 
                 bat '"' + scannerHome + '/bin/sonar-scanner"' + 
-            //    " -Dsonar.branch.name=${BRANCH_NAME}" +
-                sqTargetBranchParm +
-                sqTestResultsParm +
-                sqCoverageResultsParm +
-                " -Dsonar.projectKey=RNU_${ispwConfig.ispwApplication.application}" + 
-                " -Dsonar.projectName=RNU_${ispwConfig.ispwApplication.application}" + 
-                " -Dsonar.projectVersion=1.0" +
-                " -Dsonar.sources=${sonarCobolFolder}" + 
-                " -Dsonar.cobol.copy.directories=${sonarCopybookFolder}" +
-                " -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub" + 
-                " -Dsonar.cobol.copy.suffixes=cpy" +
+            //    ' -Dsonar.branch.name=${BRANCH_NAME}' +
+                ' -Dsonar.projectKey=' + ispwConfig.ispwApplication.stream + '_' + ispwConfig.ispwApplication.application + 
+                ' -Dsonar.projectName=' + ispwConfig.ispwApplication.stream + '_' + ispwConfig.ispwApplication.application +
+                ' -Dsonar.projectVersion=1.0' +
+                ' -Dsonar.sources=' + sonarCobolFolder + 
+                ' -Dsonar.cobol.copy.directories=' + sonarCopybookFolder +
+                ' -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub' + 
+                ' -Dsonar.cobol.copy.suffixes=cpy' +
+                ' -Dsonar.tests="' + synchConfig.tttUtFolder + '"' +
+                ' -Dsonar.testExecutionReportPaths=' + generated.cli.suite.sonar.xml +
+                ' -Dsonar.coverageReportPaths=' + sonarCodeCoverageFile +
                 " -Dsonar.sourceEncoding=UTF-8"
 
             }
