@@ -117,6 +117,7 @@ def initialize(){
 def setVtLoadlibrary(){
 
     def jclSkeleton = readFile(tttUtJclSkeletonFile).toString().replace('${loadlibraries}', tttVtExecutionLoad)
+
 echo "Writing new skeleton"
 echo jclSkeleton    
 
@@ -157,9 +158,9 @@ def call(Map pipelineParms){
 
             checkout scm
 
-            setVtLoadlibrary()
-
             initialize()
+
+            setVtLoadlibrary()
 
         }
 
