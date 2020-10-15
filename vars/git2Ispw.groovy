@@ -13,7 +13,8 @@ String automaticBuildFile
 String changedProgramsFile 
 String branchMappingString     
 String tttConfigFolder         
-String tttVtExecutionLoad      
+String tttVtExecutionLoad    
+String tttUtJclSkeletonFile  
 String ccDdioOverrides         
 String sonarCobolFolder        
 String sonarCopybookFolder     
@@ -102,9 +103,9 @@ def initialize(){
     // The .tttcfg file and JCL skeleton are located in the pipeline shared library, resources folder
     // Determine path relative to current workspace
     //*********************************************************************************
-    def tmpWorkspace = workspace.replace('\\', '/')
-
-    tttConfigFolder = '..' + tmpWorkspace.substring(tmpWorkspace.lastIndexOf('/')) + '@libs/' + sharedLibName + '/resources' + '/' + synchConfig.tttConfigFolder
+    def tmpWorkspace        = workspace.replace('\\', '/')
+    tttConfigFolder         = '..' + tmpWorkspace.substring(tmpWorkspace.lastIndexOf('/')) + '@libs/' + sharedLibName + '/resources' + '/' + synchConfig.tttConfigFolder
+    tttUtJclSkeletonFile    = tttConfigFolder + '/JCLSkeletons/TTTRUNNER.jcl' 
 
     //*********************************************************************************
     // Build Code Coverage Test ID from current branch name and build number
@@ -113,8 +114,21 @@ def initialize(){
     ccTestId = executionGitBranch.substring(executionGitBranch.length() - (CC_TEST_ID_MAX_LEN - BUILD_NUMBER.length() - 1)) + '_' + BUILD_NUMBER
 }
 
+def setVtLoadlibrary(){
+
+    def jclSkeleton = readFile(tttUtJclSkeletonFile).toString().replace('${loadlibraries}', tttVtExecutionLoad)
+echo "Writing new skeleton"
+echo jclSkeleton    
+
+    writeFile(
+        file:   tttUtJclSkeletonFile
+        text:   jclSkeleton
+    )    
+
+}
+
 def getSonarResults(){
-    
+
     def resultsList         = ''
     def resultsFileContent  = readFile(file: sonarResultsFile)
     resultsFileContent      = resultsFileContent.substring(resultsFileContent.indexOf('\n') + 1)
