@@ -115,14 +115,11 @@ def initialize(){
 
 def getSonarResults(){
     def resultsList         = ''
-echo "Reading " + sonarResultsFile
     def resultsFileContent  = readFile(file: sonarResultsFile)
-echo "Read Text"
-echo resultsFileContent
-
-    def testExecutions      = new XmlSlurper().parseText(resultsFileContent)
+    def xmlSlurper          = new XmlSlurper()
+    def testExecutions      = xmlSlurper.parseText(resultsFileContent)
 echo "Read XML"
-echo testExecutions.toString()
+echo testExecutions.getClass()
 
 echo "File Names"
 
