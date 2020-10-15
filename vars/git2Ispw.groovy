@@ -232,7 +232,7 @@ def call(Map pipelineParms){
                 ' -Dsonar.projectVersion=1.0' +
                 ' -Dsonar.sources=' + sonarCobolFolder + 
                 ' -Dsonar.cobol.copy.directories=' + sonarCopybookFolder +
-                ' -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub' + 
+                ' -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub,result' + 
                 ' -Dsonar.cobol.copy.suffixes=cpy' +
                 ' -Dsonar.tests="' + synchConfig.tttUtFolder + '"' +
                 ' -Dsonar.testExecutionReportPaths=' + sonarResultsFile +
