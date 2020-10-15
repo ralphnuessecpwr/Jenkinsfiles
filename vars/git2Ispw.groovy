@@ -49,7 +49,7 @@ def initialize(){
     sonarCopybookFolder     = './MainframeSources/Cobol/Copybooks'
     sonarResultsFile        = './TTTSonar/generated.cli.suite.sonar.xml'
     sonarCodeCoverageFile   = './Coverage/CodeCoverage.xml'
-    jUnitResultsFile        = './TTTUnit/generated.cli.suite.junit.xml
+    jUnitResultsFile        = './TTTUnit/generated.cli.suite.junit.xml'
 
     //*********************************************************************************
     // Read ispwconfig.yml
