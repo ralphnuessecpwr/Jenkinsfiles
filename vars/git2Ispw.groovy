@@ -118,7 +118,15 @@ def getSonarResults(){
     def resultsFileContent  = readFile(file: sonarResultsFile)
     def resultsXmlText      = new XmlSlurper().parseText(resultsFileContent)
     
+echo "Read"
+echo resultsXmlText
+
+echo "File Names"
+
     resultsXmlText.testExecutions.file.each {
+echo it
+echo "Path"
+echo it.@path
         resultsList = resultsList + it.@path.replace('.result', '.sonar.xml') + ','
     }
 
