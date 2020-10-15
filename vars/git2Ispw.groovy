@@ -187,7 +187,7 @@ def call(Map pipelineParms){
             totaltest(
                 serverUrl:                          synchConfig.cesUrl, 
                 credentialsId:                      pipelineParms.hostCredentialsId, 
-                environmentId:                      synchConfig.tttEnvironmentId, 
+                environmentId:                      synchConfig.tttNvtEnvironmentId, 
                 localConfig:                        false, 
                 localConfigLocation:                tttConfigFolder, 
                 folderPath:                         synchConfig.tttRootFolder + '/' + synchConfig.tttNvtFolder, 
