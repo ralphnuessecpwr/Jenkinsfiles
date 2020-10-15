@@ -2,6 +2,7 @@
 import hudson.model.*
 import hudson.EnvVars
 import java.net.URL
+import groovy.xml.XmlSlurper
 
 String executionGitBranch      
 String sharedLibName           
@@ -18,6 +19,7 @@ String sonarCobolFolder
 String sonarCopybookFolder     
 String sonarResultsFile        
 String sonarCodeCoverageFile   
+String jUnitResultsFile
 
 def branchMapping             
 def ispwConfig
@@ -47,6 +49,7 @@ def initialize(){
     sonarCopybookFolder     = './MainframeSources/Cobol/Copybooks'
     sonarResultsFile        = './TTTSonar/generated.cli.suite.sonar.xml'
     sonarCodeCoverageFile   = './Coverage/CodeCoverage.xml'
+    jUnitResultsFile        = './TTTUnit/generated.cli.suite.junit.xml
 
     //*********************************************************************************
     // Read ispwconfig.yml
@@ -108,6 +111,18 @@ def initialize(){
     // The test id must not be londer than 15 characters
     //*********************************************************************************
     ccTestId = executionGitBranch.substring(executionGitBranch.length() - (CC_TEST_ID_MAX_LEN - BUILD_NUMBER.length() - 1)) + '_' + BUILD_NUMBER
+}
+
+def getSonarResults(){
+    def resultsList         = ''
+    def resultsFileContent  = readFile(file: sonarResultsFile)
+    def resultsXmlText      = new XmlSlurper().parseText(resultsFileContent)
+    
+    resultsXmlText.testExecutions.file.each {
+        resultsList = resultsList + it.@path.replace('.result', '.sonar.xml') + ','
+    }
+
+    return resultsList
 }
 
 def call(Map pipelineParms){
@@ -218,11 +233,15 @@ def call(Map pipelineParms){
                 """
              ])
 
+            junit allowEmptyResults: true, testResults: jUnitResultsFile
+
         }
 
         stage("SonarQube Scan") {
 
             def scannerHome           = tool synchConfig.sonarScanner
+
+            sonarResults = getSonarResults()
 
             withSonarQubeEnv(synchConfig.sonarServer) {
 
@@ -236,7 +255,7 @@ def call(Map pipelineParms){
                 ' -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub,result' + 
                 ' -Dsonar.cobol.copy.suffixes=cpy' +
                 ' -Dsonar.tests="' + synchConfig.tttRootFolder + '"' +
-                ' -Dsonar.testExecutionReportPaths=' + sonarResultsFile +
+                ' -Dsonar.testExecutionReportPaths="' + sonarResults + '"' +
                 ' -Dsonar.coverageReportPaths=' + sonarCodeCoverageFile +
                 ' -Dsonar.sourceEncoding=UTF-8'
 
