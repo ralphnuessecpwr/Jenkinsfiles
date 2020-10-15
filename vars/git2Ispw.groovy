@@ -114,6 +114,7 @@ def initialize(){
 }
 
 def getSonarResults(){
+    
     def resultsList         = ''
     def resultsFileContent  = readFile(file: sonarResultsFile)
     resultsFileContent      = resultsFileContent.substring(resultsFileContent.indexOf('\n') + 1)
@@ -121,7 +122,6 @@ def getSonarResults(){
 
     testExecutions.file.each {
 
-echo it.@path.toString()
         resultsList = resultsList + it.@path.toString().replace('.result', '.sonar.xml') + ','
 
     }
