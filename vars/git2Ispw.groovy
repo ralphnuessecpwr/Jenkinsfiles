@@ -228,20 +228,10 @@ def call(Map pipelineParms){
             sqCoverageResultsParm = ' -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml'
             }
 
-            // For the master branch no target branch parm must be created
-            def sqTargetBranchParm
-
-            if(BRANCH_NAME == 'master') {
-            sqTargetBranchParm = ''
-            }
-            else {
-            sqTargetBranchParm = ' -Dsonar.branch.target=master'
-            }
-
             withSonarQubeEnv(synchConfig.sonarServer) {
 
                 bat '"' + scannerHome + '/bin/sonar-scanner"' + 
-                " -Dsonar.branch.name=${BRANCH_NAME}" +
+            //    " -Dsonar.branch.name=${BRANCH_NAME}" +
                 sqTargetBranchParm +
                 sqTestResultsParm +
                 sqCoverageResultsParm +
