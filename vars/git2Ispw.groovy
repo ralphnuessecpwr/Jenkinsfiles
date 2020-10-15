@@ -2,7 +2,7 @@
 import hudson.model.*
 import hudson.EnvVars
 import java.net.URL
-import groovy.xml.XmlSlurper
+import groovy.xml.*
 
 String executionGitBranch      
 String sharedLibName           
