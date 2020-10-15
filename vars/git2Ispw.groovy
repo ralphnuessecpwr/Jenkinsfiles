@@ -217,8 +217,9 @@ def call(Map pipelineParms){
                     cc.ddio.overrides=${ccDdioOverrides}
                 """
              ])
-        }
         */
+        }
+
         stage("SonarQube Scan") {
 
             def scannerHome           = tool synchConfig.sonarScanner
