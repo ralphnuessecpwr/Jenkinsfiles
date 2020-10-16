@@ -31,10 +31,12 @@ def programList
 def tttProjectList
 
 def CC_TEST_ID_MAX_LEN
+def CC_SYSTEM_ID_MAX_LEN
 
 def initialize(){
 
     CC_TEST_ID_MAX_LEN      = 15
+    CC_SYSTEM_ID_MAX_LEN    = 15
 
     executionGitBranch      = BRANCH_NAME
     sharedLibName           = 'RNU_Shared_Lib'
@@ -193,6 +195,7 @@ def call(Map pipelineParms){
                 return
 
             }
+
         }
 
         // If the automaticBuildParams.txt has not been created, it means no programs
@@ -220,6 +223,7 @@ def call(Map pipelineParms){
                 ispwAction:             'BuildTask', 
                 ispwRequestBody:        '''buildautomatically = true'''
             )
+
         }
 
         stage('Execute Unit Tests') {
@@ -227,10 +231,10 @@ def call(Map pipelineParms){
             totaltest(
                 serverUrl:                          synchConfig.cesUrl, 
                 credentialsId:                      pipelineParms.hostCredentialsId, 
-                environmentId:                      synchConfig.tttVtEnvironmentId, //synchConfig.tttNvtEnvironmentId, 
-                localConfig:                        true, //false,
+                environmentId:                      synchConfig.tttVtEnvironmentId,
+                localConfig:                        true, 
                 localConfigLocation:                tttConfigFolder, 
-                folderPath:                         synchConfig.tttRootFolder + '/' + synchConfig.tttVtFolder, //synchConfig.tttNvtFolder, 
+                folderPath:                         synchConfig.tttRootFolder + '/' + synchConfig.tttVtFolder, 
                 recursive:                          true, 
                 selectProgramsOption:               true, 
                 jsonFile:                           changedProgramsFile,
@@ -245,23 +249,47 @@ def call(Map pipelineParms){
                 logLevel:                           'INFO'
             )
 
-            step([
-                $class:             'CodeCoverageBuilder', 
-                connectionId:       pipelineParms.hciConnectionId, 
-                credentialsId:      pipelineParms.hostCredentialsId,
-                analysisProperties: """
-                    cc.sources=${synchConfig.ccSources}
-                    cc.repos=${pipelineParms.ccRepo}
-                    cc.system=${ccSystemId}
-                    cc.test=${ccTestId}
-                    cc.ddio.overrides=${ccDdioOverrides}
-                """
-             ])
-
-            junit allowEmptyResults: true, testResults: jUnitResultsFile
-
         }
 
+        if(pipelineParms.branchType == 'master') {
+            stage('Execute Module Integration Tests') {
+
+                totaltest(
+                    serverUrl:                          synchConfig.cesUrl, 
+                    credentialsId:                      pipelineParms.hostCredentialsId, 
+                    environmentId:                      synchConfig.tttNvtEnvironmentId, 
+                    localConfig:                        false,
+                    localConfigLocation:                tttConfigFolder, 
+                    folderPath:                         synchConfig.tttRootFolder + '/' + synchConfig.tttNvtFolder, 
+                    recursive:                          true, 
+                    selectProgramsOption:               true, 
+                    jsonFile:                           changedProgramsFile,
+                    haltPipelineOnFailure:              false,                 
+                    stopIfTestFailsOrThresholdReached:  false,
+                    collectCodeCoverage:                true,
+                    collectCCRepository:                pipelineParms.ccRepo,
+                    collectCCSystem:                    ccSystemId,
+                    collectCCTestID:                    ccTestId,
+                    clearCodeCoverage:                  false,
+                    ccThreshold:                        pipelineParms.ccThreshold,     
+                    logLevel:                           'INFO'
+                )
+            }
+        }
+
+        step([
+            $class:             'CodeCoverageBuilder', 
+            connectionId:       pipelineParms.hciConnectionId, 
+            credentialsId:      pipelineParms.hostCredentialsId,
+            analysisProperties: """
+                cc.sources=${synchConfig.ccSources}
+                cc.repos=${pipelineParms.ccRepo}
+                cc.system=${ccSystemId}
+                cc.test=${ccTestId}
+                cc.ddio.overrides=${ccDdioOverrides}
+            """
+        ])
+            
         stage("SonarQube Scan") {
 
             def scannerHome = tool synchConfig.sonarScanner
@@ -286,6 +314,5 @@ def call(Map pipelineParms){
 
             }
         }   
-
     }
 }

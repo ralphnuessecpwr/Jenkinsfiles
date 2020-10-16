@@ -14,7 +14,7 @@ branchInfo:
   bug:
     ispwBranch:       EMR
     mapRule:          per-branch
-    loadLib:          SALESSUP.<ispwApplication>.STG.LOAD
+    loadLib:          SALESSUP.<ispwApplication>.EMR.LOAD
   master:
     ispwBranch:       STG
     mapRule:          per-branch
