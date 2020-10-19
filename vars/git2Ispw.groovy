@@ -51,6 +51,7 @@ def initialize(){
     sonarCobolFolder        = './MainframeSources/Cobol/Programs'
     sonarCopybookFolder     = './MainframeSources/Cobol/Copybooks'
     sonarResultsFile        = './TTTSonar/generated.cli.suite.sonar.xml'
+    sonarResultsFileUT      = './TTTSonar/generated.cli.UT.suite.sonar.xml'
     sonarCodeCoverageFile   = './Coverage/CodeCoverage.xml'
     jUnitResultsFile        = './TTTUnit/generated.cli.suite.junit.xml'
 
@@ -134,10 +135,10 @@ def setVtLoadlibrary(){
 
 }
 
-def getSonarResults(){
+def getSonarResults(resultsFile){
 
     def resultsList         = ''
-    def resultsFileContent  = readFile(file: sonarResultsFile)
+    def resultsFileContent  = readFile(file: resultsFile)
     resultsFileContent      = resultsFileContent.substring(resultsFileContent.indexOf('\n') + 1)
     def testExecutions      = new XmlSlurper().parseText(resultsFileContent)
 
@@ -252,6 +253,9 @@ def call(Map pipelineParms){
         }
 
         if(pipelineParms.branchType == 'master') {
+
+            bat 'ren ' + sonarResultsFile + ' ' + sonarResultsFileUT
+
             stage('Execute Module Integration Tests') {
 
                 totaltest(
@@ -293,7 +297,7 @@ def call(Map pipelineParms){
         stage("SonarQube Scan") {
 
             def scannerHome = tool synchConfig.sonarScanner
-            sonarResults    = getSonarResults()
+            sonarResults    = getSonarResults(sonarResultsFileUT)
 
             withSonarQubeEnv(synchConfig.sonarServer) {
 
