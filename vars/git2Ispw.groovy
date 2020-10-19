@@ -50,8 +50,9 @@ def initialize(){
     ccDdioOverrides         = ''
     sonarCobolFolder        = './MainframeSources/Cobol/Programs'
     sonarCopybookFolder     = './MainframeSources/Cobol/Copybooks'
-    sonarResultsFile        = './TTTSonar/generated.cli.suite.sonar.xml'
-    sonarResultsFileUT      = './TTTSonar/generated.cli.UT.suite.sonar.xml'
+    sonarResultsFolder      = './TTTSonar'
+    sonarResultsFile        = 'generated.cli.suite.sonar.xml'
+    sonarResultsFileUT      = 'generated.cli.UT.suite.sonar.xml'
     sonarCodeCoverageFile   = './Coverage/CodeCoverage.xml'
     jUnitResultsFile        = './TTTUnit/generated.cli.suite.junit.xml'
 
@@ -138,7 +139,7 @@ def setVtLoadlibrary(){
 def getSonarResults(resultsFile){
 
     def resultsList         = ''
-    def resultsFileContent  = readFile(file: resultsFile)
+    def resultsFileContent  = readFile(file: sonarResultsFolder + '/' + resultsFile)
     resultsFileContent      = resultsFileContent.substring(resultsFileContent.indexOf('\n') + 1)
     def testExecutions      = new XmlSlurper().parseText(resultsFileContent)
 
@@ -252,7 +253,11 @@ def call(Map pipelineParms){
 
         }
 
-        bat 'ren ' + sonarResultsFile + ' ' + sonarResultsFileUT
+        bat label:  '', 
+            script: """
+                cd ${sonarResultsFolder}
+                ren ${sonarResultsFile} ${sonarResultsFileUT}
+            """
 
         if(pipelineParms.branchType == 'master') {
 
