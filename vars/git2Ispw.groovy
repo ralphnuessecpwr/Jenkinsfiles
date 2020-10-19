@@ -252,9 +252,9 @@ def call(Map pipelineParms){
 
         }
 
-        if(pipelineParms.branchType == 'master') {
+        bat 'ren ' + sonarResultsFile + ' ' + sonarResultsFileUT
 
-            bat 'ren ' + sonarResultsFile + ' ' + sonarResultsFileUT
+        if(pipelineParms.branchType == 'master') {
 
             stage('Execute Module Integration Tests') {
 
