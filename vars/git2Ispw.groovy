@@ -40,7 +40,7 @@ def initialize(){
 
     executionGitBranch      = BRANCH_NAME
     sharedLibName           = 'RNU_Shared_Lib'
-    synchConfigFile         = './git2ispw/synchronizationconfig.yml'
+    synchConfigFile         = './git2ispw/synchronization.yml'
     ispwConfigFile          = './ispwconfig.yml'
     automaticBuildFile      = './automaticBuildParams.txt'
     changedProgramsFile     = './changedPrograms.json'

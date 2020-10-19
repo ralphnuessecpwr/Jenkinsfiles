@@ -16,7 +16,7 @@ branchInfo:
     mapRule:          per-branch
     loadLib:          SALESSUP.<ispwApplication>.EMR.LOAD
   master:
-    ispwBranch:       STG
+    ispwBranch:       QA3
     mapRule:          per-branch
     loadLib:          SALESSUP.<ispwApplication>.STG.LOAD
 cesUrl:               http://localhost:48226
