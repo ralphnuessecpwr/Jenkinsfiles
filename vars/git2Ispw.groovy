@@ -85,7 +85,7 @@ def initialize(){
         branchMappingString = branchMappingString + it.key + '** => ' + it.value.ispwBranch + ',' + it.value.mapRule + '\n'
 
         if(executionGitBranch.contains(it.key)) {
-            tttVtExecutionLoad = loadLibraryPattern.replace('<ispwApplication>', ispwConfig.ispwApplication.application).replace('<ispwBranch>', it.ispwBranch)
+            tttVtExecutionLoad = loadLibraryPattern.replace('<ispwApplication>', ispwConfig.ispwApplication.application).replace('<ispwBranch>', it.value.ispwBranch)
         }
     }
 
