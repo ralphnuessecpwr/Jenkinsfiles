@@ -55,6 +55,7 @@ def initialize(){
     sonarResultsFileUT      = 'generated.cli.UT.suite.sonar.xml'
     sonarCodeCoverageFile   = './Coverage/CodeCoverage.xml'
     jUnitResultsFile        = './TTTUnit/generated.cli.suite.junit.xml'
+    loadLibraryPattern      = 'SALESSUP.<ispwApplication>.<ispwBranch>.LOAD'
 
     //*********************************************************************************
     // Read ispwconfig.yml
@@ -84,7 +85,7 @@ def initialize(){
         branchMappingString = branchMappingString + it.key + '** => ' + it.value.ispwBranch + ',' + it.value.mapRule + '\n'
 
         if(executionGitBranch.contains(it.key)) {
-            tttVtExecutionLoad = it.value.loadLib.replace('<ispwApplication>', ispwConfig.ispwApplication.application)
+            tttVtExecutionLoad = loadLibraryPattern.replace('<ispwApplication>', ispwConfig.ispwApplication.application).replace('<ispwBranch>', it.ispwBranch)
         }
     }
 
