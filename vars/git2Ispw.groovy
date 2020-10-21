@@ -76,33 +76,25 @@ def initialize(){
     
     synchConfig     = readYaml(text: fileText)
 
-    if(pipelineParms.branchType == 'local') {
+    //*********************************************************************************
+    // Build branch mapping string to be used as parameter in the gitToIspwIntegration
+    // Build load library name from configuration, replacing application marker by actual name
+    //*********************************************************************************
+    synchConfig.branchInfo.each {
 
-        executionBranch     = 'local'
-        tttVtExecutionLoad  = loadLibraryPattern.replace('<ispwApplication>', ispwConfig.ispwApplication.application).replace('<ispwLevel>', pipelineParms.ispwLevel)
+        branchMappingString = branchMappingString + it.key + '** => ' + it.value.ispwLevel + ',' + it.value.mapRule + '\n'
 
+        if(executionBranch.contains(it.key)) {
+            tttVtExecutionLoad = loadLibraryPattern.replace('<ispwApplication>', ispwConfig.ispwApplication.application).replace('<ispwLevel>', it.value.ispwLevel)
+        }
     }
-    else {
-        //*********************************************************************************
-        // Build branch mapping string to be used as parameter in the gitToIspwIntegration
-        // Build load library name from configuration, replacing application marker by actual name
-        //*********************************************************************************
-        synchConfig.branchInfo.each {
 
-            branchMappingString = branchMappingString + it.key + '** => ' + it.value.ispwLevel + ',' + it.value.mapRule + '\n'
-
-            if(executionBranch.contains(it.key)) {
-                tttVtExecutionLoad = loadLibraryPattern.replace('<ispwApplication>', ispwConfig.ispwApplication.application).replace('<ispwLevel>', it.value.ispwLevel)
-            }
-        }
-
-        //*********************************************************************************
-        // If load library name is empty the branch name could not be mapped
-        //*********************************************************************************
-        if(tttVtExecutionLoad == ''){
-            error "No branch mapping for branch ${executionBranch} was found. Execution will be aborted.\n" +
-                "Correct the branch name to reflect naming conventions."
-        }
+    //*********************************************************************************
+    // If load library name is empty the branch name could not be mapped
+    //*********************************************************************************
+    if(tttVtExecutionLoad == ''){
+        error "No branch mapping for branch ${executionBranch} was found. Execution will be aborted.\n" +
+            "Correct the branch name to reflect naming conventions."
     }
 
     //*********************************************************************************
