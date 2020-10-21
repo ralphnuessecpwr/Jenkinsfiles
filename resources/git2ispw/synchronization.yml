@@ -1,18 +1,18 @@
 branchInfo:
   feature/FT1:
-    ispwBranch:       QA1
+    ispwLevel:        QA1
     mapRule:          per-branch
   feature/FT2:
-    ispwBranch:       QA2
+    ispwLevel:        QA2
     mapRule:          per-branch
   feature/FT3:
-    ispwBranch:       QA3
+    ispwLevel:        QA3
     mapRule:          per-branch
   bug:
-    ispwBranch:       EMR
+    ispwLevel:        EMR
     mapRule:          per-branch
   master:
-    ispwBranch:       STG
+    ispwLevel:        STG
     mapRule:          per-branch
 cesUrl:               http://localhost:48226
 tttVtEnvironmentId:   192.168.96.130:16196

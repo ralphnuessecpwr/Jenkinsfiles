@@ -4,7 +4,7 @@ import hudson.EnvVars
 import java.net.URL
 import groovy.xml.*
 
-String executionGitBranch      
+String executionBranch      
 String sharedLibName           
 String synchConfigFolder       
 String synchConfigFile         
@@ -38,7 +38,7 @@ def initialize(){
     CC_TEST_ID_MAX_LEN      = 15
     CC_SYSTEM_ID_MAX_LEN    = 15
 
-    executionGitBranch      = BRANCH_NAME
+    executionBranch      = BRANCH_NAME
     sharedLibName           = 'RNU_Shared_Lib'
     synchConfigFile         = './git2ispw/synchronization.yml'
     ispwConfigFile          = './ispwconfig.yml'
@@ -55,7 +55,7 @@ def initialize(){
     sonarResultsFileUT      = 'generated.cli.UT.suite.sonar.xml'
     sonarCodeCoverageFile   = './Coverage/CodeCoverage.xml'
     jUnitResultsFile        = './TTTUnit/generated.cli.suite.junit.xml'
-    loadLibraryPattern      = 'SALESSUP.<ispwApplication>.<ispwBranch>.LOAD'
+    loadLibraryPattern      = 'SALESSUP.<ispwApplication>.<ispwLevel>.LOAD'
 
     //*********************************************************************************
     // Read ispwconfig.yml
@@ -76,25 +76,33 @@ def initialize(){
     
     synchConfig     = readYaml(text: fileText)
 
-    //*********************************************************************************
-    // Build branch mapping string to be used as parameter in the gitToIspwIntegration
-    // Build load library name from configuration, replacing application marker by actual name
-    //*********************************************************************************
-    synchConfig.branchInfo.each {
+    if(pipelineParms.branchType == 'local') {
 
-        branchMappingString = branchMappingString + it.key + '** => ' + it.value.ispwBranch + ',' + it.value.mapRule + '\n'
+        executionBranch     = 'local'
+        tttVtExecutionLoad  = loadLibraryPattern.replace('<ispwApplication>', ispwConfig.ispwApplication.application).replace('<ispwLevel>', pipelineParms.ispwLevel)
 
-        if(executionGitBranch.contains(it.key)) {
-            tttVtExecutionLoad = loadLibraryPattern.replace('<ispwApplication>', ispwConfig.ispwApplication.application).replace('<ispwBranch>', it.value.ispwBranch)
-        }
     }
+    else {
+        //*********************************************************************************
+        // Build branch mapping string to be used as parameter in the gitToIspwIntegration
+        // Build load library name from configuration, replacing application marker by actual name
+        //*********************************************************************************
+        synchConfig.branchInfo.each {
 
-    //*********************************************************************************
-    // If load library name is empty the branch name could not be mapped
-    //*********************************************************************************
-    if(tttVtExecutionLoad == ''){
-        error "No branch mapping for branch ${executionGitBranch} was found. Execution will be aborted.\n" +
-            "Correct the branch name to reflect naming conventions."
+            branchMappingString = branchMappingString + it.key + '** => ' + it.value.ispwLevel + ',' + it.value.mapRule + '\n'
+
+            if(executionBranch.contains(it.key)) {
+                tttVtExecutionLoad = loadLibraryPattern.replace('<ispwApplication>', ispwConfig.ispwApplication.application).replace('<ispwLevel>', it.value.ispwLevel)
+            }
+        }
+
+        //*********************************************************************************
+        // If load library name is empty the branch name could not be mapped
+        //*********************************************************************************
+        if(tttVtExecutionLoad == ''){
+            error "No branch mapping for branch ${executionBranch} was found. Execution will be aborted.\n" +
+                "Correct the branch name to reflect naming conventions."
+        }
     }
 
     //*********************************************************************************
@@ -116,11 +124,11 @@ def initialize(){
     // Build Code Coverage System ID from current branch, System ID must not be longer than 15 characters
     // Build Code Coverage Test ID from Build Number
     //*********************************************************************************
-    if(executionGitBranch.length() > CC_SYSTEM_ID_MAX_LEN) {
-        ccSystemId  = executionGitBranch.substring(executionGitBranch.length() - CC_SYSTEM_ID_MAX_LEN)
+    if(executionBranch.length() > CC_SYSTEM_ID_MAX_LEN) {
+        ccSystemId  = executionBranch.substring(executionBranch.length() - CC_SYSTEM_ID_MAX_LEN)
     }
     else {
-        ccSystemId  = executionGitBranch
+        ccSystemId  = executionBranch
     }
     
     ccTestId    = BUILD_NUMBER
@@ -308,7 +316,7 @@ def call(Map pipelineParms){
             withSonarQubeEnv(synchConfig.sonarServer) {
 
                 bat '"' + scannerHome + '/bin/sonar-scanner"' + 
-                ' -Dsonar.branch.name=' + executionGitBranch +
+                ' -Dsonar.branch.name=' + executionBranch +
                 ' -Dsonar.projectKey=' + ispwConfig.ispwApplication.stream + '_' + ispwConfig.ispwApplication.application + 
                 ' -Dsonar.projectName=' + ispwConfig.ispwApplication.stream + '_' + ispwConfig.ispwApplication.application +
                 ' -Dsonar.projectVersion=1.0' +
