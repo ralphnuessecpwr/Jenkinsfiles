@@ -33,6 +33,180 @@ def tttProjectList
 def CC_TEST_ID_MAX_LEN
 def CC_SYSTEM_ID_MAX_LEN
 
+def call(Map pipelineParms){
+
+    //**********************************************************************
+    // Start of Script
+    //**********************************************************************
+    node {
+        stage ('Checkout and initialize') {
+            // Clear workspace
+            dir('./') {
+                deleteDir()
+            }
+
+            checkout scm
+
+            initialize()
+
+            setVtLoadlibrary()
+
+        }
+
+        stage('Load code to mainframe') {
+
+            try {
+
+                gitToIspwIntegration( 
+                    connectionId:       pipelineParms.hciConnectionId,                    
+                    credentialsId:      pipelineParms.hostCredentialsId,                     
+                    runtimeConfig:      ispwConfig.ispwApplication.runtimeConfig,
+                    stream:             ispwConfig.ispwApplication.stream,
+                    app:                ispwConfig.ispwApplication.application, 
+                    branchMapping:      branchMappingString,
+                    ispwConfigPath:     ispwConfigFile, 
+                    gitCredentialsId:   pipelineParms.gitCredentialsId, 
+                    gitRepoUrl:         pipelineParms.gitRepoUrl
+                )
+
+            }
+            catch(Exception e) {
+
+                echo "No Synchronisation to the mainframe.\n"
+                echo e.toString()
+                currentBuild.result = 'FAILURE'
+                return
+
+            }
+
+        }
+
+        // If the automaticBuildParams.txt has not been created, it means no programs
+        // have been changed and the pipeline was triggered for other changes (in configuration files)
+        // These changes do not need to be "built".
+        try {
+            automaticBuildInfo = readJSON(file: automaticBuildFile)
+        }
+        catch(Exception e) {
+
+            echo "No Automatic Build Params file was found.\n" +
+            "Meaning, no programs have been changed.\n" +
+            "Job gets ended prematurely, but successfully."
+            currentBuild.result = 'SUCCESS'
+            return
+
+        }
+
+        stage('Build mainframe code') {
+
+            ispwOperation(
+                connectionId:           pipelineParms.hciConnectionId, 
+                credentialsId:          pipelineParms.cesCredentialsId,       
+                consoleLogResponseBody: true, 
+                ispwAction:             'BuildTask', 
+                ispwRequestBody:        '''buildautomatically = true'''
+            )
+
+        }
+
+        stage('Execute Unit Tests') {
+
+            totaltest(
+                serverUrl:                          synchConfig.cesUrl, 
+                credentialsId:                      pipelineParms.hostCredentialsId, 
+                environmentId:                      synchConfig.tttVtEnvironmentId,
+                localConfig:                        true, 
+                localConfigLocation:                tttConfigFolder, 
+                folderPath:                         synchConfig.tttRootFolder + '/' + synchConfig.tttVtFolder, 
+                recursive:                          true, 
+                selectProgramsOption:               true, 
+                jsonFile:                           changedProgramsFile,
+                haltPipelineOnFailure:              false,                 
+                stopIfTestFailsOrThresholdReached:  false,
+                collectCodeCoverage:                true,
+                collectCCRepository:                pipelineParms.ccRepo,
+                collectCCSystem:                    ccSystemId,
+                collectCCTestID:                    ccTestId,
+                clearCodeCoverage:                  false,
+                ccThreshold:                        pipelineParms.ccThreshold,     
+                logLevel:                           'INFO'
+            )
+
+        }
+
+        bat label:  'Rename', 
+            script: """
+                cd ${sonarResultsFolder}
+                ren ${sonarResultsFile} ${sonarResultsFileUT}
+            """
+
+        if(pipelineParms.branchType == 'master') {
+
+            stage('Execute Module Integration Tests') {
+
+                totaltest(
+                    serverUrl:                          synchConfig.cesUrl, 
+                    credentialsId:                      pipelineParms.hostCredentialsId, 
+                    environmentId:                      synchConfig.tttNvtEnvironmentId, 
+                    localConfig:                        false,
+                    localConfigLocation:                tttConfigFolder, 
+                    folderPath:                         synchConfig.tttRootFolder + '/' + synchConfig.tttNvtFolder, 
+                    recursive:                          true, 
+                    selectProgramsOption:               true, 
+                    jsonFile:                           changedProgramsFile,
+                    haltPipelineOnFailure:              false,                 
+                    stopIfTestFailsOrThresholdReached:  false,
+                    collectCodeCoverage:                true,
+                    collectCCRepository:                pipelineParms.ccRepo,
+                    collectCCSystem:                    ccSystemId,
+                    collectCCTestID:                    ccTestId,
+                    clearCodeCoverage:                  false,
+                    ccThreshold:                        pipelineParms.ccThreshold,     
+                    logLevel:                           'INFO'
+                )
+            }
+        }
+
+        step([
+            $class:             'CodeCoverageBuilder', 
+            connectionId:       pipelineParms.hciConnectionId, 
+            credentialsId:      pipelineParms.hostCredentialsId,
+            analysisProperties: """
+                cc.sources=${synchConfig.ccSources}
+                cc.repos=${pipelineParms.ccRepo}
+                cc.system=${ccSystemId}
+                cc.test=${ccTestId}
+                cc.ddio.overrides=${ccDdioOverrides}
+            """
+        ])
+            
+        stage("SonarQube Scan") {
+
+            def scannerHome = tool synchConfig.sonarScanner
+            sonarResults    = getSonarResults(sonarResultsFileUT)
+
+            withSonarQubeEnv(synchConfig.sonarServer) {
+
+                bat '"' + scannerHome + '/bin/sonar-scanner"' + 
+                ' -Dsonar.branch.name=' + executionBranch +
+                ' -Dsonar.projectKey=' + ispwConfig.ispwApplication.stream + '_' + ispwConfig.ispwApplication.application + 
+                ' -Dsonar.projectName=' + ispwConfig.ispwApplication.stream + '_' + ispwConfig.ispwApplication.application +
+                ' -Dsonar.projectVersion=1.0' +
+                ' -Dsonar.sources=' + sonarCobolFolder + 
+                ' -Dsonar.cobol.copy.directories=' + sonarCopybookFolder +
+                ' -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub,result' + 
+                ' -Dsonar.cobol.copy.suffixes=cpy' +
+                ' -Dsonar.tests="' + synchConfig.tttRootFolder + '"' +
+                ' -Dsonar.testExecutionReportPaths="' + sonarResults + '"' +
+                ' -Dsonar.coverageReportPaths=' + sonarCodeCoverageFile +
+                ' -Dsonar.ws.timeout=240' +
+                ' -Dsonar.sourceEncoding=UTF-8'
+
+            }
+        }   
+    }
+}
+
 def initialize(){
 
     CC_TEST_ID_MAX_LEN      = 15
@@ -151,178 +325,4 @@ def getSonarResults(resultsFile){
     }
 
     return resultsList
-}
-
-def call(Map pipelineParms){
-
-    //**********************************************************************
-    // Start of Script
-    //**********************************************************************
-    node {
-        stage ('Checkout and initialize') {
-            // Clear workspace
-            dir('./') {
-                deleteDir()
-            }
-
-            checkout scm
-
-            initialize()
-
-            setVtLoadlibrary()
-
-        }
-
-        stage('Load code to mainframe') {
-
-            try {
-
-                gitToIspwIntegration( 
-                    connectionId:       pipelineParms.hciConnectionId,                    
-                    credentialsId:      pipelineParms.hostCredentialsId,                     
-                    runtimeConfig:      ispwConfig.ispwApplication.runtimeConfig,
-                    stream:             ispwConfig.ispwApplication.stream,
-                    app:                ispwConfig.ispwApplication.application, 
-                    branchMapping:      branchMappingString,
-                    ispwConfigPath:     ispwConfigFile, 
-                    gitCredentialsId:   pipelineParms.gitCredentialsId, 
-                    gitRepoUrl:         pipelineParms.gitRepoUrl
-                )
-
-            }
-            catch(Exception e) {
-
-                echo "No Synchronisation to the mainframe.\n"
-                echo e.toString()
-                currentBuild.result = 'FAILURE'
-                return
-
-            }
-
-        }
-
-        // If the automaticBuildParams.txt has not been created, it means no programs
-        // have been changed and the pipeline was triggered for other changes (in configuration files)
-        // These changes do not need to be "built".
-        try {
-            automaticBuildInfo = readJSON(file: automaticBuildFile)
-        }
-        catch(Exception e) {
-
-            echo "No Automatic Build Params file was found.\n" +
-            "Meaning, no programs have been changed.\n" +
-            "Job gets ended prematurely, but successfully."
-            currentBuild.result = 'SUCCESS'
-            return
-
-        }
-
-        stage('Build mainframe code') {
-
-            ispwOperation(
-                connectionId:           pipelineParms.hciConnectionId, 
-                credentialsId:          pipelineParms.cesCredentialsId,       
-                consoleLogResponseBody: true, 
-                ispwAction:             'BuildTask', 
-                ispwRequestBody:        '''buildautomatically = true'''
-            )
-
-        }
-
-        stage('Execute Unit Tests') {
-
-            totaltest(
-                serverUrl:                          synchConfig.cesUrl, 
-                credentialsId:                      pipelineParms.hostCredentialsId, 
-                environmentId:                      synchConfig.tttVtEnvironmentId,
-                localConfig:                        true, 
-                localConfigLocation:                tttConfigFolder, 
-                folderPath:                         synchConfig.tttRootFolder + '/' + synchConfig.tttVtFolder, 
-                recursive:                          true, 
-                selectProgramsOption:               true, 
-                jsonFile:                           changedProgramsFile,
-                haltPipelineOnFailure:              false,                 
-                stopIfTestFailsOrThresholdReached:  false,
-                collectCodeCoverage:                true,
-                collectCCRepository:                pipelineParms.ccRepo,
-                collectCCSystem:                    ccSystemId,
-                collectCCTestID:                    ccTestId,
-                clearCodeCoverage:                  false,
-                ccThreshold:                        pipelineParms.ccThreshold,     
-                logLevel:                           'INFO'
-            )
-
-        }
-
-        bat label:  '', 
-            script: """
-                cd ${sonarResultsFolder}
-                ren ${sonarResultsFile} ${sonarResultsFileUT}
-            """
-
-        if(pipelineParms.branchType == 'master') {
-
-            stage('Execute Module Integration Tests') {
-
-                totaltest(
-                    serverUrl:                          synchConfig.cesUrl, 
-                    credentialsId:                      pipelineParms.hostCredentialsId, 
-                    environmentId:                      synchConfig.tttNvtEnvironmentId, 
-                    localConfig:                        false,
-                    localConfigLocation:                tttConfigFolder, 
-                    folderPath:                         synchConfig.tttRootFolder + '/' + synchConfig.tttNvtFolder, 
-                    recursive:                          true, 
-                    selectProgramsOption:               true, 
-                    jsonFile:                           changedProgramsFile,
-                    haltPipelineOnFailure:              false,                 
-                    stopIfTestFailsOrThresholdReached:  false,
-                    collectCodeCoverage:                true,
-                    collectCCRepository:                pipelineParms.ccRepo,
-                    collectCCSystem:                    ccSystemId,
-                    collectCCTestID:                    ccTestId,
-                    clearCodeCoverage:                  false,
-                    ccThreshold:                        pipelineParms.ccThreshold,     
-                    logLevel:                           'INFO'
-                )
-            }
-        }
-
-        step([
-            $class:             'CodeCoverageBuilder', 
-            connectionId:       pipelineParms.hciConnectionId, 
-            credentialsId:      pipelineParms.hostCredentialsId,
-            analysisProperties: """
-                cc.sources=${synchConfig.ccSources}
-                cc.repos=${pipelineParms.ccRepo}
-                cc.system=${ccSystemId}
-                cc.test=${ccTestId}
-                cc.ddio.overrides=${ccDdioOverrides}
-            """
-        ])
-            
-        stage("SonarQube Scan") {
-
-            def scannerHome = tool synchConfig.sonarScanner
-            sonarResults    = getSonarResults(sonarResultsFileUT)
-
-            withSonarQubeEnv(synchConfig.sonarServer) {
-
-                bat '"' + scannerHome + '/bin/sonar-scanner"' + 
-                ' -Dsonar.branch.name=' + executionBranch +
-                ' -Dsonar.projectKey=' + ispwConfig.ispwApplication.stream + '_' + ispwConfig.ispwApplication.application + 
-                ' -Dsonar.projectName=' + ispwConfig.ispwApplication.stream + '_' + ispwConfig.ispwApplication.application +
-                ' -Dsonar.projectVersion=1.0' +
-                ' -Dsonar.sources=' + sonarCobolFolder + 
-                ' -Dsonar.cobol.copy.directories=' + sonarCopybookFolder +
-                ' -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub,result' + 
-                ' -Dsonar.cobol.copy.suffixes=cpy' +
-                ' -Dsonar.tests="' + synchConfig.tttRootFolder + '"' +
-                ' -Dsonar.testExecutionReportPaths="' + sonarResults + '"' +
-                ' -Dsonar.coverageReportPaths=' + sonarCodeCoverageFile +
-                ' -Dsonar.ws.timeout=240' +
-                ' -Dsonar.sourceEncoding=UTF-8'
-
-            }
-        }   
-    }
 }
