@@ -16,7 +16,7 @@
     </jclproperties>
   </Connection>
   <Connection>
-    <id>192.168.96.130:16196</id>
+    <id>5cee98c2d3142c1f90a4976d</id>
     <ipaddress>192.168.96.130</ipaddress>
     <port>16196</port>
     <socketType>HCI</socketType>
