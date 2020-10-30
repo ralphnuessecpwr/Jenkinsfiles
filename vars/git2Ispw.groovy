@@ -140,7 +140,7 @@ def call(Map pipelineParms){
                 ren ${sonarResultsFile} ${sonarResultsFileUT}
             """
 
-        if(pipelineParms.branchType == 'master') {
+        if(pipelineParms.branchType == 'main') {
 
             stage('Execute Module Integration Tests') {
 
