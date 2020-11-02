@@ -21,17 +21,24 @@ IspwHelper      ispwHelper      // Helper class for interacting with ISPW
 TttHelper       tttHelper       // Helper class for interacting with Topaz for Total Test
 SonarHelper     sonarHelper     // Helper class for interacting with SonarQube
 
-def             componentList           // List of components in the triggering set
-def             componentStatusList     // List/Map of comonents and their corresponding componentStatus
-                                        //  each entry will be of the for [componentName:componentStatus]
-                                        //  with componentStatus being an instance of ComponentStatus
-                                        //  to get to a status value use
-                                        //  componentStatusList[componentName].value.<property>
-                                        //  with <property> being one of the properties of a ComponentStatus
-
-def             listOfExecutedTargets   // List of program names for which unit tests have been found and executed
 String          cesToken                // Clear text token from CES
 def             sourceResidenceLevel    // ISPW level at which the sources reside at the moment
+
+def getSonarResults(resultsFile){
+
+    def resultsList         = ''
+    def resultsFileContent  = readFile(file: sonarResultsFolder + '/' + resultsFile)
+    resultsFileContent      = resultsFileContent.substring(resultsFileContent.indexOf('\n') + 1)
+    def testExecutions      = new XmlSlurper().parseText(resultsFileContent)
+
+    testExecutions.file.each {
+
+        resultsList = resultsList + it.@path.toString().replace('.result', '.sonar.xml') + ','
+
+    }
+
+    return resultsList
+}
 
 private initialize(pipelineParams)
 {
@@ -100,20 +107,6 @@ private initialize(pipelineParams)
                             pConfig
                         )
 
-    // Retrieve the list of COBOL components for the set
-    // After each Sonar scan the list will be modified to contain only those components that passed the previous quality gate
-    componentList       = ispwHelper.getComponents(cesToken, pConfig.ispwSetId, '2')
-
-    // Build list of status for each component
-    componentStatusList = [:]
-
-    componentList.each
-    {
-        ComponentStatus componentStatus = new ComponentStatus()
-        
-        componentStatusList[it] = componentStatus
-    }
-
     // Instantiate the TTT Helper - initialization will happen at a later point
     tttHelper   = new   TttHelper(
                             this,
@@ -126,73 +119,6 @@ private initialize(pipelineParams)
     sonarHelper.initialize()
 
     sourceResidenceLevel = pConfig.ispwSrcLevel
-}
-
-/* private method to build the report (mail content) at the end of execution */
-private buildReport(componentStatusList)
-{
-    def failMessage             =   "\nThe program FAILED the Quality gate <sonarGate>. An attempt to promote the component will not be successful." +
-                                    "\nTo review results" +
-                                    "\n\n- JUnit reports       : ${BUILD_URL}/testReport/" +
-                                    "\n\n- SonarQube dashboard : ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
-                                    "\n\n"
-
-    def passMessage             =   "\nThe program PASSED the Quality gate <sonarGate> and may be promoted." +
-                                    "\n\nSonarQube results may be reviewed at ${pConfig.sqServerUrl}/dashboard?id=<sonarProject>" +
-                                    "\n\n"
-
-    def mailMessageExtension = '\nDETAIL REPORTS' + '\n\nUNIT TEST RESULTS\n'
-
-    componentStatusList.each
-    {
-        def componentMessage
-
-        mailMessageExtension = mailMessageExtension + "\nProgram ${it.key}: "
-
-        switch(it.value.utStatus) 
-        {
-            case 'FAIL':
-                componentMessage    = failMessage.replace('<sonarGate>', it.value.sonarGate)
-                componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
-
-                mailMessageExtension = mailMessageExtension +
-                    "Unit tests were found and executed." + 
-                    componentMessage
-            break
-
-            case 'PASS':
-                componentMessage    = passMessage.replace('<sonarGate>', it.value.sonarGate)
-                componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
-
-                mailMessageExtension = mailMessageExtension +
-                    "Unit tests were found and executed." + 
-                    componentMessage
-            break
-
-            case 'UNKNOWN':
-                mailMessageExtension = mailMessageExtension + 
-                    "No unit tests were found. Only the source scan was taken into consideration."
-                
-                if(it.value.sourceStatus == 'FAIL')
-                {
-                    componentMessage    = failMessage.replace('<sonarGate>', it.value.sonarGate)
-                    componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
-
-                    mailMessageExtension = mailMessageExtension +
-                        componentMessage
-                }
-                else
-                {
-                    componentMessage    = passMessage.replace('<sonarGate>', it.value.sonarGate)
-                    componentMessage    = componentMessage.replace('<sonarProject>', it.value.sonarProject)
-
-                    mailMessageExtension = mailMessageExtension +
-                        componentMessage
-                }
-            break
-        }
-    }
-    return mailMessageExtension
 }
 
 /**
@@ -222,19 +148,31 @@ def call(Map pipelineParams)
             /* Check out unit tests from GitHub */
             gitHelper.checkout(gitUrlFullPath, pConfig.gitBranch, pConfig.gitCredentials, pConfig.tttFolder)
 
-            /* initialize requires the TTT projects to be present in the Jenkins workspace, therefore it can only execute after downloading from GitHub */
-            tttHelper.initialize(componentList)  
-
             /* Clean up Code Coverage results from previous run */
             tttHelper.cleanUpCodeCoverageResults()
 
-            /* Execute unit tests and retrieve list of programs that had unit tests*/
-            listOfExecutedTargets = tttHelper.loopThruScenarios()
+            totaltest(
+                serverUrl:                          pConfig.ispwUrl, 
+                credentialsId:                      pConfig.hciTokenId, 
+                environmentId:                      '5cee98c2d3142c1f90a4976d',
+                localConfig:                        false, 
+                folderPath:                         pConfig.tttFolder, 
+                recursive:                          true, 
+                selectProgramsOption:               true, 
+                jsonFile:                           '',
+                haltPipelineOnFailure:              false,                 
+                stopIfTestFailsOrThresholdReached:  false,
+                collectCodeCoverage:                true,
+                collectCCRepository:                pConfig.ccRepository,
+                collectCCSystem:                    pConfig.ispwApplication,
+                collectCCTestID:                    BUILD_NUMBER,
+                clearCodeCoverage:                  false,
+                //ccThreshold:                        pipelineParms.ccThreshold,     
+                logLevel:                           'INFO'
+            )
          
             tttHelper.passResultsToJunit()
 
-            /* push results back to GitHub */
-            gitHelper.pushResults(pConfig.gitProject, pConfig.gitTttUtRepo, pConfig.tttFolder, pConfig.gitBranch, BUILD_NUMBER)
         }
 
         /* 
@@ -251,19 +189,27 @@ def call(Map pipelineParams)
         */ 
         stage("Check SonarQube Quality Gate") 
         {
-            ispwHelper.downloadCopyBooks(workspace)            
 
-            componentStatusList = sonarHelper.scanUt(componentList, componentStatusList, listOfExecutedTargets)
-        }
+            def scannerHome = tool synchConfig.sonarScanner
+            def sonarResults    = getSonarResults('generated.cli.UT.suite.sonar.xml')
 
-        stage("Send Notifications")
-        {
-            def mailMessageExtension = buildReport(componentStatusList)
+            withSonarQubeEnv(synchConfig.sonarServer) {
 
-            emailext subject:       '$DEFAULT_SUBJECT',
-                        body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,
-                        replyTo:    '$DEFAULT_REPLYTO',
-                        to:         "${pConfig.mailRecipient}"
+                bat '"' + scannerHome + '/bin/sonar-scanner"' + 
+            //    ' -Dsonar.branch.name=' + executionBranch +
+                ' -Dsonar.projectKey=' + pConfig.ispwStream + '_' + pConfig.ispwApplication + 
+                ' -Dsonar.projectName=' + pConfig.ispwStream + '_' + pConfig.ispwApplication +
+                ' -Dsonar.projectVersion=1.0' +
+                " -Dsonar.sources=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}" +
+                " -Dsonar.cobol.copy.directories=${pConfig.ispwApplication}\\${pConfig.mfSourceFolder}" +
+                ' -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub,result' + 
+                ' -Dsonar.cobol.copy.suffixes=cpy' +
+                ' -Dsonar.tests="' + pConfig.tttFolder + '"' +
+                ' -Dsonar.testExecutionReportPaths="' + sonarResults + '"' +
+                ' -Dsonar.coverageReportPaths=' + './Coverage/CodeCoverage.xml' +
+                ' -Dsonar.ws.timeout=240' +
+                ' -Dsonar.sourceEncoding=UTF-8'
+
         }
     }
 }
