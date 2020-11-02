@@ -190,10 +190,10 @@ def call(Map pipelineParams)
         stage("Check SonarQube Quality Gate") 
         {
 
-            def scannerHome = tool synchConfig.sonarScanner
+            def scannerHome = tool "scanner"
             def sonarResults    = getSonarResults('generated.cli.UT.suite.sonar.xml')
 
-            withSonarQubeEnv(synchConfig.sonarServer) {
+            withSonarQubeEnv("localhost") {
 
                 bat '"' + scannerHome + '/bin/sonar-scanner"' + 
             //    ' -Dsonar.branch.name=' + executionBranch +
