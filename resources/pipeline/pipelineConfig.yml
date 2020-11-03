@@ -1,5 +1,5 @@
 sqScannerName:  scanner
-sqServerName:   CWCC
+sqServerName:   localhost
 sqServerUrl:    http://sonarqube.nasa.cpwr.corp:9000
 mfSourceFolder: MF_Source
 tttFolder:      tests   
