@@ -183,21 +183,21 @@ def call(Map pipelineParms){
             
         stage("SonarQube Scan") {
 
-            def sonarBranchParm
+            def sonarBranch
             def scannerHome = tool synchConfig.sonarScanner            
             sonarResults    = getSonarResults(sonarResultsFileVT)
 
             if(pipelineParms.branchType == 'main'){
-                sonarBranchParm = '' 
+                sonarBranch = 'master' 
             }
             else{
-                sonarBranchParm = ' -Dsonar.branch.name=' + executionBranch
+                sonarBranch = executionBranch
             }
 
             withSonarQubeEnv(synchConfig.sonarServer) {
 
                 bat '"' + scannerHome + '/bin/sonar-scanner"' + 
-                sonarBranchParm +
+                ' -Dsonar.branch.name=' + sonarBranch + 
                 ' -Dsonar.projectKey=' + ispwConfig.ispwApplication.stream + '_' + ispwConfig.ispwApplication.application + 
                 ' -Dsonar.projectName=' + ispwConfig.ispwApplication.stream + '_' + ispwConfig.ispwApplication.application +
                 ' -Dsonar.projectVersion=1.0' +
