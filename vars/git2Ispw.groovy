@@ -49,7 +49,7 @@ def call(Map pipelineParms){
 
             initialize()
 
-            setVtLoadlibrary()
+            setVtLoadlibrary()  /* Will be replaced by 20.05.01 features */
 
         }
 
@@ -82,7 +82,7 @@ def call(Map pipelineParms){
         }
 
         // If the automaticBuildParams.txt has not been created, it means no programs
-        // have been changed and the pipeline was triggered for other changes (in configuration files)
+        // have been changed and the pipeline was triggered for other changes (e.g. in configuration files)
         // These changes do not need to be "built".
         try {
             automaticBuildInfo = readJSON(file: automaticBuildFile)
@@ -90,7 +90,7 @@ def call(Map pipelineParms){
         catch(Exception e) {
 
             echo "No Automatic Build Params file was found.\n" +
-            "Meaning, no programs have been changed.\n" +
+            "Meaning, no mainframe sources have been changed.\n" +
             "Job gets ended prematurely, but successfully."
             currentBuild.result = 'SUCCESS'
             return
@@ -117,7 +117,7 @@ def call(Map pipelineParms){
                 environmentId:                      synchConfig.tttVtEnvironmentId,
                 localConfig:                        true, 
                 localConfigLocation:                tttConfigFolder, 
-                folderPath:                         synchConfig.tttRootFolder + '/' + synchConfig.tttVtFolder, 
+                folderPath:                         synchConfig.tttRootFolder, 
                 recursive:                          true, 
                 selectProgramsOption:               true, 
                 jsonFile:                           changedProgramsFile,
@@ -134,10 +134,11 @@ def call(Map pipelineParms){
 
         }
 
+        /* Prevent replacing of VT results file if VT and NVT is executed */
         bat label:  'Rename', 
             script: """
                 cd ${sonarResultsFolder}
-                ren ${sonarResultsFile} ${sonarResultsFileUT}
+                ren ${sonarResultsFile} ${sonarResultsFileVT}
             """
 
         if(pipelineParms.branchType == 'main') {
@@ -150,7 +151,7 @@ def call(Map pipelineParms){
                     environmentId:                      synchConfig.tttNvtEnvironmentId, 
                     localConfig:                        false,
                     localConfigLocation:                tttConfigFolder, 
-                    folderPath:                         synchConfig.tttRootFolder + '/' + synchConfig.tttNvtFolder, 
+                    folderPath:                         synchConfig.tttRootFolder, 
                     recursive:                          true, 
                     selectProgramsOption:               true, 
                     jsonFile:                           changedProgramsFile,
@@ -183,7 +184,7 @@ def call(Map pipelineParms){
         stage("SonarQube Scan") {
 
             def scannerHome = tool synchConfig.sonarScanner
-            sonarResults    = getSonarResults(sonarResultsFileUT)
+            sonarResults    = getSonarResults(sonarResultsFileVT)
 
             withSonarQubeEnv(synchConfig.sonarServer) {
 
@@ -213,7 +214,7 @@ def initialize(){
     CC_SYSTEM_ID_MAX_LEN    = 15
 
     executionBranch      = BRANCH_NAME
-    sharedLibName           = 'RNU_Shared_Lib'
+    sharedLibName           = 'RNU_Shared_Lib'                  /* Rename in Jenkins server */
     synchConfigFile         = './git2ispw/synchronization.yml'
     ispwConfigFile          = './ispwconfig.yml'
     automaticBuildFile      = './automaticBuildParams.txt'
@@ -222,11 +223,11 @@ def initialize(){
     tttConfigFolder         = ''
     tttVtExecutionLoad      = ''
     ccDdioOverrides         = ''
-    sonarCobolFolder        = './MainframeSources/Cobol/Programs'
-    sonarCopybookFolder     = './MainframeSources/Cobol/Copybooks'
+    sonarCobolFolder        = './Sources'
+    sonarCopybookFolder     = './Sources'
     sonarResultsFolder      = './TTTSonar'
     sonarResultsFile        = 'generated.cli.suite.sonar.xml'
-    sonarResultsFileUT      = 'generated.cli.UT.suite.sonar.xml'
+    sonarResultsFileVT      = 'generated.cli.UT.suite.sonar.xml'
     sonarCodeCoverageFile   = './Coverage/CodeCoverage.xml'
     jUnitResultsFile        = './TTTUnit/generated.cli.suite.junit.xml'
     loadLibraryPattern      = 'SALESSUP.<ispwApplication>.<ispwLevel>.LOAD'
@@ -300,6 +301,8 @@ def initialize(){
     ccTestId    = BUILD_NUMBER
 }
 
+/* Modify JCL Skeleton to use correct load library for VTs */
+/* Will be replaced by 20.05.01 feature                    */
 def setVtLoadlibrary(){
 
     def jclSkeleton = readFile(tttUtJclSkeletonFile).toString().replace('${loadlibraries}', tttVtExecutionLoad)
