@@ -40,6 +40,6 @@ ccDdioOverrides:
   - SALESSUP.<ispwApplication>.DEVL.LOAD,
   - SALESSUP.<ispwApplication>.MAIN.LOAD,
   - SALESSUP.<ispwApplication>.PROD.LOAD  
-ccThreshold:        70
+ccThreshold:        '70'
 sonarScanner:       scanner
 sonarServer:        CWCC

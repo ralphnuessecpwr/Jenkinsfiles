@@ -128,7 +128,7 @@ def call(Map pipelineParms){
                 collectCCSystem:                    ccSystemId,
                 collectCCTestID:                    ccTestId,
                 clearCodeCoverage:                  false,
-                ccThreshold:                        synchConfig.ccThreshold,     
+            //    ccThreshold:                        synchConfig.ccThreshold,     
                 logLevel:                           'INFO'
             )
 
@@ -162,7 +162,7 @@ def call(Map pipelineParms){
                     collectCCSystem:                    ccSystemId,
                     collectCCTestID:                    ccTestId,
                     clearCodeCoverage:                  false,
-                    ccThreshold:                        pipelineParms.ccThreshold,     
+                //    ccThreshold:                        pipelineParms.ccThreshold,     
                     logLevel:                           'INFO'
                 )
             }
