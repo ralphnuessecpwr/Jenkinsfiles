@@ -58,7 +58,7 @@ def call(Map pipelineParms){
             try {
 
                 gitToIspwIntegration( 
-                    connectionId:       pipelineParms.hciConnectionId,                    
+                    connectionId:       synchConfig.hciConnectionId,                    
                     credentialsId:      pipelineParms.hostCredentialsId,                     
                     runtimeConfig:      ispwConfig.ispwApplication.runtimeConfig,
                     stream:             ispwConfig.ispwApplication.stream,
@@ -100,7 +100,7 @@ def call(Map pipelineParms){
         stage('Build mainframe code') {
 
             ispwOperation(
-                connectionId:           pipelineParms.hciConnectionId, 
+                connectionId:           synchConfig.hciConnectionId, 
                 credentialsId:          pipelineParms.cesCredentialsId,       
                 consoleLogResponseBody: true, 
                 ispwAction:             'BuildTask', 
@@ -170,7 +170,7 @@ def call(Map pipelineParms){
 
         step([
             $class:             'CodeCoverageBuilder', 
-            connectionId:       pipelineParms.hciConnectionId, 
+            connectionId:       synchConfig.hciConnectionId, 
             credentialsId:      pipelineParms.hostCredentialsId,
             analysisProperties: """
                 cc.sources=${synchConfig.ccSources}
