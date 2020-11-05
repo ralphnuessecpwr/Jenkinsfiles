@@ -24,9 +24,7 @@ cesUrl:               http://localhost:48226
 tttVtEnvironmentId:   5cee98c2d3142c1f90a4976d
 tttNvtEnvironmentId:  5cee990bd3142c1f90a4976f
 tttConfigFolder:      'git2ispw/TttConfigurations'
-tttRootFolder:        'MainframeTests'
-tttVtFolder:          'Unit Tests'
-tttNvtFolder:         'Module Integration Tests'
+tttRootFolder:        'Tests'
 ccSources:            'MainframeSources'
 ccDdioOverrides:
   - SALESSUP.<ispwApplication>.HFIX.LOAD,
