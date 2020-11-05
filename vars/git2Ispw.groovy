@@ -191,7 +191,7 @@ def call(Map pipelineParms){
                 sonarBranchParm = '' 
             }
             else{
-                sonarBranchParm = ' -Dsonar.branch.name=' + executionBranch +
+                sonarBranchParm = ' -Dsonar.branch.name=' + executionBranch
             }
 
             withSonarQubeEnv(synchConfig.sonarServer) {
