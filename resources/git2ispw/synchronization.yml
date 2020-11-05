@@ -25,7 +25,7 @@ tttVtEnvironmentId:   5cee98c2d3142c1f90a4976d
 tttNvtEnvironmentId:  5cee990bd3142c1f90a4976f
 tttConfigFolder:      'git2ispw/TttConfigurations'
 tttRootFolder:        'Tests'
-ccSources:            'MainframeSources'
+ccSources:            'Sources'
 ccDdioOverrides:
   - SALESSUP.<ispwApplication>.HFIX.LOAD,
   - SALESSUP.<ispwApplication>.UT1.LOAD,
