@@ -21,6 +21,7 @@ branchInfo:
     ispwLevel:        MAIN
     mapRule:          per-branch
 cesUrl:               http://localhost:48226
+hciConnectionId:      'CWCC'
 tttVtEnvironmentId:   5cee98c2d3142c1f90a4976d
 tttNvtEnvironmentId:  5cee990bd3142c1f90a4976f
 tttConfigFolder:      'git2ispw/TttConfigurations'
@@ -39,5 +40,6 @@ ccDdioOverrides:
   - SALESSUP.<ispwApplication>.DEVL.LOAD,
   - SALESSUP.<ispwApplication>.MAIN.LOAD,
   - SALESSUP.<ispwApplication>.PROD.LOAD  
+ccThreshold:        70
 sonarScanner:       scanner
 sonarServer:        CWCC
