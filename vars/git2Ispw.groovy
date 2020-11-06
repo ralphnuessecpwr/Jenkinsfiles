@@ -31,6 +31,7 @@ def executionMapRule
 def programList
 def tttProjectList
 
+def BRANCH_TYPE_MAIN
 def CC_TEST_ID_MAX_LEN
 def CC_SYSTEM_ID_MAX_LEN
 def SCAN_TYPE_NO_MAINFRAME_CHANGES
@@ -212,11 +213,18 @@ def call(Map pipelineParms){
             
         stage("SonarQube Scan") {
 
+            def sonarBranchParm     = ''
             def sonarTestResults    = ''
             def sonarTests          = ''
             def sonarTestReports    = ''
             def sonarCodeCoverage   = ''
             def scannerHome         = tool synchConfig.sonarScanner            
+
+            if(!(pipelineParms.branchType == BRANCH_TYPE_MAIN)){
+                
+                sonarBranchParm = ' -Dsonar.branch.name=' + executionBranch
+
+            }
 
             if(sonarScanType == SCAN_TYPE_FULL){
 
@@ -230,7 +238,7 @@ def call(Map pipelineParms){
             withSonarQubeEnv(synchConfig.sonarServer) {
 
                 bat '"' + scannerHome + '/bin/sonar-scanner"' + 
-                ' -Dsonar.branch.name=' + executionBranch + 
+                sonarBranchParm + 
                 ' -Dsonar.projectKey=' + ispwConfig.ispwApplication.stream + '_' + ispwConfig.ispwApplication.application + 
                 ' -Dsonar.projectName=' + ispwConfig.ispwApplication.stream + '_' + ispwConfig.ispwApplication.application +
                 ' -Dsonar.projectVersion=1.0' +
@@ -257,7 +265,9 @@ def initialize(){
     SCAN_TYPE_NO_MAINFRAME_CHANGES  = "NoMainframe"
     SCAN_TYPE_FULL                  = "Full"
 
-    executionBranch      = BRANCH_NAME
+    BRANCH_TYPE_MAIN                = 'main'
+
+    executionBranch         = BRANCH_NAME
     sharedLibName           = 'RNU_Shared_Lib'                  /* Rename in Jenkins server */
     synchConfigFile         = './git2ispw/synchronization.yml'
     ispwConfigFile          = './ispwconfig.yml'
