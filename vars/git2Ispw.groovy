@@ -249,7 +249,7 @@ def call(Map pipelineParms){
                 sonarTests +
                 sonarTestReports +
                 sonarCodeCoverage +
-                ' -Dsonar.ws.timeout=240' +
+                ' -Dsonar.ws.timeout=480' +
                 ' -Dsonar.sourceEncoding=UTF-8'
 
             }
