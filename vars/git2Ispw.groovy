@@ -222,12 +222,14 @@ def call(Map pipelineParms){
 
             if(!(pipelineParms.branchType == BRANCH_TYPE_MAIN)){
                 
+                echo "Set sonarBranchParm"
                 sonarBranchParm = ' -Dsonar.branch.name=' + executionBranch
 
             }
 
             if(sonarScanType == SCAN_TYPE_FULL){
 
+                echo "Set Full Scan Parameters"
                 sonarTestResults        = getSonarResults(sonarResultsFileVT)
                 sonarTestsParm          = ' -Dsonar.tests="' + synchConfig.tttRootFolder + '"'
                 sonarTestReportsParm    = ' -Dsonar.testExecutionReportPaths="' + sonarTestResults + '"'
