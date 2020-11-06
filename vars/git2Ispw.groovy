@@ -207,17 +207,17 @@ def call(Map pipelineParms){
                     cc.ddio.overrides=${ccDdioOverrides}
                 """
             ])
-            
+
         }
             
         stage("SonarQube Scan") {
 
             def sonarBranch         = ''
+            def sonarTestResults    = ''
             def sonarTests          = ''
             def sonarTestReports    = ''
             def sonarCodeCoverage   = ''
             def scannerHome         = tool synchConfig.sonarScanner            
-            sonarResults            = getSonarResults(sonarResultsFileVT)
 
             if(pipelineParms.branchType == 'main'){
                 sonarBranch = 'master' 
@@ -228,6 +228,7 @@ def call(Map pipelineParms){
 
             if(sonarScanType == SCAN_TYPE_FULL){
 
+                sonarTestResults        = getSonarResults(sonarResultsFileVT)
                 sonarTestsParm          = ' -Dsonar.tests="' + synchConfig.tttRootFolder + '"'
                 sonarTestReportsParm    = ' -Dsonar.testExecutionReportPaths="' + sonarResults + '"'
                 sonarCodeCoverageParm   = ' -Dsonar.coverageReportPaths=' + sonarCodeCoverageFile
