@@ -230,7 +230,7 @@ def call(Map pipelineParms){
 
                 sonarTestResults        = getSonarResults(sonarResultsFileVT)
                 sonarTestsParm          = ' -Dsonar.tests="' + synchConfig.tttRootFolder + '"'
-                sonarTestReportsParm    = ' -Dsonar.testExecutionReportPaths="' + sonarResults + '"'
+                sonarTestReportsParm    = ' -Dsonar.testExecutionReportPaths="' + sonarTestResults + '"'
                 sonarCodeCoverageParm   = ' -Dsonar.coverageReportPaths=' + sonarCodeCoverageFile
 
             }
