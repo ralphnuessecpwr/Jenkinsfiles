@@ -15,7 +15,8 @@ String branchMappingString
 String tttConfigFolder         
 String tttVtExecutionLoad    
 String tttUtJclSkeletonFile  
-String ccDdioOverrides         
+String ccDdioOverrides     
+String sonarScanType    
 String sonarCobolFolder        
 String sonarCopybookFolder     
 String sonarResultsFile        
@@ -32,6 +33,8 @@ def tttProjectList
 
 def CC_TEST_ID_MAX_LEN
 def CC_SYSTEM_ID_MAX_LEN
+def SCAN_TYPE_NO_MAINFRAME_CHANGES
+def SCAN_TYPE_FULL
 
 def call(Map pipelineParms){
 
@@ -89,67 +92,42 @@ def call(Map pipelineParms){
         }
         catch(Exception e) {
 
-            echo "No Automatic Build Params file was found.\n" +
-            "Meaning, no mainframe sources have been changed.\n" +
-            "Job gets ended prematurely, but successfully."
-            currentBuild.result = 'SUCCESS'
-            return
+            echo "No Automatic Build Params file was found.  Meaning, no mainframe sources have been changed.\n" +
+            "Mainframe Build and Test steps will be skipped. Sonar scan will be executed against code only."
+
+            sonarScanType = SCAN_TYPE_NO_MAINFRAME_CHANGES
 
         }
 
         stage('Build mainframe code') {
 
-            ispwOperation(
-                connectionId:           synchConfig.hciConnectionId, 
-                credentialsId:          pipelineParms.cesCredentialsId,       
-                consoleLogResponseBody: true, 
-                ispwAction:             'BuildTask', 
-                ispwRequestBody:        '''buildautomatically = true'''
-            )
+            if(sonarScanType == SCAN_TYPE_FULL){
 
+                ispwOperation(
+                    connectionId:           synchConfig.hciConnectionId, 
+                    credentialsId:          pipelineParms.cesCredentialsId,       
+                    consoleLogResponseBody: true, 
+                    ispwAction:             'BuildTask', 
+                    ispwRequestBody:        '''buildautomatically = true'''
+                )
+
+            }
+            else{
+
+                echo "Skipping Mainframe Build."
+            
+            }
         }
 
         stage('Execute Unit Tests') {
-
-            totaltest(
-                serverUrl:                          synchConfig.cesUrl, 
-                credentialsId:                      pipelineParms.hostCredentialsId, 
-                environmentId:                      synchConfig.tttVtEnvironmentId,
-                localConfig:                        true, 
-                localConfigLocation:                tttConfigFolder, 
-                folderPath:                         synchConfig.tttRootFolder, 
-                recursive:                          true, 
-                selectProgramsOption:               true, 
-                jsonFile:                           changedProgramsFile,
-                haltPipelineOnFailure:              false,                 
-                stopIfTestFailsOrThresholdReached:  false,
-                collectCodeCoverage:                true,
-                collectCCRepository:                pipelineParms.ccRepo,
-                collectCCSystem:                    ccSystemId,
-                collectCCTestID:                    ccTestId,
-                clearCodeCoverage:                  false,
-            //    ccThreshold:                        synchConfig.ccThreshold,     
-                logLevel:                           'INFO'
-            )
-
-        }
-
-        /* Prevent replacing of VT results file if VT and NVT is executed */
-        bat label:  'Rename', 
-            script: """
-                cd ${sonarResultsFolder}
-                ren ${sonarResultsFile} ${sonarResultsFileVT}
-            """
-
-        if(pipelineParms.branchType == 'main') {
-
-            stage('Execute Module Integration Tests') {
+            
+            if(sonarScanType == SCAN_TYPE_FULL){
 
                 totaltest(
                     serverUrl:                          synchConfig.cesUrl, 
                     credentialsId:                      pipelineParms.hostCredentialsId, 
-                    environmentId:                      synchConfig.tttNvtEnvironmentId, 
-                    localConfig:                        false,
+                    environmentId:                      synchConfig.tttVtEnvironmentId,
+                    localConfig:                        true, 
                     localConfigLocation:                tttConfigFolder, 
                     folderPath:                         synchConfig.tttRootFolder, 
                     recursive:                          true, 
@@ -162,36 +140,98 @@ def call(Map pipelineParms){
                     collectCCSystem:                    ccSystemId,
                     collectCCTestID:                    ccTestId,
                     clearCodeCoverage:                  false,
-                //    ccThreshold:                        pipelineParms.ccThreshold,     
+                //    ccThreshold:                        synchConfig.ccThreshold,     
                     logLevel:                           'INFO'
                 )
+
+                /* Prevent replacing of VT results file if VT and NVT is executed */
+                bat label:  'Rename', 
+                    script: """
+                        cd ${sonarResultsFolder}
+                        ren ${sonarResultsFile} ${sonarResultsFileVT}
+                    """
+
+            }
+            else{
+
+                echo "Skipping Unit Tests."
+
             }
         }
 
-        step([
-            $class:             'CodeCoverageBuilder', 
-            connectionId:       synchConfig.hciConnectionId, 
-            credentialsId:      pipelineParms.hostCredentialsId,
-            analysisProperties: """
-                cc.sources=${synchConfig.ccSources}
-                cc.repos=${pipelineParms.ccRepo}
-                cc.system=${ccSystemId}
-                cc.test=${ccTestId}
-                cc.ddio.overrides=${ccDdioOverrides}
-            """
-        ])
+        if(pipelineParms.branchType == 'main') {
+
+            stage('Execute Module Integration Tests') {
+
+                if(sonarScanType == SCAN_TYPE_FULL){
+                    totaltest(
+                        serverUrl:                          synchConfig.cesUrl, 
+                        credentialsId:                      pipelineParms.hostCredentialsId, 
+                        environmentId:                      synchConfig.tttNvtEnvironmentId, 
+                        localConfig:                        false,
+                        localConfigLocation:                tttConfigFolder, 
+                        folderPath:                         synchConfig.tttRootFolder, 
+                        recursive:                          true, 
+                        selectProgramsOption:               true, 
+                        jsonFile:                           changedProgramsFile,
+                        haltPipelineOnFailure:              false,                 
+                        stopIfTestFailsOrThresholdReached:  false,
+                        collectCodeCoverage:                true,
+                        collectCCRepository:                pipelineParms.ccRepo,
+                        collectCCSystem:                    ccSystemId,
+                        collectCCTestID:                    ccTestId,
+                        clearCodeCoverage:                  false,
+                    //    ccThreshold:                        pipelineParms.ccThreshold,     
+                        logLevel:                           'INFO'
+                    )
+                }
+                else{
+
+                    echo "Skipping Integration Tests."
+
+                }
+            }
+        }
+
+        if(sonarScanType == SCAN_TYPE_FULL){
+
+            step([
+                $class:             'CodeCoverageBuilder', 
+                connectionId:       synchConfig.hciConnectionId, 
+                credentialsId:      pipelineParms.hostCredentialsId,
+                analysisProperties: """
+                    cc.sources=${synchConfig.ccSources}
+                    cc.repos=${pipelineParms.ccRepo}
+                    cc.system=${ccSystemId}
+                    cc.test=${ccTestId}
+                    cc.ddio.overrides=${ccDdioOverrides}
+                """
+            ])
+            
+        }
             
         stage("SonarQube Scan") {
 
-            def sonarBranch
-            def scannerHome = tool synchConfig.sonarScanner            
-            sonarResults    = getSonarResults(sonarResultsFileVT)
+            def sonarBranch         = ''
+            def sonarTests          = ''
+            def sonarTestReports    = ''
+            def sonarCodeCoverage   = ''
+            def scannerHome         = tool synchConfig.sonarScanner            
+            sonarResults            = getSonarResults(sonarResultsFileVT)
 
             if(pipelineParms.branchType == 'main'){
                 sonarBranch = 'master' 
             }
             else{
                 sonarBranch = executionBranch
+            }
+
+            if(sonarScanType == SCAN_TYPE_FULL){
+
+                sonarTestsParm          = ' -Dsonar.tests="' + synchConfig.tttRootFolder + '"'
+                sonarTestReportsParm    = ' -Dsonar.testExecutionReportPaths="' + sonarResults + '"'
+                sonarCodeCoverageParm   = ' -Dsonar.coverageReportPaths=' + sonarCodeCoverageFile
+
             }
 
             withSonarQubeEnv(synchConfig.sonarServer) {
@@ -205,9 +245,9 @@ def call(Map pipelineParms){
                 ' -Dsonar.cobol.copy.directories=' + sonarCopybookFolder +
                 ' -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub,result' + 
                 ' -Dsonar.cobol.copy.suffixes=cpy' +
-                ' -Dsonar.tests="' + synchConfig.tttRootFolder + '"' +
-                ' -Dsonar.testExecutionReportPaths="' + sonarResults + '"' +
-                ' -Dsonar.coverageReportPaths=' + sonarCodeCoverageFile +
+                sonarTests +
+                sonarTestReports +
+                sonarCodeCoverage +
                 ' -Dsonar.ws.timeout=240' +
                 ' -Dsonar.sourceEncoding=UTF-8'
 
@@ -221,6 +261,9 @@ def initialize(){
     CC_TEST_ID_MAX_LEN      = 15
     CC_SYSTEM_ID_MAX_LEN    = 15
 
+    SCAN_TYPE_NO_MAINFRAME_CHANGES  = "NoMainframe"
+    SCAN_TYPE_FULL                  = "Full"
+
     executionBranch      = BRANCH_NAME
     sharedLibName           = 'RNU_Shared_Lib'                  /* Rename in Jenkins server */
     synchConfigFile         = './git2ispw/synchronization.yml'
@@ -231,6 +274,7 @@ def initialize(){
     tttConfigFolder         = ''
     tttVtExecutionLoad      = ''
     ccDdioOverrides         = ''
+    sonarScanType           = SCAN_TYPE_FULL
     sonarCobolFolder        = './Sources'
     sonarCopybookFolder     = './Sources'
     sonarResultsFolder      = './TTTSonar'
