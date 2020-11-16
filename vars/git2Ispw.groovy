@@ -34,7 +34,7 @@ def tttProjectList
 def BRANCH_TYPE_MAIN
 def CC_TEST_ID_MAX_LEN
 def CC_SYSTEM_ID_MAX_LEN
-def SCAN_TYPE_NO_MAINFRAME_CHANGES
+def SCAN_TYPE_NO_TESTS
 def SCAN_TYPE_FULL
 
 def call(Map pipelineParms){
@@ -76,7 +76,7 @@ def call(Map pipelineParms){
             }
             catch(Exception e) {
 
-                echo "No Synchronisation to the mainframe.\n"
+                echo "Error during synchronisation to the mainframe.\n"
                 echo e.toString()
                 currentBuild.result = 'FAILURE'
                 return
@@ -96,7 +96,7 @@ def call(Map pipelineParms){
             echo "No Automatic Build Params file was found.  Meaning, no mainframe sources have been changed.\n" +
             "Mainframe Build and Test steps will be skipped. Sonar scan will be executed against code only."
 
-            sonarScanType = SCAN_TYPE_NO_MAINFRAME_CHANGES
+            sonarScanType = SCAN_TYPE_NO_TESTS
 
         }
 
@@ -256,10 +256,10 @@ def initialize(){
     CC_TEST_ID_MAX_LEN      = 15
     CC_SYSTEM_ID_MAX_LEN    = 15
 
-    SCAN_TYPE_NO_MAINFRAME_CHANGES  = "NoMainframe"
-    SCAN_TYPE_FULL                  = "Full"
+    SCAN_TYPE_NO_TESTS      = "NoTests"
+    SCAN_TYPE_FULL          = "Full"
 
-    BRANCH_TYPE_MAIN                = 'main'
+    BRANCH_TYPE_MAIN        = 'main'
 
     executionBranch         = BRANCH_NAME
     sharedLibName           = 'RNU_Shared_Lib'                  /* Rename in Jenkins server */
