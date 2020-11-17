@@ -264,7 +264,6 @@ def initialize(){
     executionBranch         = BRANCH_NAME
     sharedLibName           = 'RNU_Shared_Lib'                  /* Rename in Jenkins server */
     synchConfigFile         = './git2ispw/synchronization.yml'
-    ispwConfigFile          = './ispwconfig.yml'
     automaticBuildFile      = './automaticBuildParams.txt'
     changedProgramsFile     = './changedPrograms.json'
     branchMappingString     = ''    
@@ -279,6 +278,23 @@ def initialize(){
     jUnitResultsFile        = './TTTUnit/generated.cli.suite.junit.xml'
 
     //*********************************************************************************
+    // Read synchconfig.yml from Shared Library resources folder
+    //*********************************************************************************
+    def fileText    = libraryResource synchConfigFile
+    
+    synchConfig     = readYaml(text: fileText)
+
+    //*********************************************************************************
+    // Build paths to subfolders of the project root
+    //*********************************************************************************
+
+    ispwConfigFile          = synchConfig.mfProjectRootFolder + '/ispwconfig.yml'
+    tttRootFolder           = synchConfig.mfProjectRootFolder + '/Tests'
+    ccSources               = synchConfig.mfProjectRootFolder + '/Sources'
+    sonarCobolFolder        = synchConfig.mfProjectRootFolder + '/Sources'
+    sonarCopybookFolder     = synchConfig.mfProjectRootFolder + '/Sources'
+
+    //*********************************************************************************
     // Read ispwconfig.yml
     // Strip the first line of ispwconfig.yml because readYaml can't handle the !! tag
     //*********************************************************************************
@@ -290,22 +306,6 @@ def initialize(){
     // convert the text to yaml
     ispwConfig      = readYaml(text: tmpText)
 
-    //*********************************************************************************
-    // Read synchconfig.yml from Shared Library resources folder
-    //*********************************************************************************
-    def fileText    = libraryResource synchConfigFile
-    
-    synchConfig     = readYaml(text: fileText)
-
-    //*********************************************************************************
-    // Build paths to subfolders of the project root
-    //*********************************************************************************
-
-    tttRootFolder           = synchConfig.projectRootFolder + '/Tests'
-    ccSources               = synchConfig.projectRootFolder + '/Sources'
-    sonarCobolFolder        = synchConfig.projectRootFolder + '/Sources'
-    sonarCopybookFolder     = synchConfig.projectRootFolder + '/Sources'
- 
     //*********************************************************************************
     // Build branch mapping string to be used as parameter in the gitToIspwIntegration
     // Build load library name from configuration, replacing application marker by actual name

@@ -25,7 +25,7 @@ hciConnectionId:      '196de681-04d7-4170-824f-09a5457c5cda'
 tttVtEnvironmentId:   5cee98c2d3142c1f90a4976d
 tttNvtEnvironmentId:  5b508b8a787be73b59238d38
 tttConfigFolder:      'git2ispw/TttConfigurations'
-projectRootFolder:    './General_Insurance'
+mfProjectRootFolder:  './General_Insurance'
 loadLibraryPattern:   'SALESSUP.<ispwApplication>.<ispwLevel>.LOAD'
 ccDdioOverrides:
   - SALESSUP.<ispwApplication>.HFIX.LOAD,
