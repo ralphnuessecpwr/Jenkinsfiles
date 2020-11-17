@@ -193,6 +193,7 @@ echo "Adding " + sonarResultsFileVT
 
                     sonarResultsFileList.add(sonarResultsFile)
 echo "Adding " + sonarResultsFile
+echo "List after second add " + sonarResultsFileList.toString()
                 }
                 else{
 
