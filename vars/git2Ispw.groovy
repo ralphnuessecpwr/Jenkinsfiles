@@ -153,7 +153,7 @@ def call(Map pipelineParms){
                         cd ${sonarResultsFolder}
                         ren ${sonarResultsFile} ${sonarResultsFileVT}
                     """
-
+echo "Adding " + sonarResultsFileVT
                 sonarResultsFileList.add(sonarResultsFileVT)
 
             }
@@ -192,7 +192,7 @@ def call(Map pipelineParms){
                     )
 
                     sonarResultsFileList.add(sonarResultsFile)
-
+echo "Adding " + sonarResultsFile
                 }
                 else{
 
@@ -387,7 +387,7 @@ def getSonarResults(resultsFileList){
     resultsFileList.each{
 
         def resultsFileContent
-        resultsFileContent  = readFile(file: sonarResultsFolder + '/' + resultsFile)
+        resultsFileContent  = readFile(file: sonarResultsFolder + '/' + it)
         resultsFileContent  = resultsFileContent.substring(resultsFileContent.indexOf('\n') + 1)
         def testExecutions  = new XmlSlurper().parseText(resultsFileContent)
 
