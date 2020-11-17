@@ -19,7 +19,9 @@ String ccDdioOverrides
 String sonarScanType    
 String sonarCobolFolder        
 String sonarCopybookFolder     
-String sonarResultsFile        
+String sonarResultsFile   
+String sonarResultsFileVT
+String sonarResultsFileList     
 String sonarCodeCoverageFile   
 String jUnitResultsFile
 
@@ -152,6 +154,8 @@ def call(Map pipelineParms){
                         ren ${sonarResultsFile} ${sonarResultsFileVT}
                     """
 
+                sonarResultsFileList.add(sonarResultsFileVT)
+
             }
             else{
 
@@ -165,6 +169,7 @@ def call(Map pipelineParms){
             stage('Execute Module Integration Tests') {
 
                 if(sonarScanType == SCAN_TYPE_FULL){
+
                     totaltest(
                         serverUrl:                          synchConfig.cesUrl, 
                         credentialsId:                      pipelineParms.hostCredentialsId, 
@@ -185,6 +190,9 @@ def call(Map pipelineParms){
                     //    ccThreshold:                        pipelineParms.ccThreshold,     
                         logLevel:                           'INFO'
                     )
+
+                    sonarResultsFileList.add(sonarResultsFile)
+
                 }
                 else{
 
@@ -272,7 +280,8 @@ def initialize(){
     ccDdioOverrides         = ''
     sonarScanType           = SCAN_TYPE_FULL
     sonarResultsFile        = 'generated.cli.suite.sonar.xml'
-    sonarResultsFileVT      = 'generated.cli.UT.suite.sonar.xml'    
+    sonarResultsFileVT      = 'generated.cli.UT.suite.sonar.xml'
+    sonarResultsFileList    = []    
     sonarResultsFolder      = './TTTSonar'
     sonarCodeCoverageFile   = './Coverage/CodeCoverage.xml'
     jUnitResultsFile        = './TTTUnit/generated.cli.suite.junit.xml'
@@ -369,18 +378,27 @@ def setVtLoadlibrary(){
 
 }
 
-def getSonarResults(resultsFile){
+def getSonarResults(resultsFileList){
+
+    echo "List " + resultsFileList.toString()
 
     def resultsList         = ''
-    def resultsFileContent  = readFile(file: sonarResultsFolder + '/' + resultsFile)
-    resultsFileContent      = resultsFileContent.substring(resultsFileContent.indexOf('\n') + 1)
-    def testExecutions      = new XmlSlurper().parseText(resultsFileContent)
 
-    testExecutions.file.each {
+    resultsFileList.each{
 
-        resultsList = resultsList + it.@path.toString().replace('.result', '.sonar.xml') + ','
+        def resultsFileContent
+        resultsFileContent  = readFile(file: sonarResultsFolder + '/' + resultsFile)
+        resultsFileContent  = resultsFileContent.substring(resultsFileContent.indexOf('\n') + 1)
+        def testExecutions  = new XmlSlurper().parseText(resultsFileContent)
 
+        testExecutions.file.each {
+
+            resultsList = resultsList + it.@path.toString().replace('.result', '.sonar.xml') + ','
+
+        }
     }
+
+    echo "Return List " + resultsList.toString()
 
     return resultsList
 }
