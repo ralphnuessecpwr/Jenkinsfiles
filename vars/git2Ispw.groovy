@@ -274,6 +274,9 @@ def initialize(){
     sonarScanType           = SCAN_TYPE_FULL
     sonarResultsFile        = 'generated.cli.suite.sonar.xml'
     sonarResultsFileVT      = 'generated.cli.UT.suite.sonar.xml'    
+    sonarResultsFolder      = './TTTSonar'
+    sonarCodeCoverageFile   = './Coverage/CodeCoverage.xml'
+    jUnitResultsFile        = './TTTUnit/generated.cli.suite.junit.xml'
 
     //*********************************************************************************
     // Read ispwconfig.yml
@@ -302,18 +305,6 @@ def initialize(){
     ccSources               = synchConfig.projectRootFolder + '/Sources'
     sonarCobolFolder        = synchConfig.projectRootFolder + '/Sources'
     sonarCopybookFolder     = synchConfig.projectRootFolder + '/Sources'
-    sonarResultsFolder      = synchConfig.projectRootFolder + '/TTTSonar'
-    sonarCodeCoverageFile   = synchConfig.projectRootFolder + '/Coverage/CodeCoverage.xml'
-    jUnitResultsFile        = synchConfig.projectRootFolder + '/TTTUnit/generated.cli.suite.junit.xml'
-
-echo "Folder Paths"
-echo tttRootFolder        
-echo ccSources            
-echo sonarCobolFolder     
-echo sonarCopybookFolder  
-echo sonarResultsFolder   
-echo sonarCodeCoverageFile
-echo jUnitResultsFile     
  
     //*********************************************************************************
     // Build branch mapping string to be used as parameter in the gitToIspwIntegration
