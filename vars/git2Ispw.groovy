@@ -306,6 +306,15 @@ def initialize(){
     sonarCodeCoverageFile   = synchConfig.projectRootFolder + '/Coverage/CodeCoverage.xml'
     jUnitResultsFile        = synchConfig.projectRootFolder + '/TTTUnit/generated.cli.suite.junit.xml'
 
+echo "Folder Paths"
+echo tttRootFolder        
+echo ccSources            
+echo sonarCobolFolder     
+echo sonarCopybookFolder  
+echo sonarResultsFolder   
+echo sonarCodeCoverageFile
+echo jUnitResultsFile     
+ 
     //*********************************************************************************
     // Build branch mapping string to be used as parameter in the gitToIspwIntegration
     // Build load library name from configuration, replacing application marker by actual name
