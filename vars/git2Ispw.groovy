@@ -272,14 +272,8 @@ def initialize(){
     tttVtExecutionLoad      = ''
     ccDdioOverrides         = ''
     sonarScanType           = SCAN_TYPE_FULL
-    sonarCobolFolder        = './Sources'
-    sonarCopybookFolder     = './Sources'
-    sonarResultsFolder      = './TTTSonar'
     sonarResultsFile        = 'generated.cli.suite.sonar.xml'
-    sonarResultsFileVT      = 'generated.cli.UT.suite.sonar.xml'
-    sonarCodeCoverageFile   = './Coverage/CodeCoverage.xml'
-    jUnitResultsFile        = './TTTUnit/generated.cli.suite.junit.xml'
-    loadLibraryPattern      = 'SALESSUP.<ispwApplication>.<ispwLevel>.LOAD'
+    sonarResultsFileVT      = 'generated.cli.UT.suite.sonar.xml'    
 
     //*********************************************************************************
     // Read ispwconfig.yml
@@ -301,6 +295,18 @@ def initialize(){
     synchConfig     = readYaml(text: fileText)
 
     //*********************************************************************************
+    // Build paths to subfolders of the project root
+    //*********************************************************************************
+
+    tttRootFolder           = synchConfig.projectRootFolder + '/Tests'
+    ccSources               = synchConfig.projectRootFolder + '/Sources'
+    sonarCobolFolder        = synchConfig.projectRootFolder + '/Sources'
+    sonarCopybookFolder     = synchConfig.projectRootFolder + '/Sources'
+    sonarResultsFolder      = synchConfig.projectRootFolder + '/TTTSonar'
+    sonarCodeCoverageFile   = synchConfig.projectRootFolder + '/Coverage/CodeCoverage.xml'
+    jUnitResultsFile        = synchConfig.projectRootFolder + '/TTTUnit/generated.cli.suite.junit.xml'
+
+    //*********************************************************************************
     // Build branch mapping string to be used as parameter in the gitToIspwIntegration
     // Build load library name from configuration, replacing application marker by actual name
     //*********************************************************************************
@@ -309,7 +315,7 @@ def initialize(){
         branchMappingString = branchMappingString + it.key + '** => ' + it.value.ispwLevel + ',' + it.value.mapRule + '\n'
 
         if(executionBranch.contains(it.key)) {
-            tttVtExecutionLoad = loadLibraryPattern.replace('<ispwApplication>', ispwConfig.ispwApplication.application).replace('<ispwLevel>', it.value.ispwLevel)
+            tttVtExecutionLoad = synchConfig.loadLibraryPattern.replace('<ispwApplication>', ispwConfig.ispwApplication.application).replace('<ispwLevel>', it.value.ispwLevel)
         }
     }
 
