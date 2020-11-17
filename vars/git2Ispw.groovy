@@ -153,7 +153,7 @@ def call(Map pipelineParms){
                         cd ${sonarResultsFolder}
                         ren ${sonarResultsFile} ${sonarResultsFileVT}
                     """
-echo "Adding " + sonarResultsFileVT
+
                 sonarResultsFileList.add(sonarResultsFileVT)
 
             }
@@ -192,8 +192,7 @@ echo "Adding " + sonarResultsFileVT
                     )
 
                     sonarResultsFileList.add(sonarResultsFile)
-echo "Adding " + sonarResultsFile
-echo "List after second add " + sonarResultsFileList.toString()
+
                 }
                 else{
 
@@ -231,7 +230,7 @@ echo "List after second add " + sonarResultsFileList.toString()
 
             if(sonarScanType == SCAN_TYPE_FULL){
 
-                sonarTestResults        = getSonarResults(sonarResultsFileVT)
+                sonarTestResults        = getSonarResults(sonarResultsFileList)
                 sonarTestsParm          = ' -Dsonar.tests="' + tttRootFolder + '"'
                 sonarTestReportsParm    = ' -Dsonar.testExecutionReportPaths="' + sonarTestResults + '"'
                 sonarCodeCoverageParm   = ' -Dsonar.coverageReportPaths=' + sonarCodeCoverageFile
@@ -381,8 +380,6 @@ def setVtLoadlibrary(){
 
 def getSonarResults(resultsFileList){
 
-    echo "List " + resultsFileList.toString()
-
     def resultsList         = ''
 
     resultsFileList.each{
@@ -398,8 +395,6 @@ def getSonarResults(resultsFileList){
 
         }
     }
-
-    echo "Return List " + resultsList.toString()
 
     return resultsList
 }
