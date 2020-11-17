@@ -130,7 +130,7 @@ def call(Map pipelineParms){
                     environmentId:                      synchConfig.tttVtEnvironmentId,
                     localConfig:                        true, 
                     localConfigLocation:                tttConfigFolder, 
-                    folderPath:                         synchConfig.tttRootFolder, 
+                    folderPath:                         tttRootFolder, 
                     recursive:                          true, 
                     selectProgramsOption:               true, 
                     jsonFile:                           changedProgramsFile,
@@ -171,7 +171,7 @@ def call(Map pipelineParms){
                         environmentId:                      synchConfig.tttNvtEnvironmentId, 
                         localConfig:                        false,
                         localConfigLocation:                tttConfigFolder, 
-                        folderPath:                         synchConfig.tttRootFolder, 
+                        folderPath:                         tttRootFolder, 
                         recursive:                          true, 
                         selectProgramsOption:               true, 
                         jsonFile:                           changedProgramsFile,
@@ -201,7 +201,7 @@ def call(Map pipelineParms){
                 connectionId:       synchConfig.hciConnectionId, 
                 credentialsId:      pipelineParms.hostCredentialsId,
                 analysisProperties: """
-                    cc.sources=${synchConfig.ccSources}
+                    cc.sources=${ccSources}
                     cc.repos=${pipelineParms.ccRepo}
                     cc.system=${ccSystemId}
                     cc.test=${ccTestId}
@@ -223,7 +223,7 @@ def call(Map pipelineParms){
             if(sonarScanType == SCAN_TYPE_FULL){
 
                 sonarTestResults        = getSonarResults(sonarResultsFileVT)
-                sonarTestsParm          = ' -Dsonar.tests="' + synchConfig.tttRootFolder + '"'
+                sonarTestsParm          = ' -Dsonar.tests="' + tttRootFolder + '"'
                 sonarTestReportsParm    = ' -Dsonar.testExecutionReportPaths="' + sonarTestResults + '"'
                 sonarCodeCoverageParm   = ' -Dsonar.coverageReportPaths=' + sonarCodeCoverageFile
 
