@@ -20,7 +20,9 @@ String sonarScanType
 String sonarCobolFolder        
 String sonarCopybookFolder     
 String sonarResultsFile   
-String sonarResultsFileVT
+String sonarResultsFileVt
+String sonarResultsFileNvtBatch
+String sonarResultsFileNvtCics
 String sonarResultsFileList     
 String sonarCodeCoverageFile   
 String jUnitResultsFile
@@ -151,10 +153,10 @@ def call(Map pipelineParms){
                 bat label:  'Rename', 
                     script: """
                         cd ${sonarResultsFolder}
-                        ren ${sonarResultsFile} ${sonarResultsFileVT}
+                        ren ${sonarResultsFile} ${sonarResultsFileVt}
                     """
 
-                sonarResultsFileList.add(sonarResultsFileVT)
+                sonarResultsFileList.add(sonarResultsFileVt)
 
             }
             else{
@@ -170,10 +172,11 @@ def call(Map pipelineParms){
 
                 if(sonarScanType == SCAN_TYPE_FULL){
 
+                    /* Execute batch scenarios */
                     totaltest(
                         serverUrl:                          synchConfig.cesUrl, 
                         credentialsId:                      pipelineParms.hostCredentialsId, 
-                        environmentId:                      synchConfig.tttNvtEnvironmentId, 
+                        environmentId:                      synchConfig.tttNvtBatchEnvironmentId, 
                         localConfig:                        false,
                         localConfigLocation:                tttConfigFolder, 
                         folderPath:                         tttRootFolder, 
@@ -191,7 +194,43 @@ def call(Map pipelineParms){
                         logLevel:                           'INFO'
                     )
 
-                    sonarResultsFileList.add(sonarResultsFile)
+                    bat label:  'Rename', 
+                        script: """
+                            cd ${sonarResultsFolder}
+                            ren ${sonarResultsFile} ${sonarResultsFileNvtBatch}
+                        """
+
+                    sonarResultsFileList.add(sonarResultsFileNvtBatch)
+
+                    /* Execute CICS scenarios */
+                    totaltest(
+                        serverUrl:                          synchConfig.cesUrl, 
+                        credentialsId:                      pipelineParms.hostCredentialsId, 
+                        environmentId:                      synchConfig.tttNvtCicsEnvironmentId, 
+                        localConfig:                        false,
+                        localConfigLocation:                tttConfigFolder, 
+                        folderPath:                         tttRootFolder, 
+                        recursive:                          true, 
+                        selectProgramsOption:               true, 
+                        jsonFile:                           changedProgramsFile,
+                        haltPipelineOnFailure:              false,                 
+                        stopIfTestFailsOrThresholdReached:  false,
+                        collectCodeCoverage:                true,
+                        collectCCRepository:                pipelineParms.ccRepo,
+                        collectCCSystem:                    ccSystemId,
+                        collectCCTestID:                    ccTestId,
+                        clearCodeCoverage:                  false,
+                    //    ccThreshold:                        pipelineParms.ccThreshold,     
+                        logLevel:                           'INFO'
+                    )
+
+                    bat label:  'Rename', 
+                        script: """
+                            cd ${sonarResultsFolder}
+                            ren ${sonarResultsFile} ${sonarResultsFileNvtCics}
+                        """
+
+                    sonarResultsFileList.add(sonarResultsFileNvtCics)
 
                 }
                 else{
@@ -261,30 +300,32 @@ def call(Map pipelineParms){
 
 def initialize(){
 
-    CC_TEST_ID_MAX_LEN      = 15
-    CC_SYSTEM_ID_MAX_LEN    = 15
+    CC_TEST_ID_MAX_LEN          = 15
+    CC_SYSTEM_ID_MAX_LEN        = 15
 
-    SCAN_TYPE_NO_TESTS      = "NoTests"
-    SCAN_TYPE_FULL          = "Full"
+    SCAN_TYPE_NO_TESTS          = "NoTests"
+    SCAN_TYPE_FULL              = "Full"
 
-    BRANCH_TYPE_MAIN        = 'main'
+    BRANCH_TYPE_MAIN            = 'main'
 
-    executionBranch         = BRANCH_NAME
-    sharedLibName           = 'RNU_Shared_Lib'                  /* Rename in Jenkins server */
-    synchConfigFile         = './git2ispw/synchronization.yml'
-    automaticBuildFile      = './automaticBuildParams.txt'
-    changedProgramsFile     = './changedPrograms.json'
-    branchMappingString     = ''    
-    tttConfigFolder         = ''
-    tttVtExecutionLoad      = ''
-    ccDdioOverrides         = ''
-    sonarScanType           = SCAN_TYPE_FULL
-    sonarResultsFile        = 'generated.cli.suite.sonar.xml'
-    sonarResultsFileVT      = 'generated.cli.UT.suite.sonar.xml'
-    sonarResultsFileList    = []    
-    sonarResultsFolder      = './TTTSonar'
-    sonarCodeCoverageFile   = './Coverage/CodeCoverage.xml'
-    jUnitResultsFile        = './TTTUnit/generated.cli.suite.junit.xml'
+    executionBranch             = BRANCH_NAME
+    sharedLibName               = 'RNU_Shared_Lib'                  /* Rename in Jenkins server */
+    synchConfigFile             = './git2ispw/synchronization.yml'
+    automaticBuildFile          = './automaticBuildParams.txt'
+    changedProgramsFile         = './changedPrograms.json'
+    branchMappingString         = ''    
+    tttConfigFolder             = ''
+    tttVtExecutionLoad          = ''
+    ccDdioOverrides             = ''
+    sonarScanType               = SCAN_TYPE_FULL
+    sonarResultsFile            = 'generated.cli.suite.sonar.xml'
+    sonarResultsFileVt          = 'generated.cli.vt.suite.sonar.xml'
+    sonarResultsFileNvtBatch    = 'generated.cli.nvt.batch.suite.sonar.xml'
+    sonarResultsFileNvtCics     = 'generated.cli.nvt.cics.suite.sonar.xml'
+    sonarResultsFileList        = []    
+    sonarResultsFolder          = './TTTSonar'
+    sonarCodeCoverageFile       = './Coverage/CodeCoverage.xml'
+    jUnitResultsFile            = './TTTUnit/generated.cli.suite.junit.xml'
 
     //*********************************************************************************
     // Read synchconfig.yml from Shared Library resources folder
