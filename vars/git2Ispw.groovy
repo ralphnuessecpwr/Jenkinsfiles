@@ -224,13 +224,25 @@ def call(Map pipelineParms){
                         logLevel:                           'INFO'
                     )
 
-                    bat label:  'Rename', 
-                        script: """
-                            cd ${sonarResultsFolder}
-                            ren ${sonarResultsFile} ${sonarResultsFileNvtCics}
-                        """
+                    // If the automaticBuildParams.txt has not been created, it means no programs
+                    // have been changed and the pipeline was triggered for other changes (e.g. in configuration files)
+                    // These changes do not need to be "built".
+                    try {
 
-                    sonarResultsFileList.add(sonarResultsFileNvtCics)
+                        bat label:  'Rename', 
+                            script: """
+                                cd ${sonarResultsFolder}
+                                ren ${sonarResultsFile} ${sonarResultsFileNvtCics}
+                            """
+
+                        sonarResultsFileList.add(sonarResultsFileNvtCics)
+                        
+                    }
+                    catch(Exception e) {
+
+                        echo "No CICS results file."
+
+                    }
 
                 }
                 else{
