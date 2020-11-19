@@ -430,20 +430,20 @@ def getSonarResults(resultsFileList){
     return resultsList
 }
 
-def secureResultsFile(resultsFileName, resultsFileType) {
+def secureResultsFile(resultsFileNameNew, resultsFileType) {
 
     try {
 
         bat label:  'Rename', 
             script: """
                 cd ${sonarResultsFolder}
-                ren ${sonarResultsFile} ${resultsFileName}
+                ren ${sonarResultsFile} ${resultsFileNameNew}
             """
 
         echo "[Info] - A ${resultsFileType} results file was found.\n" + 
-            "[Info] - ${resultsFileName} will be processed."
+            "[Info] - ${resultsFileNameNew} will be processed."
 
-        sonarResultsFileList.add(sonarResultsFileNvtCics)
+        sonarResultsFileList.add(resultsFileNameNew)
 
     }
     catch(Exception e) {
@@ -451,7 +451,6 @@ def secureResultsFile(resultsFileName, resultsFileType) {
         echo "[Info] - No ${resultsFileType} Tests needed to be executed.\n" +
         "[Info] - Therefore, no ${resultsFileType} results file needs to be processed."
             
-
     }
 
     return
