@@ -40,6 +40,11 @@ def CC_TEST_ID_MAX_LEN
 def CC_SYSTEM_ID_MAX_LEN
 def SCAN_TYPE_NO_TESTS
 def SCAN_TYPE_FULL
+def RESULTS_FILE_VT
+def RESULTS_FILE_NVT_BATCH
+def RESULTS_FILE_NVT_CICS
+
+
 
 def call(Map pipelineParms){
 
@@ -80,8 +85,8 @@ def call(Map pipelineParms){
             }
             catch(Exception e) {
 
-                echo "Error during synchronisation to the mainframe.\n"
-                echo e.toString()
+                echo "[Error] - Error during synchronisation to the mainframe.\n"
+                "[Error] - " + e.toString()
                 currentBuild.result = 'FAILURE'
                 return
 
@@ -97,8 +102,8 @@ def call(Map pipelineParms){
         }
         catch(Exception e) {
 
-            echo "No Automatic Build Params file was found.  Meaning, no mainframe sources have been changed.\n" +
-            "Mainframe Build and Test steps will be skipped. Sonar scan will be executed against code only."
+            echo "[Info] - No Automatic Build Params file was found.  Meaning, no mainframe sources have been changed.\n" +
+            "[Info] - Mainframe Build and Test steps will be skipped. Sonar scan will be executed against code only."
 
             sonarScanType = SCAN_TYPE_NO_TESTS
 
@@ -119,7 +124,7 @@ def call(Map pipelineParms){
             }
             else{
 
-                echo "Skipping Mainframe Build."
+                echo "[Info] - Skipping Mainframe Build."
             
             }
         }
@@ -149,19 +154,12 @@ def call(Map pipelineParms){
                     logLevel:                           'INFO'
                 )
 
-                /* Prevent replacing of VT results file if VT and NVT is executed */
-                bat label:  'Rename', 
-                    script: """
-                        cd ${sonarResultsFolder}
-                        ren ${sonarResultsFile} ${sonarResultsFileVt}
-                    """
-
-                sonarResultsFileList.add(sonarResultsFileVt)
+                secureResultsFile(sonarResultsFileNvtCics, RESULTS_FILE_NVT_CICS)
 
             }
             else{
 
-                echo "Skipping Unit Tests."
+                echo "[Info] - Skipping Unit Tests."
 
             }
         }
@@ -194,13 +192,7 @@ def call(Map pipelineParms){
                         logLevel:                           'INFO'
                     )
 
-                    bat label:  'Rename', 
-                        script: """
-                            cd ${sonarResultsFolder}
-                            ren ${sonarResultsFile} ${sonarResultsFileNvtBatch}
-                        """
-
-                    sonarResultsFileList.add(sonarResultsFileNvtBatch)
+                    secureResultsFile(sonarResultsFileNvtCics, RESULTS_FILE_NVT_CICS)
 
                     /* Execute CICS scenarios */
                     totaltest(
@@ -224,30 +216,12 @@ def call(Map pipelineParms){
                         logLevel:                           'INFO'
                     )
 
-                    // If the automaticBuildParams.txt has not been created, it means no programs
-                    // have been changed and the pipeline was triggered for other changes (e.g. in configuration files)
-                    // These changes do not need to be "built".
-                    try {
-
-                        bat label:  'Rename', 
-                            script: """
-                                cd ${sonarResultsFolder}
-                                ren ${sonarResultsFile} ${sonarResultsFileNvtCics}
-                            """
-
-                        sonarResultsFileList.add(sonarResultsFileNvtCics)
-                        
-                    }
-                    catch(Exception e) {
-
-                        echo "No CICS results file."
-
-                    }
+                    secureResultsFile(sonarResultsFileNvtCics, RESULTS_FILE_NVT_CICS)
 
                 }
                 else{
 
-                    echo "Skipping Integration Tests."
+                    echo "[Info] - Skipping Integration Tests."
 
                 }
             }
@@ -319,6 +293,10 @@ def initialize(){
     SCAN_TYPE_FULL              = "Full"
 
     BRANCH_TYPE_MAIN            = 'main'
+
+    RESULTS_FILE_VT             = 'Virtualized'
+    RESULTS_FILE_NVT_BATCH      = 'Non Virtualized Batch'
+    RESULTS_FILE_NVT_CICS       = 'Non Virtualized CICS'
 
     executionBranch             = BRANCH_NAME
     sharedLibName               = 'RNU_Shared_Lib'                  /* Rename in Jenkins server */
@@ -450,4 +428,31 @@ def getSonarResults(resultsFileList){
     }
 
     return resultsList
+}
+
+def secureResultsFile(resultsFileName, resultsFileType) {
+
+    try {
+
+        bat label:  'Rename', 
+            script: """
+                cd ${sonarResultsFolder}
+                ren ${sonarResultsFile} ${resultsFileName}
+            """
+
+        echo "[Info] - A ${resultsFileType} results file was found.\n" + 
+            "[Info] - ${resultsFileName} will be processed."
+
+        sonarResultsFileList.add(sonarResultsFileNvtCics)
+
+    }
+    catch(Exception e) {
+
+        echo "[Info] - No ${resultsFileType} Tests needed to be executed.\n" +
+        "[Info] - Therefore, no ${resultsFileType} results file needs to be processed."
+            
+
+    }
+
+    return
 }
