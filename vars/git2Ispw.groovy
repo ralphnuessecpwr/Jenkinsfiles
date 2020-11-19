@@ -154,7 +154,7 @@ def call(Map pipelineParms){
                     logLevel:                           'INFO'
                 )
 
-                secureResultsFile(sonarResultsFileNvtCics, RESULTS_FILE_VT)
+                secureResultsFile(sonarResultsFileVt, RESULTS_FILE_VT)
 
             }
             else{
@@ -192,7 +192,7 @@ def call(Map pipelineParms){
                         logLevel:                           'INFO'
                     )
 
-                    secureResultsFile(sonarResultsFileNvtCics, RESULTS_FILE_NVT_BATCH)
+                    secureResultsFile(sonarResultsFileNvtBatch, RESULTS_FILE_NVT_BATCH)
 
                     /* Execute CICS scenarios */
                     totaltest(
