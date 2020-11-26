@@ -112,7 +112,7 @@ def call(Map pipelineParms){
 
         stage('Build mainframe code') {
 
-            if(executionType == EXECUTION_TYPE_BOTH){
+            if(!(executionType == EXECUTION_TYPE_NO_TESTS)){
 
                 ispwOperation(
                     connectionId:           synchConfig.hciConnectionId, 
@@ -130,12 +130,13 @@ def call(Map pipelineParms){
             }
         }
 
-        stage('Execute Unit Tests') {
+        if(
+            executionType == EXECUTION_TYPE_VT_ONLY ||
+            executionType == EXECUTION_TYPE_BOTH
+        ){
+
+            stage('Execute Unit Tests') {
             
-            if(
-                executionType == EXECUTION_TYPE_VT_ONLY ||
-                executionType == EXECUTION_TYPE_BOTH
-            ){
 
                 totaltest(
                     serverUrl:                          synchConfig.cesUrl, 
@@ -161,80 +162,83 @@ def call(Map pipelineParms){
                 secureResultsFile(sonarResultsFileVt, RESULTS_FILE_VT)
 
             }
-            else {
+        }
+        else {
+            
+            stage('Execute Unit Tests') {
 
                 echo "[Info] - Skipping Unit Tests."
 
             }
         }
 
-        if(pipelineParms.branchType == 'main') {
+        if(
+            executionType == EXECUTION_TYPE_NVT_ONLY ||
+            executionType == EXECUTION_TYPE_BOTH
+        ){
 
             stage('Execute Module Integration Tests') {
 
-                if(
-                    executionType == EXECUTION_TYPE_NVT_ONLY ||
-                    executionType == EXECUTION_TYPE_BOTH
-                ){
+                /* Execute batch scenarios */
+                totaltest(
+                    serverUrl:                          synchConfig.cesUrl, 
+                    credentialsId:                      pipelineParms.hostCredentialsId, 
+                    environmentId:                      synchConfig.tttNvtBatchEnvironmentId, 
+                    localConfig:                        false,
+                    localConfigLocation:                tttConfigFolder, 
+                    folderPath:                         tttRootFolder, 
+                    recursive:                          true, 
+                    selectProgramsOption:               true, 
+                    jsonFile:                           changedProgramsFile,
+                    haltPipelineOnFailure:              false,                 
+                    stopIfTestFailsOrThresholdReached:  false,
+                    collectCodeCoverage:                true,
+                    collectCCRepository:                pipelineParms.ccRepo,
+                    collectCCSystem:                    ccSystemId,
+                    collectCCTestID:                    ccTestId,
+                    clearCodeCoverage:                  false,
+                //    ccThreshold:                        pipelineParms.ccThreshold,     
+                    logLevel:                           'INFO'
+                )
 
-                    /* Execute batch scenarios */
-                    totaltest(
-                        serverUrl:                          synchConfig.cesUrl, 
-                        credentialsId:                      pipelineParms.hostCredentialsId, 
-                        environmentId:                      synchConfig.tttNvtBatchEnvironmentId, 
-                        localConfig:                        false,
-                        localConfigLocation:                tttConfigFolder, 
-                        folderPath:                         tttRootFolder, 
-                        recursive:                          true, 
-                        selectProgramsOption:               true, 
-                        jsonFile:                           changedProgramsFile,
-                        haltPipelineOnFailure:              false,                 
-                        stopIfTestFailsOrThresholdReached:  false,
-                        collectCodeCoverage:                true,
-                        collectCCRepository:                pipelineParms.ccRepo,
-                        collectCCSystem:                    ccSystemId,
-                        collectCCTestID:                    ccTestId,
-                        clearCodeCoverage:                  false,
-                    //    ccThreshold:                        pipelineParms.ccThreshold,     
-                        logLevel:                           'INFO'
-                    )
+                secureResultsFile(sonarResultsFileNvtBatch, RESULTS_FILE_NVT_BATCH)
 
-                    secureResultsFile(sonarResultsFileNvtBatch, RESULTS_FILE_NVT_BATCH)
+                /* Execute CICS scenarios */
+                totaltest(
+                    serverUrl:                          synchConfig.cesUrl, 
+                    credentialsId:                      pipelineParms.hostCredentialsId, 
+                    environmentId:                      synchConfig.tttNvtCicsEnvironmentId, 
+                    localConfig:                        false,
+                    localConfigLocation:                tttConfigFolder, 
+                    folderPath:                         tttRootFolder, 
+                    recursive:                          true, 
+                    selectProgramsOption:               true, 
+                    jsonFile:                           changedProgramsFile,
+                    haltPipelineOnFailure:              false,                 
+                    stopIfTestFailsOrThresholdReached:  false,
+                    collectCodeCoverage:                true,
+                    collectCCRepository:                pipelineParms.ccRepo,
+                    collectCCSystem:                    ccSystemId,
+                    collectCCTestID:                    ccTestId,
+                    clearCodeCoverage:                  false,
+                //    ccThreshold:                        pipelineParms.ccThreshold,     
+                    logLevel:                           'INFO'
+                )
 
-                    /* Execute CICS scenarios */
-                    totaltest(
-                        serverUrl:                          synchConfig.cesUrl, 
-                        credentialsId:                      pipelineParms.hostCredentialsId, 
-                        environmentId:                      synchConfig.tttNvtCicsEnvironmentId, 
-                        localConfig:                        false,
-                        localConfigLocation:                tttConfigFolder, 
-                        folderPath:                         tttRootFolder, 
-                        recursive:                          true, 
-                        selectProgramsOption:               true, 
-                        jsonFile:                           changedProgramsFile,
-                        haltPipelineOnFailure:              false,                 
-                        stopIfTestFailsOrThresholdReached:  false,
-                        collectCodeCoverage:                true,
-                        collectCCRepository:                pipelineParms.ccRepo,
-                        collectCCSystem:                    ccSystemId,
-                        collectCCTestID:                    ccTestId,
-                        clearCodeCoverage:                  false,
-                    //    ccThreshold:                        pipelineParms.ccThreshold,     
-                        logLevel:                           'INFO'
-                    )
+                secureResultsFile(sonarResultsFileNvtCics, RESULTS_FILE_NVT_CICS)
 
-                    secureResultsFile(sonarResultsFileNvtCics, RESULTS_FILE_NVT_CICS)
+            }
+        }
+        else{
 
-                }
-                else{
+            stage('Execute Module Integration Tests') {
+                
+                echo "[Info] - Skipping Integration Tests."
 
-                    echo "[Info] - Skipping Integration Tests."
-
-                }
             }
         }
 
-        if(!(executionType == EXECUTION_TYPE_NO_TESTS){
+        if(!(executionType == EXECUTION_TYPE_NO_TESTS)){
 
             step([
                 $class:             'CodeCoverageBuilder', 
@@ -260,7 +264,7 @@ def call(Map pipelineParms){
             def sonarCodeCoverageParm   = ''
             def scannerHome             = tool synchConfig.sonarScanner            
 
-            if(!(executionType == EXECUTION_TYPE_NO_TESTS){
+            if(!(executionType == EXECUTION_TYPE_NO_TESTS)){
 
                 sonarTestResults        = getSonarResults(sonarResultsFileList)
                 sonarTestsParm          = ' -Dsonar.tests="' + tttRootFolder + '"'
