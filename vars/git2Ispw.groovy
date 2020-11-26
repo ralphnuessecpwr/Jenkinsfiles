@@ -16,7 +16,6 @@ String tttConfigFolder
 String tttVtExecutionLoad    
 String tttUtJclSkeletonFile  
 String ccDdioOverrides     
-String sonarScanType    
 String sonarCobolFolder        
 String sonarCopybookFolder     
 String sonarResultsFile   
@@ -26,6 +25,7 @@ String sonarResultsFileNvtCics
 String sonarResultsFileList     
 String sonarCodeCoverageFile   
 String jUnitResultsFile
+String executionType
 
 def branchMapping             
 def ispwConfig
@@ -35,16 +35,17 @@ def executionMapRule
 def programList
 def tttProjectList
 
-def BRANCH_TYPE_MAIN
 def CC_TEST_ID_MAX_LEN
 def CC_SYSTEM_ID_MAX_LEN
-def SCAN_TYPE_NO_TESTS
-def SCAN_TYPE_FULL
+
+def EXECUTION_TYPE_NO_TESTS
+def EXECUTION_TYPE_VT_ONLY
+def EXECUTION_TYPE_NVT_ONLY
+def EXECUTION_TYPE_BOTH
+
 def RESULTS_FILE_VT
 def RESULTS_FILE_NVT_BATCH
 def RESULTS_FILE_NVT_CICS
-
-
 
 def call(Map pipelineParms){
 
@@ -105,13 +106,13 @@ def call(Map pipelineParms){
             echo "[Info] - No Automatic Build Params file was found.  Meaning, no mainframe sources have been changed.\n" +
             "[Info] - Mainframe Build and Test steps will be skipped. Sonar scan will be executed against code only."
 
-            sonarScanType = SCAN_TYPE_NO_TESTS
+            executionType = EXECUTION_TYPE_NO_TESTS
 
         }
 
         stage('Build mainframe code') {
 
-            if(sonarScanType == SCAN_TYPE_FULL){
+            if(executionType == EXECUTION_TYPE_BOTH){
 
                 ispwOperation(
                     connectionId:           synchConfig.hciConnectionId, 
@@ -131,7 +132,10 @@ def call(Map pipelineParms){
 
         stage('Execute Unit Tests') {
             
-            if(sonarScanType == SCAN_TYPE_FULL){
+            if(
+                executionType == EXECUTION_TYPE_VT_ONLY ||
+                executionType == EXECUTION_TYPE_BOTH
+            ){
 
                 totaltest(
                     serverUrl:                          synchConfig.cesUrl, 
@@ -157,7 +161,7 @@ def call(Map pipelineParms){
                 secureResultsFile(sonarResultsFileVt, RESULTS_FILE_VT)
 
             }
-            else{
+            else {
 
                 echo "[Info] - Skipping Unit Tests."
 
@@ -168,7 +172,10 @@ def call(Map pipelineParms){
 
             stage('Execute Module Integration Tests') {
 
-                if(sonarScanType == SCAN_TYPE_FULL){
+                if(
+                    executionType == EXECUTION_TYPE_NVT_ONLY ||
+                    executionType == EXECUTION_TYPE_BOTH
+                ){
 
                     /* Execute batch scenarios */
                     totaltest(
@@ -227,7 +234,7 @@ def call(Map pipelineParms){
             }
         }
 
-        if(sonarScanType == SCAN_TYPE_FULL){
+        if(!(executionType == EXECUTION_TYPE_NO_TESTS){
 
             step([
                 $class:             'CodeCoverageBuilder', 
@@ -253,7 +260,7 @@ def call(Map pipelineParms){
             def sonarCodeCoverageParm   = ''
             def scannerHome             = tool synchConfig.sonarScanner            
 
-            if(sonarScanType == SCAN_TYPE_FULL){
+            if(!(executionType == EXECUTION_TYPE_NO_TESTS){
 
                 sonarTestResults        = getSonarResults(sonarResultsFileList)
                 sonarTestsParm          = ' -Dsonar.tests="' + tttRootFolder + '"'
@@ -289,10 +296,10 @@ def initialize(){
     CC_TEST_ID_MAX_LEN          = 15
     CC_SYSTEM_ID_MAX_LEN        = 15
 
-    SCAN_TYPE_NO_TESTS          = "NoTests"
-    SCAN_TYPE_FULL              = "Full"
-
-    BRANCH_TYPE_MAIN            = 'main'
+    EXECUTION_TYPE_NO_TESTS     = "NoTests"
+    EXECUTION_TYPE_VT_ONLY      = "Vt"
+    EXECUTION_TYPE_NVT_ONLY     = "Nvt"
+    EXECUTION_TYPE_BOTH         = "Both"
 
     RESULTS_FILE_VT             = 'Virtualized'
     RESULTS_FILE_NVT_BATCH      = 'Non Virtualized Batch'
@@ -307,7 +314,6 @@ def initialize(){
     tttConfigFolder             = ''
     tttVtExecutionLoad          = ''
     ccDdioOverrides             = ''
-    sonarScanType               = SCAN_TYPE_FULL
     sonarResultsFile            = 'generated.cli.suite.sonar.xml'
     sonarResultsFileVt          = 'generated.cli.vt.suite.sonar.xml'
     sonarResultsFileNvtBatch    = 'generated.cli.nvt.batch.suite.sonar.xml'
@@ -316,6 +322,28 @@ def initialize(){
     sonarResultsFolder          = './TTTSonar'
     sonarCodeCoverageFile       = './Coverage/CodeCoverage.xml'
     jUnitResultsFile            = './TTTUnit/generated.cli.suite.junit.xml'
+
+    /* Determine execution type of the pipeline */
+    /* If it executes for the first time, i.e. the branch has just been created, only scan sources and don't execute any tests      */
+    /* Else, depending on the branch type or branch name (feature, development, fix or main) determine the type of tests to execute */
+    if (BUILD_NUMBER == 1) {
+        executionType = EXECUTION_TYPE_NO_TESTS
+    }    
+    /* Feature branches only exeute Virtualized/Unit Tests */
+    /* For testing purposes, feature branches execute all tests */
+    else if (executionBranch.contains("feature")) {
+        executionType = EXECUTION_TYPE_BOTH
+        /* executionType = EXECUTION_TYPE_VT_ONLY */
+    }
+    else if (executionBranch.contains("development")) {
+        executionType = EXECUTION_TYPE_VT_ONLY
+    }
+    else if (executionBranch.contains("main")) {
+        executionType = EXECUTION_TYPE_BOTH
+    }
+    else if (executionBranch.contains("bugfix")) {
+        executionType = EXECUTION_TYPE_BOTH
+    }
 
     //*********************************************************************************
     // Read synchconfig.yml from Shared Library resources folder
