@@ -347,8 +347,7 @@ def initialize(){
     /* Determine execution type of the pipeline */
     /* If it executes for the first time, i.e. the branch has just been created, only scan sources and don't execute any tests      */
     /* Else, depending on the branch type or branch name (feature, development, fix or main) determine the type of tests to execute */
-    echo BUILD_NUMBER
-    if (BUILD_NUMBER == 1) {
+    if (BUILD_NUMBER == "1") {
         executionType   = EXECUTION_TYPE_NO_TESTS
         echo "Set reason to first build"
         skipReason      = "[Info] - First build for branch ${BRANCH_NAME}."
