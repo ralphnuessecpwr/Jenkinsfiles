@@ -70,29 +70,38 @@ def call(Map pipelineParms){
 
         stage('Load code to mainframe') {
 
-            try {
+            if(!(executionType == EXECUTION_TYPE_NO_TESTS) {
 
-                gitToIspwIntegration( 
-                    connectionId:       synchConfig.hciConnectionId,                    
-                    credentialsId:      pipelineParms.hostCredentialsId,                     
-                    runtimeConfig:      ispwConfig.ispwApplication.runtimeConfig,
-                    stream:             ispwConfig.ispwApplication.stream,
-                    app:                ispwConfig.ispwApplication.application, 
-                    branchMapping:      branchMappingString,
-                    ispwConfigPath:     ispwConfigFile, 
-                    gitCredentialsId:   pipelineParms.gitCredentialsId, 
-                    gitRepoUrl:         pipelineParms.gitRepoUrl
-                )
+                try {
 
+                    gitToIspwIntegration( 
+                        connectionId:       synchConfig.hciConnectionId,                    
+                        credentialsId:      pipelineParms.hostCredentialsId,                     
+                        runtimeConfig:      ispwConfig.ispwApplication.runtimeConfig,
+                        stream:             ispwConfig.ispwApplication.stream,
+                        app:                ispwConfig.ispwApplication.application, 
+                        branchMapping:      branchMappingString,
+                        ispwConfigPath:     ispwConfigFile, 
+                        gitCredentialsId:   pipelineParms.gitCredentialsId, 
+                        gitRepoUrl:         pipelineParms.gitRepoUrl
+                    )
+
+                }
+                catch(Exception e) {
+
+                    echo "[Error] - Error during synchronisation to the mainframe.\n"
+                    "[Error] - " + e.toString()
+                    currentBuild.result = 'FAILURE'
+
+                    skipReason = "[Info] - Due to error during synchronization."
+                    return
+
+                }
             }
-            catch(Exception e) {
+            else {
 
-                echo "[Error] - Error during synchronisation to the mainframe.\n"
-                "[Error] - " + e.toString()
-                currentBuild.result = 'FAILURE'
-
-                skipReason = "[Info] - Due to error during synchronization."
-                return
+                echo skipReason
+                echo "[Info] - No code will be loaded to the mainframe"
 
             }
 
@@ -109,7 +118,7 @@ def call(Map pipelineParms){
             echo "[Info] - No Automatic Build Params file was found.  Meaning, no mainframe sources have been changed.\n" +
             "[Info] - Mainframe Build and Test steps will be skipped. Sonar scan will be executed against code only."
 
-            skipReason = "[Info] - No changes to mainframe code."
+            skipReason = skipReason + "\n[Info] - No changes to mainframe code."
 
             executionType = EXECUTION_TYPE_NO_TESTS
 
@@ -340,22 +349,27 @@ def initialize(){
     /* Else, depending on the branch type or branch name (feature, development, fix or main) determine the type of tests to execute */
     if (BUILD_NUMBER == 1) {
         executionType   = EXECUTION_TYPE_NO_TESTS
+        echo "Set reason to first build"
         skipReason      = "[Info] - First build for branch ${BRANCH_NAME}."
     }    
     else if (executionBranch.contains("feature")) {
         executionType   = EXECUTION_TYPE_VT_ONLY
+        echo "Set reason to ${BRANCH_NAME}"
         skipReason      = "[Info] - ${BRANCH_NAME} is a feature branch."
     }
     else if (executionBranch.contains("bugfix")) {
         executionType = EXECUTION_TYPE_VT_ONLY
+        echo "Set reason to ${BRANCH_NAME}"
         skipReason      = "[Info] - Branch ${BRANCH_NAME}."
     }
     else if (executionBranch.contains("development")) {
         executionType   = EXECUTION_TYPE_BOTH
+        echo "Set reason to ${BRANCH_NAME}"
         skipReason      = "[Info] - Branch ${BRANCH_NAME}."
     }
     else if (executionBranch.contains("main")) {
         executionType   = EXECUTION_TYPE_NVT_ONLY
+        echo "Set reason to ${BRANCH_NAME}"
         skipReason      = "[Info] - Branch ${BRANCH_NAME}."
     }
 
