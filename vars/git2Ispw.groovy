@@ -70,7 +70,7 @@ def call(Map pipelineParms){
 
         stage('Load code to mainframe') {
 
-            if(!(executionType == EXECUTION_TYPE_NO_TESTS) {
+            if(!(executionType == EXECUTION_TYPE_NO_TESTS)) {
 
                 try {
 
