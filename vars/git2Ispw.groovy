@@ -26,6 +26,7 @@ String sonarResultsFileList
 String sonarCodeCoverageFile   
 String jUnitResultsFile
 String executionType
+String skipReason
 
 def branchMapping             
 def ispwConfig
@@ -89,6 +90,8 @@ def call(Map pipelineParms){
                 echo "[Error] - Error during synchronisation to the mainframe.\n"
                 "[Error] - " + e.toString()
                 currentBuild.result = 'FAILURE'
+
+                skipReason = "[Info] - Due to error during synchronization."
                 return
 
             }
@@ -105,6 +108,8 @@ def call(Map pipelineParms){
 
             echo "[Info] - No Automatic Build Params file was found.  Meaning, no mainframe sources have been changed.\n" +
             "[Info] - Mainframe Build and Test steps will be skipped. Sonar scan will be executed against code only."
+
+            skipReason = "[Info] - No changes to mainframe code."
 
             executionType = EXECUTION_TYPE_NO_TESTS
 
@@ -125,6 +130,7 @@ def call(Map pipelineParms){
             }
             else{
 
+                echo skipReason
                 echo "[Info] - Skipping Mainframe Build."
             
             }
@@ -167,6 +173,7 @@ def call(Map pipelineParms){
             
             stage('Execute Unit Tests') {
 
+                echo skipReason
                 echo "[Info] - Skipping Unit Tests."
 
             }
@@ -233,6 +240,7 @@ def call(Map pipelineParms){
 
             stage('Execute Module Integration Tests') {
                 
+                skipReason
                 echo "[Info] - Skipping Integration Tests."
 
             }
@@ -331,22 +339,24 @@ def initialize(){
     /* If it executes for the first time, i.e. the branch has just been created, only scan sources and don't execute any tests      */
     /* Else, depending on the branch type or branch name (feature, development, fix or main) determine the type of tests to execute */
     if (BUILD_NUMBER == 1) {
-        executionType = EXECUTION_TYPE_NO_TESTS
+        executionType   = EXECUTION_TYPE_NO_TESTS
+        skipReason      = "[Info] - First build for branch ${BRANCH_NAME}."
     }    
-    /* Feature branches only exeute Virtualized/Unit Tests */
-    /* For testing purposes, feature branches execute all tests */
     else if (executionBranch.contains("feature")) {
-        executionType = EXECUTION_TYPE_BOTH
-        /* executionType = EXECUTION_TYPE_VT_ONLY */
-    }
-    else if (executionBranch.contains("development")) {
-        executionType = EXECUTION_TYPE_VT_ONLY
-    }
-    else if (executionBranch.contains("main")) {
-        executionType = EXECUTION_TYPE_BOTH
+        executionType   = EXECUTION_TYPE_VT_ONLY
+        skipReason      = "[Info] - ${BRANCH_NAME} is a feature branch."
     }
     else if (executionBranch.contains("bugfix")) {
-        executionType = EXECUTION_TYPE_BOTH
+        executionType = EXECUTION_TYPE_VT_ONLY
+        skipReason      = "[Info] - Branch ${BRANCH_NAME}."
+    }
+    else if (executionBranch.contains("development")) {
+        executionType   = EXECUTION_TYPE_BOTH
+        skipReason      = "[Info] - Branch ${BRANCH_NAME}."
+    }
+    else if (executionBranch.contains("main")) {
+        executionType   = EXECUTION_TYPE_NVT_ONLY
+        skipReason      = "[Info] - Branch ${BRANCH_NAME}."
     }
 
     //*********************************************************************************
