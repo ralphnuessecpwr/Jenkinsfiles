@@ -100,8 +100,7 @@ def call(Map pipelineParms){
             }
             else {
 
-                echo skipReason
-                echo "[Info] - No code will be loaded to the mainframe"
+                echo skipReason + "\n[Info] - No code will be loaded to the mainframe."
 
             }
 
@@ -139,8 +138,7 @@ def call(Map pipelineParms){
             }
             else{
 
-                echo skipReason
-                echo "[Info] - Skipping Mainframe Build."
+                echo skipReason + "\n[Info] - Skipping Mainframe Build."
             
             }
         }
@@ -182,8 +180,7 @@ def call(Map pipelineParms){
             
             stage('Execute Unit Tests') {
 
-                echo skipReason
-                echo "[Info] - Skipping Unit Tests."
+                echo skipReason + "\n[Info] - Skipping Unit Tests."
 
             }
         }
@@ -249,8 +246,7 @@ def call(Map pipelineParms){
 
             stage('Execute Module Integration Tests') {
                 
-                skipReason
-                echo "[Info] - Skipping Integration Tests."
+                skipReason + "\n[Info] - Skipping Integration Tests."
 
             }
         }
@@ -349,28 +345,23 @@ def initialize(){
     /* Else, depending on the branch type or branch name (feature, development, fix or main) determine the type of tests to execute */
     if (BUILD_NUMBER == "1") {
         executionType   = EXECUTION_TYPE_NO_TESTS
-        echo "Set reason to first build"
-        skipReason      = "[Info] - First build for branch ${BRANCH_NAME}."
+        skipReason      = "[Info] - First build for branch '${BRANCH_NAME}'."
     }    
     else if (executionBranch.contains("feature")) {
         executionType   = EXECUTION_TYPE_VT_ONLY
-        echo "Set reason to ${BRANCH_NAME}"
-        skipReason      = "[Info] - ${BRANCH_NAME} is a feature branch."
+        skipReason      = "[Info] - '${BRANCH_NAME}' is a feature branch."
     }
     else if (executionBranch.contains("bugfix")) {
         executionType = EXECUTION_TYPE_VT_ONLY
-        echo "Set reason to ${BRANCH_NAME}"
-        skipReason      = "[Info] - Branch ${BRANCH_NAME}."
+        skipReason      = "[Info] - Branch '${BRANCH_NAME}'."
     }
     else if (executionBranch.contains("development")) {
         executionType   = EXECUTION_TYPE_BOTH
-        echo "Set reason to ${BRANCH_NAME}"
-        skipReason      = "[Info] - Branch ${BRANCH_NAME}."
+        skipReason      = "[Info] - Branch '${BRANCH_NAME}'."
     }
     else if (executionBranch.contains("main")) {
         executionType   = EXECUTION_TYPE_NVT_ONLY
-        echo "Set reason to ${BRANCH_NAME}"
-        skipReason      = "[Info] - Branch ${BRANCH_NAME}."
+        skipReason      = "[Info] - Branch '${BRANCH_NAME}'."
     }
 
     //*********************************************************************************
