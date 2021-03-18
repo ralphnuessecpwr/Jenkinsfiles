@@ -272,13 +272,14 @@ def call(Map pipelineParams)
                 {
                     echo "Sonar quality gate failure: ${qg.status}"
 
-                    mailMessageExtension = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
-                    currentBuild.result = "FAILURE"
+                    mailMessageExtension    = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
+                    currentBuild.result     = "FAILURE"
+                    currentStage.result     = "FAILURE"
 
                 }
                 else
                 {
-                    mailMessageExtension = "Generated code passed the Quality gate and may be promoted."
+                    mailMessageExtension    = "Generated code passed the Quality gate and may be promoted."
                 }   
             }   
         }
