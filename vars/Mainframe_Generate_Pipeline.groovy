@@ -191,7 +191,7 @@ def call(Map pipelineParams)
                 createReport:                       true, 
                 createResult:                       true, 
                 createSonarReport:                  true,
-                contextVariables:                   '"ispw_app=' + pipelineParams.ispwApplication + ',ispw_level=' + ispwTargetLevel + '"',
+                contextVariables:                   '"ispw_app=' + pipelineParams.ispwApplication + ',ispw_level=' + pipelineParams.ispwSrcLevel + '"',
                 collectCodeCoverage:                true,
                 collectCCRepository:                pipelineParams.ccRepository,
                 collectCCSystem:                    pipelineParams.ispwApplication,
