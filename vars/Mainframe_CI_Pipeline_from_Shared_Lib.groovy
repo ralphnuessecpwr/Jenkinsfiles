@@ -245,16 +245,6 @@ def call(Map pipelineParams)
 
             withSonarQubeEnv(pipelineConfig.sq.serverName)       // Name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section
             {
-                SQ_Scanner_Properties = SQ_Scanner_Properties +  + 
-                // SonarQube project to load results into
-                SQ_Scanner_Properties = SQ_Scanner_Properties + 
-                // Location of the Cobol Source Code to scan
-                SQ_Scanner_Properties = SQ_Scanner_Properties + 
-                // Location of the Cobol copybooks to scan
-                SQ_Scanner_Properties = SQ_Scanner_Properties +  
-                // File extensions for Cobol and Copybook files.  The Total Test files need that contain tests need to be defined as cobol for SonarQube to process the results
-                SQ_Scanner_Properties = SQ_Scanner_Properties +   
-                
                 // Call the SonarQube Scanner with properties defined above
                 bat "${scannerHome}/bin/sonar-scanner "                                                                         + 
                 // Folder containing test definitions, i.e. TTT scenarios
@@ -304,7 +294,9 @@ def call(Map pipelineParams)
                             level=${ispwTargetLevel}
                             """
                     )
-                        
+
+                    currentBuild.result = "FAILURE"
+
                     // Email
                     emailext(
                         subject:    '$DEFAULT_SUBJECT',
