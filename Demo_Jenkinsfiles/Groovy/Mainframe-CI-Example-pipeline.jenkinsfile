@@ -242,21 +242,28 @@ node{
 
         withSonarQubeEnv(SQ_Server_Name)       // Name of the SonarQube server defined in Jenkins / Configure Systems / SonarQube server section
         {
-            // Test definition path 
-            def SQ_Scanner_Properties   = " -Dsonar.tests=tests"
-            // Test results and Coverage results
-            SQ_Scanner_Properties = SQ_Scanner_Properties + " -Dsonar.testExecutionReportPaths=" + TTT_Sonar_Results_File + " -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"
-            // SonarQube project to load results into
-            SQ_Scanner_Properties = SQ_Scanner_Properties + " -Dsonar.projectKey=${JOB_NAME} -Dsonar.projectName=${JOB_NAME} -Dsonar.projectVersion=1.0"
-            // Location of the Cobol Source Code to scan
-            SQ_Scanner_Properties = SQ_Scanner_Properties + " -Dsonar.sources=${ISPW_Application}\\MF_Source"
-            // Location of the Cobol copybooks to scan
-            SQ_Scanner_Properties = SQ_Scanner_Properties + " -Dsonar.cobol.copy.directories=${ISPW_Application}\\MF_Source"  
-            // File extensions for Cobol and Copybook files.  The Total Test files need that contain tests need to be defined as cobol for SonarQube to process the results
-            SQ_Scanner_Properties = SQ_Scanner_Properties + " -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub -Dsonar.cobol.copy.suffixes=cpy -Dsonar.sourceEncoding=UTF-8"
-            
             // Call the SonarQube Scanner with properties defined above
-            bat "${scannerHome}/bin/sonar-scanner" + SQ_Scanner_Properties
+            bat "${scannerHome}/bin/sonar-scanner "                                                                         + 
+            // Folder containing test definitions, i.e. TTT scenarios
+                " -Dsonar.tests=${TTT_Folder}"                                                               +
+            // File (or list of files) containing test results in Sonar format                    
+                " -Dsonar.testExecutionReportPaths=${TTT_Sonar_Results_File}"                                  +
+            // File containing Code Coverage results in Sonar format
+                " -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"                                                    +
+            // Sonar project key to use/create
+                " -Dsonar.projectKey=${JOB_NAME}"                                                                           +
+            // Sonar project name to use/create
+                " -Dsonar.projectName=${JOB_NAME}"                                                                          +
+                " -Dsonar.projectVersion=1.0"                                                                               +
+            // Folder containing the (mainframe) sources to analyze
+                " -Dsonar.sources=${ISPW_Application}/${MF_Source}"                  +
+            // Folder containing the (mainframe) copybooks
+                " -Dsonar.cobol.copy.directories=${ISPW_Application}/${MF_Source}"   + 
+            // File extensions Sonar is supposed to recognize for "sources". The list also needs to contain any TTT related extensions                    
+                " -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub,results,scenario"                             +
+            // File extensions Sonar is supposed to recognize for "copybooks"                   
+                " -Dsonar.cobol.copy.suffixes=cpy"                                                                          +
+                " -Dsonar.sourceEncoding=UTF-8"
         }
         
         // Wait for the results of the SonarQube Quality Gate
