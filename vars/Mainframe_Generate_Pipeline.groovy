@@ -270,12 +270,11 @@ def call(Map pipelineParams)
                 // Evaluate the status of the Quality Gate
                 if (qg.status != 'OK')
                 {
-                    echo "Sonar quality gate failure: ${qg.status}"
+                    catchError(buildResult: 'SUCCESS', message: "Sonar quality gate failure: ${qg.status}", stageResult: 'FAILURE') {
+    
+                        mailMessageExtension    = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
 
-                    mailMessageExtension    = "Generated code failed the Quality gate. Review Logs and apply corrections as indicated."
-                    currentBuild.result     = "FAILURE"
-                    currentStage.result     = "FAILURE"
-
+                    }
                 }
                 else
                 {
