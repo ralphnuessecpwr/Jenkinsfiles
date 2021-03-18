@@ -95,7 +95,7 @@ def call(Map pipelineParams)
     // yaml document.
     //*********************************************************************************
     def pipelineConfig  = readYaml(text: libraryResource(configFile))
-    def mailList        = readYaml(text: libraryResource(mailList))
+    def mailList        = readYaml(text: libraryResource(mailListFile))
 
     // Determine the current ISPW Path and Level that the code Promotion is from
     def pathNum         = pipelineParams.ispwSrcLevel.charAt(pipelineParams.ispwSrcLevel.length() - 1)
