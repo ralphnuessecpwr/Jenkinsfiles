@@ -291,7 +291,9 @@ node{
                         level=${ISPW_Target_Level}
                         """
                 )
-                    
+
+                    currentBuild.result = "FAILURE"
+
                 // Email
                 emailext(
                     subject:    '$DEFAULT_SUBJECT',
