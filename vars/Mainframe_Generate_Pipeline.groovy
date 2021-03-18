@@ -132,7 +132,7 @@ def call(Map pipelineParams)
                     ispwDownloadAll:    false, 
                     ispwDownloadIncl:   true, 
                     serverConfig:       '', 
-                    serverLevel:        ispwTargetLevel
+                    serverLevel:        pipelineParams.ispwSrcLevel
                 ]
             )
         }
