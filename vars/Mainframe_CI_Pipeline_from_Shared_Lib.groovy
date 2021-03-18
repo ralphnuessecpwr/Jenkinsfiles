@@ -105,24 +105,16 @@ def call(Map pipelineParams)
 
     def mailRecipient   = mailList[(pipelineParams.ispwOwner.toUpperCase())]
 
-    /* 
-     This stage can be used is you want to clean out the workspace from any previously downloaded source from ISPW.  
-     This stage shouldn't be necessary in the ordinary execution of the pipeline 
-     */ 
-   
-    stage("clean previously downloaded source")
-    {
-        // Clean out any previously downloaded source
-        dir(".\\") 
-        {
-            deleteDir()
-        }
-    }    
-
-    def ccDdioOverride     = "SALESSUP.${pipelineParams.ispwApplication}.${ispwTargetLevel}.LOAD.SSD"
+    def ccDdioOverride  = "SALESSUP.${pipelineParams.ispwApplication}.${ispwTargetLevel}.LOAD.SSD"
 
     node
     {
+        // Clean out any previously downloaded source
+        dir("./") 
+        {
+            deleteDir()
+        }
+
         /*
         This stage is used to retrieve source from ISPW
         */ 
