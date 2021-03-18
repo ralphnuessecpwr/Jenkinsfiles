@@ -79,8 +79,6 @@ import java.net.URL
 
 String  configFile
 String  mailListFile
-String  tttRepo
-String  mailMessageExtension
 
 /**
 Call method to execute the pipeline from a shared library
@@ -88,25 +86,26 @@ Call method to execute the pipeline from a shared library
 */
 def call(Map pipelineParams)
 {
-    configFile          = 'pipelineConfig.yml'
-    mailListFile        = 'mailList.yml'
+    configFile                  = 'pipelineConfig.yml'
+    mailListFile                = 'mailList.yml'
 
     //*********************************************************************************
     // Read pipelineConfig.yml and mailList.yml from Shared Library resources folder as
     // yaml document.
     //*********************************************************************************
-    def pipelineConfig  = readYaml(text: libraryResource(configFile))
-    def mailList        = readYaml(text: libraryResource(mailListFile))
+    def pipelineConfig          = readYaml(text: libraryResource(configFile))
+    def mailList                = readYaml(text: libraryResource(mailListFile))
 
     // Determine the current ISPW Path and Level that the code Promotion is from
-    def pathNum         = pipelineParams.ispwSrcLevel.charAt(pipelineParams.ispwSrcLevel.length() - 1)
+    def pathNum                 = pipelineParams.ispwSrcLevel.charAt(pipelineParams.ispwSrcLevel.length() - 1)
     
     // Also set the Level that the code currently resides in
-    def ispwTargetLevel = "QA" + pathNum
+    def ispwTargetLevel         = "QA" + pathNum
 
-    def mailRecipient   = mailList[(pipelineParams.ispwOwner.toUpperCase())]
+    def mailRecipient           = mailList[(pipelineParams.ispwOwner.toUpperCase())]
+    def mailMessageExtension    = ''
 
-    def ccDdioOverride  = "SALESSUP.${pipelineParams.ispwApplication}.${pipelineParams.ispwSrcLevel}.LOAD.SSD"
+    def ccDdioOverride          = "SALESSUP.${pipelineParams.ispwApplication}.${pipelineParams.ispwSrcLevel}.LOAD.SSD"
 
     node
     {
