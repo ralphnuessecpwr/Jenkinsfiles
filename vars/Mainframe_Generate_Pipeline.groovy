@@ -106,7 +106,7 @@ def call(Map pipelineParams)
 
     def mailRecipient   = mailList[(pipelineParams.ispwOwner.toUpperCase())]
 
-    def ccDdioOverride  = "SALESSUP.${pipelineParams.ispwApplication}.${ispwTargetLevel}.LOAD.SSD"
+    def ccDdioOverride  = "SALESSUP.${pipelineParams.ispwApplication}.${pipelineParams.ispwSrcLevel}.LOAD.SSD"
 
     node
     {
