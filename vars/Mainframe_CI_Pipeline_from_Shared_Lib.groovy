@@ -313,9 +313,9 @@ def call(Map pipelineParams)
                 startRelease:       true,
                 template:           "${pipelineConfig.xlr.template}",
                 variables:          [
-                    [propertyName: 'ISPW_Dev_level',    propertyValue: "${ispwTargetLevel}"], // Level in ISPW that the Code resides currently
-                    [propertyName: 'ISPW_RELEASE_ID',   propertyValue: "${ISPW_Release}"],     // ISPW Release value from the ISPW Webhook
-                    [propertyName: 'CES_Token',         propertyValue: "${CES_Token}"]
+                    [propertyName: 'ISPW_Dev_level',    propertyValue: "${ispwTargetLevel}"],
+                    [propertyName: 'ISPW_RELEASE_ID',   propertyValue: "${pipelineParams.ispwRelease}"],
+                    [propertyName: 'CES_Token',         propertyValue: "${pipelineParams.cesToken}"]
                 ]
             )
         }
