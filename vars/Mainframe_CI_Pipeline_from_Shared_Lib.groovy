@@ -29,12 +29,12 @@ import java.net.URL
  
  ISPW Webhook Parameter List, these parameters need to be defined in the Jenkins job configuration and will be passed by the ISPW Webhook
  @param ISPW_Stream - ISPW Stream that had the code promotion
- @param pipelineParams.ispwApplication - ISPW Application that had the code promotion
- @param pipelineParams.ispwContainer - ISPW Container that had the code promotion
- @param pipelineParams.ispwContainer_Type - Type of ISPW Container that had the code promotion, 0 - Assignment, 1 - Release, 3 - Set
+ @param ISPW_Application - ISPW Application that had the code promotion
+ @param ISPW_Container - ISPW Container that had the code promotion
+ @param ISPW_Container_Type - Type of ISPW Container that had the code promotion, 0 - Assignment, 1 - Release, 3 - Set
  @param ISPW_Release - The ISPW Release Value that will be passed to XL Release
- @param pipelineParams.ispwSrcLevel - ISPW Level that code was promoted from
- @param pipelineParams.ispwOwner - The ISPW Owner value from the ISPW Set that was created for the promotion
+ @param ISPW_Src_Level - ISPW Level that code was promoted from
+ @param ISPW_Owner - The ISPW Owner value from the ISPW Set that was created for the promotion
 
  The script or jenkinsfile defined in the job configuration needs to call this pipeline and pass the parameters above in a Map:
 
@@ -127,7 +127,7 @@ def call(Map pipelineParams)
                         credentialsId:      "${pipelineParams.hciToken}", 
                         componentType:      '', 
                         containerName:      pipelineParams.ispwContainer, 
-                        containerType:      pipelineParams.ispwContainer_Type, 
+                        containerType:      pipelineParams.ispwContainerType, 
                         ispwDownloadAll:    false, 
                         ispwDownloadIncl:   true, 
                         serverConfig:       '', 
