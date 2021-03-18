@@ -89,8 +89,8 @@ Call method to execute the pipeline from a shared library
 */
 def call(Map pipelineParams)
 {
-    configFile      = 'pipelineConfig.yml'
-    mailListFile    = 'mailList.yml'
+    configFile          = 'pipelineConfig.yml'
+    mailListFile        = 'mailList.yml'
 
     //*********************************************************************************
     // Read pipelineConfig.yml and mailList.yml from Shared Library resources folder as
