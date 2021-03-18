@@ -39,20 +39,20 @@ import java.net.URL
  The script or jenkinsfile defined in the job configuration needs to call this pipeline and pass the parameters above in a Map:
 
  ispwStream:        ISPW_Stream,
- ispwApplication:   pipelineParams.ispwApplication,
- ispwContainer:     pipelineParams.ispwContainer,
- ispwContainerType: pipelineParams.ispwContainer_Type,
+ ispwApplication:   ISPW_Application,
+ ispwContainer:     ISPW_Container,
+ ispwContainerType: ISPW_Container_Type,
  ispwRelease:       ISPW_Release,
- ispwSrcLevel:      pipelineParams.ispwSrcLevel,
- ispwOwner:         pipelineParams.ispwOwner,
+ ispwSrcLevel:      ISPW_Src_Level,
+ ispwOwner:         ISPW_Owner,
 
  In addition to the parameters passed via Webhook, the pipeline also takes the following parameters from the call, which need to extend the map. 
  These parameters may differ between differennt applications/instances of the job implemented by the pipeline.
  cesToken:          <CES_Token>,            CES Personal Access Token.  These are configured in Compuware Enterprise Services / Security / Personal Access Tokens 
- jenkinsCesToken:   <pipelineParams.cesToken>     Jenkins Credentials ID for the CES Personal Access Token
+ jenkinsCesToken:   <Jenkins_CES_Token>     Jenkins Credentials ID for the CES Personal Access Token
  hciConnectionId:   <HCI_Conn_ID>           HCI Connection ID configured in the Compuware Common Configuration Plugin.  Use Pipeline Syntax Generator to determine this value. 
  hciToken:          <HCI_Token>             The ID of the Jenkins Credential for the TSO ID that will used to execute the pipeline
- ccRepository:      <pipelineParams.ccRepository>         The Compuware Xpediter Code Coverage Repository that the Pipeline will use
+ ccRepository:      <CoCo_Repository>       The Compuware Xpediter Code Coverage Repository that the Pipeline will use
  gitProject:        <Git_Project>           Github project/user used to store the Topaz for Total Test Projects
  gitCredentials:    <Git_Credentials>       Jenkins credentials for logging into git 
 */
@@ -81,6 +81,7 @@ String  configFile
 String  mailListFile
 String  tttRepo
 def     pipelineConfig
+def     mailList
 
 /**
 Call method to execute the pipeline from a shared library
