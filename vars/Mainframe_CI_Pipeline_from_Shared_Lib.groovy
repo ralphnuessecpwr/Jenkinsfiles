@@ -80,8 +80,6 @@ import java.net.URL
 String  configFile
 String  mailListFile
 String  tttRepo
-def     pipelineConfig
-def     mailList
 
 /**
 Call method to execute the pipeline from a shared library
@@ -96,8 +94,8 @@ def call(Map pipelineParams)
     // Read pipelineConfig.yml and mailList.yml from Shared Library resources folder as
     // yaml document.
     //*********************************************************************************
-    pipelineConfig      = readYaml(text: libraryResource(configFile))
-    mailList            = readYaml(text: libraryResource(mailList))
+    def pipelineConfig  = readYaml(text: libraryResource(configFile))
+    def mailList        = readYaml(text: libraryResource(mailList))
 
     // Determine the current ISPW Path and Level that the code Promotion is from
     def pathNum         = pipelineParams.ispwSrcLevel.charAt(pipelineParams.ispwSrcLevel.length() - 1)
