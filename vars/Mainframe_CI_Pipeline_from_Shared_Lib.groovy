@@ -24,15 +24,16 @@ import java.net.URL
  
  This Pipeline Requires the below Parameters to be defined in the Jenkins Job
  The Jenkins Parameters can be supplied by a ISPW webhook by defining a webhook like the example below.  
- Please note that the assignment is not currently available in the webhook, but will be added in a future release.
- http://<<your jenkins server>>/job/<<your jenkins job>>/buildWithParameters?ISPW_Stream=$$stream$$&pipelineParams.ispwContainer=$$release$$&pipelineParams.ispwSrcLevel=$$level$$&SetId=$$setID$$&ISPW_Release=$$release$$&Owner=$$owner$$
+
+ The Jenkins Parameters can be supplied by a ISPW webhook by defining a webhook like the example below.  
  
+ http://<<your jenkins server>>/job/<<your jenkins job>>/buildWithParameters?ISPW_Stream=$$stream$$&ISPW_Application=$$application$$&ISPW_Release=$$release$$&ISPW_Assignment=$$assignment$$&ISPW_Set_Id=$$setID$$&ISPW_Src_Level=$$level$$&ISPW_Owner=$$owner$$
+
  ISPW Webhook Parameter List, these parameters need to be defined in the Jenkins job configuration and will be passed by the ISPW Webhook
  @param ISPW_Stream - ISPW Stream that had the code promotion
  @param ISPW_Application - ISPW Application that had the code promotion
- @param ISPW_Container - ISPW Container that had the code promotion
- @param ISPW_Container_Type - Type of ISPW Container that had the code promotion, 0 - Assignment, 1 - Release, 3 - Set
  @param ISPW_Release - The ISPW Release Value that will be passed to XL Release
+ @param ISPW_Assignment - The ISPW Assignemnt that has been promoted 
  @param ISPW_Src_Level - ISPW Level that code was promoted from
  @param ISPW_Owner - The ISPW Owner value from the ISPW Set that was created for the promotion
 
@@ -40,8 +41,7 @@ import java.net.URL
 
  ispwStream:        ISPW_Stream,
  ispwApplication:   ISPW_Application,
- ispwContainer:     ISPW_Container,
- ispwContainerType: ISPW_Container_Type,
+ ispwAssignment:    ISPW_Assignment,
  ispwRelease:       ISPW_Release,
  ispwSrcLevel:      ISPW_Src_Level,
  ispwOwner:         ISPW_Owner,
@@ -120,20 +120,20 @@ def call(Map pipelineParams)
         */ 
         stage("Retrieve Code From ISPW")
         {
-                checkout(
-                    [
-                        $class:             'IspwContainerConfiguration', 
-                        connectionId:       "${pipelineParams.hciConnectionId}",
-                        credentialsId:      "${pipelineParams.hciToken}", 
-                        componentType:      '', 
-                        containerName:      pipelineParams.ispwContainer, 
-                        containerType:      pipelineParams.ispwContainerType, 
-                        ispwDownloadAll:    false, 
-                        ispwDownloadIncl:   true, 
-                        serverConfig:       '', 
-                        serverLevel:        ispwTargetLevel
-                    ]
-                )
+            checkout(
+                [
+                    $class:             'IspwContainerConfiguration', 
+                    connectionId:       "${pipelineParams.hciConnectionId}",
+                    credentialsId:      "${pipelineParams.hciToken}", 
+                    componentType:      '', 
+                    containerName:      pipelineParams.ispwAssignment, 
+                    containerType:      '0', // 0 Assignment, 1 Release, 2 Set, 
+                    ispwDownloadAll:    false, 
+                    ispwDownloadIncl:   true, 
+                    serverConfig:       '', 
+                    serverLevel:        ispwTargetLevel
+                ]
+            )
         }
         
         /* 
@@ -208,21 +208,21 @@ def call(Map pipelineParams)
         */ 
         stage("Collect Coverage Metrics")
         {
-                // Code Coverage needs to match the code coverage metrics back to the source code in order for them to be loaded in SonarQube
-                // The source variable is the location of the source that was downloaded from ISPW
-                def String ccSources="${pipelineParams.ispwApplication}\\${pipelineConfig.ispw.mfSourceFolder}"
+            // Code Coverage needs to match the code coverage metrics back to the source code in order for them to be loaded in SonarQube
+            // The source variable is the location of the source that was downloaded from ISPW
+            def String ccSources="${pipelineParams.ispwApplication}\\${pipelineConfig.ispw.mfSourceFolder}"
 
-                // The Code Coverage Plugin passes it's primary configuration in the string or a file
-                def ccproperties = 'cc.sources=' + ccSources + '\rcc.repos=' + pipelineParams.ccRepository + '\rcc.system=' + pipelineParams.ispwApplication  + '\rcc.test=' + BUILD_NUMBER + '\rcc.ddio.overrides=' + ccDdioOverride
+            // The Code Coverage Plugin passes it's primary configuration in the string or a file
+            def ccproperties = 'cc.sources=' + ccSources + '\rcc.repos=' + pipelineParams.ccRepository + '\rcc.system=' + pipelineParams.ispwApplication  + '\rcc.test=' + BUILD_NUMBER + '\rcc.ddio.overrides=' + ccDdioOverride
 
-                step(
-                    [
-                        $class:                 'CodeCoverageBuilder',                    
-                        connectionId:           pipelineParams.hciConnectionId, 
-                        credentialsId:          pipelineParams.hciToken,
-                        analysisProperties:     ccproperties    // Pass in the analysisProperties as a string
-                    ]
-                )
+            step(
+                [
+                    $class:                 'CodeCoverageBuilder',                    
+                    connectionId:           pipelineParams.hciConnectionId, 
+                    credentialsId:          pipelineParams.hciToken,
+                    analysisProperties:     ccproperties    // Pass in the analysisProperties as a string
+                ]
+            )
         }
 
         /* 
@@ -272,7 +272,7 @@ def call(Map pipelineParams)
                     echo "Sonar quality gate failure: ${qg.status}"
                     echo "Pipeline will be aborted and ISPW Assignment will be regressed"
 
-                    echo "Regress Assignment ${pipelineParams.ispwContainer}, Level ${ispwTargetLevel}"
+                    echo "Regress Assignment ${pipelineParams.ispwAssignment}, Level ${ispwTargetLevel}"
 
                     ispwOperation(
                         connectionId:           pipelineParams.hciConnectionId, 
@@ -281,7 +281,7 @@ def call(Map pipelineParams)
                         ispwAction:             'RegressAssignment', 
                         ispwRequestBody:        """
                             runtimeConfiguration=${pipelineConfig.ispw.runtime}
-                            assignmentId=${pipelineParams.ispwContainer}
+                            assignmentId=${pipelineParams.ispwAssignment}
                             level=${ispwTargetLevel}
                             """
                     )

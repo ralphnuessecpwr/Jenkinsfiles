@@ -23,14 +23,12 @@ import java.net.URL
  This Pipeline Requires the below Parameters to be defined in the Jenkins Job
  The Jenkins Parameters can be supplied by a ISPW webhook by defining a webhook like the example below.  
  Please note that the assignment is not currently available in the webhook, but will be added in a future release.
- http://<<your jenkins server>>/job/<<you jenkins job>>/buildWithParameters?ISPW_Stream=$$stream$$&ISPW_Container=$$release$$&ISPW_Src_Level=$$level$$&SetId=$$setID$$&ISPW_Release=$$release$$&Owner=$$owner$$
- 
+ http://<<your jenkins server>>/job/<<your jenkins job>>/buildWithParameters?ISPW_Stream=$$stream$$&ISPW_Application=$$application$$&ISPW_Release=$$release$$&ISPW_Assignment=$$assignment$$&ISPW_Set_Id=$$setID$$&ISPW_Src_Level=$$level$$&ISPW_Owner=$$owner$$
  ISPW Webhook Parameter List, these parameters need to be defined in the Jenkins job configuration and will be passed by the ISPW Webhook
  @param ISPW_Stream - ISPW Stream that had the code promotion
  @param ISPW_Application - ISPW Application that had the code promotion
- @param ISPW_Container - ISPW Container that had the code promotion
- @param ISPW_Container_Type - Type of ISPW Container that had the code promotion, 0 - Assignment, 1 - Release, 3 - Set
  @param ISPW_Release - The ISPW Release Value that will be passed to XL Release
+ @param ISPW_Assignment - The ISPW Assignemnt that has been promoted
  @param ISPW_Src_Level - ISPW Level that code was promoted from
  @param ISPW_Owner - The ISPW Owner value from the ISPW Set that was created for the promotion
 
@@ -132,8 +130,8 @@ node{
                     connectionId:       "${HCI_Conn_ID}",
                     credentialsId:      "${HCI_Token}", 
                     componentType:      '', 
-                    containerName:      ISPW_Container, 
-                    containerType:      ISPW_Container_Type, 
+                    containerName:      ISPW_Assignment, 
+                    containerType:      '0', // 0 Assignment, 1 Release, 2 Set
                     ispwDownloadAll:    false, 
                     ispwDownloadIncl:   true, 
                     serverConfig:       '', 
@@ -278,7 +276,7 @@ node{
                 echo "Sonar quality gate failure: ${qg.status}"
                 echo "Pipeline will be aborted and ISPW Assignment will be regressed"
 
-                echo "Regress Assignment ${ISPW_Container}, Level ${ISPW_Target_Level}"
+                echo "Regress Assignment ${ISPW_Assignment}, Level ${ISPW_Target_Level}"
 
                 ispwOperation(
                     connectionId:           HCI_Conn_ID, 
@@ -287,7 +285,7 @@ node{
                     ispwAction:             'RegressAssignment', 
                     ispwRequestBody:        """
                         runtimeConfiguration=${ISPW_Runtime}
-                        assignmentId=${ISPW_Container}
+                        assignmentId=${ISPW_Assignment}
                         level=${ISPW_Target_Level}
                         """
                 )
