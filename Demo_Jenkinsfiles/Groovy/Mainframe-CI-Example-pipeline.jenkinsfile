@@ -22,8 +22,9 @@ import java.net.URL
  
  This Pipeline Requires the below Parameters to be defined in the Jenkins Job
  The Jenkins Parameters can be supplied by a ISPW webhook by defining a webhook like the example below.  
- Please note that the assignment is not currently available in the webhook, but will be added in a future release.
+ 
  http://<<your jenkins server>>/job/<<your jenkins job>>/buildWithParameters?ISPW_Stream=$$stream$$&ISPW_Application=$$application$$&ISPW_Release=$$release$$&ISPW_Assignment=$$assignment$$&ISPW_Set_Id=$$setID$$&ISPW_Src_Level=$$level$$&ISPW_Owner=$$owner$$
+ 
  ISPW Webhook Parameter List, these parameters need to be defined in the Jenkins job configuration and will be passed by the ISPW Webhook
  @param ISPW_Stream - ISPW Stream that had the code promotion
  @param ISPW_Application - ISPW Application that had the code promotion
