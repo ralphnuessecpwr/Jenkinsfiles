@@ -276,7 +276,7 @@ def call(Map pipelineParams)
 
                     ispwOperation(
                         connectionId:           pipelineParams.hciConnectionId, 
-                        credentialsId:          pipelineParams.cesToken,
+                        credentialsId:          pipelineParams.jenkinsCesToken,
                         consoleLogResponseBody: true,  
                         ispwAction:             'RegressAssignment', 
                         ispwRequestBody:        """
