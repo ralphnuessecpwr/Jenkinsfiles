@@ -1,22 +1,20 @@
 git:
-    url:                    "https://github.com"
-    tttRepoExtension:       "_Unit_Tests.git"
-    branch:                 "master"
+  url:                    "https://github.com"
+  tttRepoExtension:       "_Unit_Tests.git"
+  branch:                 "master"
 sq:
-    scannerName:            "scanner"
-    serverName:             "localhost"         
+  scannerName:            "scanner"
+  serverName:             "localhost"         
 xlr:
-    template:               "A Release from Jenkins"
-    user:                   "admin"                   
+  template:               "A Release from Jenkins"
+  user:                   "admin"                   
 ttt:
-    folder:                 "tests"                 
-    vtEnvironment:          "5b508b8a787be73b59238d38"
-    sonarResultsFile:       "./TTTSonar/generated.cli.suite.sonar.xml"
+  folder:                 "tests"                 
+  vtEnvironment:          "5b508b8a787be73b59238d38"
+  sonarResultsFile:       "./TTTSonar/generated.cli.suite.sonar.xml"
 ces:
-    url:                    "http://cwcc.compuware.com:2020"
+  url:                    "http://cwcc.compuware.com:2020"
 ispw:
-    runtime:                "ispw"
-    changedProgramsFile:    "changedPrograms.json"
-    mfSourceFolder:         "MF_Source"
-
- String SQ_Project                  = "${JOB_NAME}" 
+  runtime:                "ispw"
+  changedProgramsFile:    "changedPrograms.json"
+  mfSourceFolder:         "MF_Source"
