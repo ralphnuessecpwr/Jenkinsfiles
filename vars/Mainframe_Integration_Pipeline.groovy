@@ -286,7 +286,8 @@ def call(Map pipelineParams)
                 if (qg.status != 'OK')
                 {
 
-                    mailMessageExtension    = "Promoted code failed the Quality gate. Assignent will be regressed. Review Logs and apply corrections as indicated."
+                    mailMessageExtension        = "Promoted code failed the Quality gate. Assignent will be regressed. Review Logs and apply corrections as indicated."
+                    currentBuild.currentResult  = 'FAILURE'
 
                     emailext(
                         subject:    '$DEFAULT_SUBJECT',
