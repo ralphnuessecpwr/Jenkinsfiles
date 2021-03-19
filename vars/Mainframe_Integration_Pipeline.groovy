@@ -287,6 +287,21 @@ def call(Map pipelineParams)
                 {
 
                     mailMessageExtension        = "Promoted code failed the Quality gate. Assignent will be regressed. Review Logs and apply corrections as indicated."
+
+                    echo "Regress Assignment ${pipelineParams.ispwAssignment}, Level ${ispwTargetLevel}"
+
+                    ispwOperation(
+                        connectionId:           pipelineParams.hciConnectionId, 
+                        credentialsId:          pipelineParams.jenkinsCesToken,
+                        consoleLogResponseBody: true,  
+                        ispwAction:             'RegressAssignment', 
+                        ispwRequestBody:        """
+                            runtimeConfiguration=${pipelineConfig.ispw.runtime}
+                            assignmentId=${pipelineParams.ispwAssignment}
+                            level=${ispwTargetLevel}
+                            """
+                    )
+
                     currentBuild.currentResult  = 'FAILURE'
 
                     emailext(
