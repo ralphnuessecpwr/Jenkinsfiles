@@ -188,14 +188,14 @@ def call(Map pipelineParams)
 
         stage("Execute related Unit Tests")
         {
-/*
+
             totaltest(
                 serverUrl:                          pipelineConfig.ces.url, 
                 serverCredentialsId:                pipelineParams.hciToken, 
                 credentialsId:                      pipelineParams.hciToken, 
                 environmentId:                      pipelineConfig.ttt.virtualized.environment,
                 localConfig:                        false,              
-                folderPath:                         "Tests", //pipelineConfig.ttt.general.folder + '/' + pipelineConfig.ttt.virtualized.folder, 
+//                folderPath:                         "Tests", //pipelineConfig.ttt.general.folder + '/' + pipelineConfig.ttt.virtualized.folder, 
                 recursive:                          true, 
                 selectProgramsOption:               true, 
                 jsonFile:                           pipelineConfig.ispw.changedProgramsFile,
@@ -213,7 +213,7 @@ def call(Map pipelineParams)
                 clearCodeCoverage:                  false,
                 logLevel:                           'INFO'
             )
-*/
+
             // Process the Total Test Junit result files into Jenkins
             junit allowEmptyResults: true, keepLongStdio: true, testResults: "TTTUnit/*.xml"
         }
