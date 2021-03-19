@@ -14,7 +14,7 @@ ttt:
     sonarResultsFile:     "./TTTSonar/generated.cli.suite.sonar.xml"
   virtualized:            
     folder:               "Virtualized_Tests"
-    envirnment:           "5b508b8a787be73b59238d38"
+    environment:          "5b508b8a787be73b59238d38"
     targetSonarResults:   "./TTTSonar/generated.cli.vt.suite.sonar.xml"
   nonVirtualized:
     folder:               "Non_Virtualized_Tests"                 
