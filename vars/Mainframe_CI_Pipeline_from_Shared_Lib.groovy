@@ -69,7 +69,7 @@ import java.net.URL
  @param pipelineConfig.sq.serverName             - Name of SonarQube Server in "Manage Jenkins" -> "Configure System" -> "Sonar Qube servers"
  @param pipelineConfig.xlr.template              - XL Release template to trigger at the end of the Jenkins workflow
  @param pipelineConfig.xlr.user                  - XL Release user ID. Configured in Jenkins/Manage Jenkins/Configure System/XL Release credentials
- @param pipelineConfig.ttt.folder                - Folder to download TTT projects from GitHub into, i.e. store all TTT projects into one folder
+ @param pipelineConfig.ttt.vtFolder                - Folder to download TTT projects from GitHub into, i.e. store all TTT projects into one folder
  @param pipelineConfig.ttt.vtEnvironment         - ID of a valid batch execution environment within the Topatz for Total Test repository (or local environment if local configuration is used for TTT)
  @param pipelineConfig.ces.url                   - URL to the ISPW Rest API
  @param pipelineConfig.ispw.runtime              - ISPW Runtime configuration
@@ -144,7 +144,7 @@ def call(Map pipelineParams)
             echo "Checking out Branch " + pipelineConfig.git.branch
 
             //Retrieve the Tests from Github that match that ISPW Stream and Application
-            def gitFullUrl = "${pipelineConfig.git.url}/${pipelineParams.gitProject}/${pipelineParams.ispwStream}_${pipelineParams.ispwApplication}${pipelineConfig.git.tttRepoExtension}"
+            def gitFullUrl = "${pipelineConfig.git.url}/${pipelineParams.gitProject}/${pipelineParams.ispwStream}_${pipelineParams.ispwApplication}${pipelineConfig.git.tttVtRepoExtension}"
 
             checkout(
                 changelog:  false, 
@@ -157,7 +157,7 @@ def call(Map pipelineParams)
                     doGenerateSubmoduleConfigurations:  false, 
                     extensions:                         [[
                         $class:             'RelativeTargetDirectory', 
-                        relativeTargetDir:  "${pipelineConfig.ttt.folder}"
+                        relativeTargetDir:  "${pipelineConfig.ttt.vtFolder}"
                     ]], 
                     submoduleCfg:                       [], 
                     userRemoteConfigs:                  [[
@@ -180,7 +180,7 @@ def call(Map pipelineParams)
                 environmentId:                      pipelineConfig.ttt.vtEnvironment,
                 localConfig:                        false,              // If you are not using the TTT repository and use the local TotalTestConfiguration, set to true
                 //localConfigLocation:                tttConfigFolder,  // and point to workspace folder containing the local TotalTestConfiguration
-                folderPath:                         pipelineConfig.ttt.folder, 
+                folderPath:                         pipelineConfig.ttt.vtFolder, 
                 recursive:                          true, 
                 selectProgramsOption:               true, 
                 jsonFile:                           pipelineConfig.ispw.changedProgramsFile,
@@ -239,7 +239,7 @@ def call(Map pipelineParams)
                 // Call the SonarQube Scanner with properties defined above
                 bat "${scannerHome}/bin/sonar-scanner "                                                                         + 
                 // Folder containing test definitions, i.e. TTT scenarios
-                    " -Dsonar.tests=${pipelineConfig.ttt.folder}"                                                               +
+                    " -Dsonar.tests=${pipelineConfig.ttt.vtFolder}"                                                               +
                 // File (or list of files) containing test results in Sonar format                    
                     " -Dsonar.testExecutionReportPaths=${pipelineConfig.ttt.sonarResultsFile}"                                  +
                 // File containing Code Coverage results in Sonar format

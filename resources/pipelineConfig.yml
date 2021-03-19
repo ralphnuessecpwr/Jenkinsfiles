@@ -1,6 +1,6 @@
 git:
   url:                    "https://github.com"
-  tttRepoExtension:       "_Unit_Tests.git"
+  tttRepoExtension:       "_Total_Tests.git"
   branch:                 "master"
 sq:
   scannerName:            "scanner"
@@ -9,8 +9,15 @@ xlr:
   template:               "A Release from Jenkins"
   user:                   "admin"                   
 ttt:
-  folder:                 "tests"                 
-  vtEnvironment:          "5b508b8a787be73b59238d38"
+  folder:                 "Tests"
+  virtualized:            
+    folder:               "Virtualized_Tests"
+    envirnment:           "5b508b8a787be73b59238d38"
+    targetSonarResults:   "./TTTSonar/generated.cli.vt.suite.sonar.xml"
+  nonVirtualized:
+    folder:               "Non_Virtualized_Tests"                 
+    environment:          "5b508b8a787be73b59238d38"
+    targetSonarResults:   "./TTTSonar/generated.cli.nvt.suite.sonar.xml"
   sonarResultsFile:       "./TTTSonar/generated.cli.suite.sonar.xml"
 ces:
   url:                    "http://cwcc.compuware.com:2020"
