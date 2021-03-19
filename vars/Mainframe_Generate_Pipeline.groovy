@@ -30,12 +30,12 @@ import java.net.URL
  http://<<your jenkins server>>/job/<<your jenkins job>>/buildWithParameters?ISPW_Stream=$$stream$$&ISPW_Application=$$application$$&ISPW_Release=$$release$$&ISPW_Assignment=$$assignment$$&ISPW_Set_Id=$$setID$$&ISPW_Src_Level=$$level$$&ISPW_Owner=$$owner$$
 
  ISPW Webhook Parameter List, these parameters need to be defined in the Jenkins job configuration and will be passed by the ISPW Webhook
- @param ISPW_Stream - ISPW Stream that had the code promotion
- @param ISPW_Application - ISPW Application that had the code promotion
- @param ISPW_Release - The ISPW Release Value that will be passed to XL Release
- @param ISPW_Assignment - The ISPW Assignemnt that has been promoted 
- @param ISPW_Src_Level - ISPW Level that code was promoted from
- @param ISPW_Owner - The ISPW Owner value from the ISPW Set that was created for the promotion
+ @param ISPW_Stream         - ISPW Stream that had the code promotion
+ @param ISPW_Application    - ISPW Application that had the code promotion
+ @param ISPW_Release        - The ISPW Release Value that will be passed to XL Release
+ @param ISPW_Assignment     - The ISPW Assignemnt that has been promoted 
+ @param ISPW_Src_Level      - ISPW Level that code was promoted from
+ @param ISPW_Owner          - The ISPW Owner value from the ISPW Set that was created for the promotion
 
  The script or jenkinsfile defined in the job configuration needs to call this pipeline and pass the parameters above in a Map:
 
@@ -58,7 +58,7 @@ import java.net.URL
 */
 
 /**
- In the basic example there were parameters hard coded into the pipeline. These would be setting that apply to any instance of the pipeline. Instad of hardcoding, 
+ In the basic example dertain parameters were hard coded into the pipeline. These would be setting that apply to any instance of the pipeline. Instad of hardcoding, 
  we make use of the Shared Library resource folder, which may store configuration files, and we read the configuration from those file. This example pipeline assumes the
  configuration stired as .yml file:
 
@@ -75,6 +75,7 @@ xlr:                        XLRelease related
 ttt:                        TTT related
   general:                  general settings
     folder:                     - Target folder to clone TTT repo into
+    sonarResultsFolder:         - Folder containing Sonar Qube result report files
     sonarResultsFile:           - standard name of Sonar results file     
   virtualized:              Settings for Virtualized Tests
     folder:                     - Folder container Virtualized Tests
@@ -225,7 +226,7 @@ def call(Map pipelineParams)
         {
             // Code Coverage needs to match the code coverage metrics back to the source code in order for them to be loaded in SonarQube
             // The source variable is the location of the source that was downloaded from ISPW
-            def String ccSources="${pipelineParams.ispwApplication}\\${pipelineConfig.ispw.mfSourceFolder}"
+            def String ccSources="${pipelineParams.ispwApplication}/${pipelineConfig.ispw.mfSourceFolder}"
 
             // The Code Coverage Plugin passes it's primary configuration in the string or a file
             def ccproperties = 'cc.sources=' + ccSources + '\rcc.repos=' + pipelineParams.ccRepository + '\rcc.system=' + pipelineParams.ispwApplication  + '\rcc.test=' + BUILD_NUMBER + '\rcc.ddio.overrides=' + ccDdioOverride
@@ -256,7 +257,7 @@ def call(Map pipelineParams)
                 // Folder containing test definitions, i.e. TTT scenarios
                     " -Dsonar.tests=${pipelineConfig.ttt.general.folder}"                                                       +
                 // File (or list of files) containing test results in Sonar format                    
-                    " -Dsonar.testExecutionReportPaths=${pipelineConfig.ttt.general.sonarResultsFile}"                          +
+                    " -Dsonar.testExecutionReportPaths=${pipelineConfig.ttt.general.sonarResultsFolder}/${pipelineConfig.ttt.general.sonarResultsFile}"                          +
                 // File containing Code Coverage results in Sonar format
                     " -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"                                                    +
                 // Sonar project key to use/create
