@@ -11,52 +11,60 @@ import java.net.URL
  on the promotion of code from a Test level in a controlled level.  The pipeline runs a series of quality checks on the 
  promoted code to ensure that it meets the quality standards that an organization defined in SonarQube.
  
+ For detailed descriptions of how to setup Jenkins and your environment to enable implementing a mainframe inclusive CI/CD process, refer to 
+
+ https://devops.api.compuware.com
+
  This Pipeline uses the following Jenkins Plugins
- Compuware Common Configuration Plugin - https://plugins.jenkins.io/compuware-common-configuration
- Compuware Source Code Download for Endevor, PDS, and ISPW Plugin - https://plugins.jenkins.io/compuware-scm-downloader
- Compuware Topaz for Total Test Plugin - https://plugins.jenkins.io/compuware-topaz-for-total-test
- Compuware Xpediter Code Coverage Plugin - https://plugins.jenkins.io/compuware-xpediter-code-coverage
- Pipeline Utilities Plugin - https://plugins.jenkins.io/pipeline-utility-steps
- SonarQube Scanner Plugin - https://plugins.jenkins.io/sonar
- XebiaLabs XL Release Plugin - https://plugins.jenkins.io/xlrelease-plugin
+ Compuware Common Configuration Plugin                              - https://plugins.jenkins.io/compuware-common-configuration
+ Compuware Source Code Download for Endevor, PDS, and ISPW Plugin   - https://plugins.jenkins.io/compuware-scm-downloader
+ Compuware Topaz for Total Test Plugin                              - https://plugins.jenkins.io/compuware-topaz-for-total-test
+ Compuware Xpediter Code Coverage Plugin                            - https://plugins.jenkins.io/compuware-xpediter-code-coverage
+ Pipeline Utilities Plugin                                          - https://plugins.jenkins.io/pipeline-utility-steps
+ SonarQube Scanner Plugin                                           - https://plugins.jenkins.io/sonar
+ XebiaLabs XL Release Plugin                                        - https://plugins.jenkins.io/xlrelease-plugin
  
- This Pipeline Requires the below Parameters to be defined in the Jenkins Job
+ This Pipeline Requires the below Parameters to be defined in the Jenkins Job configuration. 
  The Jenkins Parameters can be supplied by a ISPW webhook by defining a webhook like the example below.  
  
  http://<<your jenkins server>>/job/<<your jenkins job>>/buildWithParameters?ISPW_Stream=$$stream$$&ISPW_Application=$$application$$&ISPW_Release=$$release$$&ISPW_Assignment=$$assignment$$&ISPW_Set_Id=$$setID$$&ISPW_Src_Level=$$level$$&ISPW_Owner=$$owner$$
  
  ISPW Webhook Parameter List, these parameters need to be defined in the Jenkins job configuration and will be passed by the ISPW Webhook
- @param ISPW_Stream - ISPW Stream that had the code promotion
- @param ISPW_Application - ISPW Application that had the code promotion
- @param ISPW_Release - The ISPW Release Value that will be passed to XL Release
- @param ISPW_Assignment - The ISPW Assignemnt that has been promoted
- @param ISPW_Src_Level - ISPW Level that code was promoted from
- @param ISPW_Owner - The ISPW Owner value from the ISPW Set that was created for the promotion
+ @param ISPW_Stream         - ISPW Stream that had the code promotion
+ @param ISPW_Application    - ISPW Application that had the code promotion
+ @param ISPW_Release        - The ISPW Release Value that will be passed to XL Release
+ @param ISPW_Assignment     - The ISPW Assignemnt that has been promoted
+ @param ISPW_Src_Level      - ISPW Level that code was promoted from
+ @param ISPW_Owner          - The ISPW Owner value from the ISPW Set that was created for the promotion
 
- The Pipeline also takes the following parameters from the Jenkins Job, they also need to be defined in the Jenkins job configuration, the values need to be specified as defaults
- @param CES_Token - CES Personal Access Token.  These are configured in Compuware Enterprise Services / Security / Personal Access Tokens 
- @param Jenkins_CES_Token - Jenkins Credentials ID for the CES Personal Access Token
- @param HCI_Conn_ID - HCI Connection ID configured in the Compuware Common Configuration Plugin.  Use Pipeline Syntax Generator to determine this value. 
- @param HCI_Token - The ID of the Jenkins Credential for the TSO ID that will used to execute the pipeline
- @param CC_Repository - The Compuware Xpediter Code Coverage Repository that the Pipeline will use
- @param Git_Project - Github project/user used to store the Topaz for Total Test Projects
- @param Git_Credentials - Jenkins credentials for logging into git 
+ The Pipeline also takes the following parameters from the Jenkins Job, they also need to be defined in the Jenkins job configuration, the values need to be specified as defaults.
+ These parameters serve as example for configuration settings that may differ between different implementations of a Jenkins job, e.g. servicing different applications, LPARs, etc., 
+ but remain the same between executions.
+ @param CES_Token           - CES Personal Access Token.  These are configured in Compuware Enterprise Services / Security / Personal Access Tokens 
+ @param Jenkins_CES_Token   - Jenkins Credentials ID for the CES Personal Access Token
+ @param HCI_Conn_ID         - HCI Connection ID configured in the Compuware Common Configuration Plugin.  Use Pipeline Syntax Generator to determine this value. 
+ @param HCI_Token           - The ID of the Jenkins Credential for the TSO ID that will used to execute the pipeline
+ @param CC_Repository       - The Compuware Xpediter Code Coverage Repository that the Pipeline will use
+ @param Git_Project         - Github project/user used to store the Topaz for Total Test Projects
+ @param Git_Credentials     - Jenkins credentials for logging into git 
 */
 /**
- Below is a list of parameters that is hardcoded into the Pipeline
- @param Git_URL - Url that will be used in various git commands
- @param Git_Ttt_Repo - Git repo that contains Topaz for Total Test Projects
- @param Git_Branch - Git branch to be used by the pipeline
- @param SQ_Scanner_Name - Name of SonarQube Scanner installation in "Manage Jenkins" -> "Global Tool Configuration" -> "SonarQube Scanner Installations"
- @param SQ_Server_Name - Name of SonarQube Server in "Manage Jenkins" -> "Configure System" -> "Sonar Qube servers"
- @param MF_Source - directory that contains cobol source downloaded from ISPW
- @param XLR_Template - XL Release template to trigger at the end of the Jenkins workflow
- @param XLR_User - XL Release user ID. Configured in Jenkins/Manage Jenkins/Configure System/XL Release credentials
- @param TTT_Folder - Folder to download TTT projects from GitHub into, i.e. store all TTT projects into one folder
- @param TTT_Vt_Environment - ID of a valid batch execution environment within the Topatz for Total Test repository (or local environment if local configuration is used for TTT)
- @param CES_Url - URL to the ISPW Rest API
- @param ISPW_Runtime - ISPW Runtime configuration
- @param ISPW_Changed_Programs_File - Json file containing list of compnents affected by an ISPW operation. Will be generated by ISPW plugins, automatically.
+ Below is a list of parameters that is hardcoded into the Pipeline. 
+ These parameters serve as example for configuration settings that are consistent between different jobs and different executions.
+ @param Git_URL                     - Url that will be used in various git commands
+ @param Git_Ttt_Repo                - Git repo that contains Topaz for Total Test Projects
+ @param Git_Branch                  - Git branch to be used by the pipeline
+ @param SQ_Scanner_Name             - Name of SonarQube Scanner installation in "Manage Jenkins" -> "Global Tool Configuration" -> "SonarQube Scanner Installations"
+ @param SQ_Server_Name              - Name of SonarQube Server in "Manage Jenkins" -> "Configure System" -> "Sonar Qube servers"
+ @param MF_Source                   - directory that contains cobol source downloaded from ISPW
+ @param XLR_Template                - XL Release template to trigger at the end of the Jenkins workflow
+ @param XLR_User                    - XL Release user ID. Configured in Jenkins/Manage Jenkins/Configure System/XL Release credentials
+ @param TTT_Base_Folder             - Folder to download TTT projects from GitHub into, i.e. store all TTT projects into one folder
+ @param TTT_Vt_Folder               - Folder in the TTT project, containing Virtualized Tests
+ @param TTT_Vt_Environment          - ID of a valid batch execution environment within the Topatz for Total Test repository (or local environment if local configuration is used for TTT)
+ @param CES_Url                     - URL to the ISPW Rest API
+ @param ISPW_Runtime                - ISPW Runtime configuration
+ @param ISPW_Changed_Programs_File  - Json file containing list of compnents affected by an ISPW operation. Will be generated by ISPW plugins, automatically.
 */
 
  String Git_URL                     = "https://github.com/${Git_Project}"
@@ -68,7 +76,8 @@ import java.net.URL
  String MF_Source                   = "MF_Source"
  String XLR_Template                = "A Release from Jenkins"
  String XLR_User                    = "admin"                           
- String TTT_Folder                  = "Tests/Virtualized_Tests"	
+ String TTT_Base_Folder             = "Tests"	
+ String TTT_Vt_Folder               = "Virtualized_Tests"	
  String TTT_Vt_Environment          = '5b508b8a787be73b59238d38'
  String TTT_Sonar_Results_File      = './TTTSonar/generated.cli.suite.sonar.xml'
  String CES_Url                     = "http://cwcc.compuware.com:2020"
@@ -154,7 +163,7 @@ node{
                 doGenerateSubmoduleConfigurations:  false, 
                 extensions:                         [[
                     $class:             'RelativeTargetDirectory', 
-                    relativeTargetDir:  "${TTT_Folder}"
+                    relativeTargetDir:  "${TTT_Base_Folder}"
                 ]], 
                 submoduleCfg:                       [], 
                 userRemoteConfigs:                  [[
@@ -176,7 +185,7 @@ node{
             environmentId:                      TTT_Vt_Environment,
             localConfig:                        false,              // If you are not using the TTT repository and use the local TotalTestConfiguration, set to true
             //localConfigLocation:                tttConfigFolder,  // and point to workspace folder containing the local TotalTestConfiguration
-            folderPath:                         TTT_Folder, 
+            folderPath:                         TTT_Base_Folder + '/' TTT_Vt_Folder, 
             recursive:                          true, 
             selectProgramsOption:               true, 
             jsonFile:                           ISPW_Changed_Programs_File,
@@ -235,7 +244,7 @@ node{
             // Call the SonarQube Scanner with properties defined above
             bat "${scannerHome}/bin/sonar-scanner "                                                                         + 
             // Folder containing test definitions, i.e. TTT scenarios
-                " -Dsonar.tests=${TTT_Folder}"                                                               +
+                " -Dsonar.tests=${TTT_Base_Folder}"                                                               +
             // File (or list of files) containing test results in Sonar format                    
                 " -Dsonar.testExecutionReportPaths=${TTT_Sonar_Results_File}"                                  +
             // File containing Code Coverage results in Sonar format
