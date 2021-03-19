@@ -189,6 +189,18 @@ def call(Map pipelineParams)
         stage("Execute related Unit Tests")
         {
 
+            echo "Parms"
+            echo pipelineConfig.ces.url
+            echo pipelineParams.hciToken
+            echo pipelineParams.hciToken 
+            echo pipelineConfig.ttt.virtualized.environment
+            echo pipelineConfig.ttt.general.folder + '/' + pipelineConfig.ttt.virtualized.folder
+            echo '"ispw_app=' + pipelineParams.ispwApplication + ',ispw_level=' + pipelineParams.ispwSrcLevel + '"'
+            echo pipelineParams.ccRepository
+            echo pipelineParams.ispwApplication
+            echo BUILD_NUMBER
+            echo "Parms end"
+
             totaltest(
                 serverUrl:                          pipelineConfig.ces.url, 
                 serverCredentialsId:                pipelineParams.hciToken, 
