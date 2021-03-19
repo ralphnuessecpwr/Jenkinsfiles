@@ -9,7 +9,9 @@ xlr:
   template:               "A Release from Jenkins"
   user:                   "admin"                   
 ttt:
-  folder:                 "Tests"
+  general:
+    folder:               "Tests"
+    sonarResultsFile:     "./TTTSonar/generated.cli.suite.sonar.xml"
   virtualized:            
     folder:               "Virtualized_Tests"
     envirnment:           "5b508b8a787be73b59238d38"
@@ -18,7 +20,6 @@ ttt:
     folder:               "Non_Virtualized_Tests"                 
     environment:          "5b508b8a787be73b59238d38"
     targetSonarResults:   "./TTTSonar/generated.cli.nvt.suite.sonar.xml"
-  sonarResultsFile:       "./TTTSonar/generated.cli.suite.sonar.xml"
 ces:
   url:                    "http://cwcc.compuware.com:2020"
 ispw:

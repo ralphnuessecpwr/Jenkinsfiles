@@ -73,7 +73,9 @@ xlr:                        XLRelease related
   template:                 - Release template to start
   user:                     - XLR user credentials to use
 ttt:                        TTT related
-  folder:                   - Target folder to clone TTT repo into
+  general:                  general settings
+    folder:                     - Target folder to clone TTT repo into
+    sonarResultsFile:           - standard name of Sonar results file     
   virtualized:              Settings for Virtualized Tests
     folder:                     - Folder container Virtualized Tests
     envirnment:                 - Environemnt ID from CES/TTT repository to use 
@@ -82,7 +84,6 @@ ttt:                        TTT related
     folder:                     - Folder container Non Virtualized Tests  
     environment:                - Environemnt ID from CES/TTT repository to use 
     targetSonarResults:         - if Total Test CLI is execute dmore than once, the Sonar results files need to be renamed into this name for Non Virtualized Tests
-  sonarResultsFile:         - standard name of Sonar results file 
 ces:                        CES related
   url:                      - URL
 ispw:                       ISPW related
@@ -172,7 +173,7 @@ def call(Map pipelineParams)
                     doGenerateSubmoduleConfigurations:  false, 
                     extensions:                         [[
                         $class:             'RelativeTargetDirectory', 
-                        relativeTargetDir:  "${pipelineConfig.ttt.folder}"
+                        relativeTargetDir:  "${pipelineConfig.ttt.general.folder}"
                     ]], 
                     submoduleCfg:                       [], 
                     userRemoteConfigs:                  [[
@@ -188,6 +189,9 @@ def call(Map pipelineParams)
         stage("Execute related Unit Tests")
         {
 
+            echo "Folder: "
+            echo pipelineConfig.ttt.general.folder + '/' + pipelineConfig.ttt.virtualized.folder
+
             totaltest(
                 serverUrl:                          pipelineConfig.ces.url, 
                 serverCredentialsId:                pipelineParams.hciToken, 
@@ -195,7 +199,7 @@ def call(Map pipelineParams)
                 environmentId:                      pipelineConfig.ttt.virtualized.environment,
                 localConfig:                        false,              // If you are not using the TTT repository and use the local TotalTestConfiguration, set to true
                 //localConfigLocation:                tttConfigFolder,  // and point to workspace folder containing the local TotalTestConfiguration
-                folderPath:                         pipelineConfig.ttt.folder + '/' + pipelineConfig.ttt.virtualized.folder, 
+                folderPath:                         pipelineConfig.ttt.general.folder + '/' + pipelineConfig.ttt.virtualized.folder, 
                 recursive:                          true, 
                 selectProgramsOption:               true, 
                 jsonFile:                           pipelineConfig.ispw.changedProgramsFile,
@@ -254,9 +258,9 @@ def call(Map pipelineParams)
                 // Call the SonarQube Scanner with properties defined above
                 bat "${scannerHome}/bin/sonar-scanner "                                                                         + 
                 // Folder containing test definitions, i.e. TTT scenarios
-                    " -Dsonar.tests=${pipelineConfig.ttt.folder}"                                                               +
+                    " -Dsonar.tests=${pipelineConfig.ttt.general.folder}"                                                       +
                 // File (or list of files) containing test results in Sonar format                    
-                    " -Dsonar.testExecutionReportPaths=${pipelineConfig.ttt.sonarResultsFile}"                                  +
+                    " -Dsonar.testExecutionReportPaths=${pipelineConfig.ttt.general.sonarResultsFile}"                          +
                 // File containing Code Coverage results in Sonar format
                     " -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"                                                    +
                 // Sonar project key to use/create
