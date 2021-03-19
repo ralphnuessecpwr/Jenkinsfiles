@@ -189,9 +189,6 @@ def call(Map pipelineParams)
         stage("Execute related Unit Tests")
         {
 
-            echo "Folder: "
-            echo pipelineConfig.ttt.general.folder + '/' + pipelineConfig.ttt.virtualized.folder
-
             totaltest(
                 serverUrl:                          pipelineConfig.ces.url, 
                 serverCredentialsId:                pipelineParams.hciToken, 
@@ -199,7 +196,7 @@ def call(Map pipelineParams)
                 environmentId:                      pipelineConfig.ttt.virtualized.environment,
                 localConfig:                        false,              // If you are not using the TTT repository and use the local TotalTestConfiguration, set to true
                 //localConfigLocation:                tttConfigFolder,  // and point to workspace folder containing the local TotalTestConfiguration
-                folderPath:                         pipelineConfig.ttt.general.folder + '/' + pipelineConfig.ttt.virtualized.folder, 
+                folderPath:                         pipelineConfig.ttt.general.folder, // + '/' + pipelineConfig.ttt.virtualized.folder, 
                 recursive:                          true, 
                 selectProgramsOption:               true, 
                 jsonFile:                           pipelineConfig.ispw.changedProgramsFile,
