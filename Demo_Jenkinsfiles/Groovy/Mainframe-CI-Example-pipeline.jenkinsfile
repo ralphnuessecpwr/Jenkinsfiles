@@ -185,7 +185,7 @@ node{
             environmentId:                      TTT_Vt_Environment,
             localConfig:                        false,              // If you are not using the TTT repository and use the local TotalTestConfiguration, set to true
             //localConfigLocation:                tttConfigFolder,  // and point to workspace folder containing the local TotalTestConfiguration
-            folderPath:                         TTT_Base_Folder + '/' TTT_Vt_Folder, 
+            folderPath:                         TTT_Base_Folder + '/' + TTT_Vt_Folder, 
             recursive:                          true, 
             selectProgramsOption:               true, 
             jsonFile:                           ISPW_Changed_Programs_File,
