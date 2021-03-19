@@ -302,7 +302,7 @@ def call(Map pipelineParams)
                             """
                     )
 
-                    currentBuild.currentResult  = 'FAILURE'
+                    currentBuild.result  = 'FAILURE'
 
                     emailext(
                         subject:    '$DEFAULT_SUBJECT',
