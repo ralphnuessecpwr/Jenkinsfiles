@@ -188,7 +188,7 @@ def call(Map pipelineParams)
 
         stage("Execute related Unit Tests")
         {
-
+/*
             totaltest(
                 serverUrl:                          pipelineConfig.ces.url, 
                 serverCredentialsId:                pipelineParams.hciToken, 
@@ -213,7 +213,7 @@ def call(Map pipelineParams)
                 clearCodeCoverage:                  false,
                 logLevel:                           'INFO'
             )
-
+*/
             // Process the Total Test Junit result files into Jenkins
             junit allowEmptyResults: true, keepLongStdio: true, testResults: "TTTUnit/*.xml"
         }
