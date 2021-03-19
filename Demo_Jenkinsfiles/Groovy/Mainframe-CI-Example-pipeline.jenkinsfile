@@ -60,7 +60,7 @@ import java.net.URL
 */
 
  String Git_URL                     = "https://github.com/${Git_Project}"
- String Git_Ttt_Repo                = "${ISPW_Stream}_${ISPW_Application}_Unit_Tests.git"
+ String Git_Ttt_Repo                = "${ISPW_Stream}_${ISPW_Application}_Total_Tests.git"
  String Git_Branch                  = "master"
  String SQ_Scanner_Name             = "scanner" 
  String SQ_Server_Name              = "localhost"  
@@ -68,7 +68,7 @@ import java.net.URL
  String MF_Source                   = "MF_Source"
  String XLR_Template                = "A Release from Jenkins"
  String XLR_User                    = "admin"                           
- String TTT_Folder                  = "tests"	
+ String TTT_Folder                  = "Tests"	
  String TTT_Vt_Environment          = '5b508b8a787be73b59238d38'
  String TTT_Sonar_Results_File      = './TTTSonar/generated.cli.suite.sonar.xml'
  String CES_Url                     = "http://cwcc.compuware.com:2020"
@@ -84,15 +84,6 @@ import java.net.URL
 /**
  Helper Methods for the Pipeline Script
 */
-
-/**
- Determine the ISPW Path Number for use in Total Test
- @param Level - Level Parameter is the Level returned in the ISPW Webhook
-*/
- def String getPathNum(String Level)
- {
-    return Level.charAt(Level.length() - 1)
- }
 
 // One node with several stages => All variables are local to the node and available to all stages
 node{

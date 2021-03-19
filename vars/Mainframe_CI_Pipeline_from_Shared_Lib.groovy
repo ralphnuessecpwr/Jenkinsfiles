@@ -25,17 +25,15 @@ import java.net.URL
  This Pipeline Requires the below Parameters to be defined in the Jenkins Job
  The Jenkins Parameters can be supplied by a ISPW webhook by defining a webhook like the example below.  
 
- The Jenkins Parameters can be supplied by a ISPW webhook by defining a webhook like the example below.  
- 
  http://<<your jenkins server>>/job/<<your jenkins job>>/buildWithParameters?ISPW_Stream=$$stream$$&ISPW_Application=$$application$$&ISPW_Release=$$release$$&ISPW_Assignment=$$assignment$$&ISPW_Set_Id=$$setID$$&ISPW_Src_Level=$$level$$&ISPW_Owner=$$owner$$
 
  ISPW Webhook Parameter List, these parameters need to be defined in the Jenkins job configuration and will be passed by the ISPW Webhook
- @param ISPW_Stream - ISPW Stream that had the code promotion
- @param ISPW_Application - ISPW Application that had the code promotion
- @param ISPW_Release - The ISPW Release Value that will be passed to XL Release
- @param ISPW_Assignment - The ISPW Assignemnt that has been promoted 
- @param ISPW_Src_Level - ISPW Level that code was promoted from
- @param ISPW_Owner - The ISPW Owner value from the ISPW Set that was created for the promotion
+ @param ISPW_Stream         - ISPW Stream that had the code promotion
+ @param ISPW_Application    - ISPW Application that had the code promotion
+ @param ISPW_Release        - The ISPW Release Value that will be passed to XL Release
+ @param ISPW_Assignment     - The ISPW Assignemnt that has been promoted 
+ @param ISPW_Src_Level      - ISPW Level that code was promoted from
+ @param ISPW_Owner          - The ISPW Owner value from the ISPW Set that was created for the promotion
 
  The script or jenkinsfile defined in the job configuration needs to call this pipeline and pass the parameters above in a Map:
 
@@ -49,32 +47,49 @@ import java.net.URL
  In addition to the parameters passed via Webhook, the pipeline also takes the following parameters from the call, which need to extend the map. 
  These parameters may differ between differennt applications/instances of the job implemented by the pipeline.
  cesToken:          <CES_Token>,            CES Personal Access Token.  These are configured in Compuware Enterprise Services / Security / Personal Access Tokens 
- jenkinsCesToken:   <Jenkins_CES_Token>     Jenkins Credentials ID for the CES Personal Access Token
- hciConnectionId:   <HCI_Conn_ID>           HCI Connection ID configured in the Compuware Common Configuration Plugin.  Use Pipeline Syntax Generator to determine this value. 
- hciToken:          <HCI_Token>             The ID of the Jenkins Credential for the TSO ID that will used to execute the pipeline
- ccRepository:      <CoCo_Repository>       The Compuware Xpediter Code Coverage Repository that the Pipeline will use
- gitProject:        <Git_Project>           Github project/user used to store the Topaz for Total Test Projects
+ jenkinsCesToken:   <Jenkins_CES_Token>,    Jenkins Credentials ID for the CES Personal Access Token
+ hciConnectionId:   <HCI_Conn_ID>,          HCI Connection ID configured in the Compuware Common Configuration Plugin.  Use Pipeline Syntax Generator to determine this value. 
+ hciToken:          <HCI_Token>,            The ID of the Jenkins Credential for the TSO ID that will used to execute the pipeline
+ ccRepository:      <CoCo_Repository>,      The Compuware Xpediter Code Coverage Repository that the Pipeline will use
+ gitProject:        <Git_Project>,          Github project/user used to store the Topaz for Total Test Projects
  gitCredentials:    <Git_Credentials>       Jenkins credentials for logging into git 
 */
 
 /**
  In the basic example there were parameters hard coded into the pipeline. These would be setting that apply to any instance of the pipeline. Instad of hardcoding, 
  we make use of the Shared Library resource folder, which may store configuration files, and we read the configuration from those file. This example pipeline assumes the
- configuration stired as .yml file.
+ configuration stored as .yml file.
 
- @param pipelineConfig.git.url                   - Url that will be used in various git commands
- @param pipelineConfig.git.tttRepo               - Git repo that contains Topaz for Total Test Projects
- @param pipelineConfig.git.branch                - Git branch to be used by the pipeline
- @param pipelineConfig.sq.scannerName            - Name of SonarQube Scanner installation in "Manage Jenkins" -> "Global Tool Configuration" -> "SonarQube Scanner Installations"
- @param pipelineConfig.sq.serverName             - Name of SonarQube Server in "Manage Jenkins" -> "Configure System" -> "Sonar Qube servers"
- @param pipelineConfig.xlr.template              - XL Release template to trigger at the end of the Jenkins workflow
- @param pipelineConfig.xlr.user                  - XL Release user ID. Configured in Jenkins/Manage Jenkins/Configure System/XL Release credentials
- @param pipelineConfig.ttt.vtFolder                - Folder to download TTT projects from GitHub into, i.e. store all TTT projects into one folder
- @param pipelineConfig.ttt.vtEnvironment         - ID of a valid batch execution environment within the Topatz for Total Test repository (or local environment if local configuration is used for TTT)
- @param pipelineConfig.ces.url                   - URL to the ISPW Rest API
- @param pipelineConfig.ispw.runtime              - ISPW Runtime configuration
- @param pipelineConfig.ispw.changedProgramsFile  - Json file containing list of compnents affected by an ISPW operation. Will be generated by ISPW plugins, automatically. 
- @param pipelineConfig.ispw.mfSourceFolder       - directory that contains cobol source downloaded from ISPW
+git:                        Git related 
+  url:                      - URL of Git repository server
+  tttRepoExtension:         - Extension of repoitory for TTT assets
+  branch:                   - Branch to use
+sq:                         SonarQube related
+  scannerName:              - Name of SonarQube Scanner installation in "Manage Jenkins" -> "Global Tool Configuration" -> "SonarQube Scanner Installations"
+  serverName:               - Name of SonarQube Server in "Manage Jenkins" -> "Configure System" -> "Sonar Qube servers"
+xlr:                        XLRelease related
+  template:                 - Release template to start
+  user:                     - XLR user credentials to use
+ttt:                        TTT related
+  general:                  general settings
+    folder:                     - Target folder to clone TTT repo into
+    sonarResultsFolder:         - Folder containing Sonar Qube result report files    
+    sonarResultsFile:           - standard name of Sonar results file     
+  virtualized:              Settings for Virtualized Tests
+    folder:                     - Folder container Virtualized Tests
+    envirnment:                 - Environemnt ID from CES/TTT repository to use 
+    targetSonarResults:         - if Total Test CLI is execute dmore than once, the Sonar results files need to be renamed into this name for Virtualized Tests
+  nonVirtualized:           Settings for Non Virtualized Tests
+    folder:                     - Folder container Non Virtualized Tests  
+    environment:                - Environemnt ID from CES/TTT repository to use 
+    targetSonarResults:         - if Total Test CLI is execute dmore than once, the Sonar results files need to be renamed into this name for Non Virtualized Tests
+ces:                        CES related
+  url:                      - URL
+ispw:                       ISPW related
+  runtime:                  - Runtime configuration
+  changedProgramsFile:      - Json file containing list of compnents affected by an ISPW operation. Will be generated by ISPW plugins, automatically. 
+  mfSourceFolder:           - directory that contains cobol source downloaded from ISPW
+
 */
 
 String  configFile
@@ -144,7 +159,7 @@ def call(Map pipelineParams)
             echo "Checking out Branch " + pipelineConfig.git.branch
 
             //Retrieve the Tests from Github that match that ISPW Stream and Application
-            def gitFullUrl = "${pipelineConfig.git.url}/${pipelineParams.gitProject}/${pipelineParams.ispwStream}_${pipelineParams.ispwApplication}${pipelineConfig.git.tttVtRepoExtension}"
+            def gitFullUrl = "${pipelineConfig.git.url}/${pipelineParams.gitProject}/${pipelineParams.ispwStream}_${pipelineParams.ispwApplication}${pipelineConfig.git.tttRepoExtension}"
 
             checkout(
                 changelog:  false, 
@@ -157,7 +172,7 @@ def call(Map pipelineParams)
                     doGenerateSubmoduleConfigurations:  false, 
                     extensions:                         [[
                         $class:             'RelativeTargetDirectory', 
-                        relativeTargetDir:  "${pipelineConfig.ttt.vtFolder}"
+                        relativeTargetDir:  "${pipelineConfig.ttt.general.folder}"
                     ]], 
                     submoduleCfg:                       [], 
                     userRemoteConfigs:                  [[
@@ -177,10 +192,10 @@ def call(Map pipelineParams)
                 serverUrl:                          pipelineConfig.ces.url, 
                 serverCredentialsId:                pipelineParams.hciToken, 
                 credentialsId:                      pipelineParams.hciToken, 
-                environmentId:                      pipelineConfig.ttt.vtEnvironment,
+                environmentId:                      pipelineConfig.ttt.virtualized.environment,
                 localConfig:                        false,              // If you are not using the TTT repository and use the local TotalTestConfiguration, set to true
                 //localConfigLocation:                tttConfigFolder,  // and point to workspace folder containing the local TotalTestConfiguration
-                folderPath:                         pipelineConfig.ttt.vtFolder, 
+                folderPath:                         pipelineConfig.ttt.general.folder + '/' + pipelineConfig.ttt.nonVirtualized.folder,
                 recursive:                          true, 
                 selectProgramsOption:               true, 
                 jsonFile:                           pipelineConfig.ispw.changedProgramsFile,
@@ -239,9 +254,9 @@ def call(Map pipelineParams)
                 // Call the SonarQube Scanner with properties defined above
                 bat "${scannerHome}/bin/sonar-scanner "                                                                         + 
                 // Folder containing test definitions, i.e. TTT scenarios
-                    " -Dsonar.tests=${pipelineConfig.ttt.vtFolder}"                                                               +
+                    " -Dsonar.tests=${pipelineConfig.ttt.general.folder}"                                                       +
                 // File (or list of files) containing test results in Sonar format                    
-                    " -Dsonar.testExecutionReportPaths=${pipelineConfig.ttt.sonarResultsFile}"                                  +
+                    " -Dsonar.testExecutionReportPaths=${pipelineConfig.ttt.general.sonarResultsFolder}/${pipelineConfig.ttt.general.sonarResultsFile}"                          +
                 // File containing Code Coverage results in Sonar format
                     " -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"                                                    +
                 // Sonar project key to use/create

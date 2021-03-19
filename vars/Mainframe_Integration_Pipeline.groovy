@@ -27,7 +27,7 @@ import java.net.URL
 
  The Jenkins Parameters can be supplied by a ISPW webhook by defining a webhook like the example below.  
  
- http://<<your jenkins server>>/job/<<your jenkins job>>/buildWithParameters?ISPW_Stream=$$stream$$&ISPW_Application=$$application$$&ISPW_Release=$$release$$&ISPW_Assignment=$$assignment$$&ISPW_Set_Id=$$setID$$&ISPW_Src_Level=$$level$$&ISPW_Owner=$$owner$$
+ http://<<your jenkins server>>/job/<<your jenkins job>>/buildWithParameters??ISPW_Stream=$$stream$$&ISPW_Application=$$application$$&ISPW_Release=$$release$$&ISPW_Assignment=$$assignment$$&ISPW_Set_Id=$$setID$$&ISPW_Src_Level=$$level$$&ISPW_Owner=$$owner$$&ISPW_Event=$$event$$&ISPW_Operation=$$operation$$
 
  ISPW Webhook Parameter List, these parameters need to be defined in the Jenkins job configuration and will be passed by the ISPW Webhook
  @param ISPW_Stream         - ISPW Stream that had the code promotion
@@ -44,16 +44,16 @@ import java.net.URL
  ispwAssignment:    ISPW_Assignment,
  ispwRelease:       ISPW_Release,
  ispwSrcLevel:      ISPW_Src_Level,
- ispwOwner:         ISPW_Owner,
+ ispwOwner:         ISPW_Owner
 
  In addition to the parameters passed via Webhook, the pipeline also takes the following parameters from the call, which need to extend the map. 
  These parameters may differ between differennt applications/instances of the job implemented by the pipeline.
  cesToken:          <CES_Token>,            CES Personal Access Token.  These are configured in Compuware Enterprise Services / Security / Personal Access Tokens 
- jenkinsCesToken:   <Jenkins_CES_Token>     Jenkins Credentials ID for the CES Personal Access Token
- hciConnectionId:   <HCI_Conn_ID>           HCI Connection ID configured in the Compuware Common Configuration Plugin.  Use Pipeline Syntax Generator to determine this value. 
- hciToken:          <HCI_Token>             The ID of the Jenkins Credential for the TSO ID that will used to execute the pipeline
- ccRepository:      <CoCo_Repository>       The Compuware Xpediter Code Coverage Repository that the Pipeline will use
- gitProject:        <Git_Project>           Github project/user used to store the Topaz for Total Test Projects
+ jenkinsCesToken:   <Jenkins_CES_Token>,    Jenkins Credentials ID for the CES Personal Access Token
+ hciConnectionId:   <HCI_Conn_ID>,          HCI Connection ID configured in the Compuware Common Configuration Plugin.  Use Pipeline Syntax Generator to determine this value. 
+ hciToken:          <HCI_Token>,            The ID of the Jenkins Credential for the TSO ID that will used to execute the pipeline
+ ccRepository:      <CoCo_Repository>,      The Compuware Xpediter Code Coverage Repository that the Pipeline will use
+ gitProject:        <Git_Project>,          Github project/user used to store the Topaz for Total Test Projects
  gitCredentials:    <Git_Credentials>       Jenkins credentials for logging into git 
 */
 
@@ -257,7 +257,7 @@ def call(Map pipelineParams)
                 // Folder containing test definitions, i.e. TTT scenarios
                     " -Dsonar.tests=${pipelineConfig.ttt.general.folder}"                                                       +
                 // File (or list of files) containing test results in Sonar format                    
-                    " -Dsonar.testExecutionReportPaths=${pipelineConfig.ttt.general.sonarResultsFile}"                          +
+                    " -Dsonar.testExecutionReportPaths=${pipelineConfig.ttt.general.sonarResultsFolder}/${pipelineConfig.ttt.general.sonarResultsFile}"                          +
                 // File containing Code Coverage results in Sonar format
                     " -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"                                                    +
                 // Sonar project key to use/create
@@ -307,8 +307,7 @@ def call(Map pipelineParams)
                         body:       '$DEFAULT_CONTENT \n' + mailMessageExtension,
                         replyTo:    '$DEFAULT_REPLYTO',
                         to:         "${mailRecipient}"
-                    )
-                   
+                    )                   
                 }   
             }   
         }
