@@ -194,9 +194,8 @@ def call(Map pipelineParams)
                 serverCredentialsId:                pipelineParams.hciToken, 
                 credentialsId:                      pipelineParams.hciToken, 
                 environmentId:                      pipelineConfig.ttt.virtualized.environment,
-                localConfig:                        false,              // If you are not using the TTT repository and use the local TotalTestConfiguration, set to true
-                //localConfigLocation:                tttConfigFolder,  // and point to workspace folder containing the local TotalTestConfiguration
-                folderPath:                         pipelineConfig.ttt.general.folder, // + '/' + pipelineConfig.ttt.virtualized.folder, 
+                localConfig:                        false,              
+                folderPath:                         "Tests", //pipelineConfig.ttt.general.folder + '/' + pipelineConfig.ttt.virtualized.folder, 
                 recursive:                          true, 
                 selectProgramsOption:               true, 
                 jsonFile:                           pipelineConfig.ispw.changedProgramsFile,
