@@ -159,7 +159,7 @@ def call(Map pipelineParams)
             echo "Checking out Branch " + pipelineConfig.git.branch
 
             //Retrieve the Tests from Github that match that ISPW Stream and Application
-            def gitFullUrl = "${pipelineConfig.git.url}/${pipelineParams.gitProject}/${pipelineParams.ispwStream}_${pipelineParams.ispwApplication}${pipelineConfig.git.tttVtRepoExtension}"
+            def gitFullUrl = "${pipelineConfig.git.url}/${pipelineParams.gitProject}/${pipelineParams.ispwStream}_${pipelineParams.ispwApplication}${pipelineConfig.git.tttRepoExtension}"
 
             checkout(
                 changelog:  false, 
