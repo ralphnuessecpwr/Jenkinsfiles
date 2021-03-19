@@ -68,7 +68,7 @@ import java.net.URL
  String MF_Source                   = "MF_Source"
  String XLR_Template                = "A Release from Jenkins"
  String XLR_User                    = "admin"                           
- String TTT_Folder                  = "Tests"	
+ String TTT_Folder                  = "Tests/Virtualized_Tests"	
  String TTT_Vt_Environment          = '5b508b8a787be73b59238d38'
  String TTT_Sonar_Results_File      = './TTTSonar/generated.cli.suite.sonar.xml'
  String CES_Url                     = "http://cwcc.compuware.com:2020"
