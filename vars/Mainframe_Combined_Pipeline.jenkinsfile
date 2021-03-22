@@ -1,0 +1,33 @@
+@Library('RNU_Shared_Lib@JenkinsFTS') _
+
+def parmMap = [
+    ispwStream:        ISPW_Stream,
+    ispwApplication:   ISPW_Application,
+    ispwRelease:       ISPW_Release,
+    ispwAssignment:    ISPW_Assignment,
+    ispwSet:           ISPW_Set_Id,
+    ispwSrcLevel:      ISPW_Src_Level,
+    ispwOwner:         ISPW_Owner,
+    cesToken:          '665fc9fb-39de-428a-8a67-a3619752873d',            
+    jenkinsCesToken:   '71063193-ee67-4b52-890a-58843f33c183',
+    hciConnectionId:   'de2ad7c3-e924-4dc2-84d5-d0c3afd3e756',
+    hciToken:          'ea48408b-b2be-4810-8f4e-5b5f35977eb1',
+    ccRepository:      'HDDRXM0.DEMO.COCO.REPOS',
+    gitProject:        'ralphnuessecpwr',
+    gitCredentials:    '67a3fb18-073f-498b-adee-1a3c75192745'
+]
+
+switch(ISPW_Operation) {
+    case 'Generate':
+        currentBuild.displayName = BUILD_NUMBER + ": Code Generation"
+        Mainframe_Generate_Pipeline(parmMap)
+        break;
+    case 'Promote':
+        currentBuild.displayName = BUILD_NUMBER + ": Code Promotion"
+        Mainframe_Integration_Pipeline(parmMap)
+        break;
+    default:
+        echo "Unsupported operation " + ISPW_Operation
+        echo "Review your Webhook settings"
+        break;
+}
