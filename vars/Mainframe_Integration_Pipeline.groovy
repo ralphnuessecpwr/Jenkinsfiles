@@ -257,7 +257,7 @@ def call(Map pipelineParams)
                 // File (or list of files) containing test results in Sonar format                    
                     " -Dsonar.testExecutionReportPaths=${pipelineConfig.ttt.general.sonarResultsFolder}/${pipelineConfig.ttt.general.sonarResultsFile}"                          +
                 // File containing Code Coverage results in Sonar format
-                    " -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"                                                    +
+//                    " -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"                                                    +
                 // Sonar project key to use/create
                     " -Dsonar.projectKey=${JOB_NAME}"                                                                           +
                 // Sonar project name to use/create
