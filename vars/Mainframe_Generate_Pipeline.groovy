@@ -268,7 +268,7 @@ def call(Map pipelineParams)
                 // Folder containing the (mainframe) copybooks
                     " -Dsonar.cobol.copy.directories=${pipelineParams.ispwApplication}/${pipelineConfig.ispw.mfSourceFolder}"   + 
                 // File extensions Sonar is supposed to recognize for "sources". The list also needs to contain any TTT related extensions                    
-                    " -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub,results,scenario"                             +
+                    " -Dsonar.cobol.file.suffixes=cbl,testsuite,testscenario,stub,results,scenario,context"                     +
                 // File extensions Sonar is supposed to recognize for "copybooks"                   
                     " -Dsonar.cobol.copy.suffixes=cpy"                                                                          +
                     " -Dsonar.sourceEncoding=UTF-8"
@@ -297,9 +297,6 @@ def call(Map pipelineParams)
             }   
         }
 
-        /* 
-        This stage triggers a XL Release Pipeline that will move code into the high levels in the ISPW Lifecycle  
-        */ 
         stage("Send Mail")
         {
             // Send Standard Email
