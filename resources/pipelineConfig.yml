@@ -6,7 +6,7 @@ sq:
   scannerName:            "scanner"
   serverName:             "localhost"         
 xlr:
-  template:               "A Release from Jenkins"
+  template:               "A Release from Jenkins - RNU"
   user:                   "admin"                   
 ttt:
   general:
