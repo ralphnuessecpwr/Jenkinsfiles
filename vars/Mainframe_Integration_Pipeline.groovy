@@ -340,6 +340,7 @@ def call(Map pipelineParams)
                 variables:          [
                     [propertyName: 'ISPW_Dev_level',    propertyValue: "${ispwTargetLevel}"],
                     [propertyName: 'ISPW_RELEASE_ID',   propertyValue: "${pipelineParams.ispwRelease}"],
+                    [propertyName: 'ISPW_Token',        propertyValue: "${pipelineParams.cesToken}"],
                     [propertyName: 'CES_Token',         propertyValue: "${pipelineParams.cesToken}"]
                 ]
             )
