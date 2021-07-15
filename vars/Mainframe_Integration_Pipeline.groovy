@@ -255,7 +255,7 @@ def call(Map pipelineParams)
                 // Folder containing test definitions, i.e. TTT scenarios
                     " -Dsonar.tests=${pipelineConfig.ttt.general.folder}"                                                       +
                 // File (or list of files) containing test results in Sonar format                    
-                    " -Dsonar.testExecutionReportPaths=${pipelineConfig.ttt.general.sonarResultsFolder}/${pipelineConfig.ttt.general.sonarResultsFile}"                          +
+                    " -Dsonar.testExecutionReportPaths=${pipelineConfig.ttt.general.sonarResultsFolder}/${pipelineConfig.ttt.nonVirtualized.sonarResultsFile}"                          +
                 // File containing Code Coverage results in Sonar format
 //                    " -Dsonar.coverageReportPaths=Coverage/CodeCoverage.xml"                                                    +
                 // Sonar project key to use/create

@@ -12,15 +12,14 @@ ttt:
   general:
     folder:               "Tests"
     sonarResultsFolder:   "./TTTSonar"
-    sonarResultsFile:     "generated.cli.suite.sonar.xml"
   virtualized:            
     folder:               "Virtualized_Tests"
     environment:          "5b508b8a787be73b59238d38"
-    targetSonarResults:   "Virtualized_Tests.cli.vt.suite.sonar.xml"
+    sonarResultsFile:     "Virtualized_Tests.cli.vt.suite.sonar.xml"
   nonVirtualized:
     folder:               "Non_Virtualized_Tests"                 
     environment:          "5b508b8a787be73b59238d38"
-    targetSonarResults:   "Non_Virtualized_Tests.cli.nvt.suite.sonar.xml"
+    sonarResultsFile:     "Non_Virtualized_Tests.cli.nvt.suite.sonar.xml"
 ces:
   url:                    "http://cwcc.compuware.com:2020"
 ispw:
