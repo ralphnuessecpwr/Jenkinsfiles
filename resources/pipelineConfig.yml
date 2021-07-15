@@ -16,11 +16,11 @@ ttt:
   virtualized:            
     folder:               "Virtualized_Tests"
     environment:          "5b508b8a787be73b59238d38"
-    targetSonarResults:   "generated.cli.vt.suite.sonar.xml"
+    targetSonarResults:   "Virtualized_Tests.cli.vt.suite.sonar.xml"
   nonVirtualized:
     folder:               "Non_Virtualized_Tests"                 
     environment:          "5b508b8a787be73b59238d38"
-    targetSonarResults:   "generated.cli.nvt.suite.sonar.xml"
+    targetSonarResults:   "Non_Virtualized_Tests.cli.nvt.suite.sonar.xml"
 ces:
   url:                    "http://cwcc.compuware.com:2020"
 ispw:
