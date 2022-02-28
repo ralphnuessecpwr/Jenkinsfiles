@@ -127,6 +127,7 @@ hash
         listOfXferFiles.each{
 
             def taskInfo        = [:]
+            def fileNameFull    = it.name
             def sourceMem       = it.fileNameFull.substring(0, fileNameFull.indexOf(".${fileExtension}"))
             taskInfo.memberName = sourceMem
 
