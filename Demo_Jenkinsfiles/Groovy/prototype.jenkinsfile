@@ -52,7 +52,7 @@ node {
         {
 
             ftpTextSetup = """
-                open ${hostname}
+                open ${hostName}
                 ${userTmp}
                 ${pwTemp}
                 lcd ${xferFolder}
