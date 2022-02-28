@@ -5,12 +5,14 @@ def hostConnection      = 'de2ad7c3-e924-4dc2-84d5-d0c3afd3e756'
 def hostName            = 'cwcc.nasa.cpwr.corp'
 def hostCredentials     = 'ea48408b-b2be-4810-8f4e-5b5f35977eb1'
 def cesCredentials      = '71063193-ee67-4b52-890a-58843f33c183'
+def runtimeConfig       = 'ispw'
+def stream              = "FTSDEMO"
 def application         = "RXN1"
 def sourceType          = "COB"
 def targetLib           = "SALESSUP.${application}.${targetLevel}.${sourceType}"
 def xferFolder          = "Xfer"
 def fileExtension       = "cbl"
-def devLevel            = ""
+def targetPath          = ""
 def assignmentId        = ""
 def listOfXferFiles     = []
 def ftpTextSetup        = ""
@@ -21,11 +23,11 @@ def assignmentInfo      = [:]
 
 switch(targetLevel){
     case "QA1":
-        devLevel = "DEV1"
+        targetPath = "DEV1"
     case "QA2":
-        devLevel = "DEV2"
+        targetPath = "DEV2"
     default:
-        devLevel = "DEV3"
+        targetPath = "DEV3"
 }
 
 node {
@@ -105,12 +107,12 @@ hash
             credentialsId:          cesCredentials, 
             ispwAction:             'CreateAssignment', 
             ispwRequestBody: '''
-                runtimeConfiguration=ISPW
-                stream=FTSDEMO
-                application=RXN1
-                defaultPath=DEV1
+                runtimeConfiguration=''' + runtimeConfig + '''
+                stream=''' + stream + '''
+                application=''' + application + '''
+                defaultPath=''' + targetPath + '''
                 description=NRB_Prototype
-                assignmentPrefix=RXN1
+                assignmentPrefix=''' + application + '''
             '''     
         )
 
@@ -137,12 +139,12 @@ hash
                 credentialsId:          cesCredentials, 
                 ispwAction:             'TaskLoad', 
                 ispwRequestBody: '''
-                    runtimeConfiguration=ISPW
+                    runtimeConfiguration=''' + runtimeConfig + '''
                     assignmentId=''' + assignmentId + '''
-                    stream=FTSDEMO
-                    application=RXN1
-                    currentLevel=QA1
-                    startingLevel=DEV1
+                    stream=''' + stream + '''
+                    application=''' + application + '''
+                    currentLevel=''' + targetLevel + '''
+                    startingLevel=''' + targetPath + '''
                     moduleName=''' + sourceMem + '''
                     moduleType=''' + sourceType + '''
                 '''
@@ -170,7 +172,7 @@ hash
             credentialsId:          cesCredentials, 
             ispwAction:             'DeployAssignment', 
             ispwRequestBody: '''
-                runtimeConfiguration=ISPW
+                runtimeConfiguration=''' + runtimeConfig + '''
                 assignmentId=''' + assignmentId + '''
                 level=''' + targetLevel + '''
             '''
