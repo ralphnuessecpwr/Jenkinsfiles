@@ -32,14 +32,13 @@ node {
 
     stage("Initialize"){
 
-        def listOfProgramFiles    = steps.findFiles(glob: "${xferFolder}/*.${fileExtension}")
+        def listOfProgramFiles    = steps.findFiles(glob: "${xferFolder}/**")
 
         listOfProgramFiles.each
         {
             def fileName        = it.name             
             listOfPrograms.add(fileName.substring(0, fileName.indexOf(".${fileExtenion}")))
         }
-
 
         withCredentials(
             [
@@ -62,7 +61,6 @@ node {
                 hash
             """
         }
-
 
         listOfPrograms.each{
             ftpPut = ftpPut + "put ${it}.${fileExtension} ${i}\n"
