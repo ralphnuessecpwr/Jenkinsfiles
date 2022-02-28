@@ -16,6 +16,7 @@ def ftpTextSetup        = ""
 def ftpTextPut          = ""
 def ftpTextClose        = "quit"
 def ftpText             = ""
+def assignmentInfo      = [:]
 
 switch(targetLevel){
     case "QA1":
@@ -29,6 +30,10 @@ switch(targetLevel){
 node {
 
     stage("Initialize"){
+
+        dir("./"){
+            deleteDir()
+        }
 
         checkout(
             changelog: false, 
@@ -86,26 +91,11 @@ hash
 
         ftpText = ftpTextSetup + ftpTextPut + ftpTextClose
 
-        writeFile(file: 'xfer.txt', text: ftpText)
-
-        def stdout = bat(returnStdout: true, script: 'ftp -i -s:xfer.txt')
-
-        echo stdout
-
+        //writeFile(file: 'xfer.txt', text: ftpText)
+        //def stdout = bat(returnStdout: true, script: 'ftp -i -s:xfer.txt')
+        //echo stdout
     }
-}
-/*
-    stage('Copy File') {
 
-        topazSubmitFreeFormJcl(
-            connectionId:       hostConnection, 
-            credentialsId:      hostCredentials,
-            maxConditionCode:   '4',
-            jcl:                jclText
-        )
-
-    }
-    
     stage('Create Assignment') {
 
         def response = ispwOperation(
@@ -126,11 +116,13 @@ hash
         assignmentId = new JsonSlurper().parseText(response.getContent()).assignmentId
         echo "Assignment ID: " + assignmentId
 
+        assignmentInfo.assignmentId = assignmentId
+
     }
 
     stage('Load Task') {
         
-        ispwOperation(
+        def response = ispwOperation(
             connectionId:           hostConnection, 
             consoleLogResponseBody: true, 
             credentialsId:          cesCredentials, 
@@ -146,8 +138,13 @@ hash
                 moduleType=''' + sourceType + '''
             '''
         )
-    }
 
+        echo new JsonSlurper().parseText(response.getContent()).toString()
+
+    }    
+
+}
+/*
     stage('Deploy') {
         
         ispwOperation(
