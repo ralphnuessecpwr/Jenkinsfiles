@@ -54,7 +54,7 @@ node {
             ftpTextSetup = """
                 open ${hostName}
                 ${userTmp}
-                ${pwTemp}
+                ${pwTmp}
                 lcd ${xferFolder}
                 cd '${targetLib}'
                 ascii
