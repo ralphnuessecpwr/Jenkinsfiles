@@ -88,7 +88,9 @@ hash
 
         ftpText = ftpTextSetup + ftpTextPut + ftpTextClose
 
-        bat "echo ${ftpText} > ftp.txt"
+        echo ${ftpText}
+
+        writeFile(file: 'xfer.txt', text: ftpText)
 
     }
 }
