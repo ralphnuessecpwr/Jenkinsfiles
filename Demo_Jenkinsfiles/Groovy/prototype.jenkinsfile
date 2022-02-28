@@ -32,6 +32,19 @@ node {
 
     stage("Initialize"){
 
+        checkout(
+            changelog: false, 
+            poll: false, 
+            scm: [
+                $class:         'PdsConfiguration', 
+                connectionId:   hostConnection, 
+                credentialsId:  hostCredentials, 
+                fileExtension:  fileExtension, 
+                filterPattern:  'HDDRXM0.NRB.TEST', 
+                targetFolder:   xferFolder
+            ]
+        )
+
         withCredentials(
             [
                 usernamePassword(
@@ -54,9 +67,9 @@ hash
             """
         }
 
-        echo "Serch for:"
+        echo "Search for:"
         echo "${xferFolder}/**.${fileExtension}"
-        
+
         def listOfXferFilesPaths = steps.findFiles(glob: "${xferFolder}/**.${fileExtension}")
 
         echo "Found"
@@ -65,12 +78,12 @@ hash
         listOfXferFilesPaths.each
         {
             def fileNameFull    = it.name            
-            def fileNameBase    = fileName.substring(0, fileName.indexOf(".${fileExtenion}"))
+            def fileNameBase    = fileName.substring(0, fileName.indexOf(".${fileExtension}"))
             ftpPut              = ftpPut + "put ${filerNameBase}.${fileExtension} ${fileNameBase}\n"
 
             echo "Adding File " + fileNameFull
 
-            listOfXferFiles.add(fileName.substring(0, fileName.indexOf(".${fileExtenion}")))
+            listOfXferFiles.add(fileName.substring(0, fileName.indexOf(".${fileExtension}")))
         }
 
         ftpText = ftpTextSetup + ftpTextPut + ftpTextClose
