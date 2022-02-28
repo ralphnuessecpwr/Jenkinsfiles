@@ -19,7 +19,7 @@ def ftpTextSetup        = ""
 def ftpTextPut          = ""
 def ftpTextClose        = "quit"
 def ftpText             = ""
-def assignmentInfo      = [:]
+def assignmentInfoFile  = "assignmentInfo.json"
 
 switch(targetLevel){
     case "QA1":
@@ -119,8 +119,6 @@ hash
         assignmentId = new JsonSlurper().parseText(response.getContent()).assignmentId
         echo "Assignment ID: " + assignmentId
 
-        assignmentInfo.assignmentId = assignmentId
-
     }
 
     stage('Load Tasks') {
@@ -150,18 +148,7 @@ hash
                 '''
             )
 
-            taskInfo.taskId = new JsonSlurper().parseText(response.getContent()).taskId
-
-            listOfTaskInfos.add(taskInfo)
         }
-
-        assignmentInfo.tasks = listOfTaskInfos
-
-        echo "Assignment Info"
-        def assignmentInfoJson = new JsonOutput().toJson(assignmentInfo)
-        echo assignmentInfoJson.toString()
-
-        writeFile(file: 'assignmentInfo.json', text: assignmentInfoJson.toString())
     }    
 
     stage('Deploy') {
@@ -178,9 +165,28 @@ hash
             '''
         )
 
-        echo "Deploy Info"
-        def deployInfo = new JsonSlurper().parseText(response.getContent())
-        echo deployInfo.toString()
+    }
+
+    stage('Get Assignment Info'){
+
+        def response = ispwOperation(
+            connectionId:   hostConnection, 
+            credentialsId:  hostCredentials, 
+            ispwAction: 'GetAssignmentTaskList', 
+            ispwRequestBody: '''
+                assignmentId=''' + assignmentId + '''
+            '''
+        )
+        
+        def assignmentInfo      = new JsonSlurper().parseText(response.getContent())
+        def assignmentInfoJson  = new JsonOutput().toJson(assignmentInfo)
+        
+        echo assignmentInfoJson.toString()
+        def assignmentInfoText  = assignmentInfoJson.toString()
+        assignmentInfo          = null
+        assignmentInfoJson      = null
+        
+        writeFile(file: "assignmentInfo.json", text: assignmentInfoText)
     }
 }
 /*
