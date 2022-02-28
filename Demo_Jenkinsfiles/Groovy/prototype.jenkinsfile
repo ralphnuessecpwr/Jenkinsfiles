@@ -11,6 +11,13 @@ def xferFolder          = "C:/Users/rnuesse/Documents/Kunden/NRB/xfer"
 def fileExtension       = "cbl"
 def devLevel            = ""
 def assignmentId        = ""
+def listOfPrograms      = []
+def ftpTextSetup        = ""
+def ftpTextPut          = ""
+def ftpTextClose        = """
+quit
+"""
+def ftpText             = ""
 
 switch(targetLevel){
     case "QA1":
@@ -21,56 +28,53 @@ switch(targetLevel){
         devLevel = "DEV3"
 }
 
-def listOfPrograms = []
-def listOfProgramFiles    = steps.findFiles(glob: "${xferFolder}/*.${fileExtension}")
-
-listOfProgramFiles.each
-{
-    def fileName        = it.name             
-    listOfPrograms.add(fileName.substring(0, fileName.indexOf(".${fileExtenion}")))
-}
-
-def ftpTextSetup = ""
-
-withCredentials(
-    [
-        usernamePassword(
-            credentialsId:      hostCredentials, 
-            passwordVariable:   'pwTmp', 
-            usernameVariable:   'userTmp'
-        )
-    ]
-)
-{
-
-    ftpTextSetup = """
-        open ${hostname}
-        ${userTmp}
-        ${pwTemp}
-        lcd ${xferFolder}
-        cd '${targetLib}'
-        ascii
-        hash
-    """
-}
-
-def ftpTextPut = ""
-
-listOfPrograms.each{
-    ftpPut = ftpPut + "put ${it}.${fileExtension} ${i}\n"
-}
-
-def ftpTextClose = """
-quit
-"""
-
-def ftpText = ftpTextSetup + ftpTextPut + ftpTextClose
-
-echo ftpText
-
-/*
 node {
 
+    stage("Initialize"){
+
+        def listOfProgramFiles    = steps.findFiles(glob: "${xferFolder}/*.${fileExtension}")
+
+        listOfProgramFiles.each
+        {
+            def fileName        = it.name             
+            listOfPrograms.add(fileName.substring(0, fileName.indexOf(".${fileExtenion}")))
+        }
+
+
+        withCredentials(
+            [
+                usernamePassword(
+                    credentialsId:      hostCredentials, 
+                    passwordVariable:   'pwTmp', 
+                    usernameVariable:   'userTmp'
+                )
+            ]
+        )
+        {
+
+            ftpTextSetup = """
+                open ${hostname}
+                ${userTmp}
+                ${pwTemp}
+                lcd ${xferFolder}
+                cd '${targetLib}'
+                ascii
+                hash
+            """
+        }
+
+
+        listOfPrograms.each{
+            ftpPut = ftpPut + "put ${it}.${fileExtension} ${i}\n"
+        }
+
+        ftpText = ftpTextSetup + ftpTextPut + ftpTextClose
+
+        echo ftpText
+
+    }
+}
+/*
     stage('Copy File') {
 
         topazSubmitFreeFormJcl(
