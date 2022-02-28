@@ -187,14 +187,16 @@ hash
         
         echo assignmentInfoText
         
-        assignmentInfo              = null
-        assignmentInfoJson          = null
-
         def promoteInfo             = [:]
         promoteInfo.assignmentId    = assignmentId
         promoteInfo.currentLevel    = assignmentInfo.tasks[0].level
         def promoteInfoJson         = new JsonOutput().toJson(promoteInfo)
         def promoteInfoText         = promoteInfoJson.toString()
+
+        echo promoteInfoText
+
+        assignmentInfo              = null
+        assignmentInfoJson          = null
         promoteInfoJson             = null
 
         writeFile(file: assignmentInfoFile, text: assignmentInfoText)
