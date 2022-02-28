@@ -14,9 +14,7 @@ def assignmentId        = ""
 def listOfXferFiles     = []
 def ftpTextSetup        = ""
 def ftpTextPut          = ""
-def ftpTextClose        = """
-quit
-"""
+def ftpTextClose        = "quit"
 def ftpText             = ""
 
 switch(targetLevel){
@@ -64,7 +62,7 @@ lcd ${xferFolder}
 cd '${targetLib}'
 ascii
 hash
-            """
+"""
         }
 
         echo "Search for:"
@@ -89,6 +87,8 @@ hash
         ftpText = ftpTextSetup + ftpTextPut + ftpTextClose
 
         writeFile(file: 'xfer.txt', text: ftpText)
+
+        def stdout = bat(returnStdout: true, script: 'ftp -i -s:xfer.txt')
 
     }
 }
