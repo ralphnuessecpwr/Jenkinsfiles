@@ -164,7 +164,7 @@ hash
 
     stage('Deploy') {
         
-        ispwOperation(
+        def response = ispwOperation(
             connectionId:           hostConnection, 
             consoleLogResponseBody: true, 
             credentialsId:          cesCredentials, 
@@ -175,6 +175,10 @@ hash
                 level=''' + targetLevel + '''
             '''
         )
+
+        echo "Deploy Info"
+        def deployInfo = new JsonSlurper().parseText(response.getContent())
+        echo deployInfoJson.toString()
     }
 }
 /*
