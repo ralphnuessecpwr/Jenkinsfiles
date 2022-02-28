@@ -79,7 +79,7 @@ hash
         {
             def fileNameFull    = it.name            
             def fileNameBase    = fileNameFull.substring(0, fileNameFull.indexOf(".${fileExtension}"))
-            ftpPutText          = ftpPut + "put ${filerNameBase}.${fileExtension} ${fileNameBase}\n"
+            ftpPutText          = ftpPutText + "put ${filerNameBase}.${fileExtension} ${fileNameBase}\n"
 
             echo "Adding File " + fileNameFull
 
@@ -88,7 +88,7 @@ hash
 
         ftpText = ftpTextSetup + ftpTextPut + ftpTextClose
 
-        echo ftpText
+        bat "echo ${ftpText} > ftp.txt"
 
     }
 }
