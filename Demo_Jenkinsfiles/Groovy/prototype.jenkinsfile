@@ -7,7 +7,7 @@ def cesCredentials      = '71063193-ee67-4b52-890a-58843f33c183'
 def application         = "RXN1"
 def sourceType          = "COB"
 def targetLib           = "SALESSUP.${application}.${targetLevel}.${sourceType}"
-def xferFolder          = "C:/Users/rnuesse/Documents/Kunden/NRB/xfer"
+def xferFolder          = "Xfer"
 def fileExtension       = "cbl"
 def devLevel            = ""
 def assignmentId        = ""
@@ -32,7 +32,7 @@ node {
 
     stage("Initialize"){
 
-        def listOfProgramFiles    = steps.findFiles(glob: "${xferFolder}/**")
+        def listOfProgramFiles    = steps.findFiles(glob: "${xferFolder}/**.${fileExtension}")
 
         listOfProgramFiles.each
         {
