@@ -88,8 +88,6 @@ hash
 
         ftpText = ftpTextSetup + ftpTextPut + ftpTextClose
 
-        echo ${ftpText}
-
         writeFile(file: 'xfer.txt', text: ftpText)
 
     }
