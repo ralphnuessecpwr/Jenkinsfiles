@@ -120,7 +120,8 @@ def call(Map pipelineParams)
     def mailRecipient           = mailList[(pipelineParams.ispwOwner.toUpperCase())]
     def mailMessageExtension    = ''
 
-    def ccDdioOverride          = "SALESSUP.${pipelineParams.ispwApplication}.${pipelineParams.ispwSrcLevel}.LOAD.SSD"
+    def ccDdioOverride          = "SALESSUP.${pipelineParams.ispwApplication}.${pipelineParams.ispwSrcLevel}.LOAD.SSD" +
+             ",SALESSUP.${pipelineParams.ispwApplication}.${pipelineParams.ispwSrcLevel}.CICSLOAD.SSD"
 
     node
     {
