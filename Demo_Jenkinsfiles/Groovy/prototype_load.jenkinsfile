@@ -25,12 +25,12 @@ switch(targetLevel){
         targetPath = "DEV3"
 }
 
-def hostName            = 'cwcc.compuware.com'
-def targetLib           = "SALESSUP.${application}.${targetLevel}.${sourceType}"
-def ftpTextSetup        = ""
-def ftpTextPut          = ""
-def ftpTextClose        = "quit"
-def ftpText             = ""
+//def hostName            = 'cwcc.compuware.com'
+//def targetLib           = "SALESSUP.${application}.${targetLevel}.${sourceType}"
+//def ftpTextSetup        = ""
+//def ftpTextPut          = ""
+//def ftpTextClose        = "quit"
+//def ftpText             = ""
 
 node {
 
@@ -63,7 +63,7 @@ node {
             ]
         )
         {
-
+/*
             ftpTextSetup = """
 open ${hostName}
 ${userTmp}
@@ -73,6 +73,7 @@ cd '${targetLib}'
 ascii
 hash
 """
+*/
         }
 
         echo "Search for:"
@@ -87,18 +88,18 @@ hash
         {
             def fileNameFull    = it.name            
             def fileNameBase    = fileNameFull.substring(0, fileNameFull.indexOf(".${fileExtension}"))
-            ftpTextPut          = ftpTextPut + "put ${fileNameBase}.${fileExtension} ${fileNameBase}\n"
+//            ftpTextPut          = ftpTextPut + "put ${fileNameBase}.${fileExtension} ${fileNameBase}\n"
 
             echo "Adding File " + fileNameFull
 
             listOfXferFiles.add(fileNameFull)
         }
 
-        ftpText = ftpTextSetup + ftpTextPut + ftpTextClose
+//        ftpText = ftpTextSetup + ftpTextPut + ftpTextClose
 
-        //writeFile(file: 'xfer.txt', text: ftpText)
-        //def stdout = bat(returnStdout: true, script: 'ftp -i -s:xfer.txt')
-        //echo stdout
+//        writeFile(file: 'xfer.txt', text: ftpText)
+//        def stdout = bat(returnStdout: true, script: 'ftp -i -s:xfer.txt')
+//        echo stdout
     }
 
     stage('Create Assignment') {
