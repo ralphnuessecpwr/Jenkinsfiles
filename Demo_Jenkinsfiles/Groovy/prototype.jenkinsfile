@@ -83,7 +83,7 @@ hash
 
             echo "Adding File " + fileNameFull
 
-            listOfXferFiles.add(fileName.substring(0, fileName.indexOf(".${fileExtension}")))
+            listOfXferFiles.add(fileNameFull)
         }
 
         ftpText = ftpTextSetup + ftpTextPut + ftpTextClose
