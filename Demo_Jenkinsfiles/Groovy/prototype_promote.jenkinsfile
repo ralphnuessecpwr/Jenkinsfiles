@@ -20,4 +20,38 @@ node{
             '''
         )
     }
+
+    stage('Get Assignment Info'){
+
+        def response = ispwOperation(
+            connectionId:   hostConnection, 
+            credentialsId:  cesCredentials, 
+            ispwAction: 'GetAssignmentTaskList', 
+            ispwRequestBody: '''
+                runtimeConfiguration=''' + runtimeConfig + '''            
+                assignmentId=''' + assignmentId + '''
+            '''
+        )
+        
+        def assignmentInfo          = new JsonSlurper().parseText(response.getContent())
+        def assignmentInfoJson      = new JsonOutput().toJson(assignmentInfo)
+        def assignmentInfoText      = assignmentInfoJson.toString()
+        
+        echo assignmentInfoText
+        
+        def promoteInfo             = [:]
+        promoteInfo.assignmentId    = assignmentId
+        promoteInfo.currentLevel    = assignmentInfo.tasks[0].level
+        def promoteInfoJson         = new JsonOutput().toJson(promoteInfo)
+        def promoteInfoText         = promoteInfoJson.toString()
+
+        echo promoteInfoText
+
+        assignmentInfo              = null
+        assignmentInfoJson          = null
+        promoteInfoJson             = null
+
+        writeFile(file: assignmentInfoFile, text: assignmentInfoText)
+        writeFile(file: promoteInfoFile, text: promoteInfoText)
+    }
 }
