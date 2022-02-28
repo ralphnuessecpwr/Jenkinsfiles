@@ -178,7 +178,7 @@ hash
 
         echo "Deploy Info"
         def deployInfo = new JsonSlurper().parseText(response.getContent())
-        echo deployInfoJson.toString()
+        echo deployInfo.toString()
     }
 }
 /*
