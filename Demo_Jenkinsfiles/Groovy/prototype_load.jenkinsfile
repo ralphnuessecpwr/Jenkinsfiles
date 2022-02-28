@@ -171,22 +171,44 @@ hash
 
         def response = ispwOperation(
             connectionId:   hostConnection, 
-            credentialsId:  hostCredentials, 
+            credentialsId:  cesCredentials, 
             ispwAction: 'GetAssignmentTaskList', 
             ispwRequestBody: '''
+                runtimeConfiguration=''' + runtimeConfig + '''            
                 assignmentId=''' + assignmentId + '''
             '''
         )
         
-        def assignmentInfo      = new JsonSlurper().parseText(response.getContent())
-        def assignmentInfoJson  = new JsonOutput().toJson(assignmentInfo)
+        def assignmentInfo          = new JsonSlurper().parseText(response.getContent())
+        def assignmentInfoJson      = new JsonOutput().toJson(assignmentInfo)
+        def assignmentInfoText      = assignmentInfoJson.toString()
         
-        echo assignmentInfoJson.toString()
-        def assignmentInfoText  = assignmentInfoJson.toString()
-        assignmentInfo          = null
-        assignmentInfoJson      = null
+        echo assignmentInfoText
         
+        assignmentInfo              = null
+        assignmentInfoJson          = null
+
+        def promoteInfo             = [:]
+        promoteInfo.assignmentId    = assignmentId
+        promoteInfo.currentLevel    = assignmentInfo.tasks[0].level
+        def promoteInfoJson         = new JsonOutput().toJson(promoteInfo)
+        def promoteInfoText         = promoteInfoJson.toString()
+        promoteInfoJson             = null
+
         writeFile(file: "assignmentInfo.json", text: assignmentInfoText)
+        writeFile(file: "promoteInfo.json", text: promoteInfoText)
+    }
+
+    stage("Generate") {
+        ispwOperation(
+            connectionId:   hostConnection, 
+            credentialsId:  cesCredentials, 
+            ispwAction:     'GenerateTasksInAssignment', 
+            ispwRequestBody: '''
+                runtimeConfiguration=''' + runtimeConfig + '''
+                assignmentId=''' + assignmentId + '''
+                level=''' + targetLevel + '''
+            '''
     }
 }
 /*
@@ -200,7 +222,7 @@ hash
             credentialsId:          cesCredentials, 
             ispwAction:             'PromoteAssignment', 
             ispwRequestBody: '''
-                runtimeConfiguration=ISPW
+                runtimeConfiguration=''' + runtimeConfig + '''
                 assignmentId=''' + assignmentId + '''
                 level=''' + targetLevel + '''
             '''
