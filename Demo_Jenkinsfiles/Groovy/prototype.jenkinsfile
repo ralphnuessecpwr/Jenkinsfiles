@@ -1,7 +1,7 @@
 import groovy.json.JsonSlurper
 
 def hostConnection      = 'de2ad7c3-e924-4dc2-84d5-d0c3afd3e756'
-def hostName            = 'cwcc.compuware.com'
+def hostName            = 'cwcc.nasa.cpwr.corp'
 def hostCredentials     = 'ea48408b-b2be-4810-8f4e-5b5f35977eb1'
 def cesCredentials      = '71063193-ee67-4b52-890a-58843f33c183'
 def application         = "RXN1"
