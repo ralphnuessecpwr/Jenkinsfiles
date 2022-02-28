@@ -68,7 +68,7 @@ hash
         }
 
         echo "Search for:"
-        echo "${xferFolder}/**.${fileExtension}"
+        echo "${xferFolder}/**/*.${fileExtension}"
 
         def listOfXferFilesPaths = steps.findFiles(glob: "${xferFolder}/**.${fileExtension}")
 
