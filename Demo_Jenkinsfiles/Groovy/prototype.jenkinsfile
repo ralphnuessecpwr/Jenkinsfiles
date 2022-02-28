@@ -1,4 +1,5 @@
 import groovy.json.JsonSlurper
+import groovy.json.JsonOutput 
 
 def hostConnection      = 'de2ad7c3-e924-4dc2-84d5-d0c3afd3e756'
 def hostName            = 'cwcc.nasa.cpwr.corp'
@@ -155,7 +156,7 @@ hash
         assignmentInfo.tasks = listOfTaskInfos
 
         echo "Assignment Info"
-        def assignmentInfoJson = new JsonOutput().toJson(assignmentInfo)
+        def assignmentInfoJson = JsonOutput().toJson(assignmentInfo)
         echo assignmentInfoJson.toString()
 
         writeFile(file: 'assignmentInfo.json', text: assignmentInfoJson.toString())
