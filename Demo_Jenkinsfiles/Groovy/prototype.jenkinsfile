@@ -120,27 +120,35 @@ hash
 
     }
 
-    stage('Load Task') {
-        
-        def response = ispwOperation(
-            connectionId:           hostConnection, 
-            consoleLogResponseBody: true, 
-            credentialsId:          cesCredentials, 
-            ispwAction:             'TaskLoad', 
-            ispwRequestBody: '''
-                runtimeConfiguration=ISPW
-                assignmentId=''' + assignmentId + '''
-                stream=FTSDEMO
-                application=RXN1
-                currentLevel=QA1
-                startingLevel=DEV1
-                moduleName=''' + sourceMem + '''
-                moduleType=''' + sourceType + '''
-            '''
-        )
+    stage('Load Tasks') {
 
-        echo new JsonSlurper().parseText(response.getContent()).toString()
+        def listOfTaskInfos = []
 
+        listOfXferFiles.each{
+
+            def taskInfo        = [:]
+            def sourceMem       = it.fileNameFull.substring(0, fileNameFull.indexOf(".${fileExtension}"))
+            taskInfo.memberName = sourceMem
+
+            def response = ispwOperation(
+                connectionId:           hostConnection, 
+                consoleLogResponseBody: true, 
+                credentialsId:          cesCredentials, 
+                ispwAction:             'TaskLoad', 
+                ispwRequestBody: '''
+                    runtimeConfiguration=ISPW
+                    assignmentId=''' + assignmentId + '''
+                    stream=FTSDEMO
+                    application=RXN1
+                    currentLevel=QA1
+                    startingLevel=DEV1
+                    moduleName=''' + sourceMem + '''
+                    moduleType=''' + sourceType + '''
+                '''
+            )
+
+            echo new JsonSlurper().parseText(response.getContent()).toString()
+        }
     }    
 
 }
