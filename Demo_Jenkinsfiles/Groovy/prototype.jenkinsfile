@@ -1,0 +1,159 @@
+import groovy.json.JsonSlurper
+
+def hostConnection      = 'de2ad7c3-e924-4dc2-84d5-d0c3afd3e756'
+def hostName            = 'cwcc.compuware.com'
+def hostCredentials     = 'ea48408b-b2be-4810-8f4e-5b5f35977eb1'
+def cesCredentials      = '71063193-ee67-4b52-890a-58843f33c183'
+def application         = "RXN1"
+def sourceType          = "COB"
+def targetLib           = "SALESSUP.${application}.${targetLevel}.${sourceType}"
+def xferFolder          = "C:/Users/rnuesse/Documents/Kunden/NRB/xfer"
+def fileExtension       = "cbl"
+def devLevel            = ""
+def assignmentId        = ""
+
+switch(targetLevel){
+    case "QA1":
+        devLevel = "DEV1"
+    case "QA2":
+        devLevel = "DEV2"
+    default:
+        devLevel = "DEV3"
+}
+
+def listOfPrograms = []
+def listOfProgramFiles    = steps.findFiles(glob: "${xferFolder}/*.${fileExtension}")
+
+listOfProgramFiles.each
+{
+    def fileName        = it.name             
+    listOfPrograms.add(fileName.substring(0, fileName.indexOf(".${fileExtenion}")))
+}
+
+def ftpTextSetup = ""
+
+withCredentials(
+    [
+        usernamePassword(
+            credentialsId:      hostCredentials, 
+            passwordVariable:   'pwTmp', 
+            usernameVariable:   'userTmp'
+        )
+    ]
+)
+{
+
+    def ftpTextSetup = """
+    open ${hostname}
+    ${userTmp}
+    ${pwTemp}
+    lcd ${xferFolder}
+    cd '${targetLib}'
+    ascii
+    hash
+    """
+}
+
+def ftpTextPut = ""
+
+listOfPrograms.each{
+    ftpPut = ftpPut + "put ${it}.${fileExtension} ${i}\n"
+}
+
+def ftpTextClose = """
+quit
+"""
+
+def ftpText = ftpTextSetup + ftpTextPut + ftpTextClose
+
+echo ftpText
+
+/*
+node {
+
+    stage('Copy File') {
+
+        topazSubmitFreeFormJcl(
+            connectionId:       hostConnection, 
+            credentialsId:      hostCredentials,
+            maxConditionCode:   '4',
+            jcl:                jclText
+        )
+
+    }
+    
+    stage('Create Assignment') {
+
+        def response = ispwOperation(
+            connectionId:           hostConnection, 
+            consoleLogResponseBody: true, 
+            credentialsId:          cesCredentials, 
+            ispwAction:             'CreateAssignment', 
+            ispwRequestBody: '''
+                runtimeConfiguration=ISPW
+                stream=FTSDEMO
+                application=RXN1
+                defaultPath=DEV1
+                description=NRB_Prototype
+                assignmentPrefix=RXN1
+            '''     
+        )
+
+        assignmentId = new JsonSlurper().parseText(response.getContent()).assignmentId
+        echo "Assignment ID: " + assignmentId
+
+    }
+
+    stage('Load Task') {
+        
+        ispwOperation(
+            connectionId:           hostConnection, 
+            consoleLogResponseBody: true, 
+            credentialsId:          cesCredentials, 
+            ispwAction:             'TaskLoad', 
+            ispwRequestBody: '''
+                runtimeConfiguration=ISPW
+                assignmentId=''' + assignmentId + '''
+                stream=FTSDEMO
+                application=RXN1
+                currentLevel=QA1
+                startingLevel=DEV1
+                moduleName=''' + sourceMem + '''
+                moduleType=''' + sourceType + '''
+            '''
+        )
+    }
+
+    stage('Deploy') {
+        
+        ispwOperation(
+            connectionId:           hostConnection, 
+            consoleLogResponseBody: true, 
+            credentialsId:          cesCredentials, 
+            ispwAction:             'DeployAssignment', 
+            ispwRequestBody: '''
+                runtimeConfiguration=ISPW
+                assignmentId=''' + assignmentId + '''
+                level=''' + targetLevel + '''
+            '''
+        )
+    }
+
+    input ''
+    
+    stage('Promote') {
+        
+        ispwOperation(
+            connectionId:           hostConnection, 
+            consoleLogResponseBody: true, 
+            credentialsId:          cesCredentials, 
+            ispwAction:             'PromoteAssignment', 
+            ispwRequestBody: '''
+                runtimeConfiguration=ISPW
+                assignmentId=''' + assignmentId + '''
+                level=''' + targetLevel + '''
+            '''
+        )
+    }
+}
+*/
