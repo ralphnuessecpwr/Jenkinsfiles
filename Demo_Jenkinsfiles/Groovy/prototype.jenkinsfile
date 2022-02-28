@@ -156,7 +156,7 @@ hash
         assignmentInfo.tasks = listOfTaskInfos
 
         echo "Assignment Info"
-        def assignmentInfoJson = JsonOutput().toJson(assignmentInfo)
+        def assignmentInfoJson = new JsonOutput().toJson(assignmentInfo)
         echo assignmentInfoJson.toString()
 
         writeFile(file: 'assignmentInfo.json', text: assignmentInfoJson.toString())
