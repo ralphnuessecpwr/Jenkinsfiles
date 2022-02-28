@@ -8,17 +8,13 @@ def runtimeConfig       = 'ispw'
 def stream              = "FTSDEMO"
 def application         = "RXN1"
 def sourceType          = "COB"
-def targetLib           = "SALESSUP.${application}.${targetLevel}.${sourceType}"
 def xferFolder          = "Xfer"
 def fileExtension       = "cbl"
+def assignmentInfoFile  = "assignmentInfo.json"
+def promoteInfoFile     = "promoteInfo.json"
 def targetPath          = ""
 def assignmentId        = ""
 def listOfXferFiles     = []
-def ftpTextSetup        = ""
-def ftpTextPut          = ""
-def ftpTextClose        = "quit"
-def ftpText             = ""
-def assignmentInfoFile  = "assignmentInfo.json"
 
 switch(targetLevel){
     case "QA1":
@@ -28,6 +24,13 @@ switch(targetLevel){
     default:
         targetPath = "DEV3"
 }
+
+def hostName            = 'cwcc.compuware.com'
+def targetLib           = "SALESSUP.${application}.${targetLevel}.${sourceType}"
+def ftpTextSetup        = ""
+def ftpTextPut          = ""
+def ftpTextClose        = "quit"
+def ftpText             = ""
 
 node {
 
@@ -110,7 +113,7 @@ hash
                 stream=''' + stream + '''
                 application=''' + application + '''
                 defaultPath=''' + targetPath + '''
-                description=NRB_Prototype
+                description=''' + assignmentDescription + '''
                 assignmentPrefix=''' + application + '''
             '''     
         )
@@ -194,8 +197,8 @@ hash
         def promoteInfoText         = promoteInfoJson.toString()
         promoteInfoJson             = null
 
-        writeFile(file: "assignmentInfo.json", text: assignmentInfoText)
-        writeFile(file: "promoteInfo.json", text: promoteInfoText)
+        writeFile(file: assignmentInfoFile, text: assignmentInfoText)
+        writeFile(file: promoteInfoFile, text: promoteInfoText)
     }
 
     stage("Generate") {
