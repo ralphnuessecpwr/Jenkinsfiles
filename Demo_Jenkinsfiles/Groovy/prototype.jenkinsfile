@@ -90,6 +90,8 @@ hash
 
         def stdout = bat(returnStdout: true, script: 'ftp -i -s:xfer.txt')
 
+        echo stdout
+
     }
 }
 /*
