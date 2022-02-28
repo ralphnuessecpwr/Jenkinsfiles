@@ -43,14 +43,14 @@ withCredentials(
 )
 {
 
-    def ftpTextSetup = """
-    open ${hostname}
-    ${userTmp}
-    ${pwTemp}
-    lcd ${xferFolder}
-    cd '${targetLib}'
-    ascii
-    hash
+    ftpTextSetup = """
+        open ${hostname}
+        ${userTmp}
+        ${pwTemp}
+        lcd ${xferFolder}
+        cd '${targetLib}'
+        ascii
+        hash
     """
 }
 
