@@ -7,6 +7,8 @@ def cesCredentials      = '71063193-ee67-4b52-890a-58843f33c183'
 def runtimeConfig       = 'ispw'
 def stream              = "FTSDEMO"
 def application         = "RXN1"
+def assignmentInfoFile  = "assignmentInfo.json"
+def promoteInfoFile     = "promoteInfo.json"
 
 node{
     stage('Promote') {
