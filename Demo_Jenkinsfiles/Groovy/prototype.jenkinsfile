@@ -155,9 +155,10 @@ hash
         assignmentInfo.tasks = listOfTaskInfos
 
         echo "Assignment Info"
-        echo assignmentInfo.toString()
+        def assignmentInfoJson = JsonOutput.toJson(assignmentInfo)
+        echo assignmentInfoJson.toString()
 
-        writeFile(file: 'assignmentInfo.json', text: assignmentInfo.toString())
+        writeFile(file: 'assignmentInfo.json', text: assignmentInfoJson.toString())
     }    
 
     stage('Deploy') {
