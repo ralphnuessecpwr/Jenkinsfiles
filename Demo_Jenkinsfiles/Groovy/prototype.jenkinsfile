@@ -78,7 +78,7 @@ hash
         listOfXferFilesPaths.each
         {
             def fileNameFull    = it.name            
-            def fileNameBase    = fileName.substring(0, fileName.indexOf(".${fileExtension}"))
+            def fileNameBase    = fileNameFull.substring(0, fileNameFull.indexOf(".${fileExtension}"))
             ftpPut              = ftpPut + "put ${filerNameBase}.${fileExtension} ${fileNameBase}\n"
 
             echo "Adding File " + fileNameFull
