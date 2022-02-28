@@ -147,12 +147,19 @@ hash
                 '''
             )
 
-            echo new JsonSlurper().parseText(response.getContent()).toString()
+            taskInfo.taskId = new JsonSlurper().parseText(response.getContent()).taskId
+
+            listOfTaskInfos.add(taskInfo)
         }
+
+        assignmentInfo.tasks = listOfTaskInfos
+
+        echo "Assignment Info"
+        echo assignmentInfo.toString()
+
+        writeFile(file: 'assignmentInfo.json', text: assignmentInfo.toString())
     }    
 
-}
-/*
     stage('Deploy') {
         
         ispwOperation(
@@ -167,7 +174,8 @@ hash
             '''
         )
     }
-
+}
+/*
     input ''
     
     stage('Promote') {
