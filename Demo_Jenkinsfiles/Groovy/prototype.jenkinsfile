@@ -11,7 +11,7 @@ def xferFolder          = "Xfer"
 def fileExtension       = "cbl"
 def devLevel            = ""
 def assignmentId        = ""
-def listOfPrograms      = []
+def listOfXferFiles     = []
 def ftpTextSetup        = ""
 def ftpTextPut          = ""
 def ftpTextClose        = """
@@ -32,14 +32,6 @@ node {
 
     stage("Initialize"){
 
-        def listOfProgramFiles    = steps.findFiles(glob: "${xferFolder}/**.${fileExtension}")
-
-        listOfProgramFiles.each
-        {
-            def fileName        = it.name             
-            listOfPrograms.add(fileName.substring(0, fileName.indexOf(".${fileExtenion}")))
-        }
-
         withCredentials(
             [
                 usernamePassword(
@@ -52,18 +44,30 @@ node {
         {
 
             ftpTextSetup = """
-                open ${hostName}
-                ${userTmp}
-                ${pwTmp}
-                lcd ${xferFolder}
-                cd '${targetLib}'
-                ascii
-                hash
+open ${hostName}
+${userTmp}
+${pwTmp}
+lcd ${xferFolder}
+cd '${targetLib}'
+ascii
+hash
             """
         }
 
-        listOfPrograms.each{
-            ftpPut = ftpPut + "put ${it}.${fileExtension} ${i}\n"
+        def listOfXferFilesPaths = steps.findFiles(glob: "${xferFolder}/**.${fileExtension}")
+
+        echo "Found"
+        echo listOfXferFilesPaths.toString()
+
+        listOfXferFilesPaths.each
+        {
+            def fileNameFull    = it.name            
+            def fileNameBase    = fileName.substring(0, fileName.indexOf(".${fileExtenion}"))
+            ftpPut              = ftpPut + "put ${filerNameBase}.${fileExtension} ${fileNameBase}\n"
+
+            echo "Adding File " + fileNameFull
+
+            listOfXferFiles.add(fileName.substring(0, fileName.indexOf(".${fileExtenion}")))
         }
 
         ftpText = ftpTextSetup + ftpTextPut + ftpTextClose
