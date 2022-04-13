@@ -24,7 +24,7 @@ def call(Map execParms)
     node {
         stage("Initialize"){
 
-            initialize()
+            initialize(execParms)
 
             compileTaskInfoList = getCompileTaskInfoList()
             mddlTaskList    = getMddlTaskList(taskList)
@@ -36,7 +36,7 @@ def call(Map execParms)
     }
 }
 
-def initialize() {
+def initialize(execParms) {
 
     ispwStream      = execParms.ispwStream
     ispwApplication = execParms.ispwApplication
