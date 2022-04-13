@@ -7,7 +7,7 @@ def mddlTaskList
 
 def call(Map execParms)
 {
-    configGile = 'mddlPipeline.config'
+    configFile = 'mddlPipeline.config'
 
     node {
 
