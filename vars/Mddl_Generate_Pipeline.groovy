@@ -111,7 +111,7 @@ def processMddlFiles() {
 
     mddlTaskList.each {
 
-        def mddlFileName    = it.moduleName
+        def mddlFileName    = it.moduleName + '.' + it.moduleType
         def mddlPath        = ispwApplication + '/' + pipelineConfig.ispw.mddlFolder
 
         def mddlContent     = readFile(file: mddlPath + '/' + mddlFileName)
