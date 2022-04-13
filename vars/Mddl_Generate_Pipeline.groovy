@@ -98,7 +98,7 @@ def getMddlTaskList(taskList) {
 
     taskList.each() {
 
-        if(it.moduleType == mddlType){
+        if(it.moduleType == pipelineConfig.ispw.mddlType){
             mddlTaskList.add(it)
         }
 
