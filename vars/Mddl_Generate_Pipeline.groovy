@@ -110,12 +110,13 @@ def downloadMddlMembers() {
 def processMddlFiles() {
 
     mddlTaskList.each {
+
         def mddlFileName    = it.moduleName
         def mddlPath        = ispwApplication + '/' + pipelineConfig.ispw.mddlFolder
 
-        def mddlContent     = readFile(file: mddlPath + '/' mddlFileName)
+        def mddlContent     = readFile(file: mddlPath + '/' + mddlFileName)
 
         println mddlContent
+    
     }
-
 }
