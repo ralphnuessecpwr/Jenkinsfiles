@@ -1,36 +1,27 @@
-String hostConnectionId     = '196de681-04d7-4170-824f-09a5457c5cda'
-String hostCredentialsId    = 'ea48408b-b2be-4810-8f4e-5b5f35977eb1'  
-String cesHostName          = 'http://cwcc.compuware.com'
-String cesPort              = '2020'
-String ispwServerName       = 'ispw'
-String ispwRuntimeConfig    = 'ispw'
-String ispwSetContainerType = '2'
-String cesCredentialsId     = '71063193-ee67-4b52-890a-58843f33c183'  
-String gitRepoUrl           = 'https://github.com/CPWRGIT/HDDRXM0.git'
-String gitCredentialsId     = '67a3fb18-073f-498b-adee-1a3c75192745'  
-String mddlType             = 'MDDL'
-String mddlFolder           = 'Mddl'
-
-def ispwLifeCycle           = ['UT': 'CONS', 'CONS': 'ST', 'ST': 'AT', 'AT': 'PRD']
-
+String configFile
 String ispwCurrentLevel
 String cesUrl
 
-def compileTaskInfoList
+def pipelineConfig
 def mddlTaskList
 
 def call(Map execParms)
 {
+    configGile = 'mddlPipeline.config'
+
     node {
+
         stage("Initialize"){
 
             initialize(execParms)
 
-            compileTaskInfoList = getCompileTaskInfoList()
             mddlTaskList    = getMddlTaskList(taskList)
 
-    println compileTaskInfoList.toString()
-    println mddlTaskList.toString()
+        }
+
+        stage("Retrieve MDDL members") {
+
+            downloadMddlMembers()
 
         }
     }
@@ -38,11 +29,14 @@ def call(Map execParms)
 
 def initialize(execParms) {
 
-    ispwStream      = execParms.ispwStream
-    ispwApplication = execParms.ispwApplication
-    ispwSetId       = execParms.ispwSetId
-    ispwLevel       = execParms.ispwLevel
-    cesUrl          = cesHostName + ':' + cesPort
+    pipelineConfig      = readYaml(text: libraryResource(configFile))
+    ispwStream          = execParms.ispwStream
+    ispwApplication     = execParms.ispwApplication
+    ispwSetId           = execParms.ispwSetId
+    ispwLevel           = execParms.ispwLevel
+    
+    cesUrl              = pipelineConfig.ces.hostName + ':' + pipelineConfig.ces.port
+    ispwCurrentLevel    = pipelineConfig.ispw.lifeCycle[ispwLevel]
     
 }
 
@@ -83,14 +77,14 @@ def downloadMddlMembers() {
         poll: false, 
         scm: [
             $class:             'IspwContainerConfiguration', 
-            componentType:      mddlType, 
-            connectionId:       hostConnectionId, 
-            serverConfig:       ispwRuntimeConfig, 
-            credentialsId:      hostCredentialsId, 
+            componentType:      pipelineConfig.ispw.mddlType, 
+            connectionId:       pipelineConfig.host.connectionId, 
+            serverConfig:       pipelineConfig.ispw.runtimeConfig, 
+            credentialsId:      pipelineConfig.host.credentialsId, 
             containerName:      ispwSetId, 
-            containerType:      ispwSetContainerType, 
-            serverLevel:        ispwCurrentLevel, 
-            targetFolder:       mddlFolder,
+            containerType:      pipelineConfig.ispw.containerTypeSet, 
+            serverLevel:        ispwCurrentLevel,
+            targetFolder:       pipelineConfig.ispw.mddlFolder,
             ispwDownloadAll:    false, 
             ispwDownloadIncl:   false, 
         ]
@@ -100,8 +94,8 @@ def downloadMddlMembers() {
 def getTaskList(ispwSetId) {
 
     def response    = ispwOperation(
-                            connectionId:           hostConnectionId,
-                            credentialsId:          cesCredentialsId,   
+                            connectionId:           pipelineConfig.host.connectionId, 
+                            serverConfig:           pipelineConfig.ispw.runtimeConfig, 
                             consoleLogResponseBody: true, 
                             ispwAction:             'GetSetTaskList', 
                             ispwRequestBody:        'ispwSetId=' + ispwSetId
