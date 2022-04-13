@@ -38,6 +38,11 @@ def call(Map execParms)
 
 def initialize(execParms) {
 
+    dir("./") 
+    {
+        deleteDir()
+    }
+
     pipelineConfig      = readYaml(text: libraryResource(configFile))
     ispwStream          = execParms.ispwStream
     ispwApplication     = execParms.ispwApplication
@@ -100,6 +105,7 @@ def downloadMddlMembers() {
             containerName:      ispwSetId, 
             containerType:      pipelineConfig.ispw.containerTypeSet, 
             serverLevel:        ispwCurrentLevel,
+            targetFolder:       pipelineConfig.ispw.mddlRootFolder
             ispwDownloadAll:    false, 
             ispwDownloadIncl:   false, 
         ]
@@ -112,7 +118,7 @@ def processMddlFiles() {
     mddlTaskList.each {
 
         def mddlFileName    = it.moduleName + '.' + it.moduleType
-        def mddlPath        = ispwApplication + '/' + pipelineConfig.ispw.mddlFolder
+        def mddlPath        = pipelineConfig.ispw.mddlRootFolder + '/' + ispwApplication + '/' + pipelineConfig.ispw.mddlFolder
 
         def mddlContent     = readFile(file: mddlPath + '/' + mddlFileName)
 
