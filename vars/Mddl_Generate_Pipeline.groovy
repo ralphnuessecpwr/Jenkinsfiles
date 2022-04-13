@@ -76,27 +76,6 @@ def getRestMessageContent(url){
 
 }
 */
-def downloadMddlMembers() {
-    
-    checkout(
-        changelog: false, 
-        poll: false, 
-        scm: [
-            $class:             'IspwContainerConfiguration', 
-            componentType:      pipelineConfig.ispw.mddlType, 
-            connectionId:       pipelineConfig.host.connectionId, 
-            serverConfig:       pipelineConfig.ispw.runtimeConfig, 
-            credentialsId:      pipelineConfig.host.credentialsId, 
-            containerName:      ispwSetId, 
-            containerType:      pipelineConfig.ispw.containerTypeSet, 
-            serverLevel:        ispwCurrentLevel,
-            targetFolder:       pipelineConfig.ispw.mddlFolder,
-            ispwDownloadAll:    false, 
-            ispwDownloadIncl:   false, 
-        ]
-    )
-}
-
 def getTaskList(ispwSetId) {
 
     def response    = ispwOperation(
@@ -104,7 +83,7 @@ def getTaskList(ispwSetId) {
                             serverConfig:           pipelineConfig.ispw.runtimeConfig, 
                             consoleLogResponseBody: true, 
                             ispwAction:             'GetSetTaskList', 
-                            ispwRequestBody:        'ispwSetId=' + ispwSetId
+                            ispwRequestBody:        'setId=' + ispwSetId
                         )
 
     def taskList        = readJSON(text: response.content).tasks
@@ -126,3 +105,25 @@ def getMddlTaskList(taskList) {
 
     return mddlTaskList
 }
+
+def downloadMddlMembers() {
+    
+    checkout(
+        changelog: false, 
+        poll: false, 
+        scm: [
+            $class:             'IspwContainerConfiguration', 
+            componentType:      pipelineConfig.ispw.mddlType, 
+            connectionId:       pipelineConfig.host.connectionId, 
+            serverConfig:       pipelineConfig.ispw.runtimeConfig, 
+            credentialsId:      pipelineConfig.host.credentialsId, 
+            containerName:      ispwSetId, 
+            containerType:      pipelineConfig.ispw.containerTypeSet, 
+            serverLevel:        ispwCurrentLevel,
+            targetFolder:       pipelineConfig.ispw.mddlFolder,
+            ispwDownloadAll:    false, 
+            ispwDownloadIncl:   false, 
+        ]
+    )
+}
+
