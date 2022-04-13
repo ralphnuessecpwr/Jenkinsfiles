@@ -15,8 +15,6 @@ def call(Map execParms)
 
             initialize(execParms)
 
-            mddlTaskList    = getMddlTaskList(taskList)
-
         }
 
         stage("Retrieve MDDL members") {
@@ -37,7 +35,12 @@ def initialize(execParms) {
     
     cesUrl              = pipelineConfig.ces.hostName + ':' + pipelineConfig.ces.port
     ispwCurrentLevel    = pipelineConfig.ispw.lifeCycle[ispwLevel]
-    
+
+    def taskList        = getTaskList(ispwSetId)
+    mddlTaskList        = getMddlTaskList(taskList)
+
+    println mddlTaskList.toString()
+
 }
 
 /*
