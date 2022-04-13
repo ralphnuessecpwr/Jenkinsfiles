@@ -10,7 +10,7 @@ ispw:
   runtimeConfig:        'ispw'
   containerTypeSet:     '2'
   mddlType:             'MDDL'
-  mddlFolder:           'Mddl'
+  mddlFolder:           'MF_Source'
   lifeCycle:
     UT:                 'CONS'
     CONS:               'ST'

@@ -15,11 +15,22 @@ def call(Map execParms)
 
             initialize(execParms)
 
+            if(mddlTaskList.size() > 1) {
+
+                error "At the current stage we do not support processing of more than one MDDL member per build."
+
+            }
         }
 
         stage("Retrieve MDDL members") {
 
             downloadMddlMembers()
+
+        }
+
+        stage("Process MDDL members") {
+
+            processMddlFiles()
 
         }
     }
@@ -42,40 +53,8 @@ def initialize(execParms) {
     def taskList        = getTaskList(ispwSetId)
     mddlTaskList        = getMddlTaskList(taskList)
 
-    println mddlTaskList.toString()
-
 }
 
-/*
-def getRestMessageContent(url){
-
-    def response
-
-    withCredentials(
-        [
-            string(
-                credentialsId: cesCredentialsId, 
-                variable: 'cesToken'
-            )
-        ]
-    ) {
-        response = httpRequest(
-            url:                    url, 
-            contentType:            'APPLICATION_JSON',
-            acceptType:             'APPLICATION_JSON', 
-            customHeaders:          [
-                    [maskValue: true, name: 'authorization', value: cesToken]
-                ],
-            responseHandle:         'NONE', 
-            consoleLogResponseBody: false, 
-            wrapAsMultipart:        false
-        )
-    }
-    
-    return readJSON(text: response.content).message
-
-}
-*/
 def getTaskList(ispwSetId) {
 
     def response    = ispwOperation(
@@ -121,10 +100,22 @@ def downloadMddlMembers() {
             containerName:      ispwSetId, 
             containerType:      pipelineConfig.ispw.containerTypeSet, 
             serverLevel:        ispwCurrentLevel,
-            targetFolder:       pipelineConfig.ispw.mddlFolder,
             ispwDownloadAll:    false, 
             ispwDownloadIncl:   false, 
         ]
     )
+
 }
 
+def processMddlFiles() {
+
+    mddlTaskList.each {
+        def mddlFileName    = it.moduleName
+        def mddlPath        = ispwApplication + '/' + pipelineConfig.ispw.mddlFolder
+
+        def mddlContent     = readFile(file: mddlPath + '/' mddlFileName)
+
+        println mddlContent
+    }
+
+}
