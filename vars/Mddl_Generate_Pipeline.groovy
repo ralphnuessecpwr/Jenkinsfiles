@@ -80,6 +80,7 @@ def getTaskList(ispwSetId) {
 
     def response    = ispwOperation(
                             connectionId:           pipelineConfig.host.connectionId, 
+                            credentialsId:          pipelineConfig.ces.credentialsId,
                             serverConfig:           pipelineConfig.ispw.runtimeConfig, 
                             consoleLogResponseBody: true, 
                             ispwAction:             'GetSetTaskList', 
