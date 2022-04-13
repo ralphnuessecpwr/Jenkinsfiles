@@ -36,6 +36,9 @@ def initialize(execParms) {
     cesUrl              = pipelineConfig.ces.hostName + ':' + pipelineConfig.ces.port
     ispwCurrentLevel    = pipelineConfig.ispw.lifeCycle[ispwLevel]
 
+    echo "URL " + cesUrl
+    echo "Levl " + ispwCurrentLevel
+
     def taskList        = getTaskList(ispwSetId)
     mddlTaskList        = getMddlTaskList(taskList)
 
