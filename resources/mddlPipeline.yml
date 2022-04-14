@@ -17,3 +17,13 @@ ispw:
     CONS:               'ST'
     ST:                 'AT'
     AT:                 'PRD'
+mddl:
+  commentMarker:        '#'
+  valueMarker:          '='
+  keywords:
+    - DB2SSID
+    - DB2DB
+    - DB2TS
+    - DB2PSSID
+    - DB2PDB
+    - DB2PTS

@@ -4,6 +4,7 @@ String cesUrl
 
 def pipelineConfig
 def mddlTaskList
+def mddlTaskInfoList
 
 def call(Map execParms)
 {
@@ -30,7 +31,8 @@ def call(Map execParms)
 
         stage("Process MDDL members") {
 
-            processMddlFiles()
+            mddlTaskInfoList = processMddlFiles()
+            println mddlTaskInfoList.toString()
 
         }
     }
@@ -113,16 +115,34 @@ def downloadMddlMembers() {
 
 }
 
-def processMddlFiles() {
+def getMddlTaskInfoList() {
+
+    def mddlTaskInfoList    = [:]
+    def mddlTaskInfo        = [:]
 
     mddlTaskList.each {
 
         def mddlFileName    = it.moduleName + '.' + it.moduleType
         def mddlPath        = pipelineConfig.ispw.mddlRootFolder + '/' + ispwApplication + '/' + pipelineConfig.ispw.mddlFolder
-
         def mddlContent     = readFile(file: mddlPath + '/' + mddlFileName)
+        def redords         = mddlContent.split('\n')
 
-        println mddlContent
-    
+        records.each {
+
+            if(it.charAt(0) != pipelineConfig.mddl.commentMarker) {
+                def key     = it.split(pipelineConfig.mddl.valueMarker)[0]
+                def value   = it.split(pipelineConfig.mddl.valueMarker)[1]
+                
+                if(pipelineConfig.mddl.keywords.contains(key)) {
+                    mddlTaskInfo[key] = value
+                }
+                else {
+                    error "The MDDL Member contained unknown keyword: " + key
+                }                
+            }
+        }
+
+        mddlTaskInfoList[it.taskId] = mddlTaskInfo
+
     }
 }
