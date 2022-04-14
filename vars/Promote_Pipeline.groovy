@@ -29,7 +29,7 @@ def call(Map execParms)
             processMddl: {
                 if(mddlTaskList.size() > 0) {
                     node {
-                        Mddl_Pipeline(execParms, pipelineConfig, mddlTaskList, cesUrl)
+                        Mddl_Pipeline(execParms, pipelineConfig, mddlTaskList, ispwCurrentLevel, cesUrl)
                     }
                 }
             },
