@@ -51,7 +51,7 @@ def call(Map execParms)
                     usernamePassword(
                         credentialsId: pipelineConfig.host.credentialsId, 
                         usernameVariable: 'hostUser',
-                        passwordVariable: 'hostPasword'
+                        passwordVariable: 'hostPassword'
                     )
                 ]
             ) {
