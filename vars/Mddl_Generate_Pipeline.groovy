@@ -45,6 +45,7 @@ def call(Map execParms)
             def mddlTaskContent = mddlTaskContentList[0]
             def workIdOwner     = mddlTaskContent.userId
             def workIdName      = mddlTaskContent.moduleName
+            def jobId           = BUILD_NUMBER
 
             withCredentials(
                 [   
@@ -191,7 +192,7 @@ ${Analysis Input Stream}
 //JCLGEN   EXEC AMAPROCJ, 
 //    COND=${BMC_COMPARE_COND_CODE}
 ${JCL Generation Input Stream}''', 
-                jobCardIn: '''//HDDRXM0J JOB (#acctno#),\'COMPARE-${Job_ID}\',
+                jobCardIn: '''//HDDRXM0J JOB (#acctno#),\'COMPARE-${jobId}\',
 //  CLASS=A,MSGLEVEL=(1,1)                
 //*                                       
 //*                                       
