@@ -50,12 +50,8 @@ def initialize(execParms) {
     ispwApplication     = execParms.ispwApplication
     ispwSetId           = execParms.ispwSetId
     ispwLevel           = execParms.ispwLevel
-    
     cesUrl              = pipelineConfig.ces.hostName + ':' + pipelineConfig.ces.port
     ispwCurrentLevel    = pipelineConfig.ispw.lifeCycle[ispwLevel]
-
-    echo "URL " + cesUrl
-    echo "Levl " + ispwCurrentLevel
 
     def taskList        = getTaskList(ispwSetId)
     mddlTaskList        = getMddlTaskList(taskList)
@@ -118,10 +114,10 @@ def downloadMddlMembers() {
 def getMddlTaskInfoList() {
 
     def mddlTaskInfoList    = [:]
-    def mddlTaskInfo        = [:]
 
     mddlTaskList.each {
 
+        def mddlTaskInfo    = [:]
         def mddlFileName    = it.moduleName + '.' + it.moduleType
         def mddlPath        = pipelineConfig.ispw.mddlRootFolder + '/' + ispwApplication + '/' + pipelineConfig.ispw.mddlFolder
         def mddlContent     = readFile(file: mddlPath + '/' + mddlFileName)
@@ -130,6 +126,7 @@ def getMddlTaskInfoList() {
         records.each {
 
             if(it.charAt(0) != pipelineConfig.mddl.commentMarker) {
+
                 def key     = it.split(pipelineConfig.mddl.valueMarker)[0]
                 def value   = it.split(pipelineConfig.mddl.valueMarker)[1]
                 
@@ -141,7 +138,7 @@ def getMddlTaskInfoList() {
                 }                
             }
         }
-
+println mddlTaskInfo.toString()
         mddlTaskInfoList[it.taskId] = mddlTaskInfo
 
     }
