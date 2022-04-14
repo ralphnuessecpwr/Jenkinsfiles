@@ -5,6 +5,12 @@ host:
   zosmfPort:            '443'
 amiDevOps:
   symDir:               'AMI_DevOps_CWCC.properties'
+  analyisIn:            'skels/ami/analysisInput.skel'
+  comIn:                'skels/ami/compareInput.skel'
+  importIn:             'skels/ami/importInput.skel'
+  jclGenIn:             'skels/ami/jclGenInput.skel'
+  jcl:                  'skels/ami/compareJcl.skel'
+  jobcard:              'skels/ami/jobcard.skel'
 ces:
   hostName:             'http://cwcc.compuware.com'
   port:                 '2020'
