@@ -139,7 +139,8 @@ def getMddlTaskInfoList() {
             }
         }
 println mddlTaskInfo.toString()
+println "Task ID: " it.taskId.toString()
         mddlTaskInfoList[it.taskId] = mddlTaskInfo
-
+println "Task InfoList: " mddlTaskInfoList.toString()
     }
 }
