@@ -63,7 +63,7 @@ def call(Map execParms)
                     pwdruntime: true,                    
                     dpassrun:   "${hostPassword}", 
                     dpassword:  '',
-                    debug:      false, 
+                    debug:      true, 
                     symdir:     pipelineConfig.amiDevOps.symDir
                 )
             }
