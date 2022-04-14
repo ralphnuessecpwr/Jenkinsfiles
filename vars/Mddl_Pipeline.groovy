@@ -192,14 +192,6 @@ def initialize(execParms) {
         deleteDir()
     }
 
-    pipelineConfig      = readYaml(text: libraryResource(configFile))
-    ispwStream          = execParms.ispwStream
-    ispwApplication     = execParms.ispwApplication
-    ispwSetId           = execParms.ispwSetId
-    ispwLevel           = execParms.ispwLevel
-    cesUrl              = pipelineConfig.ces.hostName + ':' + pipelineConfig.ces.port
-    ispwCurrentLevel    = pipelineConfig.ispw.lifeCycle[ispwLevel]
-
     createAmiDevOpsProperties()
 
     def taskList        = getTaskList(ispwSetId)

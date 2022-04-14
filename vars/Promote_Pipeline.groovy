@@ -61,11 +61,9 @@ def initialize(execParms) {
     cesUrl              = pipelineConfig.ces.hostName + ':' + pipelineConfig.ces.port
     ispwCurrentLevel    = pipelineConfig.ispw.lifeCycle[ispwLevel]
 
-    createAmiDevOpsProperties()
-
     def taskList        = getTaskList(ispwSetId)
-    cobTaskList         = getMddlTaskList(taskList)[0]
-    mddlTaskList        = getMddlTaskList(taskList)[1]
+    cobTaskList         = getTaskListByType(taskList)[0]
+    mddlTaskList        = getTaskListByType(taskList)[1]
 
 }
 
