@@ -107,7 +107,7 @@ def initialize(execParms) {
 def createAmiDevOpsProperties() {
 
     writeFile(
-        file: pipelineConfig.amiDevOps.symdir,
+        file: pipelineConfig.amiDevOps.symDir,
         text: libraryResource(pipelineConfig.amiDevOps.symDir)
     )    
 
