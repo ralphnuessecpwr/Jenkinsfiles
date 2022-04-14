@@ -135,7 +135,7 @@ def initialize(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
     compIn              = libraryResource(pipelineConfig.amiDevOps.compIn)
     importIn            = libraryResource(pipelineConfig.amiDevOps.importIn)
     jclGenIn            = libraryResource(pipelineConfig.amiDevOps.jclGenIn)
-    jcl                 = libraryResource(pipelineConfig.amiDevOps.jcl)
+    compareJcl          = libraryResource(pipelineConfig.amiDevOps.jcl)
     jobcard             = libraryResource(pipelineConfig.amiDevOps.jobcard)
 
 /*
