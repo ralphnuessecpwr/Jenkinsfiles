@@ -7,12 +7,13 @@ String ispwCurrentLevel
 String cesUrl
 
 def pipelineConfig
+def symdir
 def mddlTaskList
 def mddlTaskContentList
 
 def call(Map execParms)
 {
-    configFile = 'mddlPipeline.yml'
+    configFile  = 'mddlPipeline.yml'
 
     node {
 
@@ -86,6 +87,8 @@ def initialize(execParms) {
     cesUrl              = pipelineConfig.ces.hostName + ':' + pipelineConfig.ces.port
     ispwCurrentLevel    = pipelineConfig.ispw.lifeCycle[ispwLevel]
 
+    createAmiDevOpsProperties()
+
     def taskList        = getTaskList(ispwSetId)
     mddlTaskList        = getMddlTaskList(taskList)
 /*
@@ -99,6 +102,16 @@ def initialize(execParms) {
     bmcSM.reset("BMC_SKIP_CDL_GENERATION")
     bmcSM.reset("BMC_RESET_RC")
 */
+}
+
+def createAmiDevOpsProperties() {
+
+    writeFile(
+        file: pipelineConfig.amiDevOps.symdir,
+        text: libraryResource(pipelineConfig.amiDevOps.symDir)
+    )    
+
+    return
 }
 
 def getTaskList(ispwSetId) {
