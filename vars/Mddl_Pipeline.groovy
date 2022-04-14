@@ -131,6 +131,8 @@ def initialize(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
 
     createAmiDevOpsProperties()
 
+    echo pipelineConfig.toString()
+
     analysisIn          = libraryResource(pipelineConfig.amiDevOps.analysisIn)
     compIn              = libraryResource(pipelineConfig.amiDevOps.compIn)
     importIn            = libraryResource(pipelineConfig.amiDevOps.importIn)
