@@ -1,0 +1,44 @@
+${Job Card}
+//*
+//        JCLLIB ORDER=(#proclib#)
+//*
+//JOBLIB  DD  DSN=#joblib1#,DISP=SHR
+//        DD  DSN=#joblib2#,DISP=SHR
+//        DD  DSN=#dsnexit#,DISP=SHR
+//        DD  DSN=#dsnload#,DISP=SHR
+//***************************************************
+// SET ACMDOPT=#dopts#
+// SET RTEHLQ=#rtehlq#
+// SET USRHLQ=#usrhlq#
+//***************************************************
+// SET DDLFILE=${Compare2 DDL PDS and Member Name}
+// SET CDLFILE=${CDL PDS and Member Name}
+// SET WORKLIST=${Worklist PDS and Member Name}
+// SET EXECJCL=${Execution JCL PDS and Member Name}
+// SET IMPRPT=${Impact Report PDS and Member Name}
+//*
+// SET POFFILE=#pofdsn#
+//*----------------------------------------------------
+//* BMC CHANGE MANAGER COMPARE
+//*----------------------------------------------------
+${Compare Input Stream}
+//*----------------------------------------------------
+//* BMC CHANGE MANAGER IMPORT
+//*----------------------------------------------------
+//IMPORT   EXEC AMAPROCI,
+//    COND=${BMC_COMPARE_COND_CODE}
+//IMPORT.IMPORTIN DD DISP=SHR,
+//  DSN=&CDLFILE
+${Import Input Stream}
+//*----------------------------------------------------
+//* BMC CHANGE MANAGER ANALYSIS
+//*----------------------------------------------------
+//ANALYSIS EXEC AMAPROCA,
+//    COND=${BMC_COMPARE_COND_CODE}
+${Analysis Input Stream}
+//*----------------------------------------------------
+//* BMC JCL GENERATION
+//*----------------------------------------------------
+//JCLGEN   EXEC AMAPROCJ, 
+//    COND=${BMC_COMPARE_COND_CODE}
+${JCL Generation Input Stream}

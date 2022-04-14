@@ -1,0 +1,5 @@
+//*Import Input
+//IMPORT.ALUIN DD *
+  SSID ${SSID}
+  REPLACEWORKID  ${Work ID Owner}.${Work ID Name}
+  SOURCETYPE CDL

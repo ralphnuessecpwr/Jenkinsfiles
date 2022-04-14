@@ -15,7 +15,9 @@ ispw:
   containerTypeSet:     '2'
   mddlType:             'MDDL'
   mddlRootFolder:       'Mddl'
-  mddlFolder:           'MF_Source'
+  cobType:              'COB'
+  cobRootFolder:        'Cobol'
+  fileFolder:           'MF_Source'
   lifeCycle:
     UT:                 'CONS'
     CONS:               'ST'

@@ -2,31 +2,13 @@
 //import static com.bmc.db2.bmcclient.BMCClientSM.bmcSM;
 //import hudson.model.Result;
 
-String configFile
-String ispwCurrentLevel
-String cesUrl
-
-def pipelineConfig
 def symdir
 def mddlTaskList
 def mddlTaskContentList
 
-def call(Map execParms)
-{
-    configFile  = 'mddlPipeline.yml'
+def call(execParms, pipelineConfig, mddlTaskList, ispwCurrentLevel, cesUrl) {
 
     node {
-
-        stage("Initialize"){
-
-            initialize(execParms)
-
-            if(mddlTaskList.size() > 1) {
-
-                error "At the current stage we do not support processing of more than one MDDL member per build."
-
-            }
-        }
 
         stage("Retrieve MDDL members") {
 
@@ -45,7 +27,7 @@ def call(Map execParms)
             def mddlTaskContent = mddlTaskContentList[0]
             def workIdOwner     = mddlTaskContent.userId
             def workIdName      = mddlTaskContent.moduleName
-            def jobId           = BUILD_NUMBER
+            def Job_ID           = BUILD_NUMBER
 
             withCredentials(
                 [   
@@ -114,7 +96,8 @@ def call(Map execParms)
                 execjclpds: 'HDDRXM0.DEMO.JCL(AMIEXEC)', 
                 genjcl: false, 
                 imprptpds: '',                 
-                analysisin: '''//*Analysis Input
+                analysisin: '''
+//*Analysis Input
 //ANALYSIS.ALURPT DD DISP=SHR,
 // DSN=&IMPRPT
 //ANALYSIS.ALUIN DD *
@@ -192,7 +175,7 @@ ${Analysis Input Stream}
 //JCLGEN   EXEC AMAPROCJ, 
 //    COND=${BMC_COMPARE_COND_CODE}
 ${JCL Generation Input Stream}''', 
-                jobCardIn: '''//HDDRXM0J JOB (#acctno#),\'COMPARE-${jobId}\',
+                jobCardIn: '''//HDDRXM0J JOB (#acctno#),\'COMPARE-${Job_ID}\',
 //  CLASS=A,MSGLEVEL=(1,1)                
 //*                                       
 //*                                       

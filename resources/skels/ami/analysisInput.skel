@@ -1,0 +1,7 @@
+//*Analysis Input
+//ANALYSIS.ALURPT DD DISP=SHR,
+// DSN=&IMPRPT
+//ANALYSIS.ALUIN DD *
+  SSID  ${SSID}
+  WORKID  ${Work ID Owner}.${Work ID Name}
+  INCLUDE (DATA AMS SQL )

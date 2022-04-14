@@ -1,0 +1,17 @@
+//*Compare Input
+//COMPARE1 EXEC AMAPROCC,
+// COND=(1,LT)
+//COMPARE.CDL001 DD DISP=SHR,
+// DSN=&CDLFILE
+//COMPARE.ALUIN DD *
+     SSID  ${SSID}
+     CMPTYPE1 LOCAL
+     CMPTYPE2 LOCAL
+     INCLUDE (ALTER CREATE DROP )
+     REPORT (DETAIL )
+     SCOPETYPE RULE
+     SCOPERULE1 (* ${Object Type (applies to Compare1 and Compare2)} ${Object Name Part 1 for Compare1}.${Object Name Part 2 for Compare1})
+     SCOPERULE2 (* ${Object Type (applies to Compare1 and Compare2)} ${Object Name Part 1 for Compare2}.${Object Name Part 2 for Compare2})
+     NOSYNONYM
+     NOALIAS
+     NODEFINE

@@ -1,0 +1,5 @@
+//*JCLGEN Input
+//STEP1.AJXIN DD *
+  PRODUCT  ACM
+  WORKID   ${Work ID Owner}.${Work ID Name}
+  SSID     ${SSID}
