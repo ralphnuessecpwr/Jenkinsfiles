@@ -129,6 +129,8 @@ println "Task ID: " + it.taskId.toString()
 println "Task InfoList: " + mddlTaskInfoList.toString()
     
     }
+
+    return mddlTaskInfoList
 }
 
 def getMddlTaskInfo(records) {
