@@ -60,9 +60,9 @@ def call(Map execParms)
                     dserver:    pipelineConfig.host.name, 
                     dport:      pipelineConfig.host.zosmfPort,                     
                     duser:      hostUser, 
-                    pwdruntime: true,                    
+                    pwdruntime: false,                    
                     dpassrun:   '${hostPassword}', 
-                    dpassword:  '',
+                    dpassword:  '7pfDq2vJ6eEfXsQ3ZY1A6kXRKDxdDMs1 123,#-103,#25,#GFUXxg==',
                     debug:      true, 
                     symdir:     pipelineConfig.amiDevOps.symDir
                 )
@@ -191,7 +191,7 @@ ${Analysis Input Stream}
 //JCLGEN   EXEC AMAPROCJ, 
 //    COND=${BMC_COMPARE_COND_CODE}
 ${JCL Generation Input Stream}''', 
-                jobCardIn: '''//HDDRXM0J JOB (EUDD),\'COMPARE-${Job_ID}\',
+                jobCardIn: '''//HDDRXM0J JOB (#acctno#),\'COMPARE-${Job_ID}\',
 //  CLASS=A,MSGLEVEL=(1,1)                
 //*                                       
 //*                                       
