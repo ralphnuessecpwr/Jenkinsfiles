@@ -5,7 +5,7 @@ host:
   zosmfPort:            '443'
 amiDevOps:
   symDir:               'AMI_DevOps_CWCC.properties'
-  analyisIn:            'skels/ami/analysisInput.skel'
+  analysisIn:           'skels/ami/analysisInput.skel'
   comIn:                'skels/ami/compareInput.skel'
   importIn:             'skels/ami/importInput.skel'
   jclGenIn:             'skels/ami/jclGenInput.skel'
