@@ -31,7 +31,7 @@ def call(Map execParms)
 
         stage("Process MDDL members") {
 
-            mddlTaskInfoList = processMddlFiles()
+            mddlTaskInfoList = getMddlTaskInfoList()
             println mddlTaskInfoList.toString()
 
         }
