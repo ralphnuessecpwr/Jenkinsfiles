@@ -62,8 +62,8 @@ def initialize(execParms) {
     ispwCurrentLevel    = pipelineConfig.ispw.lifeCycle[ispwLevel]
 
     def taskList        = getTaskList(ispwSetId)
-    cobTaskList         = getTaskListByType(taskList)[0]
-    mddlTaskList        = getTaskListByType(taskList)[1]
+    cobTaskList         = getTaskListsByType(taskList)[0]
+    mddlTaskList        = getTaskListsByType(taskList)[1]
 
 }
 
