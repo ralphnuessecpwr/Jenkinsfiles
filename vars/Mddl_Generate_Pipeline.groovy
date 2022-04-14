@@ -57,13 +57,13 @@ def call(Map execParms)
             ) {
                 bmcAmiAuthentication(
                     comtype:    'ZOSMF', 
-                    debug:      false, 
-                    dpassrun:   hostPassword, 
-                    dpassword:  '', 
-                    dport:      pipelineConfig.host.zosmfPort, 
                     dserver:    pipelineConfig.host.name, 
+                    dport:      pipelineConfig.host.zosmfPort,                     
                     duser:      hostUser, 
-                    pwdruntime: false, 
+                    pwdruntime: true,                    
+                    dpassrun:   hostPassword, 
+                    dpassword:  '',
+                    debug:      false, 
                     symdir:     pipelineConfig.amiDevOps.symDir
                 )
             }
