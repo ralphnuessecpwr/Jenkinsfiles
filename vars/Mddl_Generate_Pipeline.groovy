@@ -133,6 +133,8 @@ println "Task InfoList: " mddlTaskInfoList.toString()
 
 def getMddlTaskInfo(records) {
 
+    def mddlTaskInfo    = [:]
+
     records.each {
 
         if(it.charAt(0) != pipelineConfig.mddl.commentMarker) {
@@ -148,4 +150,6 @@ def getMddlTaskInfo(records) {
             }                
         }
     }
+
+    return mddlTaskInfo
 }
