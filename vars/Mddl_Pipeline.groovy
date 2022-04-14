@@ -111,7 +111,7 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
             impin:          importIn, 
             jclgenin:       jclGenIn, 
             jcomp:          compareJcl, 
-            jobCardIn:      jobCardIn
+            jobCardIn:      jobcard
         )
     }
 }
