@@ -106,7 +106,7 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
             execjclpds:     'HDDRXM0.DEMO.JCL(AMIEXEC)', 
             genjcl:         false, 
             imprptpds:      '',                 
-            analysisin:     anaylsisIn, 
+            analysisin:     analysisIn, 
             compin:         compIn, 
             impin:          importIn, 
             jclgenin:       jclGenIn, 
