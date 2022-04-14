@@ -1,6 +1,6 @@
-import static com.bmc.db2.bmcclient.BMCClientCN.bmcCN;
-import static com.bmc.db2.bmcclient.BMCClientSM.bmcSM;
-import hudson.model.Result;
+//import static com.bmc.db2.bmcclient.BMCClientCN.bmcCN;
+//import static com.bmc.db2.bmcclient.BMCClientSM.bmcSM;
+//import hudson.model.Result;
 
 String configFile
 String ispwCurrentLevel
@@ -87,7 +87,7 @@ def initialize(execParms) {
 
     def taskList        = getTaskList(ispwSetId)
     mddlTaskList        = getMddlTaskList(taskList)
-
+/*
     bmcCN.reset("BMC_SCHEMA_IDENTICAL")
     bmcCN.reset("BMC_GENERATE_JCL_ONLY")
     bmcCN.reset("BMC_SKIP_CDL_GENERATION")
@@ -97,7 +97,7 @@ def initialize(execParms) {
     bmcSM.reset("BMC_GENERATE_JCL_ONLY")
     bmcSM.reset("BMC_SKIP_CDL_GENERATION")
     bmcSM.reset("BMC_RESET_RC")
-
+*/
 }
 
 def getTaskList(ispwSetId) {
