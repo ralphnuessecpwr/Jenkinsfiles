@@ -131,9 +131,6 @@ def initialize(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
 
     createAmiDevOpsProperties()
 
-    echo pipelineConfig.toString()
-    echo pipelineConfig.amiDevOps.analyisIn
-
     analysisIn          = libraryResource(pipelineConfig.amiDevOps.analysisIn)
     compIn              = libraryResource(pipelineConfig.amiDevOps.compIn)
     importIn            = libraryResource(pipelineConfig.amiDevOps.importIn)
@@ -193,7 +190,7 @@ def getMddlTaskContentList() {
     mddlTaskList.each {
 
         def mddlFileName                = it.moduleName + '.' + it.moduleType
-        def mddlPath                    = pipelineConfig.ispw.mddlRootFolder + '/' + ispwApplication + '/' + pipelineConfig.ispw.mddlFolder
+        def mddlPath                    = pipelineConfig.ispw.mddlRootFolder + '/' + ispwApplication + '/' + pipelineConfig.ispw.fileFolder
         def mddlContent                 = readFile(file: mddlPath + '/' + mddlFileName)
         def records                     = mddlContent.split('\n')
         def mddlTaskContent             = getMddlTaskContent(records)   
