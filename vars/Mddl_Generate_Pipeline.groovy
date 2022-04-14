@@ -117,30 +117,34 @@ def getMddlTaskInfoList() {
 
     mddlTaskList.each {
 
-        def mddlTaskInfo    = [:]
         def mddlFileName    = it.moduleName + '.' + it.moduleType
         def mddlPath        = pipelineConfig.ispw.mddlRootFolder + '/' + ispwApplication + '/' + pipelineConfig.ispw.mddlFolder
         def mddlContent     = readFile(file: mddlPath + '/' + mddlFileName)
         def records         = mddlContent.split('\n')
+        def mddlTaskInfo    = getMddlTaskInfo(records)
 
-        records.each {
-
-            if(it.charAt(0) != pipelineConfig.mddl.commentMarker) {
-
-                def key     = it.split(pipelineConfig.mddl.valueMarker)[0]
-                def value   = it.split(pipelineConfig.mddl.valueMarker)[1]
-                
-                if(pipelineConfig.mddl.keywords.contains(key)) {
-                    mddlTaskInfo[key] = value
-                }
-                else {
-                    error "The MDDL Member contained unknown keyword: " + key
-                }                
-            }
-        }
 println mddlTaskInfo.toString()
 println "Task ID: " it.taskId.toString()
         mddlTaskInfoList[it.taskId] = mddlTaskInfo
 println "Task InfoList: " mddlTaskInfoList.toString()
+    
+    }
+}
+
+def getMddlTaskInfo(records) {
+
+    records.each {
+
+    if(it.charAt(0) != pipelineConfig.mddl.commentMarker) {
+
+        def key     = it.split(pipelineConfig.mddl.valueMarker)[0]
+        def value   = it.split(pipelineConfig.mddl.valueMarker)[1]
+        
+        if(pipelineConfig.mddl.keywords.contains(key)) {
+            mddlTaskInfo[key] = value
+        }
+        else {
+            error "The MDDL Member contained unknown keyword: " + key
+        }                
     }
 }
