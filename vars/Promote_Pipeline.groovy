@@ -100,7 +100,7 @@ def getTaskListsByType(taskList) {
 
     }
 
-    taskListsBytype.add(cobTaskList)
+    taskListsByType.add(cobTaskList)
     taskListsByType.add(mddlTaskList)
 
     return taskListsByType
