@@ -1,3 +1,7 @@
+import static com.bmc.db2.bmcclient.BMCClientCN.bmcCN;
+import static com.bmc.db2.bmcclient.BMCClientSM.bmcSM;
+import hudson.model.Result;
+
 String configFile
 String ispwCurrentLevel
 String cesUrl
@@ -32,8 +36,35 @@ def call(Map execParms)
         stage("Process MDDL members") {
 
             mddlTaskInfoList = getMddlTaskInfoList()
-            println mddlTaskInfoList.toString()
 
+        }
+
+        stage('Compare Developer Schema definition against Production') {
+
+            def mddlTaskInfo = mddlTaskInfoList[0]
+            println mddlTaskInfo.toString()
+
+            withCredentials(
+                [   
+                    usernamePassword(
+                        credentialsId: pipelineConfig.host.credentialsId, 
+                        usernameVariable: 'hostUser'
+                        passwordVariable: 'hostPasword', 
+                    )
+                ]
+            ) {
+
+                build(
+                    job:        'Compare_DDL',
+                    parameters: [
+                        string(name:    'Job_ID',       value: "x1234"),
+                        string(name:    'From_SSID',    value: mddlTaskInfo.DB2SSID),
+                        string(name:    'To_SSID',      value: mddlTaskInfo.DB2PSSID),
+                        string(name:    'DB_Name',      value: mddlTaskInfo.DB2DB),
+                        string(name:    'TSO_ID',       value: hostUser),
+                        password(name:  'TSO_PSWD',     value: hostPassword)
+                    ]
+            }
         }
     }
 }
@@ -55,6 +86,16 @@ def initialize(execParms) {
 
     def taskList        = getTaskList(ispwSetId)
     mddlTaskList        = getMddlTaskList(taskList)
+
+    bmcCN.reset("BMC_SCHEMA_IDENTICAL")
+    bmcCN.reset("BMC_GENERATE_JCL_ONLY")
+    bmcCN.reset("BMC_SKIP_CDL_GENERATION")
+    bmcCN.reset("BMC_RESET_RC")
+	
+	bmcSM.reset("BMC_SCHEMA_IDENTICAL")
+    bmcSM.reset("BMC_GENERATE_JCL_ONLY")
+    bmcSM.reset("BMC_SKIP_CDL_GENERATION")
+    bmcSM.reset("BMC_RESET_RC")
 
 }
 
@@ -123,10 +164,7 @@ def getMddlTaskInfoList() {
         def records         = mddlContent.split('\n')
         def mddlTaskInfo    = getMddlTaskInfo(records)
 
-println mddlTaskInfo.toString()
-println "Task ID: " + it.taskId.toString()
         mddlTaskInfoList[it.taskId] = mddlTaskInfo
-println "Task InfoList: " + mddlTaskInfoList.toString()
     
     }
 
