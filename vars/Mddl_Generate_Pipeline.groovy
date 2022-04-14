@@ -48,8 +48,8 @@ def call(Map execParms)
                 [   
                     usernamePassword(
                         credentialsId: pipelineConfig.host.credentialsId, 
-                        usernameVariable: 'hostUser'
-                        passwordVariable: 'hostPasword', 
+                        usernameVariable: 'hostUser',
+                        passwordVariable: 'hostPasword'
                     )
                 ]
             ) {
@@ -57,12 +57,12 @@ def call(Map execParms)
                 build(
                     job:        'Compare_DDL',
                     parameters: [
-                        string(name:    'Job_ID',       value: "x1234"),
-                        string(name:    'From_SSID',    value: mddlTaskInfo.DB2SSID),
-                        string(name:    'To_SSID',      value: mddlTaskInfo.DB2PSSID),
-                        string(name:    'DB_Name',      value: mddlTaskInfo.DB2DB),
-                        string(name:    'TSO_ID',       value: hostUser),
-                        password(name:  'TSO_PSWD',     value: hostPassword)
+                        string(name:    'jobId',       value: "x1234"),
+                        string(name:    'fromSsid',    value: mddlTaskInfo.DB2SSID),
+                        string(name:    'toSsid',      value: mddlTaskInfo.DB2PSSID),
+                        string(name:    'dbName',      value: mddlTaskInfo.DB2DB),
+                        string(name:    'tsoUser',     value: hostUser),
+                        password(name:  'tsoPassword', value: hostPassword)
                     ]
             }
         }
