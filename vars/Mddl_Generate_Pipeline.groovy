@@ -135,16 +135,17 @@ def getMddlTaskInfo(records) {
 
     records.each {
 
-    if(it.charAt(0) != pipelineConfig.mddl.commentMarker) {
+        if(it.charAt(0) != pipelineConfig.mddl.commentMarker) {
 
-        def key     = it.split(pipelineConfig.mddl.valueMarker)[0]
-        def value   = it.split(pipelineConfig.mddl.valueMarker)[1]
-        
-        if(pipelineConfig.mddl.keywords.contains(key)) {
-            mddlTaskInfo[key] = value
+            def key     = it.split(pipelineConfig.mddl.valueMarker)[0]
+            def value   = it.split(pipelineConfig.mddl.valueMarker)[1]
+            
+            if(pipelineConfig.mddl.keywords.contains(key)) {
+                mddlTaskInfo[key] = value
+            }
+            else {
+                error "The MDDL Member contained unknown keyword: " + key
+            }                
         }
-        else {
-            error "The MDDL Member contained unknown keyword: " + key
-        }                
     }
 }
