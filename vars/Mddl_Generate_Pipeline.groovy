@@ -93,7 +93,7 @@ def call(Map execParms)
                 useCruleBefore: false, 
                 wkidname: workIdName, 
                 wkidowner: workIdOwner, 
-                wlistpds: 'HDDRXM0.DEMO.JCL(AMIWL)'
+                wlistpds: 'HDDRXM0.DEMO.JCL(AMIWL)',
                 cdlRollCheck: false, 
                 cdlRollPds: '', 
                 cdlpds: 'HDDRXM0.DEMO.JCL(AMICDL)', 
