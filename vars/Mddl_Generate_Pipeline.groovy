@@ -55,17 +55,16 @@ def call(Map execParms)
                     )
                 ]
             ) {
-
-                build(
-                    job:        'Compare_DDL',
-                    parameters: [
-                        string(name:    'jobId',       value: "x1234"),
-                        string(name:    'fromSsid',    value: mddlTaskContent.DB2SSID),
-                        string(name:    'toSsid',      value: mddlTaskContent.DB2PSSID),
-                        string(name:    'dbName',      value: mddlTaskContent.DB2DB),
-                        string(name:    'tsoUser',     value: hostUser),
-                        password(name:  'tsoPassword', value: hostPassword)
-                    ]
+                bmcAmiAuthentication(
+                    comtype:    'ZOSMF', 
+                    debug:      false, 
+                    dpassrun:   hostPassword, 
+                    dpassword:  '', 
+                    dport:      pipelineConfig.host.zosmfPort, 
+                    dserver:    pipelineConfig.host.name, 
+                    duser:      hostUser, 
+                    pwdruntime: false, 
+                    symdir:     pipelineConfig.amiDevOps.symDir
                 )
             }
         }
