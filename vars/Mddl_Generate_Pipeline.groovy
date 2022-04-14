@@ -125,7 +125,7 @@ def getMddlTaskInfoList() {
         def mddlFileName    = it.moduleName + '.' + it.moduleType
         def mddlPath        = pipelineConfig.ispw.mddlRootFolder + '/' + ispwApplication + '/' + pipelineConfig.ispw.mddlFolder
         def mddlContent     = readFile(file: mddlPath + '/' + mddlFileName)
-        def redords         = mddlContent.split('\n')
+        def records         = mddlContent.split('\n')
 
         records.each {
 
