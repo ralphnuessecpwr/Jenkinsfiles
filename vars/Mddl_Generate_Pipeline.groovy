@@ -61,7 +61,7 @@ def call(Map execParms)
                     dport:      pipelineConfig.host.zosmfPort,                     
                     duser:      hostUser, 
                     pwdruntime: true,                    
-                    dpassrun:   "${hostPassword}", 
+                    dpassrun:   '${hostPassword}', 
                     dpassword:  '',
                     debug:      true, 
                     symdir:     pipelineConfig.amiDevOps.symDir
