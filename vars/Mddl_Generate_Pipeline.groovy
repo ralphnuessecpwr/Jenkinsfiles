@@ -8,7 +8,7 @@ String cesUrl
 
 def pipelineConfig
 def mddlTaskList
-def mddlTaskInfoList
+def mddlTaskContentList
 
 def call(Map execParms)
 {
@@ -35,14 +35,16 @@ def call(Map execParms)
 
         stage("Process MDDL members") {
 
-            mddlTaskInfoList = getMddlTaskInfoList()
+            mddlTaskContentList = getMddlTaskContentList()
+            println mddlTaskContentList.toString()
+            println mddlTaskContentList[0].toString()
 
         }
 
         stage('Compare Developer Schema definition against Production') {
 
-            def mddlTaskInfo = mddlTaskInfoList[0]
-            println mddlTaskInfo.toString()
+            def mddlTaskContent = mddlTaskContentList[0]
+            println mddlTaskContent.toString()
 
             withCredentials(
                 [   
@@ -58,9 +60,9 @@ def call(Map execParms)
                     job:        'Compare_DDL',
                     parameters: [
                         string(name:    'jobId',       value: "x1234"),
-                        string(name:    'fromSsid',    value: mddlTaskInfo.DB2SSID),
-                        string(name:    'toSsid',      value: mddlTaskInfo.DB2PSSID),
-                        string(name:    'dbName',      value: mddlTaskInfo.DB2DB),
+                        string(name:    'fromSsid',    value: mddlTaskContent.DB2SSID),
+                        string(name:    'toSsid',      value: mddlTaskContent.DB2PSSID),
+                        string(name:    'dbName',      value: mddlTaskContent.DB2DB),
                         string(name:    'tsoUser',     value: hostUser),
                         password(name:  'tsoPassword', value: hostPassword)
                     ]
@@ -153,38 +155,41 @@ def downloadMddlMembers() {
 
 }
 
-def getMddlTaskInfoList() {
+def getMddlTaskContentList() {
 
-    def mddlTaskInfoList    = [:]
+    def mddlTaskContentList    = []
 
     mddlTaskList.each {
 
-        def mddlFileName    = it.moduleName + '.' + it.moduleType
-        def mddlPath        = pipelineConfig.ispw.mddlRootFolder + '/' + ispwApplication + '/' + pipelineConfig.ispw.mddlFolder
-        def mddlContent     = readFile(file: mddlPath + '/' + mddlFileName)
-        def records         = mddlContent.split('\n')
-        def mddlTaskInfo    = getMddlTaskInfo(records)
+        def mddlFileName                = it.moduleName + '.' + it.moduleType
+        def mddlPath                    = pipelineConfig.ispw.mddlRootFolder + '/' + ispwApplication + '/' + pipelineConfig.ispw.mddlFolder
+        def mddlContent                 = readFile(file: mddlPath + '/' + mddlFileName)
+        def records                     = mddlContent.split('\n')
+        def mddlTaskContent             = getMddlTaskContent(records)   
 
-        mddlTaskInfoList[it.taskId] = mddlTaskInfo
+        mddlTaskContent['taskId']       = it.taskId
+        mddlTaskContent['moduleName']   = it.moduleName
+        
+        mddlTaskContentList.add(mddlTaskContent)
     
     }
 
-    return mddlTaskInfoList
+    return mddlTaskContentList
 }
 
-def getMddlTaskInfo(records) {
+def getMddlTaskContent(records) {
 
-    def mddlTaskInfo    = [:]
+    def mddlTaskContent    = [:]
 
     records.each {
 
         if(it.charAt(0) != pipelineConfig.mddl.commentMarker) {
 
-            def key     = it.split(pipelineConfig.mddl.valueMarker)[0]
-            def value   = it.split(pipelineConfig.mddl.valueMarker)[1]
+            def key     = it.split(pipelineConfig.mddl.valueMarker)[0].trim()
+            def value   = it.split(pipelineConfig.mddl.valueMarker)[1].trim()
             
             if(pipelineConfig.mddl.keywords.contains(key)) {
-                mddlTaskInfo[key] = value
+                mddlTaskContent[key] = value
             }
             else {
                 error "The MDDL Member contained unknown keyword: " + key
@@ -192,5 +197,5 @@ def getMddlTaskInfo(records) {
         }
     }
 
-    return mddlTaskInfo
+    return mddlTaskContent
 }
