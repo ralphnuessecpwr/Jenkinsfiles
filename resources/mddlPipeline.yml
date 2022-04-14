@@ -6,7 +6,7 @@ host:
 amiDevOps:
   symDir:               'AMI_DevOps_CWCC.properties'
   analysisIn:           'skels/ami/analysisInput.skel'
-  comIn:                'skels/ami/compareInput.skel'
+  compIn:               'skels/ami/compareInput.skel'
   importIn:             'skels/ami/importInput.skel'
   jclGenIn:             'skels/ami/jclGenInput.skel'
   jcl:                  'skels/ami/compareJcl.skel'
