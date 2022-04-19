@@ -37,7 +37,7 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
         def mddlTaskContent = mddlTaskContentList[0]
         def workIdOwner     = mddlTaskContent.userId
         def workIdName      = mddlTaskContent.moduleName
-        def Job_ID           = BUILD_NUMBER
+        def Job_ID          = BUILD_NUMBER
 
         withCredentials(
             [   
@@ -54,7 +54,7 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
                 dport:      pipelineConfig.host.zosmfPort,                     
                 duser:      hostUser, 
                 pwdruntime: false,                    
-                dpassrun:   '${hostPassword}', 
+                dpassrun:   '', //'${hostPassword}', 
                 dpassword:  '7pfDq2vJ6eEfXsQ3ZY1A6kXRKDxdDMs1 123,#-103,#25,#GFUXxg==',
                 debug:      true, 
                 symdir:     pipelineConfig.amiDevOps.symDir
