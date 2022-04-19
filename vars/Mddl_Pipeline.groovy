@@ -42,7 +42,7 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
         withCredentials(
             [   
                 usernamePassword(
-                    credentialsId: pipelineConfig.amiDevOps.credentialsId, 
+                    credentialsId: pipelineConfig.host.credentialsId, 
                     usernameVariable: 'hostUser',
                     passwordVariable: 'hostPassword'
                 )
@@ -55,7 +55,7 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
                 duser:      hostUser, 
                 pwdruntime: false,                    
                 dpassrun:   '', 
-                dpassword:  'Z2DS0c1t6aThswpuhBtme3A67nX2/AhE 64,#-124,#67,#-alW4UQ==',
+                dpassword:  pipelineConfig.amiDevOps.credentialsId, //'Z2DS0c1t6aThswpuhBtme3A67nX2/AhE 64,#-124,#67,#-alW4UQ==',
                 debug:      false, 
                 symdir:     pipelineConfig.amiDevOps.symDir
             )

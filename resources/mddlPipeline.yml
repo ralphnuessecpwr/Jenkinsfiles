@@ -4,7 +4,7 @@ host:
   name:                 'cwcc.compuware.com'
   zosmfPort:            '443'
 amiDevOps:
-  credentialsId:        'hddrxm0AMIDevOps'
+  credentialsId:        'Z2DS0c1t6aThswpuhBtme3A67nX2/AhE 64,#-124,#67,#-alW4UQ=='
   symDir:               'AMI_DevOps_CWCC.properties'
   analysisIn:           'skels/ami/analysisInput.skel'
   compIn:               'skels/ami/compareInput.skel'
