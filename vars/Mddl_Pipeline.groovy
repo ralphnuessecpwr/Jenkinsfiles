@@ -53,9 +53,9 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
                 dserver:    pipelineConfig.host.name, 
                 dport:      pipelineConfig.host.zosmfPort,                     
                 duser:      hostUser, 
-                pwdruntime: false,                    
-                dpassrun:   '', //'${hostPassword}', 
-                dpassword:  '7pfDq2vJ6eEfXsQ3ZY1A6kXRKDxdDMs1 123,#-103,#25,#GFUXxg==',
+                pwdruntime: true,                    
+                dpassrun:   '${hostPassword}', 
+                dpassword:  '', //'7pfDq2vJ6eEfXsQ3ZY1A6kXRKDxdDMs1 123,#-103,#25,#GFUXxg==',
                 debug:      true, 
                 symdir:     pipelineConfig.amiDevOps.symDir
             )
