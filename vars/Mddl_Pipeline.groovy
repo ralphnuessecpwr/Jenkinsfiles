@@ -48,7 +48,6 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
                 )
             ]
         ) {
-            def tmpPassword = hostPassword
             bmcAmiAuthentication(
                 comtype:    'ZOSMF', 
                 dserver:    pipelineConfig.host.name, 
@@ -56,7 +55,7 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
                 duser:      hostUser, 
                 pwdruntime: false,                    
                 dpassrun:   '', 
-                dpassword:  hostPassword, //'7pfDq2vJ6eEfXsQ3ZY1A6kXRKDxdDMs1 123,#-103,#25,#GFUXxg==',
+                dpassword:  'Z2DS0c1t6aThswpuhBtme3A67nX2/AhE 64,#-124,#67,#-alW4UQ==',
                 debug:      false, 
                 symdir:     pipelineConfig.amiDevOps.symDir
             )
