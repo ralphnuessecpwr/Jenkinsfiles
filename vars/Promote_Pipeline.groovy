@@ -68,7 +68,7 @@ def initialize(execParms) {
 }
 
 def getTaskList(ispwSetId) {
-echo "Cred ID: " + pipelineConfig.ces.credentialsId
+
     def response    = ispwOperation(
                             connectionId:           pipelineConfig.host.connectionId, 
                             credentialsId:          pipelineConfig.ces.credentialsId,
