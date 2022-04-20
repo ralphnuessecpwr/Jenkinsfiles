@@ -37,29 +37,10 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
         def mddlTaskContent = mddlTaskContentList[0]
         def workIdOwner     = mddlTaskContent.userId
         def workIdName      = mddlTaskContent.moduleName
+        def memberName      = workIdName
         def Job_ID          = BUILD_NUMBER
 
-        withCredentials(
-            [   
-                usernamePassword(
-                    credentialsId: pipelineConfig.host.credentialsId, 
-                    usernameVariable: 'hostUser',
-                    passwordVariable: 'hostPassword'
-                )
-            ]
-        ) {
-            bmcAmiAuthentication(
-                comtype:    'ZOSMF', 
-                dserver:    pipelineConfig.host.name, 
-                dport:      pipelineConfig.host.zosmfPort,                     
-                duser:      hostUser, 
-                pwdruntime: false,                    
-                dpassrun:   '', 
-                dpassword:  pipelineConfig.amiDevOps.credentialsId, //'Z2DS0c1t6aThswpuhBtme3A67nX2/AhE 64,#-124,#67,#-alW4UQ==',
-                debug:      false, 
-                symdir:     pipelineConfig.amiDevOps.symDir
-            )
-        }
+        runAuthentication(pipelineConfig)
 
         bmcAmiDb2SchemaChangeMigration(
             acceptableRC:   '0000', 
@@ -67,13 +48,13 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
             moduletype:     'compare3', 
             nocdl:          false, 
             objtyp:         'TS', 
-            location2:      mddlTaskContent.DB2PSSID,
             ssid:           mddlTaskContent.DB2SSID,
-            objPart1C1:     mddlTaskContent.DB2DB, 
             objPart1C2:     mddlTaskContent.DB2PDB, 
+            objPart3C1:     '', 
+            location2:      mddlTaskContent.DB2PSSID,
+            objPart1C1:     mddlTaskContent.DB2DB, 
             objPart2C1:     mddlTaskContent.DB2TS, 
             objPart2C2:     mddlTaskContent.DB2PTS, 
-            objPart3C1:     '', 
             objPart3C2:     '', 
             postbaseexec:   false, 
             postbasename:   '', 
@@ -84,12 +65,12 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
             useCrule:       false, 
             useCruleAfter:  false, 
             useCruleBefore: false, 
-            wkidname:       workIdName, 
             wkidowner:      workIdOwner, 
-            wlistpds:       'HDDRXM0.DEMO.JCL(AMIWL)',
+            wkidname:       workIdName,             
+            wlistpds:       "#wlpds#(${memberName})",
             cdlRollCheck:   false, 
             cdlRollPds:     '', 
-            cdlpds:         'HDDRXM0.DEMO.JCL(AMICDL)', 
+            cdlpds:         "#cdlpds#(${memberName})",
             cmpbl1:         '', 
             cmpbl2:         '', 
             cmpbp1:         '', 
@@ -103,7 +84,7 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
             cruleBefore:    '', 
             debug:          false, 
             disablebuildstep: false, 
-            execjclpds:     'HDDRXM0.DEMO.JCL(AMIEXEC)', 
+            execjclpds:     "#execpds#(${memberName})",
             genjcl:         false, 
             imprptpds:      '',                 
             analysisin:     analysisIn, 
@@ -227,4 +208,31 @@ def getMddlTaskContent(records) {
     }
 
     return mddlTaskContent
+}
+
+def runAuthentication(pipelineConfig) {
+
+    withCredentials(
+        [   
+            usernamePassword(
+                credentialsId: pipelineConfig.host.credentialsId, 
+                usernameVariable: 'hostUser',
+                passwordVariable: 'hostPassword'
+            )
+        ]
+    ) {
+        bmcAmiAuthentication(
+            comtype:    'ZOSMF', 
+            dserver:    pipelineConfig.host.name, 
+            dport:      pipelineConfig.host.zosmfPort,                     
+            duser:      hostUser, 
+            pwdruntime: false,                    
+            dpassrun:   '', 
+            dpassword:  pipelineConfig.amiDevOps.credentialsId, //'Z2DS0c1t6aThswpuhBtme3A67nX2/AhE 64,#-124,#67,#-alW4UQ==',
+            debug:      false, 
+            symdir:     pipelineConfig.amiDevOps.symDir
+        )
+    }
+
+    return
 }

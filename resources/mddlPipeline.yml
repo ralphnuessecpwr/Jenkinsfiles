@@ -12,6 +12,17 @@ amiDevOps:
   jclGenIn:             'skels/ami/jclGenInput.skel'
   jcl:                  'skels/ami/compareJcl.skel'
   jobcard:              'skels/ami/jobcard.skel'
+  datasetNames:
+    work:
+      wlistpds:         'HDDRXM0.AMI.DEVOPS.WORKLIST'
+      cdlpds:           'HDDRXM0.AMI.DEVOPS.CDL'
+      execjclpds:       'HDDRXM0.AMI.DEVOPS.EXECJCL'
+      importpds:        'HDDRXM0.AMI.DEVOPS.IMPORT'
+    rollback: 
+      wlistpds:         'HDDRXM0.AMI.ROLLBK.WORKLIST'
+      cdlpds:           'HDDRXM0.AMI.ROLLBK.CDL'
+      execjclpds:       'HDDRXM0.AMI.ROLLBK.EXECJCL'
+      importpds:        'HDDRXM0.AMI.ROLLBK.IMPORT'
 ces:
   hostName:             'http://cwcc.compuware.com'
   port:                 '2020'
