@@ -9,12 +9,15 @@ def ispwCurrentLevel
 def cesUrl
 def symdir
 def mddlTaskContentList
+def mddlTaskContent
 def analysisIn
 def compIn
 def importIn
 def jclGenIn
 def compareJcl
 def jobcard
+def workIdOwner
+def workIdName
 
 def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
 
@@ -34,66 +37,31 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
 
     stage('Compare Developer Schema definition against Production') {
 
-        def mddlTaskContent = mddlTaskContentList[0]
-        def workIdOwner     = mddlTaskContent.userId
-        def workIdName      = mddlTaskContent.moduleName
-        def memberName      = workIdName
-        def Job_ID          = BUILD_NUMBER
+        mddlTaskContent = mddlTaskContentList[0]
+        workIdOwner     = mddlTaskContent.userId
+        workIdName      = mddlTaskContent.moduleName
+        jobcard         = jobcard.replace('${Job_ID}', BUILD_NUMBER)
 
         runAuthentication(pipelineConfig)
+        
+        runComparison(workIdName)
 
-        bmcAmiDb2SchemaChangeMigration(
-            acceptableRC:   '0000', 
-            jobWaitTime:    2, 
-            moduletype:     'compare3', 
-            nocdl:          false, 
-            objtyp:         'TS', 
-            ssid:           mddlTaskContent.DB2SSID,
-            objPart1C2:     mddlTaskContent.DB2PDB, 
-            objPart3C1:     '', 
-            location2:      mddlTaskContent.DB2PSSID,
-            objPart1C1:     mddlTaskContent.DB2DB, 
-            objPart2C1:     mddlTaskContent.DB2TS, 
-            objPart2C2:     mddlTaskContent.DB2PTS, 
-            objPart3C2:     '', 
-            postbaseexec:   false, 
-            postbasename:   '', 
-            postbaseprof:   '', 
-            preBaseType:    'none', 
-            prebasename:    '', 
-            prebaseprof:    '', 
-            useCrule:       false, 
-            useCruleAfter:  false, 
-            useCruleBefore: false, 
-            wkidowner:      workIdOwner, 
-            wkidname:       workIdName,             
-            wlistpds:       "#wlpds#(${memberName})",
-            cdlRollCheck:   false, 
-            cdlRollPds:     '', 
-            cdlpds:         "#cdlpds#(${memberName})",
-            cmpbl1:         '', 
-            cmpbl2:         '', 
-            cmpbp1:         '', 
-            cmpbp2:         '', 
-            cmpddl1:        '', 
-            cmpddl2:        '', 
-            crule:          '', 
-            crule1:         '', 
-            crule2:         '', 
-            cruleAfter:     '', 
-            cruleBefore:    '', 
-            debug:          false, 
-            disablebuildstep: false, 
-            execjclpds:     "#execpds#(${memberName})",
-            genjcl:         false, 
-            imprptpds:      "#irpds#(${memberName})",                 
-            analysisin:     analysisIn, 
-            compin:         compIn, 
-            impin:          importIn, 
-            jclgenin:       jclGenIn, 
-            jcomp:          compareJcl, 
-            jobCardIn:      jobcard
+    }
+
+    stage("Process Results"){
+
+        bmcAmiDb2OutputTransmission(
+            debug:              false, 
+            destFileName:       '${Job_ID}', 
+            dfolder:            pipelineConfig.amiDevOps.outputFolder, 
+            disablebuildstep:   false, 
+            localFileName:      workIdName, 
+            sfolderImprpt:      pipelineConfig.amiDevOps.datasetNames.work.importpds,
+            sfoldercdl:         pipelineConfig.amiDevOps.datasetNames.work.cdlpds, 
+            sfolderexec:        pipelineConfig.amiDevOps.datasetNames.work.execjclpds, 
+            sfolderwlist:       pipelineConfig.amiDevOps.datasetNames.work.wlistpds
         )
+
     }
 }
 
@@ -234,5 +202,63 @@ def runAuthentication(pipelineConfig) {
         )
     }
 
+    return
+}
+
+def runComparison(workIdName) {
+
+        bmcAmiDb2SchemaChangeMigration(
+            acceptableRC:   '0000', 
+            jobWaitTime:    2, 
+            moduletype:     'compare3', 
+            nocdl:          false, 
+            objtyp:         'TS', 
+            ssid:           mddlTaskContent.DB2SSID,
+            objPart1C2:     mddlTaskContent.DB2PDB, 
+            objPart3C1:     '', 
+            location2:      mddlTaskContent.DB2PSSID,
+            objPart1C1:     mddlTaskContent.DB2DB, 
+            objPart2C1:     mddlTaskContent.DB2TS, 
+            objPart2C2:     mddlTaskContent.DB2PTS, 
+            objPart3C2:     '', 
+            postbaseexec:   false, 
+            postbasename:   '', 
+            postbaseprof:   '', 
+            preBaseType:    'none', 
+            prebasename:    '', 
+            prebaseprof:    '', 
+            useCrule:       false, 
+            useCruleAfter:  false, 
+            useCruleBefore: false, 
+            wkidowner:      workIdOwner, 
+            wkidname:       workIdName,             
+            wlistpds:       "#wlpds#(${workIdName})",
+            cdlRollCheck:   false, 
+            cdlRollPds:     '', 
+            cdlpds:         "#cdlpds#(${workIdName})",
+            cmpbl1:         '', 
+            cmpbl2:         '', 
+            cmpbp1:         '', 
+            cmpbp2:         '', 
+            cmpddl1:        '', 
+            cmpddl2:        '', 
+            crule:          '', 
+            crule1:         '', 
+            crule2:         '', 
+            cruleAfter:     '', 
+            cruleBefore:    '', 
+            debug:          false, 
+            disablebuildstep: false, 
+            execjclpds:     "#execpds#(${workIdName})",
+            genjcl:         false, 
+            imprptpds:      "#irpds#(${workIdName})",                 
+            analysisin:     analysisIn, 
+            compin:         compIn, 
+            impin:          importIn, 
+            jclgenin:       jclGenIn, 
+            jcomp:          compareJcl, 
+            jobCardIn:      jobcard
+        )
+    
     return
 }

@@ -12,6 +12,7 @@ amiDevOps:
   jclGenIn:             'skels/ami/jclGenInput.skel'
   jcl:                  'skels/ami/compareJcl.skel'
   jobcard:              'skels/ami/jobcard.skel'
+  outputFolder:         './AMI_Ouput'
   datasetNames:
     work:
       wlistpds:         'HDDRXM0.AMI.DEVOPS.WORKLIST'
