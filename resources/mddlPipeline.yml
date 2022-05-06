@@ -18,12 +18,12 @@ amiDevOps:
       wlistpds:         'HDDRXM0.AMI.DEVOPS.WORKLIST'
       cdlpds:           'HDDRXM0.AMI.DEVOPS.CDL'
       execjclpds:       'HDDRXM0.AMI.DEVOPS.EXECJCL'
-      importpds:        'HDDRXM0.AMI.DEVOPS.IMPORT'
+      importpds:        'HDDRXM0.AMI.DEVOPS.IMPRPT'
     rollback: 
       wlistpds:         'HDDRXM0.AMI.ROLLBK.WORKLIST'
       cdlpds:           'HDDRXM0.AMI.ROLLBK.CDL'
       execjclpds:       'HDDRXM0.AMI.ROLLBK.EXECJCL'
-      importpds:        'HDDRXM0.AMI.ROLLBK.IMPORT'
+      importpds:        'HDDRXM0.AMI.DEVOPS.IMPRPT'
 ces:
   hostName:             'http://cwcc.compuware.com'
   port:                 '2020'

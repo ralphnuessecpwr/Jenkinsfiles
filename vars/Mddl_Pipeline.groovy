@@ -50,10 +50,12 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
 
     stage("Process Results"){
 
+        bat ('mkdir ' + pipelineConfig.amiDevOps.outputFolder)
+
         bmcAmiDb2OutputTransmission(
             debug:              false, 
-            destFileName:       '${Job_ID}', 
-            dfolder:            '', //pipelineConfig.amiDevOps.outputFolder, 
+            destFileName:       workIdName, 
+            dfolder:            pipelineConfig.amiDevOps.outputFolder, 
             disablebuildstep:   false, 
             localFileName:      workIdName, 
             sfolderImprpt:      pipelineConfig.amiDevOps.datasetNames.work.importpds,
