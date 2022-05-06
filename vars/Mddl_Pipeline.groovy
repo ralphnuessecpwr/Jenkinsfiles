@@ -53,7 +53,7 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
         bmcAmiDb2OutputTransmission(
             debug:              false, 
             destFileName:       '${Job_ID}', 
-            dfolder:            pipelineConfig.amiDevOps.outputFolder, 
+            dfolder:            '', //pipelineConfig.amiDevOps.outputFolder, 
             disablebuildstep:   false, 
             localFileName:      workIdName, 
             sfolderImprpt:      pipelineConfig.amiDevOps.datasetNames.work.importpds,
