@@ -208,7 +208,7 @@ def runAuthentication(pipelineConfig) {
 def runComparison(workIdName) {
 
         bmcAmiDb2SchemaChangeMigration(
-            acceptableRC:   '0000', 
+            acceptableRC:   '0004', 
             jobWaitTime:    2, 
             moduletype:     'compare3', 
             nocdl:          false, 
