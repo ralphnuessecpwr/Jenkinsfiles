@@ -86,7 +86,7 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
             disablebuildstep: false, 
             execjclpds:     "#execpds#(${memberName})",
             genjcl:         false, 
-            imprptpds:      '',                 
+            imprptpds:      "#irpds#(${memberName})",                 
             analysisin:     analysisIn, 
             compin:         compIn, 
             impin:          importIn, 
