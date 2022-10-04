@@ -205,6 +205,7 @@ def call(Map pipelineParams)
                 createReport:                       true, 
                 createResult:                       true, 
                 createSonarReport:                  true,
+                contextVariables:                   '"path=' + pathNum + '"',                
                 collectCodeCoverage:                true,
                 collectCCRepository:                pipelineParams.ccRepository,
                 collectCCSystem:                    pipelineParams.ispwApplication,
