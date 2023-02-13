@@ -21,8 +21,8 @@ ttt:
     environment:          "5b508b8a787be73b59238d38"
     sonarResultsFile:     "Non_Virtualized_Tests.cli.suite.sonar.xml"
 ces:
-  url:                    "http://cwcc.compuware.com:2020"
+  url:                    "http://cwcc.bmc.com:2020"
 ispw:
-  runtime:                "ispw"
+  runtime:                "iccga"
   changedProgramsFile:    "changedPrograms.json"
   mfSourceFolder:         "MF_Source"
