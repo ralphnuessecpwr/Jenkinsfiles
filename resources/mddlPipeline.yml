@@ -30,7 +30,7 @@ ces:
   credentialsId:        '71063193-ee67-4b52-890a-58843f33c183'  
 ispw:
   serverName:           'ispw'
-  runtimeConfig:        'ispw'
+  runtimeConfig:        'iccga'
   containerTypeSet:     '2'
   mddlType:             'MDDL'
   mddlRootFolder:       'Mddl'
