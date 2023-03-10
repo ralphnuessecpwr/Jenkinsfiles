@@ -17,6 +17,7 @@ def call() {
     mddlFileExtension   = 'mddl'
     ispwLevel           = 'UT'
     xferFolder          = 'xfer'
+    targetLib           = 'SALESSUP.ABN1.UT.MDDL'
 
     node {
 
@@ -86,7 +87,7 @@ def uploadMddlFile() {
     {
 
     ftpTextSetup = """
-open ${hostName}
+open ${pipelineConfig.host.name}
 ${userTmp}
 ${pwTmp}
 lcd ${xferFolder}
