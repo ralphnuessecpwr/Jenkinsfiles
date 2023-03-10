@@ -111,7 +111,7 @@ hash
     {
         def fileNameFull    = it.name            
         def fileNameBase    = fileNameFull.substring(0, fileNameFull.indexOf(".${mddlFileExtension}"))
-        ftpTextPut          = ftpTextPut + "put ${fileNameBase}.${fileExtension} ${fileNameBase}\n"
+        ftpTextPut          = ftpTextPut + "put ${fileNameBase}.${mddlFileExtension} ${fileNameBase}\n"
 
         echo "Adding File " + fileNameFull
 
