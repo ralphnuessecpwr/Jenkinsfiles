@@ -73,6 +73,7 @@ def createMddlFile() {
 def uploadMddlFile() {
 
     def ftpTextSetup
+    def ftpTextPut
     def listOfXferFiles = []
 
     withCredentials(
