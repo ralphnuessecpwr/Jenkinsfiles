@@ -57,7 +57,9 @@ mddlTemplate:
     ssid:         DSCC
     database:     HDDRXMDB
     tablespace:   RXNTABT
+    table:        ""
   target:
     ssid:         DSCC
     database:     TOPTOTDB
     tablespace:   TOPTOTTS
+    table:        ""
