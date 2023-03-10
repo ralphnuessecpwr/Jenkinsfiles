@@ -51,11 +51,12 @@ def initialize() {
 
 def createMddlFile() {
     def fileName    = tableName + '.mddl'
+    
     def mddlContent = [:]
     mddlContent.mddl = pipelineConfig.mddlTemplate
 
-    mddlContent.source.table = tableName
-    mddlContent.target.table = tableName
+    mddlContent.mddl.source.table = tableName
+    mddlContent.mddl.target.table = tableName
 
     echo mddlContent.toString()
 }
