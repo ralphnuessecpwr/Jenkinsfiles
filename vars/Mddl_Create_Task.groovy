@@ -53,7 +53,7 @@ def initialize() {
 }
 
 def createMddlFile() {
-    def mddlFileName    = xferFolder + "/" + tableName + mddlFileExtension
+    def mddlFileName    = xferFolder + "/" + tableName + "." + mddlFileExtension
     
     def mddlContent = [:]
     mddlContent.mddl = pipelineConfig.mddlTemplate
