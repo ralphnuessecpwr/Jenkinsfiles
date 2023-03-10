@@ -54,7 +54,7 @@ def createMddlFile() {
     def mddlContent = [:]
     mddlContent.mddl = pipelineConfig.mddlTemplate
 
-    echo .toString()
+    echo mddlContent.toString()
 }
 
 def uploadMddlFile() {
