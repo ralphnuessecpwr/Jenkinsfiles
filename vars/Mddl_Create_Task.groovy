@@ -7,26 +7,28 @@ def configFile      = 'mddlPipeline.yml'
 def ispwLevel       = 'UT'
 def pipelineConfig
 
-node {
+def call() {
+    node {
 
-    stage("Initialize"){
+        stage("Initialize"){
 
-        dir("./"){
-            deleteDir()
+            dir("./"){
+                deleteDir()
+            }
+
+            initialize()
+
         }
 
-        initialize()
+        stage("Create MDDL Template") {
 
-    }
+            createMddlFile()
 
-    stage("Create MDDL Template") {
+            // uploadMddlFile()
 
-        createMddlFile()
-
-        // uploadMddlFile()
-
-        // loadTadk()
-    
+            // loadTadk()
+        
+        }
     }
 }
 
