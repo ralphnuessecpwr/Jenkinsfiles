@@ -54,6 +54,9 @@ def createMddlFile() {
     def mddlContent = [:]
     mddlContent.mddl = pipelineConfig.mddlTemplate
 
+    mddlContent.source.table = tableName
+    mddlContent.target.table = tableName
+
     echo mddlContent.toString()
 }
 
