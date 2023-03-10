@@ -7,6 +7,7 @@ def configFile
 def ispwLevel
 def pipelineConfig
 def mddlFileExtension
+def xferFolder
 
 def call() {
 
@@ -41,7 +42,6 @@ def call() {
 }
 
 def initialize() {
-
     dir("./") 
     {
         deleteDir()
@@ -52,7 +52,7 @@ def initialize() {
 }
 
 def createMddlFile() {
-    def mddlFileName    = tableName + mddlFileExtension
+    def mddlFileName    = xferFolder + "/" + tableName + mddlFileExtension
     
     def mddlContent = [:]
     mddlContent.mddl = pipelineConfig.mddlTemplate
