@@ -1,10 +1,10 @@
 host:
-  connectionId:         '196de681-04d7-4170-824f-09a5457c5cda' 
+  connectionId:         'de2ad7c3-e924-4dc2-84d5-d0c3afd3e756' 
   credentialsId:        'ea48408b-b2be-4810-8f4e-5b5f35977eb1'
-  name:                 'cwcc.compuware.com'
+  name:                 'cwcc.bmc.com'
   zosmfPort:            '443'
 amiDevOps:
-  credentialsId:        'Z2DS0c1t6aThswpuhBtme3A67nX2/AhE 64,#-124,#67,#-alW4UQ=='
+  credentialsId:        '58dZsyU/YmUVLxyB29AkqooNkcG1E8pa 57,#-6,#30,#63,1Sa2QQ=='
   symDir:               'AMI_DevOps_CWCC.properties'
   analysisIn:           'skels/ami/analysisInput.skel'
   compIn:               'skels/ami/compareInput.skel'
@@ -25,7 +25,7 @@ amiDevOps:
       execjclpds:       'HDDRXM0.AMI.ROLLBK.EXECJCL'
       importpds:        'HDDRXM0.AMI.DEVOPS.IMPRPT'
 ces:
-  hostName:             'http://cwcc.compuware.com'
+  hostName:             'http://cwcc.bmc.com'
   port:                 '2020'
   credentialsId:        '71063193-ee67-4b52-890a-58843f33c183'  
 ispw:
