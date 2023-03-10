@@ -84,8 +84,8 @@ def uploadMddlFile() {
         ]
     )
     {
-/*
-            ftpTextSetup = """
+
+    ftpTextSetup = """
 open ${hostName}
 ${userTmp}
 ${pwTmp}
@@ -94,7 +94,7 @@ cd '${targetLib}'
 ascii
 hash
 """
-*/
+ 
     }
 
     echo "Search for:"
@@ -109,18 +109,18 @@ hash
     {
         def fileNameFull    = it.name            
         def fileNameBase    = fileNameFull.substring(0, fileNameFull.indexOf(".${mddlFileExtension}"))
-//            ftpTextPut          = ftpTextPut + "put ${fileNameBase}.${fileExtension} ${fileNameBase}\n"
+        ftpTextPut          = ftpTextPut + "put ${fileNameBase}.${fileExtension} ${fileNameBase}\n"
 
         echo "Adding File " + fileNameFull
 
         listOfXferFiles.add(fileNameFull)
     }
 
-//        ftpText = ftpTextSetup + ftpTextPut + ftpTextClose
+    ftpText = ftpTextSetup + ftpTextPut + ftpTextClose
 
-//        writeFile(file: 'xfer.txt', text: ftpText)
-//        def stdout = bat(returnStdout: true, script: 'ftp -i -s:xfer.txt')
-//        echo stdout
+    writeFile(file: 'xfer.txt', text: ftpText)
+    def stdout = bat(returnStdout: true, script: 'ftp -i -s:xfer.txt')
+    echo stdout
 }
 
     // stage('Create Assignment') {
