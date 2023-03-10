@@ -54,10 +54,10 @@ mddl:
     - DB2PTS
 mddlTemplate:
   source:
-    ssid:		      DSCC
-    database:		  HDDRXMDB
-    tablespace:	  RXNTABT
+    ssid:         DSCC
+    database:     HDDRXMDB
+    tablespace:   RXNTABT
   target:
-    ssid:		      DSCC
-    database:		  TOPTOTDB
-    tablespace:	  TOPTOTTS
+    ssid:         DSCC
+    database:     TOPTOTDB
+    tablespace:   TOPTOTTS
