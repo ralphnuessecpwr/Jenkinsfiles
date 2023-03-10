@@ -99,7 +99,7 @@ hash
     echo "Search for:"
     echo "${xferFolder}/**/*.${mddlFileExtension}"
 
-    def listOfXferFilesPaths = findFiles(glob: "${xferFolder}/**/*.${mddlFileExtension}")
+    def listOfXferFilesPaths = findFiles(glob: "${xferFolder}/**.${mddlFileExtension}")
 
     echo "Found"
     echo listOfXferFilesPaths.toString()
