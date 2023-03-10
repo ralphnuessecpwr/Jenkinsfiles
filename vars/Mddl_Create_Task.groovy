@@ -50,7 +50,7 @@ def initialize() {
 }
 
 def createMddlFile() {
-    def fileName    = tableName + '.mddl'
+    def mddlFileName    = tableName + '.mddl'
     
     def mddlContent = [:]
     mddlContent.mddl = pipelineConfig.mddlTemplate
@@ -58,6 +58,11 @@ def createMddlFile() {
     mddlContent.mddl.source.table = tableName
     mddlContent.mddl.target.table = tableName
 
+    writeYaml(
+        file:   mddlFileName,
+        data:   mddlContent
+    )
+    
     echo mddlContent.toString()
 }
 
