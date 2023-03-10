@@ -16,7 +16,8 @@ def call() {
     configFile          = 'mddlPipeline.yml'
     mddlFileExtension   = 'mddl'
     ispwLevel           = 'UT'
-    
+    xferFolder          = 'xfer'
+
     node {
 
         stage("Initialize"){
