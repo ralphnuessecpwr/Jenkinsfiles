@@ -6,13 +6,15 @@ def assignmentId
 def configFile
 def ispwLevel
 def pipelineConfig
+def mddlFileExtension
 
 def call() {
 
-    tableName       = 'KTDEMO'
-    assignmentId    = ''
-    configFile      = 'mddlPipeline.yml'
-    ispwLevel       = 'UT'
+    tableName           = 'KTDEMO'
+    assignmentId        = ''
+    configFile          = 'mddlPipeline.yml'
+    mddlFileExtension   = 'mddl'
+    ispwLevel           = 'UT'
     
     node {
 
@@ -30,7 +32,7 @@ def call() {
 
             createMddlFile()
 
-            // uploadMddlFile()
+            uploadMddlFile()
 
             // loadTadk()
         
@@ -50,7 +52,7 @@ def initialize() {
 }
 
 def createMddlFile() {
-    def mddlFileName    = tableName + '.mddl'
+    def mddlFileName    = tableName + mddlFileExtension
     
     def mddlContent = [:]
     mddlContent.mddl = pipelineConfig.mddlTemplate
@@ -68,10 +70,12 @@ def createMddlFile() {
 
 def uploadMddlFile() {
 
+    def ftpTextSetup
+
     withCredentials(
         [
             usernamePassword(
-                credentialsId:      hostCredentials, 
+                credentialsId:      pipelineConfig.host.credentialsId, 
                 passwordVariable:   'pwTmp', 
                 usernameVariable:   'userTmp'
             )
@@ -92,9 +96,9 @@ hash
     }
 
     echo "Search for:"
-    echo "${xferFolder}/**/*.${fileExtension}"
+    echo "${xferFolder}/**/*.${mddlFileExtension}"
 
-    def listOfXferFilesPaths = findFiles(glob: "${xferFolder}/**/*.${fileExtension}")
+    def listOfXferFilesPaths = findFiles(glob: "${xferFolder}/**/*.${mddlFileExtension}")
 
     echo "Found"
     echo listOfXferFilesPaths.toString()
@@ -102,7 +106,7 @@ hash
     listOfXferFilesPaths.each
     {
         def fileNameFull    = it.name            
-        def fileNameBase    = fileNameFull.substring(0, fileNameFull.indexOf(".${fileExtension}"))
+        def fileNameBase    = fileNameFull.substring(0, fileNameFull.indexOf(".${mddlFileExtension}"))
 //            ftpTextPut          = ftpTextPut + "put ${fileNameBase}.${fileExtension} ${fileNameBase}\n"
 
         echo "Adding File " + fileNameFull
