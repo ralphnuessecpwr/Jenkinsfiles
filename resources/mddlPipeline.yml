@@ -52,3 +52,12 @@ mddl:
     - DB2PSSID
     - DB2PDB
     - DB2PTS
+mddlTemplate:
+  source:
+    ssid:		      DSCC
+    database:		  HDDRXMDB
+    tablespace:	  RXNTABT
+  target:
+    ssid:		      DSCC
+    database:		  TOPTOTDB
+    tablespace:	  TOPTOTTS
