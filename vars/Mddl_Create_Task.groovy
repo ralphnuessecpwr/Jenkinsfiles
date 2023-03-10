@@ -1,13 +1,19 @@
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput 
 
-def tableName       = 'KTDEMO'
-def assignmentId    = ''
-def configFile      = 'mddlPipeline.yml'
-def ispwLevel       = 'UT'
+def tableName
+def assignmentId
+def configFile
+def ispwLevel
 def pipelineConfig
 
 def call() {
+
+    tableName       = 'KTDEMO'
+    assignmentId    = ''
+    configFile      = 'mddlPipeline.yml'
+    ispwLevel       = 'UT'
+    
     node {
 
         stage("Initialize"){
@@ -30,6 +36,17 @@ def call() {
         
         }
     }
+}
+
+def initialize() {
+
+    dir("./") 
+    {
+        deleteDir()
+    }
+
+    pipelineConfig      = readYaml(text: libraryResource(configFile))
+    cesUrl              = pipelineConfig.ces.hostName + ':' + pipelineConfig.ces.port
 }
 
 def createMddlFile() {
@@ -205,15 +222,3 @@ hash
     //         '''
     //     )
     // }
-
-
-def initialize() {
-
-    dir("./") 
-    {
-        deleteDir()
-    }
-
-    pipelineConfig      = readYaml(text: libraryResource(configFile))
-    cesUrl              = pipelineConfig.ces.hostName + ':' + pipelineConfig.ces.port
-}
