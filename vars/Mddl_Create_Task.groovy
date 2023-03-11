@@ -96,6 +96,7 @@ def uploadMddlFile() {
     {
 
     ftpTextSetup = """
+    
 open ${pipelineConfig.host.name}
 ${userTmp}
 ${pwTmp}
