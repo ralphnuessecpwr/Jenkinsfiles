@@ -24,10 +24,10 @@ def call() {
     xferFolder          = 'xfer'
     targetLib           = 'SALESSUP.ABN1.UT.MDDL'
 
-def ftpTextSetup        = ""
-def ftpTextPut          = ""
-def ftpTextClose        = "quit"
-def ftpText             = ""
+    ftpTextSetup        = ""
+    ftpTextPut          = ""
+    ftpTextClose        = "quit"
+    ftpText             = ""
 
     node {
 
