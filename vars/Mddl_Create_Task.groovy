@@ -8,6 +8,11 @@ def ispwLevel
 def pipelineConfig
 def mddlFileExtension
 def xferFolder
+def ftpTextSetup 
+def ftpTextPut   
+def ftpTextClose 
+def ftpText      
+
 
 def call() {
 
@@ -18,6 +23,11 @@ def call() {
     ispwLevel           = 'UT'
     xferFolder          = 'xfer'
     targetLib           = 'SALESSUP.ABN1.UT.MDDL'
+
+def ftpTextSetup        = ""
+def ftpTextPut          = ""
+def ftpTextClose        = "quit"
+def ftpText             = ""
 
     node {
 
@@ -37,7 +47,7 @@ def call() {
 
             uploadMddlFile()
 
-            // loadTadk()
+            // loadTask()
         
         }
     }
@@ -72,8 +82,6 @@ def createMddlFile() {
 
 def uploadMddlFile() {
 
-    def ftpTextSetup
-    def ftpTextPut
     def listOfXferFiles = []
 
     withCredentials(
