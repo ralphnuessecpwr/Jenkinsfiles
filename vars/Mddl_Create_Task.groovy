@@ -14,9 +14,9 @@ def ftpTextClose
 def ftpText      
 
 
-def call() {
+def call(Map execParms) {
 
-    tableName           = 'KTDEMO'
+    tableName           = execParms.tableName
     assignmentId        = ''
     configFile          = 'mddlPipeline.yml'
     mddlFileExtension   = 'mddl'
