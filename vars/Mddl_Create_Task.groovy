@@ -96,7 +96,7 @@ def uploadMddlFile() {
     {
 
     ftpTextSetup = """
-    
+
 open ${pipelineConfig.host.name}
 ${userTmp}
 ${pwTmp}
@@ -156,35 +156,35 @@ hash
 
     // }
 
-    // stage('Load Tasks') {
+    stage('Load Tasks') {
 
-    //     def listOfTaskInfos = []
+        def listOfTaskInfos = []
 
-    //     listOfXferFiles.each{
+        listOfXferFiles.each{
 
-    //         def taskInfo        = [:]
-    //         def sourceMem       = it.substring(0, it.indexOf(".${fileExtension}"))
-    //         taskInfo.memberName = sourceMem
+            def taskInfo        = [:]
+            def sourceMem       = it.substring(0, it.indexOf(".${mddlFileExtension}"))
+            taskInfo.memberName = sourceMem
 
-    //         def response = ispwOperation(
-    //             connectionId:           hostConnection, 
-    //             consoleLogResponseBody: true, 
-    //             credentialsId:          cesCredentials, 
-    //             ispwAction:             'TaskLoad', 
-    //             ispwRequestBody: '''
-    //                 runtimeConfiguration=''' + runtimeConfig + '''
-    //                 assignmentId=''' + assignmentId + '''
-    //                 stream=''' + stream + '''
-    //                 application=''' + application + '''
-    //                 currentLevel=''' + targetLevel + '''
-    //                 startingLevel=''' + targetPath + '''
-    //                 moduleName=''' + sourceMem + '''
-    //                 moduleType=''' + sourceType + '''
-    //             '''
-    //         )
+            def response = ispwOperation(
+                connectionId:           hostConnection, 
+                consoleLogResponseBody: true, 
+                credentialsId:          cesCredentials, 
+                ispwAction:             'TaskLoad', 
+                ispwRequestBody: '''
+                    runtimeConfiguration=''' + runtimeConfig + '''
+                    assignmentId=''' + assignmentId + '''
+                    stream=''' + stream + '''
+                    application=''' + application + '''
+                    currentLevel=''' + targetLevel + '''
+                    startingLevel=''' + targetPath + '''
+                    moduleName=''' + sourceMem + '''
+                    moduleType=''' + sourceType + '''
+                '''
+            )
 
-    //     }
-    // }    
+        }
+    }    
 
     // stage('Deploy') {
         
