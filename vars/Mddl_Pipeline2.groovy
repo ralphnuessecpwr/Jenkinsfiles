@@ -142,7 +142,7 @@ def getMddlTaskContentList() {
 
         def mddlFileName                = it.moduleName + '.' + it.moduleType
         def mddlPath                    = pipelineConfig.ispw.mddlRootFolder + '/' + ispwApplication + '/' + pipelineConfig.ispw.fileFolder
-        def mddlContent                 = readYaml(file: mddlPath + '/' + mddlFileName)
+        def mddlTaskContent             = readYaml(file: mddlPath + '/' + mddlFileName)
 
         mddlTaskContent['taskId']       = it.taskId
         mddlTaskContent['moduleName']   = it.moduleName
