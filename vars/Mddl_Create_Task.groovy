@@ -161,7 +161,7 @@ OCOPY INDD(IN) OUTDD(OUT) TEXT
 /*
 """,
        maxConditionCode: '4'
-
+    )
 }
 
     // stage('Create Assignment') {
