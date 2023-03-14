@@ -86,7 +86,10 @@ def createMddlFile() {
     if(tmpText.contains('\n')){
         echo "Yeah"
     }
-
+    else{
+        echo "Nay"
+    }
+    
     writeFile(
         file: mddlFileName,
         text: tmpText
