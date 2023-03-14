@@ -111,7 +111,7 @@ def uploadMddlFile() {
     {
         def fileNameFull    = it.name            
         def fileNameBase    = fileNameFull.substring(0, fileNameFull.indexOf(".${mddlFileExtension}"))
-        ftpTextPut          = ftpTextPut + "put ${fileNameBase}.${mddlFileExtension} ${fileNameBase}\r"
+        ftpTextPut          = ftpTextPut + "put ${fileNameBase}.${mddlFileExtension} '${targetLib}(${fileNameBase})'\r"
 
         echo "Adding File " + fileNameFull
 
