@@ -81,7 +81,9 @@ def createMddlFile() {
         file: mddlFileName
     )
 
-    tmpText.replace('\n', '\r')
+//    tmpText.replace('\n', '\r')
+
+    echo tmpText
 
     if(tmpText.contains('\n')){
         echo "Yeah"
@@ -89,7 +91,7 @@ def createMddlFile() {
     else{
         echo "Nay"
     }
-    
+
     writeFile(
         file: mddlFileName,
         text: tmpText
