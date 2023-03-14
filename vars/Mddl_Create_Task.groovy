@@ -60,7 +60,7 @@ def call(Map execParms) {
                 credentialsId:          pipelineConfig.ces.credentialsId, 
                 ispwAction:             'TaskLoad', 
                 ispwRequestBody: '''
-                    runtimeConfiguration=''' + pipelineCOnfig.ispw.runtimeConfig + '''
+                    runtimeConfiguration=''' + pipelineConfig.ispw.runtimeConfig + '''
                     assignmentId=ABN1000002
                     stream=ABN
                     application=ABN1
