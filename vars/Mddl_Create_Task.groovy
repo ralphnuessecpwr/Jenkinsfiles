@@ -52,24 +52,8 @@ def call(Map execParms) {
 
         stage('Load Tasks') {
 
-            def listOfTaskInfos = []
+            loadTask()
 
-            def response = ispwOperation(
-                connectionId:           pipelineConfig.host.connectionId, 
-                consoleLogResponseBody: true, 
-                credentialsId:          pipelineConfig.ces.credentialsId, 
-                ispwAction:             'TaskLoad', 
-                ispwRequestBody: '''
-                    runtimeConfiguration=''' + pipelineConfig.ispw.runtimeConfig + '''
-                    assignmentId=ABN1000002
-                    stream=ABN
-                    application=ABN1
-                    currentLevel=UT
-                    startingLevel=UT
-                    moduleName=KTDEMO
-                    moduleType=MDDL
-                '''
-            )
         }
     }
 }
@@ -173,8 +157,8 @@ hash
 //             MSGLEVEL=(1,1),MSGCLASS=X,CLASS=A,REGION=6M
 /*JOBPARM S=*
 //COPYFILE EXEC PGM=IKJEFT01
-//IN DD PATH=\'${targetLib}/KTDEMO\'
-//OUT DD DISP=SHR,DSN=${targetPds}(KTDEMO)
+//IN DD PATH=\'${targetLib}/${tableName}\'
+//OUT DD DISP=SHR,DSN=${targetPds}(${tableName})
 //SYSTSPRT DD SYSOUT=*
 //SYSTSIN DD *
 OCOPY INDD(IN) OUTDD(OUT) TEXT
@@ -182,6 +166,27 @@ OCOPY INDD(IN) OUTDD(OUT) TEXT
 """,
        maxConditionCode: '4'
     )
+}
+
+def loadTask() {
+
+    def response = ispwOperation(
+        connectionId:           pipelineConfig.host.connectionId, 
+        consoleLogResponseBody: true, 
+        credentialsId:          pipelineConfig.ces.credentialsId, 
+        ispwAction:             'TaskLoad', 
+        ispwRequestBody: '''
+            runtimeConfiguration=''' + pipelineConfig.ispw.runtimeConfig + '''
+            assignmentId=''' + assignmentId + '''
+            stream=ABN
+            application=ABN1
+            currentLevel=UT
+            startingLevel=UT
+            moduleName=''' + tableName + '''
+            moduleType=MDDL
+        '''
+    )
+
 }
 
     // stage('Create Assignment') {
