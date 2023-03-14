@@ -153,8 +153,8 @@ hash
 //             MSGLEVEL=(1,1),MSGCLASS=X,CLASS=A,REGION=6M
 /*JOBPARM S=*
 //COPYFILE EXEC PGM=IKJEFT01
-//IN DD PATH=\'${targetLib}/${fileNameBase}\'
-//OUT DD DISP=SHR,DSN=${targetPds}(${fileNameBase})
+//IN DD PATH=\'${targetLib}/KTDEMO\'
+//OUT DD DISP=SHR,DSN=${targetPds}(${KTDEMO})
 //SYSTSPRT DD SYSOUT=*
 //SYSTSIN DD *
 OCOPY INDD(IN) OUTDD(OUT) TEXT
