@@ -96,15 +96,14 @@ def uploadMddlFile() {
     {
 
     ftpTextSetup = """
-open ${pipelineConfig.host.name}\n
-${userTmp}\n
-${pwTmp}\n
-lcd ${xferFolder}\n
-cd '${targetLib}'\n
-ascii\n
-hash\n
+open ${pipelineConfig.host.name}
+${userTmp}
+${pwTmp}
+lcd ${xferFolder}
+cd '${targetLib}'
+ascii
 """
- 
+//hash
     }
 
     echo "Search for:"
