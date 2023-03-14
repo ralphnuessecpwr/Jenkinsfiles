@@ -22,7 +22,7 @@ def call(Map execParms) {
     mddlFileExtension   = 'mddl'
     ispwLevel           = 'UT'
     xferFolder          = 'xfer'
-    targetLib           = 'SALESSUP.ABN1.UT.MDDL'
+    targetLib           = '/u/hddrxm0/abn' //'SALESSUP.ABN1.UT.MDDL'
 
     ftpTextSetup        = ""
     ftpTextPut          = ""
@@ -111,7 +111,7 @@ def uploadMddlFile() {
     {
         def fileNameFull    = it.name            
         def fileNameBase    = fileNameFull.substring(0, fileNameFull.indexOf(".${mddlFileExtension}"))
-        ftpTextPut          = ftpTextPut + "put ${fileNameBase}.${mddlFileExtension} '${targetLib}(${fileNameBase})'\r"
+        ftpTextPut          = ftpTextPut + "put ${fileNameBase}.${mddlFileExtension} ${fileNameBase}'\r"
 
         echo "Adding File " + fileNameFull
 
@@ -147,34 +147,34 @@ def uploadMddlFile() {
 
     // }
 
-    stage('Load Tasks') {
+    // stage('Load Tasks') {
 
-        def listOfTaskInfos = []
+    //     def listOfTaskInfos = []
 
-        listOfXferFiles.each{
+    //     listOfXferFiles.each{
 
-            def taskInfo        = [:]
-            def sourceMem       = it.substring(0, it.indexOf(".${mddlFileExtension}"))
-            taskInfo.memberName = sourceMem
+    //         def taskInfo        = [:]
+    //         def sourceMem       = it.substring(0, it.indexOf(".${mddlFileExtension}"))
+    //         taskInfo.memberName = sourceMem
 
-            def response = ispwOperation(
-                connectionId:           hostConnection, 
-                consoleLogResponseBody: true, 
-                credentialsId:          cesCredentials, 
-                ispwAction:             'TaskLoad', 
-                ispwRequestBody: '''
-                    runtimeConfiguration=''' + runtimeConfig + '''
-                    assignmentId=''' + assignmentId + '''
-                    stream=''' + stream + '''
-                    application=''' + application + '''
-                    currentLevel=''' + targetLevel + '''
-                    startingLevel=''' + targetPath + '''
-                    moduleName=''' + sourceMem + '''
-                    moduleType=''' + sourceType + '''
-                '''
-            )
+    //         def response = ispwOperation(
+    //             connectionId:           hostConnection, 
+    //             consoleLogResponseBody: true, 
+    //             credentialsId:          cesCredentials, 
+    //             ispwAction:             'TaskLoad', 
+    //             ispwRequestBody: '''
+    //                 runtimeConfiguration=''' + runtimeConfig + '''
+    //                 assignmentId=''' + assignmentId + '''
+    //                 stream=''' + stream + '''
+    //                 application=''' + application + '''
+    //                 currentLevel=''' + targetLevel + '''
+    //                 startingLevel=''' + targetPath + '''
+    //                 moduleName=''' + sourceMem + '''
+    //                 moduleType=''' + sourceType + '''
+    //             '''
+    //         )
 
-        }
+    //     }
     }    
 
     // stage('Deploy') {
