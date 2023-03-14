@@ -42,6 +42,13 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
         workIdName      = mddlTaskContent.moduleName
         jobcard         = jobcard.replace('${Job_ID}', BUILD_NUMBER)
 
+echo mddlTaskContent.mddl.source.ssid
+echo mddlTaskContent.mddl.target.database
+echo mddlTaskContent.mddl.target.ssid
+echo mddlTaskContent.mddl.source.database
+echo mddlTaskContent.mddl.source.tablespace
+echo mddlTaskContent.mddl.target.tablespace
+
         runAuthentication(pipelineConfig)
         
         runComparison(workIdName)
@@ -184,26 +191,19 @@ def runAuthentication(pipelineConfig) {
 
 def runComparison(workIdName) {
 
-echo mddlTaskContentList.mddl.source.ssid
-echo mddlTaskContentList.mddl.target.database
-echo mddlTaskContentList.mddl.target.ssid
-echo mddlTaskContentList.mddl.source.database
-echo mddlTaskContentList.mddl.source.tablespace
-echo mddlTaskContentList.mddl.target.tablespace
-
         bmcAmiDb2SchemaChangeMigration(
             acceptableRC:   '0004', 
             jobWaitTime:    2, 
             moduletype:     'compare3', 
             nocdl:          false, 
             objtyp:         'TS', 
-            ssid:           mddlTaskContentList.mddl.source.ssid,
-            objPart1C2:     mddlTaskContentList.mddl.target.database, 
+            ssid:           mddlTaskContent.mddl.source.ssid,
+            objPart1C2:     mddlTaskContent.mddl.target.database, 
             objPart3C1:     '', 
-            location2:      mddlTaskContentList.mddl.target.ssid,
-            objPart1C1:     mddlTaskContentList.mddl.source.database, 
-            objPart2C1:     mddlTaskContentList.mddl.source.tablespace, 
-            objPart2C2:     mddlTaskContentList.mddl.target.tablespace, 
+            location2:      mddlTaskContent.mddl.target.ssid,
+            objPart1C1:     mddlTaskContent.mddl.source.database, 
+            objPart2C1:     mddlTaskContent.mddl.source.tablespace, 
+            objPart2C2:     mddlTaskContent.mddl.target.tablespace, 
             objPart3C2:     '', 
             postbaseexec:   false, 
             postbasename:   '', 
