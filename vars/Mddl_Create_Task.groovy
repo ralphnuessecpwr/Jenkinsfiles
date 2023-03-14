@@ -95,7 +95,7 @@ def uploadMddlFile() {
     )
     {
 
-    ftpTextSetup = "open ${pipelineConfig.host.name}\r${userTmp}\r${pwTmp}\rlcd ${xferFolder}\rcd '${targetLib}'\rascii\r"
+    ftpTextSetup = "open ${pipelineConfig.host.name}\r${userTmp}\r${pwTmp}\rlcd ${xferFolder}\rcd ${targetLib}\rascii\r"
 //hash
     }
 
@@ -111,7 +111,7 @@ def uploadMddlFile() {
     {
         def fileNameFull    = it.name            
         def fileNameBase    = fileNameFull.substring(0, fileNameFull.indexOf(".${mddlFileExtension}"))
-        ftpTextPut          = ftpTextPut + "put ${fileNameBase}.${mddlFileExtension} ${fileNameBase}'\r"
+        ftpTextPut          = ftpTextPut + "put ${fileNameBase}.${mddlFileExtension} ${fileNameBase}\r"
 
         echo "Adding File " + fileNameFull
 
