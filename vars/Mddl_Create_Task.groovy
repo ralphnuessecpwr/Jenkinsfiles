@@ -96,6 +96,7 @@ def uploadMddlFile() {
     {
 
     ftpTextSetup = """
+
 open ${pipelineConfig.host.name}
 ${userTmp}
 ${pwTmp}
@@ -111,8 +112,8 @@ ascii
 
     def listOfXferFilesPaths = findFiles(glob: "${xferFolder}/**.${mddlFileExtension}")
 
-    echo "Found"
-    echo listOfXferFilesPaths.toString()
+//    echo "Found"
+//    echo listOfXferFilesPaths.toString()
 
     listOfXferFilesPaths.each
     {
