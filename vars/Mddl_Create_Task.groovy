@@ -77,7 +77,16 @@ def createMddlFile() {
         data:   mddlContent
     )
     
-    echo mddlContent.toString()
+    def tmpText = readFile(
+        file: mddlFileName
+    )
+
+    tmpText.replace('\n', '\r')
+
+    writeFile(
+        file: mddlFileName,
+        text: tmpText
+    )
 }
 
 def uploadMddlFile() {
