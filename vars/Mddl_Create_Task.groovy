@@ -22,7 +22,7 @@ def call(Map execParms) {
     mddlFileExtension   = 'mddl'
     ispwLevel           = 'UT'
     xferFolder          = 'xfer'
-    targetLib           = '/u/hddrxm0/abn' //'SALESSUP.ABN1.UT.MDDL'
+    targetLib           = 'SALESSUP.ABN1.UT.MDDL' //'/u/hddrxm0/abn' //'SALESSUP.ABN1.UT.MDDL'
 
     ftpTextSetup        = ""
     ftpTextPut          = ""
@@ -122,7 +122,7 @@ hash
     {
         def fileNameFull    = it.name            
         def fileNameBase    = fileNameFull.substring(0, fileNameFull.indexOf(".${mddlFileExtension}"))
-        ftpTextPut          = ftpTextPut + "put ${fileNameBase}.${mddlFileExtension} ${fileNameBase}.${mddlFileExtension}\r"
+        ftpTextPut          = ftpTextPut + "put ${fileNameBase}.${mddlFileExtension} ${fileNameBase}\r"
 
         echo "Adding File " + fileNameFull
 
