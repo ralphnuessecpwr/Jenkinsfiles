@@ -95,7 +95,7 @@ def uploadMddlFile() {
     )
     {
 
-    ftpTextSetup = "open ${pipelineConfig.host.name}\r${userTmp}\r${pwTmp}\rlcd ${xferFolder}\rcd ${targetLib}\rascii\r"
+    ftpTextSetup = "open ${pipelineConfig.host.name} 21\r${userTmp}\r${pwTmp}\rlcd ${xferFolder}\rcd ${targetLib}\rascii\r"
 //hash
     }
 
