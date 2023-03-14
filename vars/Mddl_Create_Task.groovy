@@ -47,9 +47,29 @@ def call(Map execParms) {
             createMddlFile()
 
             uploadMddlFile()
-
-            // loadTask()
         
+        }
+
+        stage('Load Tasks') {
+
+            def listOfTaskInfos = []
+
+            def response = ispwOperation(
+                connectionId:           pipelineConfig.host.connectionId, 
+                consoleLogResponseBody: true, 
+                credentialsId:          pipelineConfig.ces.credentialsId, 
+                ispwAction:             'TaskLoad', 
+                ispwRequestBody: '''
+                    runtimeConfiguration=''' + pipelineCOnfig.ispw.runtimeConfig + '''
+                    assignmentId=ABN1000002
+                    stream=ABN
+                    application=ABN1
+                    currentLevel=UT
+                    startingLevel=UT
+                    moduleName=KTDEMO
+                    moduleType=MDDL
+                '''
+            )
         }
     }
 }
@@ -186,34 +206,6 @@ OCOPY INDD(IN) OUTDD(OUT) TEXT
 
     // }
 
-    // stage('Load Tasks') {
-
-    //     def listOfTaskInfos = []
-
-    //     listOfXferFiles.each{
-
-    //         def taskInfo        = [:]
-    //         def sourceMem       = it.substring(0, it.indexOf(".${mddlFileExtension}"))
-    //         taskInfo.memberName = sourceMem
-
-    //         def response = ispwOperation(
-    //             connectionId:           hostConnection, 
-    //             consoleLogResponseBody: true, 
-    //             credentialsId:          cesCredentials, 
-    //             ispwAction:             'TaskLoad', 
-    //             ispwRequestBody: '''
-    //                 runtimeConfiguration=''' + runtimeConfig + '''
-    //                 assignmentId=''' + assignmentId + '''
-    //                 stream=''' + stream + '''
-    //                 application=''' + application + '''
-    //                 currentLevel=''' + targetLevel + '''
-    //                 startingLevel=''' + targetPath + '''
-    //                 moduleName=''' + sourceMem + '''
-    //                 moduleType=''' + sourceType + '''
-    //             '''
-    //         )
-
-    //     }
     // }    
 
     // stage('Deploy') {
