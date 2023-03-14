@@ -136,17 +136,23 @@ def downloadMddlMembers() {
 
 def getMddlTaskContentList() {
 
-    def mddlContent
+    def mddlTaskContentList    = []
 
     mddlTaskList.each {
 
-        def mddlFileName    = it.moduleName + '.' + it.moduleType
-        def mddlPath        = pipelineConfig.ispw.mddlRootFolder + '/' + ispwApplication + '/' + pipelineConfig.ispw.fileFolder
-        mddlContent         = readYaml(file: mddlPath + '/' + mddlFileName)
+        def mddlFileName                = it.moduleName + '.' + it.moduleType
+        def mddlPath                    = pipelineConfig.ispw.mddlRootFolder + '/' + ispwApplication + '/' + pipelineConfig.ispw.fileFolder
+        def mddlContent                 = readYaml(file: mddlPath + '/' + mddlFileName)
+
+        mddlTaskContent['taskId']       = it.taskId
+        mddlTaskContent['moduleName']   = it.moduleName
+        mddlTaskContent['userId']       = it.userId
+        
+        mddlTaskContentList.add(mddlTaskContent)
     
     }
 
-    return mddlContent
+    return mddlTaskContentList
 }
 
 def runAuthentication(pipelineConfig) {
@@ -184,13 +190,13 @@ def runComparison(workIdName) {
             moduletype:     'compare3', 
             nocdl:          false, 
             objtyp:         'TS', 
-            ssid:           mddlContent.mddl.source.ssid,
-            objPart1C2:     mddlContent.mddl.target.database, 
+            ssid:           mddlTaskContentList.mddl.source.ssid,
+            objPart1C2:     mddlTaskContentList.mddl.target.database, 
             objPart3C1:     '', 
-            location2:      mddlContent.mddl.target.ssid,
-            objPart1C1:     mddlContent.mddl.source.database, 
-            objPart2C1:     mddlContent.mddl.source.tablespace, 
-            objPart2C2:     mddlContent.mddl.target.tablespace, 
+            location2:      mddlTaskContentList.mddl.target.ssid,
+            objPart1C1:     mddlTaskContentList.mddl.source.database, 
+            objPart2C1:     mddlTaskContentList.mddl.source.tablespace, 
+            objPart2C2:     mddlTaskContentList.mddl.target.tablespace, 
             objPart3C2:     '', 
             postbaseexec:   false, 
             postbasename:   '', 
