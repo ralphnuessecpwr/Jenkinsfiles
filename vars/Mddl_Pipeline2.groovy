@@ -184,6 +184,13 @@ def runAuthentication(pipelineConfig) {
 
 def runComparison(workIdName) {
 
+echo mddlTaskContentList.mddl.source.ssid
+echo mddlTaskContentList.mddl.target.database
+echo mddlTaskContentList.mddl.target.ssid
+echo mddlTaskContentList.mddl.source.database
+echo mddlTaskContentList.mddl.source.tablespace
+echo mddlTaskContentList.mddl.target.tablespace
+
         bmcAmiDb2SchemaChangeMigration(
             acceptableRC:   '0004', 
             jobWaitTime:    2, 
