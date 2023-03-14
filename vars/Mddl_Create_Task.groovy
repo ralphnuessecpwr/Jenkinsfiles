@@ -121,7 +121,7 @@ def uploadMddlFile() {
     ftpText = ftpTextSetup + ftpTextPut + ftpTextClose
 
     writeFile(file: 'xfer.txt', text: ftpText)
-    def stdout = bat(returnStdout: true, script: 'ftp -ki -s:xfer.txt')
+    def stdout = bat(returnStdout: true, script: 'ftp -i -s:xfer.txt')
     echo stdout
 }
 
