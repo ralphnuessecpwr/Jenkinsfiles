@@ -26,7 +26,7 @@ def call(Map execParms) {
 
     ftpTextSetup        = ""
     ftpTextPut          = ""
-    ftpTextClose        = "quit"
+    ftpTextClose        = "quit\n\r"
     ftpText             = ""
 
     node {
@@ -95,15 +95,14 @@ def uploadMddlFile() {
     )
     {
 
-    ftpTextSetup = """
-
-open ${pipelineConfig.host.name}
-${userTmp}
-${pwTmp}
-lcd ${xferFolder}
-cd '${targetLib}'
-ascii
-"""
+    ftpTextSetup = "
+open ${pipelineConfig.host.name}\n\r
+${userTmp}\n\r
+${pwTmp}\n\r
+lcd ${xferFolder}\n\r
+cd '${targetLib}'\n\r
+ascii\n\r
+"
 //hash
     }
 
@@ -119,7 +118,7 @@ ascii
     {
         def fileNameFull    = it.name            
         def fileNameBase    = fileNameFull.substring(0, fileNameFull.indexOf(".${mddlFileExtension}"))
-        ftpTextPut          = ftpTextPut + "put ${fileNameBase}.${mddlFileExtension} ${fileNameBase}\n"
+        ftpTextPut          = ftpTextPut + "put ${fileNameBase}.${mddlFileExtension} ${fileNameBase}\n\r"
 
         echo "Adding File " + fileNameFull
 
