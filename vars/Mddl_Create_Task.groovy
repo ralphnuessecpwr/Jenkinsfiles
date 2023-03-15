@@ -150,23 +150,23 @@ hash
     def stdout = bat(returnStdout: true, script: 'ftp -i -s:xfer.txt')
     echo stdout
 
-//     topazSubmitFreeFormJcl(
-//         connectionId:   pipelineConfig.host.connectionId, 
-//         credentialsId:  pipelineConfig.host.credentialsId, 
-//         jcl: """
-// //HDDRXM0X JOB ('EUDD,INTL'),'NUESSE',NOTIFY=&SYSUID,
-// //             MSGLEVEL=(1,1),MSGCLASS=X,CLASS=A,REGION=6M
-// /*JOBPARM S=*
-// //COPYFILE EXEC PGM=IKJEFT01
-// //IN DD PATH=\'${targetLib}/${tableName}\'
-// //OUT DD DISP=SHR,DSN=${targetPds}(${tableName})
-// //SYSTSPRT DD SYSOUT=*
-// //SYSTSIN DD *
-// OCOPY INDD(IN) OUTDD(OUT) TEXT
-// /*
-// """,
-//        maxConditionCode: '4'
-//     )
+    topazSubmitFreeFormJcl(
+        connectionId:   pipelineConfig.host.connectionId, 
+        credentialsId:  pipelineConfig.host.credentialsId, 
+        jcl: """
+//HDDRXM0X JOB ('EUDD,INTL'),'NUESSE',NOTIFY=&SYSUID,
+//             MSGLEVEL=(1,1),MSGCLASS=X,CLASS=A,REGION=6M
+/*JOBPARM S=*
+//COPYFILE EXEC PGM=IKJEFT01
+//IN DD PATH=\'${targetLib}/${tableName}\'
+//OUT DD DISP=SHR,DSN=${targetPds}(${tableName})
+//SYSTSPRT DD SYSOUT=*
+//SYSTSIN DD *
+OCOPY INDD(IN) OUTDD(OUT) TEXT
+/*
+""",
+       maxConditionCode: '4'
+    )
 }
 
 def loadTask() {
