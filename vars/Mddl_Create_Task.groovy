@@ -17,7 +17,7 @@ def ftpText
 def call(Map execParms) {
 
     tableName           = execParms.tableName
-    assignmentId        = ''
+    assignmentId        = execParms.assignmentId
     configFile          = 'mddlPipeline.yml'
     mddlFileExtension   = 'mddl'
     ispwLevel           = 'UT'
