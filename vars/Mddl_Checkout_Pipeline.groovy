@@ -18,8 +18,6 @@ def jobcard
 def workIdOwner
 def workIdName
 
-execParms, pipelineConfig, mddlTaskList, ispwSourceLevel, ispwTargetLevel, cesUrl
-
 def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
 
     initialize(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl)

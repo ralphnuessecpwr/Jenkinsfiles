@@ -67,8 +67,11 @@ def initialize(execParms) {
         error "At the current stage we do not support processing of more than one MDDL member per build."
 
     }
+    else if(mddlTaskList.size() == 0) {
+        error "No MDDL Task was found."
+    }
 
-    ispwTargetLevel     =   ispwLevel
+    ispwTargetLevel     = ispwLevel
     ispwSourceLevel     = determineCheckoutFromLevel(mddlTaskList)
 
 }
@@ -240,6 +243,11 @@ def determineCheckoutFromLevel(mddlTaskList) {
             fromLevel = it.level
             echo "Found From Level: " + fromLevel
         }
+    }
+
+    if(fromLevel == null){
+
+        error "Could not determine from level. Abort build."
     }
 
     return fromLevel
