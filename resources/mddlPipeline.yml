@@ -1,6 +1,6 @@
 host:
-  connectionId:         'de2ad7c3-e924-4dc2-84d5-d0c3afd3e756' 
-  credentialsId:        'ea48408b-b2be-4810-8f4e-5b5f35977eb1'
+  connectionId:         '72b71d9e-3509-4455-862e-b5bd48deb87d'    #'de2ad7c3-e924-4dc2-84d5-d0c3afd3e756' 
+  credentialsId:        'HDDRXM0'                                 #'ea48408b-b2be-4810-8f4e-5b5f35977eb1'  
   name:                 'cwcc.bmc.com'
   zosmfPort:            '443'
 amiDevOps:
@@ -27,7 +27,7 @@ amiDevOps:
 ces:
   hostName:             'http://cwcc.bmc.com'
   port:                 '2020'
-  credentialsId:        '71063193-ee67-4b52-890a-58843f33c183'  
+  credentialsId:        'HDDRXM0_CES_CWCC'   #'71063193-ee67-4b52-890a-58843f33c183'  
 ispw:
   serverName:           'ispw'
   runtimeConfig:        'iccga'
