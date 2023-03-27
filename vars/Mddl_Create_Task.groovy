@@ -116,7 +116,7 @@ ${userTmp}
 ${pwTmp}
 quote site sbsendeol=crlf
 lcd ${xferFolder}
-cd '${targetPds}'
+cd '${targetLib}'
 ascii
 hash
 """
