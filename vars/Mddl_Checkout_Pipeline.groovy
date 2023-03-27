@@ -90,7 +90,6 @@ def initialize(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
     execParms           = eParms
     pipelineConfig      = pConfig
     mddlTaskList        = mTaskList
-    ispwCurrentLevel    = sourceLevel
     cesUrl              = cesUrl
 
     createAmiDevOpsProperties()
