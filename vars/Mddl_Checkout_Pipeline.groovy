@@ -80,7 +80,7 @@ echo mddlTaskContent.mddl.target.tablespace
     // }
 }
 
-def initialize(eParms, pConfig, mTaskList, sourceLevel, targetLevel cesUrl) {
+def initialize(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
 
     dir("./") 
     {
