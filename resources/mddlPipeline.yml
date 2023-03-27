@@ -25,7 +25,7 @@ amiDevOps:
       execjclpds:       'HDDRXM0.AMI.ROLLBK.EXECJCL'
       importpds:        'HDDRXM0.AMI.DEVOPS.IMPRPT'
 ces:
-  hostName:             'http://cwcc.bmc.com'
+  hostName:             'http://192.168.96.130'
   port:                 '2020'
   credentialsId:        'HDDRXM0_CES_CWCC'   #'71063193-ee67-4b52-890a-58843f33c183'  
 ispw:
