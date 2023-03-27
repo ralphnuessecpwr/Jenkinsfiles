@@ -9,15 +9,15 @@ def symdir
 def mddlTaskList
 def cobTaskList
 
-def execParms = [:]
-execParms.ispwStream        = ispwStream
-execParms.ispwApplication   = ispwApplication
-execParms.ispwSetId         = ispwSetId
-execParms.ispwAssignmentId  = ispwAssignmentId
-execParms.ispwLevel         = ispwLevel
-execParms.ispwEvent         = ispwEvent
+// def execParms = [:]
+// execParms.ispwStream        = ispwStream
+// execParms.ispwApplication   = ispwApplication
+// execParms.ispwSetId         = ispwSetId
+// execParms.ispwAssignmentId  = ispwAssignmentId
+// execParms.ispwLevel         = ispwLevel
+// execParms.ispwEvent         = ispwEvent
 
-call(execParms)
+// call(execParms)
 
 def call(Map execParms)
 {
@@ -47,9 +47,9 @@ def initialize(execParms) {
 
     cleanWs()
 
-    //pipelineConfig      = readYaml(text: libraryResource(configFile))
-
-    pipelineConfig      = buildIspwConfig()
+    pipelineConfig      = readYaml(text: libraryResource(configFile))
+    // pipelineConfig      = buildIspwConfig()
+    
     ispwStream          = execParms.ispwStream
     ispwApplication     = execParms.ispwApplication
     ispwSetId           = execParms.ispwSetId
