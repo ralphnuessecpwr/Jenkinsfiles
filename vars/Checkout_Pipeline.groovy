@@ -31,7 +31,7 @@ def call(Map execParms)
 
         }
 
-        echo "Would call Mddl_Checkout_Pipeline with parameters\n\n" +
+        echo "Calling Mddl_Checkout_Pipeline with parameters\n\n" +
             "execParms: " + execParms.toString() + "\n\n" +
             "pipelineConfig: " + pipelineConfig.toString() + "\n\n" +
             "mddlTaskList: " + mddlTaskList.toString() + "\n\n" +
@@ -39,7 +39,7 @@ def call(Map execParms)
             "ispwTargetLevel: " + ispwTargetLevel + "\n\n" + 
             "cesUrl: " + cesUrl
             
-        //Mddl_Checkout_Pipeline(execParms, pipelineConfig, mddlTaskList, ispwSourceLevel, ispwTargetLevel, cesUrl)
+        Mddl_Checkout_Pipeline(execParms, pipelineConfig, mddlTaskList, ispwSourceLevel, ispwTargetLevel, cesUrl)
     }
 }
 
@@ -49,10 +49,12 @@ def initialize(execParms) {
 
     pipelineConfig      = readYaml(text: libraryResource(configFile))
     // pipelineConfig      = buildIspwConfig()
-    
+
     ispwStream          = execParms.ispwStream
     ispwApplication     = execParms.ispwApplication
+    ispwAssignmentId    = execParms.ispwAssignmentId
     ispwSetId           = execParms.ispwSetId
+    ispwOwner           = execParms.ispwOwner
     ispwLevel           = execParms.ispwLevel
     cesUrl              = pipelineConfig.ces.hostName + ':' + pipelineConfig.ces.port
 
@@ -66,8 +68,9 @@ def initialize(execParms) {
 
     }
 
-    ispwTargetLevel     = ispwLevel
+    ispwTargetLevel     =   ispwLevel
     ispwSourceLevel     = determineCheckoutFromLevel(mddlTaskList)
+
 }
 
 def buildIspwConfig() {
@@ -240,47 +243,4 @@ def determineCheckoutFromLevel(mddlTaskList) {
     }
 
     return fromLevel
-}
-
-def downloadMddlMembers() {
-    
-    checkout(
-        changelog: false, 
-        poll: false, 
-        scm: [
-            $class:             'IspwContainerConfiguration', 
-            componentType:      pipelineConfig.ispw.mddlType, 
-            connectionId:       pipelineConfig.host.connectionId, 
-            serverConfig:       pipelineConfig.ispw.runtimeConfig, 
-            credentialsId:      pipelineConfig.host.credentialsId, 
-            containerName:      ispwSetId, 
-            containerType:      pipelineConfig.ispw.containerTypeSet, 
-            serverLevel:        ispwLevel,
-            targetFolder:       pipelineConfig.ispw.mddlRootFolder,
-            ispwDownloadAll:    false, 
-            ispwDownloadIncl:   false, 
-        ]
-    )
-
-}
-
-def getMddlTaskContentList() {
-
-    def mddlTaskContentList    = []
-
-    mddlTaskList.each {
-
-        def mddlFileName                = it.moduleName + '.' + it.moduleType
-        def mddlPath                    = pipelineConfig.ispw.mddlRootFolder + '/' + ispwApplication + '/' + pipelineConfig.ispw.fileFolder
-        def mddlTaskContent             = readYaml(file: mddlPath + '/' + mddlFileName)
-
-        mddlTaskContent['taskId']       = it.taskId
-        mddlTaskContent['moduleName']   = it.moduleName
-        mddlTaskContent['userId']       = it.userId
-        
-        mddlTaskContentList.add(mddlTaskContent)
-    
-    }
-
-    return mddlTaskContentList
 }

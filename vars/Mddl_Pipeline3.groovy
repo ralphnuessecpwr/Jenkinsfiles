@@ -5,7 +5,6 @@
 def execParms
 def pipelineConfig
 def mddlTaskList
-def ispwCurrentLevel
 def cesUrl
 def symdir
 def mddlTaskContentList
@@ -19,9 +18,11 @@ def jobcard
 def workIdOwner
 def workIdName
 
-def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
+execParms, pipelineConfig, mddlTaskList, ispwSourceLevel, ispwTargetLevel, cesUrl
 
-    initialize(eParms, pConfig, mTaskList, iCurrentLevel, cUrl)
+def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
+
+    initialize(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl)
 
     stage("Retrieve MDDL members") {
 
@@ -33,6 +34,9 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
 
         mddlTaskContentList = getMddlTaskContentList()
 
+        echo "Task Content List"
+        echo mddlTaskContentList.toString()
+
     }
 
     stage('Compare Developer Schema definition against Production') {
@@ -42,37 +46,43 @@ def call(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
         workIdName      = mddlTaskContent.moduleName
         jobcard         = jobcard.replace('${Job_ID}', BUILD_NUMBER)
 
-echo mddlTaskContent.mddl.target.database
 echo mddlTaskContent.mddl.source.database
+echo mddlTaskContent.mddl.target.database
+echo mddlTaskContent.mddl.source.tablespace
+echo mddlTaskContent.mddl.target.tablespace
+echo mddlTaskContent.mddl.source.table
+echo mddlTaskContent.mddl.target.table
+
 echo mddlTaskContent.mddl.source.tablespace
 echo mddlTaskContent.mddl.target.tablespace
 
-        runAuthentication(pipelineConfig)
+
+    //     runAuthentication(pipelineConfig)
         
-        runComparison(workIdName)
+    //     runComparison(workIdName)
 
     }
 
-    stage("Process Results"){
+    // stage("Process Results"){
 
-        bat ('mkdir ' + pipelineConfig.amiDevOps.outputFolder)
+    //     bat ('mkdir ' + pipelineConfig.amiDevOps.outputFolder)
 
-        bmcAmiDb2OutputTransmission(
-            debug:              false, 
-            destFileName:       workIdName, 
-            dfolder:            './' + pipelineConfig.amiDevOps.outputFolder, 
-            disablebuildstep:   false, 
-            localFileName:      workIdName, 
-            sfolderImprpt:      pipelineConfig.amiDevOps.datasetNames.work.importpds,
-            sfoldercdl:         pipelineConfig.amiDevOps.datasetNames.work.cdlpds, 
-            sfolderexec:        pipelineConfig.amiDevOps.datasetNames.work.execjclpds, 
-            sfolderwlist:       pipelineConfig.amiDevOps.datasetNames.work.wlistpds
-        )
+    //     bmcAmiDb2OutputTransmission(
+    //         debug:              false, 
+    //         destFileName:       workIdName, 
+    //         dfolder:            './' + pipelineConfig.amiDevOps.outputFolder, 
+    //         disablebuildstep:   false, 
+    //         localFileName:      workIdName, 
+    //         sfolderImprpt:      pipelineConfig.amiDevOps.datasetNames.work.importpds,
+    //         sfoldercdl:         pipelineConfig.amiDevOps.datasetNames.work.cdlpds, 
+    //         sfolderexec:        pipelineConfig.amiDevOps.datasetNames.work.execjclpds, 
+    //         sfolderwlist:       pipelineConfig.amiDevOps.datasetNames.work.wlistpds
+    //     )
 
-    }
+    // }
 }
 
-def initialize(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
+def initialize(eParms, pConfig, mTaskList, sourceLevel, cesUrl) {
 
     dir("./") 
     {
@@ -82,8 +92,8 @@ def initialize(eParms, pConfig, mTaskList, iCurrentLevel, cUrl) {
     execParms           = eParms
     pipelineConfig      = pConfig
     mddlTaskList        = mTaskList
-    ispwCurrentLevel    = iCurrentLevel
-    cesUrl              = cUrl
+    ispwCurrentLevel    = sourceLevel
+    cesUrl              = cesUrl
 
     createAmiDevOpsProperties()
 
@@ -115,6 +125,27 @@ def createAmiDevOpsProperties() {
     )    
 
     return
+}
+
+def getMddlTaskContentList() {
+
+    def mddlTaskContentList    = []
+
+    mddlTaskList.each {
+
+        def mddlFileName                = it.moduleName + '.' + it.moduleType
+        def mddlPath                    = pipelineConfig.ispw.mddlRootFolder + '/' + ispwApplication + '/' + pipelineConfig.ispw.fileFolder
+        def mddlTaskContent             = readYaml(file: mddlPath + '/' + mddlFileName)
+
+        mddlTaskContent['taskId']       = it.taskId
+        mddlTaskContent['moduleName']   = it.moduleName
+        mddlTaskContent['userId']       = it.userId
+        
+        mddlTaskContentList.add(mddlTaskContent)
+    
+    }
+
+    return mddlTaskContentList
 }
 
 def runAuthentication(pipelineConfig) {
