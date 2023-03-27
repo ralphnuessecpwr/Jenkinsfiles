@@ -138,7 +138,7 @@ def downloadMddlMembers() {
             credentialsId:      pipelineConfig.host.credentialsId, 
             containerName:      ispwSetId, 
             containerType:      pipelineConfig.ispw.containerTypeSet, 
-            serverLevel:        ispwCurrentLevel,
+            serverLevel:        targetLevel,
             targetFolder:       pipelineConfig.ispw.mddlRootFolder,
             ispwDownloadAll:    false, 
             ispwDownloadIncl:   false, 
