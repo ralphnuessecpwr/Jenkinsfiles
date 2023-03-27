@@ -5,6 +5,8 @@
 def execParms
 def pipelineConfig
 def mddlTaskList
+def ispwSourceLevel
+def ispwTargetLevel
 def cesUrl
 def symdir
 def mddlTaskContentList
@@ -90,6 +92,8 @@ def initialize(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
     execParms           = eParms
     pipelineConfig      = pConfig
     mddlTaskList        = mTaskList
+    ispwSourceLevel     = sourceLevel
+    ispwTargetLevel     = targetLevel
     cesUrl              = cesUrl
 
     createAmiDevOpsProperties()
@@ -137,7 +141,7 @@ def downloadMddlMembers() {
             credentialsId:      pipelineConfig.host.credentialsId, 
             containerName:      ispwSetId, 
             containerType:      pipelineConfig.ispw.containerTypeSet, 
-            serverLevel:        targetLevel,
+            serverLevel:        ispwTargetLevel,
             targetFolder:       pipelineConfig.ispw.mddlRootFolder,
             ispwDownloadAll:    false, 
             ispwDownloadIncl:   false, 
