@@ -125,6 +125,28 @@ def createAmiDevOpsProperties() {
     return
 }
 
+def downloadMddlMembers() {
+    
+    checkout(
+        changelog: false, 
+        poll: false, 
+        scm: [
+            $class:             'IspwContainerConfiguration', 
+            componentType:      pipelineConfig.ispw.mddlType, 
+            connectionId:       pipelineConfig.host.connectionId, 
+            serverConfig:       pipelineConfig.ispw.runtimeConfig, 
+            credentialsId:      pipelineConfig.host.credentialsId, 
+            containerName:      ispwSetId, 
+            containerType:      pipelineConfig.ispw.containerTypeSet, 
+            serverLevel:        ispwCurrentLevel,
+            targetFolder:       pipelineConfig.ispw.mddlRootFolder,
+            ispwDownloadAll:    false, 
+            ispwDownloadIncl:   false, 
+        ]
+    )
+
+}
+
 def getMddlTaskContentList() {
 
     def mddlTaskContentList    = []
