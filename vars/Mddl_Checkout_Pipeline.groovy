@@ -63,29 +63,29 @@ echo "Source Tablespace: " + sourceTablespace
 echo "Target Databse: " + targetDatabase
 echo "Target Tablespace: " + targetTablespace
 
-    //     runAuthentication(pipelineConfig)
+        runAuthentication(pipelineConfig)
         
-    //     runComparison(workIdName)
+        runComparison(workIdName)
 
     }
 
-    // stage("Process Results"){
+    stage("Process Results"){
 
-    //     bat ('mkdir ' + pipelineConfig.amiDevOps.outputFolder)
+        bat ('mkdir ' + pipelineConfig.amiDevOps.outputFolder)
 
-    //     bmcAmiDb2OutputTransmission(
-    //         debug:              false, 
-    //         destFileName:       workIdName, 
-    //         dfolder:            './' + pipelineConfig.amiDevOps.outputFolder, 
-    //         disablebuildstep:   false, 
-    //         localFileName:      workIdName, 
-    //         sfolderImprpt:      pipelineConfig.amiDevOps.datasetNames.work.importpds,
-    //         sfoldercdl:         pipelineConfig.amiDevOps.datasetNames.work.cdlpds, 
-    //         sfolderexec:        pipelineConfig.amiDevOps.datasetNames.work.execjclpds, 
-    //         sfolderwlist:       pipelineConfig.amiDevOps.datasetNames.work.wlistpds
-    //     )
+        bmcAmiDb2OutputTransmission(
+            debug:              false, 
+            destFileName:       workIdName, 
+            dfolder:            './' + pipelineConfig.amiDevOps.outputFolder, 
+            disablebuildstep:   false, 
+            localFileName:      workIdName, 
+            sfolderImprpt:      pipelineConfig.amiDevOps.datasetNames.work.importpds,
+            sfoldercdl:         pipelineConfig.amiDevOps.datasetNames.work.cdlpds, 
+            sfolderexec:        pipelineConfig.amiDevOps.datasetNames.work.execjclpds, 
+            sfolderwlist:       pipelineConfig.amiDevOps.datasetNames.work.wlistpds
+        )
 
-    // }
+    }
 }
 
 def initialize(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
