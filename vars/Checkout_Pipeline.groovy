@@ -71,10 +71,10 @@ def initialize(execParms) {
         error "No MDDL Task was found."
     }
 
-    ispwTargetLevel     = "USER" //ispwLevel
+    ispwTargetLevel     = ispwLevel
     ispwSourceLevel     = determineCheckoutFromLevel(mddlTaskList)
 
-    currentBuild.displayName = "Checkout table for user ${ispwOwner} from ${ispwSourceLevel}"
+    currentBuild.displayName = "Table Checkout for user ${ispwOwner} from ${ispwSourceLevel}"
 
 }
 
@@ -153,10 +153,11 @@ def getTaskList(ispwSetId) {
     def response    = ispwOperation(
                             connectionId:           pipelineConfig.host.connectionId, 
                             credentialsId:          pipelineConfig.ces.credentialsId,
-                            serverConfig:           pipelineConfig.ispw.runtimeConfig, 
+                            // serverConfig:           pipelineConfig.ispw.runtimeConfig, 
                             consoleLogResponseBody: true, 
                             ispwAction:             'GetSetTaskList', 
-                            ispwRequestBody:        'setId=' + ispwSetId
+                            ispwRequestBody:        '''setId=''' + ispwSetId + '''
+                                runtimeConfiguration=''' + pipelineConfig.ispw.runtimeConfig
                         )
 
     def taskList        = readJSON(text: response.content).tasks
