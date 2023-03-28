@@ -52,7 +52,7 @@ def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, ces
             pipelineConfig.ispw.lifeCycle[db2SourceLevel].ssid  = pipelineConfig.ispw.lifeCycle[db2TargetLevel].ssid
 
             mddlTaskContent.mddl[db2SourceLevel]            = [:]
-            mddlTaskContent.mddl[db2SourceLevel].database   = eParms.ispwOwner + pConfig.db2.userDbSuffix
+            mddlTaskContent.mddl[db2SourceLevel].database   = eParms.ispwOwner.substring(0,6) + pConfig.db2.userDbSuffix
             mddlTaskContent.mddl[db2SourceLevel].tablespace = mddlTaskContent.mddl[targetLevel].tablespace 
         }
         
