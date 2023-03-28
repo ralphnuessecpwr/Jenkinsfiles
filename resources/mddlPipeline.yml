@@ -38,10 +38,20 @@ ispw:
   cobRootFolder:        'Cobol'
   fileFolder:           'MF_Source'
   lifeCycle:
-    UT:                 'CONS'
-    CONS:               'ST'
-    ST:                 'AT'
-    AT:                 'PRD'
+    UT:
+      nextLevel:        'CONS'
+      ssid:             'DSCC'
+    CONS:
+      nextLevel:        'ST'
+      ssid:             'DSCC'
+    ST:                 
+      nextLevel:        'AT'
+      ssid:             'DSCC'
+    AT:                 
+      nextLevel:        'PRD'
+      ssid:             'DSCC'
+    PRD:
+      ssid:             'DSCC'
 mddl:
   commentMarker:        '#'
   valueMarker:          '='
