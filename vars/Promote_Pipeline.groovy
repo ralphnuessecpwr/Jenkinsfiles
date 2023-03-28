@@ -15,8 +15,6 @@ def call(Map execParms)
 
     node {
 
-    node {
-
         stage("Initialize"){
 
             initialize(execParms)
