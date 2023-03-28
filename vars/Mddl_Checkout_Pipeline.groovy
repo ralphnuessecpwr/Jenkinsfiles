@@ -51,9 +51,7 @@ def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
         workIdName      = mddlTaskContent.moduleName
         jobcard         = jobcard.replace('${Job_ID}', BUILD_NUMBER)
 
-        if(targetLevel == "USER") {
-            mddlTaskContent.mddl[targetLevel].database  = "HDDRXMDB"
-        }
+        mddlTaskContent.mddl[targetLevel].database  = "HDDRXMDB"
 
         // runAuthentication(pipelineConfig)
         runAuthentication()
