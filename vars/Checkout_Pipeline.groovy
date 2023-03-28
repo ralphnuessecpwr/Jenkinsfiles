@@ -7,7 +7,7 @@ String cesUrl
 def pipelineConfig
 def symdir
 def mddlTaskList
-def cobTaskList
+// def cobTaskList
 
 def call(Map execParms)
 {

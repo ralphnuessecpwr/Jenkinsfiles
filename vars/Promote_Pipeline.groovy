@@ -30,7 +30,7 @@ def call(Map execParms)
             "db2TargetLevel: " + db2TargetLevel + "\n\n" + 
             "cesUrl: " + cesUrl
 
-        // Mddl_Promote_Pipeline(execParms, pipelineConfig, mddlTaskList, ispwCurrentLevel, db2SourceLevel, db2TargetLevel)
+        Mddl_Promote_Pipeline(execParms, pipelineConfig, mddlTaskList, ispwCurrentLevel, db2SourceLevel, db2TargetLevel)
     }
 }
 
