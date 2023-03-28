@@ -74,7 +74,7 @@ def createMddlFile() {
     def mddlContent = [:]
     mddlContent.mddl = pipelineConfig.mddlTemplate
 
-    mddlContent.mddl.each{
+    mddlContent.mddl.mddlTemplate.each{
         it.table = tableName
     }
 
