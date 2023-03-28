@@ -195,7 +195,7 @@ def runComparison() {
             "   SSID: " + pipelineConfig.ispw.lifeCycle[ispwSourceLevel].ssid + "\n" +
             "   Database: " + mddlTaskContent.mddl[ispwSourceLevel].database + "\n" +
             "   Tablespace: " + mddlTaskContent.mddl[ispwSourceLevel].tablespace + "\n"
-        echo "Tartegt\n" +
+        echo "Tartet\n" +
             "   SSID: " + pipelineConfig.ispw.lifeCycle[ispwTargetLevel].ssid + "\n" +
             "   Database: " + mddlTaskContent.mddl[ispwTargetLevel].database + "\n" +
             "   Tablespace: " + mddlTaskContent.mddl[ispwTargetLevel].tablespace + "\n"

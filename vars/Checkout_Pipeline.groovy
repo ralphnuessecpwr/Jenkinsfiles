@@ -9,16 +9,6 @@ def symdir
 def mddlTaskList
 def cobTaskList
 
-// def execParms = [:]
-// execParms.ispwStream        = ispwStream
-// execParms.ispwApplication   = ispwApplication
-// execParms.ispwSetId         = ispwSetId
-// execParms.ispwAssignmentId  = ispwAssignmentId
-// execParms.ispwLevel         = ispwLevel
-// execParms.ispwEvent         = ispwEvent
-
-// call(execParms)
-
 def call(Map execParms)
 {
     configFile  = 'mddlPipeline.yml'
@@ -48,7 +38,6 @@ def initialize(execParms) {
     cleanWs()
 
     pipelineConfig      = readYaml(text: libraryResource(configFile))
-    // pipelineConfig      = buildIspwConfig()
 
     ispwStream          = execParms.ispwStream
     ispwApplication     = execParms.ispwApplication
@@ -78,75 +67,75 @@ def initialize(execParms) {
 
 }
 
-def buildIspwConfig() {
-    def config  = [:]
-    config.host = [:]
-    config.host.connectionId    = '72b71d9e-3509-4455-862e-b5bd48deb87d'
-    config.host.credentialsId   = 'HDDRXM0'
-    config.host.name            = '192.168.96.130'
-    config.host.zosmfPort       = '443'
+// def buildIspwConfig() {
+//     def config  = [:]
+//     config.host = [:]
+//     config.host.connectionId    = '72b71d9e-3509-4455-862e-b5bd48deb87d'
+//     config.host.credentialsId   = 'HDDRXM0'
+//     config.host.name            = '192.168.96.130'
+//     config.host.zosmfPort       = '443'
 
-    config.amiDevOps = [:]
-    config.amiDevOps.credentialsId  = '58dZsyU/YmUVLxyB29AkqooNkcG1E8pa 57,#-6,#30,#63,1Sa2QQ=='
-    config.amiDevOps.symDir         = 'AMI_DevOps_CWCC.properties'
-    config.amiDevOps.analysisIn     = 'skels/ami/analysisInput.skel'
-    config.amiDevOps.compIn         = 'skels/ami/compareInput.skel'
-    config.amiDevOps.importIn       = 'skels/ami/importInput.skel'
-    config.amiDevOps.jclGenIn       = 'skels/ami/jclGenInput.skel'
-    config.amiDevOps.jcl            = 'skels/ami/compareJcl.skel'
-    config.amiDevOps.jobcard        = 'skels/ami/jobcard.skel'
-    config.amiDevOps.outputFolder   = 'AMI_Output'
-    config.amiDevOps.datasetNames = [:]
-    config.amiDevOps.datasetNames.work = [:]
-    config.amiDevOps.datasetNames.work.wlistpds     = 'HDDRXM0.AMI.DEVOPS.WORKLIST'
-    config.amiDevOps.datasetNames.work.cdlpds       = 'HDDRXM0.AMI.DEVOPS.CDL'
-    config.amiDevOps.datasetNames.work.execjclpds   = 'HDDRXM0.AMI.DEVOPS.EXECJCL'
-    config.amiDevOps.datasetNames.work.importpds    = 'HDDRXM0.AMI.DEVOPS.IMPRPT'
-    config.amiDevOps.datasetNames.rollback = [:] 
-    config.amiDevOps.datasetNames.rollback.wlistpds = 'HDDRXM0.AMI.ROLLBK.WORKLIST'
-    config.amiDevOps.datasetNames.rollback.cdlpds   = 'HDDRXM0.AMI.ROLLBK.CDL'
-    config.amiDevOps.datasetNames.rollback.execjclpds   = 'HDDRXM0.AMI.ROLLBK.EXECJCL'
-    config.amiDevOps.datasetNames.rollback.importpds    = 'HDDRXM0.AMI.DEVOPS.IMPRPT'
-    config.ces = [:]
-    config.ces.hostName = 'http://192.168.96.130'
-    config.ces.port = '2020'
-    config.ces.credentialsId = 'HDDRXM0_CES_CWCC'
-    config.ispw = [:]
-    config.ispw.serverName          = 'ispw'
-    config.ispw.runtimeConfig       = 'iccga'
-    config.ispw.containerTypeSet    = '2'
-    config.ispw.mddlType            = 'MDDL'
-    config.ispw.mddlRootFolder      = 'Mddl'
-    config.ispw.cobType             = 'COB'
-    config.ispw.cobRootFolder       = 'Cobol'
-    config.ispw.fileFolder          = 'MF_Source'
-    config.ispw.lifeCycle = [:]
-    config.ispw.lifeCycle.UT    = 'CONS'
-    config.ispw.lifeCycle.CONS  = 'ST'
-    config.ispw.lifeCycle.ST    = 'AT'
-    config.ispw.lifeCycle.AT    = 'PRD'
-    config.mddl = [:]
-    config.mddl.commentMarker = '#'
-    config.mddl.valueMarker = '='
-    config.mddl.keywords = []
-    config.mddl.keywords.add('DB2SSID')
-    config.mddl.keywords.add('DB2DB')
-    config.mddl.keywords.add('DB2TS')
-    config.mddl.keywords.add('DB2PSSID')
-    config.mddl.keywords.add('DB2PDB')
-    config.mddl.keywords.add('DB2PTS')
-    config.mddlTemplate = [:]
-    config.mddlTemplate.source = [:]
-    config.mddlTemplate.source.database = 'HDDRXMDB'
-    config.mddlTemplate.source.tablespace = 'RXNTABT'
-    config.mddlTemplate.source.table = ""
-    config.mddlTemplate.target = [:]
-    config.mddlTemplate.target.database = 'TOPTOTDB'
-    config.mddlTemplate.target.tablespace = 'TOPTOTTS'
-    config.mddlTemplate.target.table = ""
+//     config.amiDevOps = [:]
+//     config.amiDevOps.credentialsId  = '58dZsyU/YmUVLxyB29AkqooNkcG1E8pa 57,#-6,#30,#63,1Sa2QQ=='
+//     config.amiDevOps.symDir         = 'AMI_DevOps_CWCC.properties'
+//     config.amiDevOps.analysisIn     = 'skels/ami/analysisInput.skel'
+//     config.amiDevOps.compIn         = 'skels/ami/compareInput.skel'
+//     config.amiDevOps.importIn       = 'skels/ami/importInput.skel'
+//     config.amiDevOps.jclGenIn       = 'skels/ami/jclGenInput.skel'
+//     config.amiDevOps.jcl            = 'skels/ami/compareJcl.skel'
+//     config.amiDevOps.jobcard        = 'skels/ami/jobcard.skel'
+//     config.amiDevOps.outputFolder   = 'AMI_Output'
+//     config.amiDevOps.datasetNames = [:]
+//     config.amiDevOps.datasetNames.work = [:]
+//     config.amiDevOps.datasetNames.work.wlistpds     = 'HDDRXM0.AMI.DEVOPS.WORKLIST'
+//     config.amiDevOps.datasetNames.work.cdlpds       = 'HDDRXM0.AMI.DEVOPS.CDL'
+//     config.amiDevOps.datasetNames.work.execjclpds   = 'HDDRXM0.AMI.DEVOPS.EXECJCL'
+//     config.amiDevOps.datasetNames.work.importpds    = 'HDDRXM0.AMI.DEVOPS.IMPRPT'
+//     config.amiDevOps.datasetNames.rollback = [:] 
+//     config.amiDevOps.datasetNames.rollback.wlistpds = 'HDDRXM0.AMI.ROLLBK.WORKLIST'
+//     config.amiDevOps.datasetNames.rollback.cdlpds   = 'HDDRXM0.AMI.ROLLBK.CDL'
+//     config.amiDevOps.datasetNames.rollback.execjclpds   = 'HDDRXM0.AMI.ROLLBK.EXECJCL'
+//     config.amiDevOps.datasetNames.rollback.importpds    = 'HDDRXM0.AMI.DEVOPS.IMPRPT'
+//     config.ces = [:]
+//     config.ces.hostName = 'http://192.168.96.130'
+//     config.ces.port = '2020'
+//     config.ces.credentialsId = 'HDDRXM0_CES_CWCC'
+//     config.ispw = [:]
+//     config.ispw.serverName          = 'ispw'
+//     config.ispw.runtimeConfig       = 'iccga'
+//     config.ispw.containerTypeSet    = '2'
+//     config.ispw.mddlType            = 'MDDL'
+//     config.ispw.mddlRootFolder      = 'Mddl'
+//     config.ispw.cobType             = 'COB'
+//     config.ispw.cobRootFolder       = 'Cobol'
+//     config.ispw.fileFolder          = 'MF_Source'
+//     config.ispw.lifeCycle = [:]
+//     config.ispw.lifeCycle.UT    = 'CONS'
+//     config.ispw.lifeCycle.CONS  = 'ST'
+//     config.ispw.lifeCycle.ST    = 'AT'
+//     config.ispw.lifeCycle.AT    = 'PRD'
+//     config.mddl = [:]
+//     config.mddl.commentMarker = '#'
+//     config.mddl.valueMarker = '='
+//     config.mddl.keywords = []
+//     config.mddl.keywords.add('DB2SSID')
+//     config.mddl.keywords.add('DB2DB')
+//     config.mddl.keywords.add('DB2TS')
+//     config.mddl.keywords.add('DB2PSSID')
+//     config.mddl.keywords.add('DB2PDB')
+//     config.mddl.keywords.add('DB2PTS')
+//     config.mddlTemplate = [:]
+//     config.mddlTemplate.source = [:]
+//     config.mddlTemplate.source.database = 'HDDRXMDB'
+//     config.mddlTemplate.source.tablespace = 'RXNTABT'
+//     config.mddlTemplate.source.table = ""
+//     config.mddlTemplate.target = [:]
+//     config.mddlTemplate.target.database = 'TOPTOTDB'
+//     config.mddlTemplate.target.tablespace = 'TOPTOTTS'
+//     config.mddlTemplate.target.table = ""
 
-    return config
-}
+//     return config
+// }
 
 def getTaskList(ispwSetId) {
 
