@@ -30,7 +30,7 @@ def call(Map execParms)
             "db2TargetLevel: " + db2TargetLevel + "\n\n" + 
             "cesUrl: " + cesUrl
 
-        Mddl_Promote_Pipeline(execParms, pipelineConfig, mddlTaskList, ispwCurrentLevel, db2SourceLevel, db2TargetLevel)
+        Mddl_Promote_Pipeline(execParms, pipelineConfig, mddlTaskList, ispwCurrentLevel, db2SourceLevel, db2TargetLevel, cesUrl)
     }
 }
 
@@ -64,6 +64,8 @@ def initialize(execParms) {
     ispwCurrentLevel    = pipelineConfig.ispw.lifeCycle[ispwLevel].nextLevel
     db2SourceLevel      = pipelineConfig.ispw.lifeCycle[ispwLevel].db2SourceLevel
     db2TargetLevel      = pipelineConfig.ispw.lifeCycle[ispwLevel].db2TargetLevel    
+
+    currentBuild.displayName = "Table promote from ${db2SourceLevel} to ${db2TargetLevel}"
 }
 
 def getTaskList(ispwSetId) {
