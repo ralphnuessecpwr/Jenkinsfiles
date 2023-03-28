@@ -20,6 +20,11 @@ def jobcard
 def workIdOwner
 def workIdName
 
+def sourceDatabase
+def sourceTablespace
+def targetDatabase
+def targetTablespace
+
 def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
 
     initialize(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl)
@@ -46,16 +51,17 @@ def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
         workIdName      = mddlTaskContent.moduleName
         jobcard         = jobcard.replace('${Job_ID}', BUILD_NUMBER)
 
-echo mddlTaskContent.mddl.source.database
-echo mddlTaskContent.mddl.target.database
-echo mddlTaskContent.mddl.source.tablespace
-echo mddlTaskContent.mddl.target.tablespace
-echo mddlTaskContent.mddl.source.table
-echo mddlTaskContent.mddl.target.table
+        sourceDatabase      = mddlTaskContent.mddl[sourceLevel].database
+        sourceTablespace    = mddlTaskContent.mddl[sourceLevel].tablespace
 
-echo mddlTaskContent.mddl.source.tablespace
-echo mddlTaskContent.mddl.target.tablespace
+echo "Source Databse: " + sourceDatabase
+echo "Source Tablespace: " + sourceTablespace
 
+        targetDatabase      = "HDDRXMDB"
+        targetTablespace    = mddlTaskContent.mddl[targetLevel].tablespace
+
+echo "Target Databse: " + targetDatabase
+echo "Target Tablespace: " + targetTablespace
 
     //     runAuthentication(pipelineConfig)
         
