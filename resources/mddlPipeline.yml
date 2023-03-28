@@ -52,24 +52,20 @@ ispw:
       ssid:             'DSCC'
     PRD:
       ssid:             'DSCC'
-mddl:
-  commentMarker:        '#'
-  valueMarker:          '='
-  keywords:
-    - DB2SSID
-    - DB2DB
-    - DB2TS
-    - DB2PSSID
-    - DB2PDB
-    - DB2PTS
 mddlTemplate:
-  source:
-    ssid:         DSCC
-    database:     HDDRXMDB
-    tablespace:   RXNTABT
-    table:        ""
-  target:
-    ssid:         DSCC
-    database:     TOPTOTDB
-    tablespace:   TOPTOTTS
-    table:        ""
+  ST:
+    database:           FDDB
+    tablespace:         SQA10001
+    table:              ""
+  QA1:
+    database:           FDDB
+    tablespace:         SQA10001
+    table:              ""
+  UT:
+    database:           EUSLSDB
+    tablespace:         SQA10001
+    table:              ""
+  DEV1:
+    database:           EUSLSDB
+    tablespace:         SQA10001
+    table:              ""

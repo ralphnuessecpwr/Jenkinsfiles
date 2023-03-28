@@ -74,8 +74,9 @@ def createMddlFile() {
     def mddlContent = [:]
     mddlContent.mddl = pipelineConfig.mddlTemplate
 
-    mddlContent.mddl.source.table = tableName
-    mddlContent.mddl.target.table = tableName
+    mddlContent.mddl.each{
+        it.table = tableName
+    }
 
     writeYaml(
         file:   mddlFileName,
