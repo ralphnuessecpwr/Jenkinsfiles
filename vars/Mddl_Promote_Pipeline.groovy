@@ -47,6 +47,12 @@ def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, ces
         workIdName      = mddlTaskContent.moduleName
         jobcard         = jobcard.replace('${Job_ID}', BUILD_NUMBER)
 
+        if (db2SourceLevel == 'USER') {
+            mddlTaskContent.mddl[db2SourceLevel] = [:]
+            mddlTaskContent.mddl[db2SourceLevel] = eParms.ispwOwner + pConfig.db2.userDbSuffix
+            mddlTaskContent.mddl[targetLevel].tablespace 
+        }
+        
         // mddlTaskContent.mddl[targetLevel].database  = eParms.ispwOwner + pConfig.db2.userDbSuffix
 
         // runAuthentication(pipelineConfig)
