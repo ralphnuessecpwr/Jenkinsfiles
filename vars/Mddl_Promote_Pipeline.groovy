@@ -64,7 +64,7 @@ def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, ces
     }
 }
 
-def initialize(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
+def initialize(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, cesUrl) {
 
     dir("./") 
     {
