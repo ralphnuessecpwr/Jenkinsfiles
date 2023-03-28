@@ -55,43 +55,34 @@ def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
         sourceTablespace    = mddlTaskContent.mddl[sourceLevel].tablespace
 
         if(targetLevel == "USER") {
-            targetDatabase      = "HDDRXMDB"
+            mddlTaskContent.mddl[targetLevel].database  = "HDDRXMDB"
         }
-        else {
-            targetDatabase  = mddlTaskContent.mddl[targetLevel].database
-        }
-        targetTablespace    = mddlTaskContent.mddl[targetLevel].tablespace
 
-echo "Will run comparison for"
-
-echo "Source Database       : " + sourceDatabase
-echo "Source Tablespace     : " + sourceTablespace
-echo "Target Database       : " + targetDatabase
-echo "Target Tablespace     : " + targetTablespace
-
-    //     runAuthentication(pipelineConfig)
+        runAuthentication(pipelineConfig)
         
-    //     runComparison(workIdName)
+        runComparison(workIdName)
 
-    // }
+    }
 
-    // stage("Process Results"){
+    stage("Process Results"){
 
-    //     bat ('mkdir ' + pipelineConfig.amiDevOps.outputFolder)
+        echo "Processing Comparison Results"
 
-    //     bmcAmiDb2OutputTransmission(
-    //         debug:              false, 
-    //         destFileName:       workIdName, 
-    //         dfolder:            './' + pipelineConfig.amiDevOps.outputFolder, 
-    //         disablebuildstep:   false, 
-    //         localFileName:      workIdName, 
-    //         sfolderImprpt:      pipelineConfig.amiDevOps.datasetNames.work.importpds,
-    //         sfoldercdl:         pipelineConfig.amiDevOps.datasetNames.work.cdlpds, 
-    //         sfolderexec:        pipelineConfig.amiDevOps.datasetNames.work.execjclpds, 
-    //         sfolderwlist:       pipelineConfig.amiDevOps.datasetNames.work.wlistpds
-    //     )
+        // bat ('mkdir ' + pipelineConfig.amiDevOps.outputFolder)
 
-    // }
+        // bmcAmiDb2OutputTransmission(
+        //     debug:              false, 
+        //     destFileName:       workIdName, 
+        //     dfolder:            './' + pipelineConfig.amiDevOps.outputFolder, 
+        //     disablebuildstep:   false, 
+        //     localFileName:      workIdName, 
+        //     sfolderImprpt:      pipelineConfig.amiDevOps.datasetNames.work.importpds,
+        //     sfoldercdl:         pipelineConfig.amiDevOps.datasetNames.work.cdlpds, 
+        //     sfolderexec:        pipelineConfig.amiDevOps.datasetNames.work.execjclpds, 
+        //     sfolderwlist:       pipelineConfig.amiDevOps.datasetNames.work.wlistpds
+        // )
+
+    }
 }
 
 def initialize(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
@@ -194,17 +185,20 @@ def runAuthentication(pipelineConfig) {
             )
         ]
     ) {
-        bmcAmiAuthentication(
-            comtype:    'ZOSMF', 
-            dserver:    pipelineConfig.host.name, 
-            dport:      pipelineConfig.host.zosmfPort,                     
-            duser:      hostUser, 
-            pwdruntime: false,                    
-            dpassrun:   '', 
-            dpassword:  pipelineConfig.amiDevOps.credentialsId, //'Z2DS0c1t6aThswpuhBtme3A67nX2/AhE 64,#-124,#67,#-alW4UQ==',
-            debug:      false, 
-            symdir:     pipelineConfig.amiDevOps.symDir
-        )
+
+        echo "Authorizing user " + hostUser
+
+        // bmcAmiAuthentication(
+        //     comtype:    'ZOSMF', 
+        //     dserver:    pipelineConfig.host.name, 
+        //     dport:      pipelineConfig.host.zosmfPort,                     
+        //     duser:      hostUser, 
+        //     pwdruntime: false,                    
+        //     dpassrun:   '', 
+        //     dpassword:  pipelineConfig.amiDevOps.credentialsId, //'Z2DS0c1t6aThswpuhBtme3A67nX2/AhE 64,#-124,#67,#-alW4UQ==',
+        //     debug:      false, 
+        //     symdir:     pipelineConfig.amiDevOps.symDir
+        // )
     }
 
     return
@@ -212,58 +206,70 @@ def runAuthentication(pipelineConfig) {
 
 def runComparison(workIdName) {
 
-        bmcAmiDb2SchemaChangeMigration(
-            acceptableRC:   '0004', 
-            jobWaitTime:    2, 
-            moduletype:     'compare3', 
-            nocdl:          false, 
-            objtyp:         'TS', 
-            ssid:           mddlTaskContent.mddl.source.ssid,
-            objPart1C2:     mddlTaskContent.mddl.target.database, 
-            objPart3C1:     '', 
-            location2:      mddlTaskContent.mddl.target.ssid,
-            objPart1C1:     mddlTaskContent.mddl.source.database, 
-            objPart2C1:     mddlTaskContent.mddl.source.tablespace, 
-            objPart2C2:     mddlTaskContent.mddl.target.tablespace, 
-            objPart3C2:     '', 
-            postbaseexec:   false, 
-            postbasename:   '', 
-            postbaseprof:   '', 
-            preBaseType:    'none', 
-            prebasename:    '', 
-            prebaseprof:    '', 
-            useCrule:       false, 
-            useCruleAfter:  false, 
-            useCruleBefore: false, 
-            wkidowner:      workIdOwner, 
-            wkidname:       workIdName,             
-            wlistpds:       "#wlpds#(${workIdName})",
-            cdlRollCheck:   false, 
-            cdlRollPds:     '', 
-            cdlpds:         "#cdlpds#(${workIdName})",
-            cmpbl1:         '', 
-            cmpbl2:         '', 
-            cmpbp1:         '', 
-            cmpbp2:         '', 
-            cmpddl1:        '', 
-            cmpddl2:        '', 
-            crule:          '', 
-            crule1:         '', 
-            crule2:         '', 
-            cruleAfter:     '', 
-            cruleBefore:    '', 
-            debug:          false, 
-            disablebuildstep: false, 
-            execjclpds:     "#execpds#(${workIdName})",
-            genjcl:         false, 
-            imprptpds:      "#irpds#(${workIdName})",                 
-            analysisin:     analysisIn, 
-            compin:         compIn, 
-            impin:          importIn, 
-            jclgenin:       jclGenIn, 
-            jcomp:          compareJcl, 
-            jobCardIn:      jobcard
-        )
+        echo "Running Comparison, using"
+        echo "Work ID :" + workIdName
+        echo "Source\n" +
+            "   SSID: " + mddlTaskContent.mddl.source.ssid + "\n" +
+            "   Database: " + mddlTaskContent.mddl.source.database + "\n" +
+            "   Tablespace: " + mddlTaskContent.mddl.source.tablespace + "\n"
+        echo "Tartegt\n" +
+            "   SSID: " + mddlTaskContent.mddl.target.ssid + "\n" +
+            "   Database: " + mddlTaskContent.mddl.target.database + "\n" +
+            "   Tablespace: " + mddlTaskContent.mddl.target.tablespace + "\n"
+
+
+        // bmcAmiDb2SchemaChangeMigration(
+        //     acceptableRC:   '0004', 
+        //     jobWaitTime:    2, 
+        //     moduletype:     'compare3', 
+        //     nocdl:          false, 
+        //     objtyp:         'TS', 
+        //     ssid:           mddlTaskContent.mddl.source.ssid,
+        //     objPart1C2:     mddlTaskContent.mddl.target.database, 
+        //     objPart3C1:     '', 
+        //     location2:      mddlTaskContent.mddl.target.ssid,
+        //     objPart1C1:     mddlTaskContent.mddl.source.database, 
+        //     objPart2C1:     mddlTaskContent.mddl.source.tablespace, 
+        //     objPart2C2:     mddlTaskContent.mddl.target.tablespace, 
+        //     objPart3C2:     '', 
+        //     postbaseexec:   false, 
+        //     postbasename:   '', 
+        //     postbaseprof:   '', 
+        //     preBaseType:    'none', 
+        //     prebasename:    '', 
+        //     prebaseprof:    '', 
+        //     useCrule:       false, 
+        //     useCruleAfter:  false, 
+        //     useCruleBefore: false, 
+        //     wkidowner:      workIdOwner, 
+        //     wkidname:       workIdName,             
+        //     wlistpds:       "#wlpds#(${workIdName})",
+        //     cdlRollCheck:   false, 
+        //     cdlRollPds:     '', 
+        //     cdlpds:         "#cdlpds#(${workIdName})",
+        //     cmpbl1:         '', 
+        //     cmpbl2:         '', 
+        //     cmpbp1:         '', 
+        //     cmpbp2:         '', 
+        //     cmpddl1:        '', 
+        //     cmpddl2:        '', 
+        //     crule:          '', 
+        //     crule1:         '', 
+        //     crule2:         '', 
+        //     cruleAfter:     '', 
+        //     cruleBefore:    '', 
+        //     debug:          false, 
+        //     disablebuildstep: false, 
+        //     execjclpds:     "#execpds#(${workIdName})",
+        //     genjcl:         false, 
+        //     imprptpds:      "#irpds#(${workIdName})",                 
+        //     analysisin:     analysisIn, 
+        //     compin:         compIn, 
+        //     impin:          importIn, 
+        //     jclgenin:       jclGenIn, 
+        //     jcomp:          compareJcl, 
+        //     jobCardIn:      jobcard
+        // )
     
     return
 }
