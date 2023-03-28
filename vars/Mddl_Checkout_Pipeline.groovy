@@ -215,7 +215,7 @@ def runComparison(workIdName) {
         echo "Tartegt\n" +
             "   SSID: " + mddlTaskContent.mddl[targetLevel].ssid + "\n" +
             "   Database: " + mddlTaskContent.mddl[targetLevel].database + "\n" +
-            "   Tablespace: " + mddlTaskContent.mddl.[targetLevel].tablespace + "\n"
+            "   Tablespace: " + mddlTaskContent.mddl[targetLevel].tablespace + "\n"
 
 
         // bmcAmiDb2SchemaChangeMigration(
