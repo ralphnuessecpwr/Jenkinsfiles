@@ -48,9 +48,12 @@ def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, ces
         jobcard         = jobcard.replace('${Job_ID}', BUILD_NUMBER)
 
         if (db2SourceLevel == 'USER') {
-            mddlTaskContent.mddl[db2SourceLevel] = [:]
-            mddlTaskContent.mddl[db2SourceLevel] = eParms.ispwOwner + pConfig.db2.userDbSuffix
-            mddlTaskContent.mddl[targetLevel].tablespace 
+            pipelineConfig.ispw.lifeCycle[db2SourceLevel]       = [:]
+            pipelineConfig.ispw.lifeCycle[db2SourceLevel].ssid  = pipelineConfig.ispw.lifeCycle[db2TargetLevel].ssid
+
+            mddlTaskContent.mddl[db2SourceLevel]            = [:]
+            mddlTaskContent.mddl[db2SourceLevel].database   = eParms.ispwOwner + pConfig.db2.userDbSuffix
+            mddlTaskContent.mddl[db2SourceLevel].tablespace = mddlTaskContent.mddl[targetLevel].tablespace 
         }
         
         echo "mddlTaskContent"
