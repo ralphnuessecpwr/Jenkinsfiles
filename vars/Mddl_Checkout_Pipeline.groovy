@@ -207,11 +207,11 @@ def runComparison() {
         echo "Running Comparison, using"
         echo "Work ID :" + workIdName
         echo "Source\n" +
-            "   SSID: " + mddlTaskContent.mddl[ispwSourceLevel].ssid + "\n" +
+            "   SSID: " + pipelineConfig.ispw.lifeCycle[ispwSourceLevel].ssid + "\n" +
             "   Database: " + mddlTaskContent.mddl[ispwSourceLevel].database + "\n" +
             "   Tablespace: " + mddlTaskContent.mddl[ispwSourceLevel].tablespace + "\n"
         echo "Tartegt\n" +
-            "   SSID: " + mddlTaskContent.mddl[ispwTargetLevel].ssid + "\n" +
+            "   SSID: " + pipelineConfig.ispw.lifeCycle[ispwTargetLevel].ssid + "\n" +
             "   Database: " + mddlTaskContent.mddl[ispwTargetLevel].database + "\n" +
             "   Tablespace: " + mddlTaskContent.mddl[ispwTargetLevel].tablespace + "\n"
 
