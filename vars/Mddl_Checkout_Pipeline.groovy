@@ -66,20 +66,7 @@ def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
 
         echo "Processing Comparison Results"
 
-        // bat ('mkdir ' + pipelineConfig.amiDevOps.outputFolder)
-
-        // bmcAmiDb2OutputTransmission(
-        //     debug:              false, 
-        //     destFileName:       workIdName, 
-        //     dfolder:            './' + pipelineConfig.amiDevOps.outputFolder, 
-        //     disablebuildstep:   false, 
-        //     localFileName:      workIdName, 
-        //     sfolderImprpt:      pipelineConfig.amiDevOps.datasetNames.work.importpds,
-        //     sfoldercdl:         pipelineConfig.amiDevOps.datasetNames.work.cdlpds, 
-        //     sfolderexec:        pipelineConfig.amiDevOps.datasetNames.work.execjclpds, 
-        //     sfolderwlist:       pipelineConfig.amiDevOps.datasetNames.work.wlistpds
-        // )
-
+        downloadCompareResults()
     }
 }
 
@@ -215,59 +202,75 @@ def runComparison() {
             "   Database: " + mddlTaskContent.mddl[ispwTargetLevel].database + "\n" +
             "   Tablespace: " + mddlTaskContent.mddl[ispwTargetLevel].tablespace + "\n"
 
-
-        // bmcAmiDb2SchemaChangeMigration(
-        //     acceptableRC:   '0004', 
-        //     jobWaitTime:    2, 
-        //     moduletype:     'compare3', 
-        //     nocdl:          false, 
-        //     objtyp:         'TS', 
-        //     ssid:           mddlTaskContent.mddl.source.ssid,
-        //     objPart1C2:     mddlTaskContent.mddl.target.database, 
-        //     objPart3C1:     '', 
-        //     location2:      mddlTaskContent.mddl.target.ssid,
-        //     objPart1C1:     mddlTaskContent.mddl.source.database, 
-        //     objPart2C1:     mddlTaskContent.mddl.source.tablespace, 
-        //     objPart2C2:     mddlTaskContent.mddl.target.tablespace, 
-        //     objPart3C2:     '', 
-        //     postbaseexec:   false, 
-        //     postbasename:   '', 
-        //     postbaseprof:   '', 
-        //     preBaseType:    'none', 
-        //     prebasename:    '', 
-        //     prebaseprof:    '', 
-        //     useCrule:       false, 
-        //     useCruleAfter:  false, 
-        //     useCruleBefore: false, 
-        //     wkidowner:      workIdOwner, 
-        //     wkidname:       workIdName,             
-        //     wlistpds:       "#wlpds#(${workIdName})",
-        //     cdlRollCheck:   false, 
-        //     cdlRollPds:     '', 
-        //     cdlpds:         "#cdlpds#(${workIdName})",
-        //     cmpbl1:         '', 
-        //     cmpbl2:         '', 
-        //     cmpbp1:         '', 
-        //     cmpbp2:         '', 
-        //     cmpddl1:        '', 
-        //     cmpddl2:        '', 
-        //     crule:          '', 
-        //     crule1:         '', 
-        //     crule2:         '', 
-        //     cruleAfter:     '', 
-        //     cruleBefore:    '', 
-        //     debug:          false, 
-        //     disablebuildstep: false, 
-        //     execjclpds:     "#execpds#(${workIdName})",
-        //     genjcl:         false, 
-        //     imprptpds:      "#irpds#(${workIdName})",                 
-        //     analysisin:     analysisIn, 
-        //     compin:         compIn, 
-        //     impin:          importIn, 
-        //     jclgenin:       jclGenIn, 
-        //     jcomp:          compareJcl, 
-        //     jobCardIn:      jobcard
-        // )
+        bmcAmiDb2SchemaChangeMigration(
+            acceptableRC:   '0004', 
+            jobWaitTime:    2, 
+            moduletype:     'compare3', 
+            nocdl:          false, 
+            objtyp:         'TS', 
+            ssid:           mddlTaskContent.mddl.source.ssid,
+            objPart1C2:     mddlTaskContent.mddl.target.database, 
+            objPart3C1:     '', 
+            location2:      mddlTaskContent.mddl.target.ssid,
+            objPart1C1:     mddlTaskContent.mddl.source.database, 
+            objPart2C1:     mddlTaskContent.mddl.source.tablespace, 
+            objPart2C2:     mddlTaskContent.mddl.target.tablespace, 
+            objPart3C2:     '', 
+            postbaseexec:   false, 
+            postbasename:   '', 
+            postbaseprof:   '', 
+            preBaseType:    'none', 
+            prebasename:    '', 
+            prebaseprof:    '', 
+            useCrule:       false, 
+            useCruleAfter:  false, 
+            useCruleBefore: false, 
+            wkidowner:      workIdOwner, 
+            wkidname:       workIdName,             
+            wlistpds:       "#wlpds#(${workIdName})",
+            cdlRollCheck:   false, 
+            cdlRollPds:     '', 
+            cdlpds:         "#cdlpds#(${workIdName})",
+            cmpbl1:         '', 
+            cmpbl2:         '', 
+            cmpbp1:         '', 
+            cmpbp2:         '', 
+            cmpddl1:        '', 
+            cmpddl2:        '', 
+            crule:          '', 
+            crule1:         '', 
+            crule2:         '', 
+            cruleAfter:     '', 
+            cruleBefore:    '', 
+            debug:          false, 
+            disablebuildstep: false, 
+            execjclpds:     "#execpds#(${workIdName})",
+            genjcl:         false, 
+            imprptpds:      "#irpds#(${workIdName})",                 
+            analysisin:     analysisIn, 
+            compin:         compIn, 
+            impin:          importIn, 
+            jclgenin:       jclGenIn, 
+            jcomp:          compareJcl, 
+            jobCardIn:      jobcard
+        )
     
     return
+}
+
+def downloadCompareResults() {
+
+    bat ('mkdir ' + pipelineConfig.amiDevOps.outputFolder)
+
+    bmcAmiDb2OutputTransmission(
+        debug:              false, 
+        destFileName:       workIdName, 
+        dfolder:            './' + pipelineConfig.amiDevOps.outputFolder, 
+        disablebuildstep:   false, 
+        localFileName:      workIdName, 
+        sfolderImprpt:      pipelineConfig.amiDevOps.datasetNames.work.importpds,
+        sfoldercdl:         pipelineConfig.amiDevOps.datasetNames.work.cdlpds, 
+        sfolderexec:        pipelineConfig.amiDevOps.datasetNames.work.execjclpds, 
+        sfolderwlist:       pipelineConfig.amiDevOps.datasetNames.work.wlistpds
+    )
 }
