@@ -235,7 +235,7 @@ def runComparison() {
             cmpbp2:         '', 
             cmpddl1:        '', 
             cmpddl2:        '', 
-            crule:          '', 
+            crule:          'HDDRXM0.ABNDOWN', 
             crule1:         '', 
             crule2:         '', 
             cruleAfter:     '', 
