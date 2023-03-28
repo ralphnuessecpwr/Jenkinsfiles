@@ -281,5 +281,5 @@ def downloadCompareResults() {
         sfolderwlist:       pipelineConfig.amiDevOps.datasetNames.work.wlistpds
     )
 
-    emailext attachmentsPattern: '/AMI_Output/**.txt', body: '', subject: 'Test', to: 'ralph_nuesse@bmc.com'
+    emailext attachmentsPattern: '**/AMI_Output/*.txt', body: '', subject: 'Test', to: 'ralph_nuesse@bmc.com'
 }
