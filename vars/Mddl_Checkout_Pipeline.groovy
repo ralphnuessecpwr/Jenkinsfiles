@@ -186,17 +186,17 @@ def runAuthentication() {
 
         echo "Authorizing user " + hostUser
 
-        // bmcAmiAuthentication(
-        //     comtype:    'ZOSMF', 
-        //     dserver:    pipelineConfig.host.name, 
-        //     dport:      pipelineConfig.host.zosmfPort,                     
-        //     duser:      hostUser, 
-        //     pwdruntime: false,                    
-        //     dpassrun:   '', 
-        //     dpassword:  pipelineConfig.amiDevOps.credentialsId, //'Z2DS0c1t6aThswpuhBtme3A67nX2/AhE 64,#-124,#67,#-alW4UQ==',
-        //     debug:      false, 
-        //     symdir:     pipelineConfig.amiDevOps.symDir
-        // )
+        bmcAmiAuthentication(
+            comtype:    'ZOSMF', 
+            dserver:    pipelineConfig.host.name, 
+            dport:      pipelineConfig.host.zosmfPort,                     
+            duser:      hostUser, 
+            pwdruntime: false,                    
+            dpassrun:   '', 
+            dpassword:  pipelineConfig.amiDevOps.credentialsId, //'Z2DS0c1t6aThswpuhBtme3A67nX2/AhE 64,#-124,#67,#-alW4UQ==',
+            debug:      false, 
+            symdir:     pipelineConfig.amiDevOps.symDir
+        )
     }
 
     return
@@ -205,7 +205,7 @@ def runAuthentication() {
 def runComparison() {
 
         echo "Running Comparison, using"
-        echo "Work ID :" + workIdName
+        echo "Work ID: " + workIdName
         echo "Source\n" +
             "   SSID: " + pipelineConfig.ispw.lifeCycle[ispwSourceLevel].ssid + "\n" +
             "   Database: " + mddlTaskContent.mddl[ispwSourceLevel].database + "\n" +
