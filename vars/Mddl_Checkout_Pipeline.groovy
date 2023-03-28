@@ -209,13 +209,13 @@ def runComparison(workIdName) {
         echo "Running Comparison, using"
         echo "Work ID :" + workIdName
         echo "Source\n" +
-            "   SSID: " + mddlTaskContent.mddl.source.ssid + "\n" +
-            "   Database: " + mddlTaskContent.mddl.source.database + "\n" +
-            "   Tablespace: " + mddlTaskContent.mddl.source.tablespace + "\n"
+            "   SSID: " + mddlTaskContent.mddl[sourceLevel].ssid + "\n" +
+            "   Database: " + mddlTaskContent.mddl[sourceLevel].database + "\n" +
+            "   Tablespace: " + mddlTaskContent.mddl[sourceLevel].tablespace + "\n"
         echo "Tartegt\n" +
-            "   SSID: " + mddlTaskContent.mddl.target.ssid + "\n" +
-            "   Database: " + mddlTaskContent.mddl.target.database + "\n" +
-            "   Tablespace: " + mddlTaskContent.mddl.target.tablespace + "\n"
+            "   SSID: " + mddlTaskContent.mddl[targetLevel].ssid + "\n" +
+            "   Database: " + mddlTaskContent.mddl[targetLevel].database + "\n" +
+            "   Tablespace: " + mddlTaskContent.mddl.[targetLevel].tablespace + "\n"
 
 
         // bmcAmiDb2SchemaChangeMigration(
