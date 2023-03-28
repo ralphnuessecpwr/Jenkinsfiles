@@ -54,38 +54,44 @@ def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
         sourceDatabase      = mddlTaskContent.mddl[sourceLevel].database
         sourceTablespace    = mddlTaskContent.mddl[sourceLevel].tablespace
 
-echo "Source Databse: " + sourceDatabase
-echo "Source Tablespace: " + sourceTablespace
-
-        targetDatabase      = "HDDRXMDB"
+        if(targetLevel == "USER") {
+            targetDatabase      = "HDDRXMDB"
+        }
+        else {
+            targetDatabase  = mddlTaskContent.mddl[targetLevel].database
+        }
         targetTablespace    = mddlTaskContent.mddl[targetLevel].tablespace
 
-echo "Target Databse: " + targetDatabase
-echo "Target Tablespace: " + targetTablespace
+echo "Will run comparison for"
 
-        runAuthentication(pipelineConfig)
+echo "Source Database       : " + sourceDatabase
+echo "Source Tablespace     : " + sourceTablespace
+echo "Target Database       : " + targetDatabase
+echo "Target Tablespace     : " + targetTablespace
+
+    //     runAuthentication(pipelineConfig)
         
-        runComparison(workIdName)
+    //     runComparison(workIdName)
 
-    }
+    // }
 
-    stage("Process Results"){
+    // stage("Process Results"){
 
-        bat ('mkdir ' + pipelineConfig.amiDevOps.outputFolder)
+    //     bat ('mkdir ' + pipelineConfig.amiDevOps.outputFolder)
 
-        bmcAmiDb2OutputTransmission(
-            debug:              false, 
-            destFileName:       workIdName, 
-            dfolder:            './' + pipelineConfig.amiDevOps.outputFolder, 
-            disablebuildstep:   false, 
-            localFileName:      workIdName, 
-            sfolderImprpt:      pipelineConfig.amiDevOps.datasetNames.work.importpds,
-            sfoldercdl:         pipelineConfig.amiDevOps.datasetNames.work.cdlpds, 
-            sfolderexec:        pipelineConfig.amiDevOps.datasetNames.work.execjclpds, 
-            sfolderwlist:       pipelineConfig.amiDevOps.datasetNames.work.wlistpds
-        )
+    //     bmcAmiDb2OutputTransmission(
+    //         debug:              false, 
+    //         destFileName:       workIdName, 
+    //         dfolder:            './' + pipelineConfig.amiDevOps.outputFolder, 
+    //         disablebuildstep:   false, 
+    //         localFileName:      workIdName, 
+    //         sfolderImprpt:      pipelineConfig.amiDevOps.datasetNames.work.importpds,
+    //         sfoldercdl:         pipelineConfig.amiDevOps.datasetNames.work.cdlpds, 
+    //         sfolderexec:        pipelineConfig.amiDevOps.datasetNames.work.execjclpds, 
+    //         sfolderwlist:       pipelineConfig.amiDevOps.datasetNames.work.wlistpds
+    //     )
 
-    }
+    // }
 }
 
 def initialize(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {

@@ -71,8 +71,10 @@ def initialize(execParms) {
         error "No MDDL Task was found."
     }
 
-    ispwTargetLevel     = ispwLevel
+    ispwTargetLevel     = "USER" //ispwLevel
     ispwSourceLevel     = determineCheckoutFromLevel(mddlTaskList)
+
+    currentBuild.displayName = "Checkout table for user ${ispwOwner} from ${ispwSourceLevel}"
 
 }
 
