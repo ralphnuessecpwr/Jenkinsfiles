@@ -1,13 +1,11 @@
-import groovy.json.JsonSlurper
-
 String configFile
-String ispwSourceLevel
-String ispwTargetLevel
+String ispwCurrentLevel
 String cesUrl
+
 def pipelineConfig
 def symdir
 def mddlTaskList
-// def cobTaskList
+def cobTaskList
 
 def call(Map execParms)
 {
@@ -15,57 +13,58 @@ def call(Map execParms)
 
     node {
 
-    node {
-
         stage("Initialize"){
 
             initialize(execParms)
 
+            if(mddlTaskList.size() > 1) {
+
+                error "At the current stage we do not support processing of more than one MDDL member per build."
+
+            }
         }
 
-        echo "Calling Mddl_Promote_Pipeline with parameters\n\n" +
-            "execParms: " + execParms.toString() + "\n\n" +
-            "pipelineConfig: " + pipelineConfig.toString() + "\n\n" +
-            "mddlTaskList: " + mddlTaskList.toString() + "\n\n" +
-            "ispwCurrentLevel: "  + ispwCurrentLevel + "\n\n" + 
-            "db2SourceLevel: "  + db2SourceLevel + "\n\n" + 
-            "db2TargetLevel: " + db2TargetLevel + "\n\n" + 
-            "cesUrl: " + cesUrl
+        parallel(
 
-        // Mddl_Promote_Pipeline(execParms, pipelineConfig, mddlTaskList, ispwCurrentLevel, db2SourceLevel, db2TargetLevel)
+            processMddl: {
+                if(mddlTaskList.size() > 0) {
+                    node {
+                        Mddl_Pipeline2(execParms, pipelineConfig, mddlTaskList, ispwCurrentLevel, cesUrl)
+                    }
+                }
+            },
+            processCobol: {
+                if(cobTaskList.size() > 0) {
+                    node {
+                        Cobol_Pipeline(execParms, pipelineConfig, ispwCurrentLevel, cesUrl)
+                    }
+                }
+            }
+
+        )
+
     }
 }
 
 def initialize(execParms) {
 
-    cleanWs()
+    dir("./") 
+    {
+        deleteDir()
+    }
 
     pipelineConfig      = readYaml(text: libraryResource(configFile))
-
     ispwStream          = execParms.ispwStream
     ispwApplication     = execParms.ispwApplication
-    ispwAssignmentId    = execParms.ispwAssignmentId
     ispwSetId           = execParms.ispwSetId
-    ispwOwner           = execParms.ispwOwner
     ispwLevel           = execParms.ispwLevel
     cesUrl              = pipelineConfig.ces.hostName + ':' + pipelineConfig.ces.port
+    ispwCurrentLevel    = pipelineConfig.ispw.lifeCycle[ispwLevel]
 
     def taskList        = getTaskList(ispwSetId)
     cobTaskList         = getTaskListsByType(taskList)[0]
     mddlTaskList        = getTaskListsByType(taskList)[1]
 
-    if(mddlTaskList.size() > 1) {
-
-        error "At the current stage we do not support processing of more than one MDDL member per build."
-
-    }
-    else if(mddlTaskList.size() == 0) {
-        error "No MDDL Task was found."
-    }
-
-    ispwCurrentLevel    = pipelineConfig.ispw.lifeCycle[ispwLevel].nextLevel
-    db2SourceLevel      = pipelineConfig.ispw.lifeCycle[ispwLevel].db2SourceLevel
-    db2TargetLevel      = pipelineConfig.ispw.lifeCycle[ispwLevel].db2TargetLevel    
 }
 
 def getTaskList(ispwSetId) {

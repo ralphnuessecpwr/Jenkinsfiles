@@ -41,15 +41,23 @@ ispw:
     UT:
       nextLevel:        'CONS'
       ssid:             'DSCC'
+      db2SourceLevel:   'USER'
+      db2TargetLevel:   'UT'
     CONS:
       nextLevel:        'ST'
       ssid:             'DSCC'
+      db2SourceLevel:   'UT'
+      db2TargetLevel:   'ST'
     ST:                 
       nextLevel:        'AT'
       ssid:             'DSCC'
+      db2SourceLevel:   'ST'
+      db2TargetLevel:   'AT'
     AT:                 
       nextLevel:        'PRD'
       ssid:             'DSCC'
+      db2SourceLevel:   'AT'
+      db2TargetLevel:   'PRD'
     PRD:
       ssid:             'DSCC'
 mddlTemplate:
@@ -57,15 +65,7 @@ mddlTemplate:
     database:           FDDB
     tablespace:         SQA10001
     table:              ""
-  QA1:
-    database:           FDDB
-    tablespace:         SQA10001
-    table:              ""
   UT:
-    database:           EUSLSDB
-    tablespace:         SQA10001
-    table:              ""
-  DEV1:
     database:           EUSLSDB
     tablespace:         SQA10001
     table:              ""
