@@ -55,9 +55,10 @@ def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
             mddlTaskContent.mddl[targetLevel].database  = "HDDRXMDB"
         }
 
-        runAuthentication(pipelineConfig)
-        
-        runComparison(workIdName, sourceLevel, targetLevel)
+        // runAuthentication(pipelineConfig)
+        runAuthentication()
+
+        runComparison()
 
     }
 
@@ -171,7 +172,7 @@ def getMddlTaskContentList() {
     return mddlTaskContentList
 }
 
-def runAuthentication(pipelineConfig) {
+def runAuthentication() {
 
     withCredentials(
         [   
