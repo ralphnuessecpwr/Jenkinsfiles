@@ -44,15 +44,12 @@ def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
 
     }
 
-    stage('Compare Developer Schema definition against Production') {
+    stage('Schema Compare') {
 
         mddlTaskContent = mddlTaskContentList[0]
         workIdOwner     = mddlTaskContent.userId
         workIdName      = mddlTaskContent.moduleName
         jobcard         = jobcard.replace('${Job_ID}', BUILD_NUMBER)
-
-        sourceDatabase      = mddlTaskContent.mddl[sourceLevel].database
-        sourceTablespace    = mddlTaskContent.mddl[sourceLevel].tablespace
 
         if(targetLevel == "USER") {
             mddlTaskContent.mddl[targetLevel].database  = "HDDRXMDB"
@@ -60,7 +57,7 @@ def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
 
         runAuthentication(pipelineConfig)
         
-        runComparison(workIdName)
+        runComparison(workIdName, sourceLevel, targetLevel)
 
     }
 
@@ -204,18 +201,18 @@ def runAuthentication(pipelineConfig) {
     return
 }
 
-def runComparison(workIdName) {
+def runComparison() {
 
         echo "Running Comparison, using"
         echo "Work ID :" + workIdName
         echo "Source\n" +
-            "   SSID: " + mddlTaskContent.mddl[sourceLevel].ssid + "\n" +
-            "   Database: " + mddlTaskContent.mddl[sourceLevel].database + "\n" +
-            "   Tablespace: " + mddlTaskContent.mddl[sourceLevel].tablespace + "\n"
+            "   SSID: " + mddlTaskContent.mddl[ispwSourceLevel].ssid + "\n" +
+            "   Database: " + mddlTaskContent.mddl[ispwSourceLevel].database + "\n" +
+            "   Tablespace: " + mddlTaskContent.mddl[ispwSourceLevel].tablespace + "\n"
         echo "Tartegt\n" +
-            "   SSID: " + mddlTaskContent.mddl[targetLevel].ssid + "\n" +
-            "   Database: " + mddlTaskContent.mddl[targetLevel].database + "\n" +
-            "   Tablespace: " + mddlTaskContent.mddl[targetLevel].tablespace + "\n"
+            "   SSID: " + mddlTaskContent.mddl[ispwTargetLevel].ssid + "\n" +
+            "   Database: " + mddlTaskContent.mddl[ispwTargetLevel].database + "\n" +
+            "   Tablespace: " + mddlTaskContent.mddl[ispwTargetLevel].tablespace + "\n"
 
 
         // bmcAmiDb2SchemaChangeMigration(
