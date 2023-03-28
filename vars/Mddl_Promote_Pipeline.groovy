@@ -53,6 +53,9 @@ def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, ces
             mddlTaskContent.mddl[targetLevel].tablespace 
         }
         
+        echo "mddlTaskContent"
+        echo mddlTaskContent.toString()
+
         // mddlTaskContent.mddl[targetLevel].database  = eParms.ispwOwner + pConfig.db2.userDbSuffix
 
         // runAuthentication(pipelineConfig)
@@ -154,7 +157,7 @@ def getMddlTaskContentList() {
         mddlTaskContent['userId']       = it.userId
         
         mddlTaskContentList.add(mddlTaskContent)
-    
+
     }
 
     return mddlTaskContentList
