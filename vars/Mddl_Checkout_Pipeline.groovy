@@ -287,7 +287,7 @@ def downloadCompareResults() {
 def implementSchema() {
 
     bmcAmiDb2SchemaChangeMigration(
-        acceptableRC: '0000', 
+        acceptableRC: '0004', 
         jobWaitTime: 2, 
         moduletype: 'Select comparison type', 
         nocdl: true, 
