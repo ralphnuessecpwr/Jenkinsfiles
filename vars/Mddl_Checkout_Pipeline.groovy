@@ -66,6 +66,14 @@ def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
 
         downloadCompareResults()
     }
+
+    stage("Schema Implement") {
+
+        echo "Implementing schema at user level"
+
+        implementSchema()
+
+    }
 }
 
 def initialize(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
@@ -273,4 +281,59 @@ def downloadCompareResults() {
     )
 
     emailext attachmentsPattern: '**/AMI_Output/*.txt', body: '', subject: 'Test', to: 'ralph_nuesse@bmc.com'
+}
+
+def implementSchema() {
+
+    bmcAmiDb2SchemaChangeMigration(
+        acceptableRC: '0000',  
+        cdlRollCheck: false, 
+        cdlRollPds: '', 
+        cdlpds: "#cdlpds#(${workIdName})", 
+        cmpbl1: '', 
+        cmpbl2: '', 
+        cmpbp1: '', 
+        cmpbp2: '', 
+        cmpddl1: '', 
+        cmpddl2: '', 
+        compin: '', 
+        crule: '', 
+        crule1: '', 
+        crule2: '', 
+        cruleAfter: '', 
+        cruleBefore: '', 
+        debug: false, 
+        disablebuildstep: false, 
+        execjclpds: "#execpds#(${workIdName})", 
+        genjcl: false, 
+        analysisin: analysisIn,  
+        impin: importIn, 
+        imprptpds: '', 
+        jclgenin: jclGenIn, 
+        jcomp: compareJcl, 
+        jobWaitTime: 2, 
+        location2: '', 
+        moduletype: 'Select comparison type', 
+        nocdl: true, 
+        objPart1C1: '', 
+        objPart1C2: '', 
+        objPart2C1: '', 
+        objPart2C2: '', 
+        objPart3C1: '', 
+        objPart3C2: '', 
+        objtyp: 'Select object type', 
+        postbaseexec: false, 
+        postbasename: '', 
+        postbaseprof: '', 
+        preBaseType: 'none', 
+        prebasename: '', 
+        prebaseprof: '', 
+        ssid: '2SCC', 
+        useCrule: false,
+        useCruleAfter: false, 
+        useCruleBefore: false, 
+        wkidowner: workIdOwner,   
+        wkidname: workIdName, 
+        wlistpds: "#wlpds#(${workIdName})"
+    }
 }
