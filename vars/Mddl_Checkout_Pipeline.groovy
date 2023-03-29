@@ -335,5 +335,5 @@ def implementSchema() {
         wkidowner: workIdOwner,   
         wkidname: workIdName, 
         wlistpds: "#wlpds#(${workIdName})"
-    }
+    )
 }
