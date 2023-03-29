@@ -285,14 +285,14 @@ def downloadCompareResults() {
 }
 
 def implementSchema() {
-        
+
     bmcAmiDb2SchemaChangeMigration(
         acceptableRC: '0000', 
         jobWaitTime: 2, 
         moduletype: 'Select comparison type', 
         nocdl: true, 
         objtyp: 'Select object type', 
-        ssid: '2DSC',
+        ssid: pipelineConfig.ispw.lifeCycle[ispwTargetLevel].ssid,
         objPart1C1: '', 
         objPart2C1: '', 
         objPart3C1: '', 
