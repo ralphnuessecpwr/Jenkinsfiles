@@ -72,7 +72,7 @@ def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, ces
 
         echo "Implementing schema at user level"
 
-        implementSchema()
+        //implementSchema()
     }
 
     stage("Process Results"){
@@ -259,8 +259,8 @@ def runComparison() {
             prebasename:    '', 
             prebaseprof:    '', 
             useCrule:       false, 
-            useCruleAfter:  false, 
-            useCruleBefore: false, 
+            useCruleAfter:  true, 
+            useCruleBefore: true, 
             wkidowner:      workIdOwner, 
             wkidname:       workIdName,             
             wlistpds:       "#wlpds#(${workIdName})",
@@ -276,8 +276,8 @@ def runComparison() {
             crule:          '', 
             crule1:         '', 
             crule2:         '', 
-            cruleAfter:     '', 
-            cruleBefore:    '', 
+            cruleAfter:     'HDDRXM0.ABNUT',  
+            cruleBefore:    'HDDRXM0.ABNUT', 
             debug:          false, 
             disablebuildstep: false, 
             execjclpds:     "#execpds#(${workIdName})",

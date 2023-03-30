@@ -80,7 +80,7 @@ def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
 
         emailext(
             attachmentsPattern: '**/AMI_Output/*.txt', 
-            body: 'Hi,\nwe have implemented your development schema. Please review' + 
+            body: 'Hi,\nwe have implemented your development schema. Please review\n\n' + 
                 "   SSID: " + pipelineConfig.ispw.lifeCycle[ispwTargetLevel].ssid + "\n" +
                 "   Database: " + mddlTaskContent.mddl[ispwTargetLevel].database + "\n" +
                 "   Tablespace: " + mddlTaskContent.mddl[ispwTargetLevel].tablespace + "\n" + 
@@ -246,9 +246,9 @@ def runComparison() {
             preBaseType:    'none', 
             prebasename:    '', 
             prebaseprof:    '', 
-            useCrule:       false, 
-            useCruleAfter:  false, 
-            useCruleBefore: false, 
+            useCrule:       false,             
+            useCruleAfter:  true, 
+            useCruleBefore: true, 
             wkidowner:      workIdOwner, 
             wkidname:       workIdName,             
             wlistpds:       "#wlpds#(${workIdName})",
