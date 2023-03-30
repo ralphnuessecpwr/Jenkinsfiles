@@ -68,13 +68,6 @@ def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, ces
 
     }
 
-    stage("Schema Implement") {
-
-        echo "Implementing schema at user level"
-
-        implementSchema()
-    }
-
     stage("Process Results"){
 
         echo "Processing Comparison Results"
@@ -83,7 +76,9 @@ def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, ces
 
         emailext(
             attachmentsPattern: '**/AMI_Output/*.txt', 
-            body: 'Hi,\nwe have implemented your schema change in the UT environment. Please review:\n\n', 
+            body: 'Hello Db2 Team,\n' +
+                'User ' + workIdOwner + ' wants to release a Db2 schema change at the ST level. ' +
+                'Please review the attached documentation and approve/reject the change.\n\n' +
                 "Source\n" +
                 "   SSID: " + pipelineConfig.ispw.lifeCycle[db2SourceLevel].ssid + "\n" +
                 "   Database: " + mddlTaskContent.mddl[db2SourceLevel].database + "\n" +
@@ -96,13 +91,7 @@ def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, ces
                 subject: 'Test', 
                 to: 'ralph_nuesse@bmc.com'
         )
-
-            subject: 'Implemented Schema Change at UT', 
-            to: 'ralph_nuesse@bmc.com'
-        )
     }
-
-
 }
 
 def initialize(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, cesUrl) {
@@ -292,10 +281,6 @@ def runComparison() {
         )
     
     return
-}
-
-def implementSchema() {
-
 }
 
 def downloadCompareResults() {

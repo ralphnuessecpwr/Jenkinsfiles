@@ -60,19 +60,29 @@ def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
 
     }
 
-    stage("Process Results"){
-
-        echo "Processing Comparison Results"
-
-        downloadCompareResults()
-    }
-
     stage("Schema Implement") {
 
         echo "Implementing schema at user level"
 
         implementSchema()
+    }
 
+    stage("Process Results"){
+
+        echo "Processing Comparison Results"
+
+        downloadCompareResults()
+
+        emailext(
+            attachmentsPattern: '**/AMI_Output/*.txt', 
+            body: 'Hi,\nwe have implemented your development schema. Please review', 
+                "   SSID: " + pipelineConfig.ispw.lifeCycle[db2TargetLevel].ssid + "\n" +
+                "   Database: " + mddlTaskContent.mddl[db2TargetLevel].database + "\n" +
+                "   Tablespace: " + mddlTaskContent.mddl[db2TargetLevel].tablespace + "\n"
+                , 
+            subject: 'Implemented Development Schema', 
+            to: 'ralph_nuesse@bmc.com'
+        )
     }
 }
 
@@ -280,8 +290,6 @@ def downloadCompareResults() {
         sfolderexec:        pipelineConfig.amiDevOps.datasetNames.work.execjclpds, 
         sfolderwlist:       pipelineConfig.amiDevOps.datasetNames.work.wlistpds
     )
-
-    emailext attachmentsPattern: '**/AMI_Output/*.txt', body: '', subject: 'Test', to: 'ralph_nuesse@bmc.com'
 }
 
 def implementSchema() {
