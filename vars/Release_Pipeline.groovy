@@ -43,12 +43,12 @@ def initialize(execParms) {
     ispwStream          = execParms.ispwStream
     ispwApplication     = execParms.ispwApplication
     ispwAssignmentId    = execParms.ispwAssignmentId
-    ispwSetId           = execParms.ispwSetId
+    ispwReleaseId       = execParms.ispwReleaseId
     ispwOwner           = execParms.ispwOwner
     ispwLevel           = execParms.ispwLevel
     cesUrl              = pipelineConfig.ces.hostName + ':' + pipelineConfig.ces.port
 
-    def taskList        = getTaskList(ispwSetId)
+    def taskList        = getTaskList(ispwReleaseId)
     cobTaskList         = getTaskListsByType(taskList)[0]
     mddlTaskList        = getTaskListsByType(taskList)[1]
 
@@ -68,15 +68,15 @@ def initialize(execParms) {
     //currentBuild.displayName = "Change at ${db2SourceLevel} to ${db2TargetLevel}"
 }
 
-def getTaskList(ispwSetId) {
+def getTaskList(releaseId) {
 
     def response    = ispwOperation(
                             connectionId:           pipelineConfig.host.connectionId, 
                             credentialsId:          pipelineConfig.ces.credentialsId,
                             serverConfig:           pipelineConfig.ispw.runtimeConfig, 
                             consoleLogResponseBody: true, 
-                            ispwAction:             'GetSetTaskList', 
-                            ispwRequestBody:        'setId=' + ispwSetId
+                            ispwAction:             'GetReleaseTaskList', 
+                            ispwRequestBody:        'releaseId=' + releaseId
                         )
 
     def taskList        = readJSON(text: response.content).tasks
