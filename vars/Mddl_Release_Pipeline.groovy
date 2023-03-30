@@ -59,9 +59,6 @@ def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, ces
         echo "mddlTaskContent"
         echo mddlTaskContent.toString()
 
-        // mddlTaskContent.mddl[targetLevel].database  = eParms.ispwOwner + pConfig.db2.userDbSuffix
-
-        // runAuthentication(pipelineConfig)
         runAuthentication()
 
         runComparison()
