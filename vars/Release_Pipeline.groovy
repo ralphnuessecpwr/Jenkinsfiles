@@ -65,7 +65,7 @@ def initialize(execParms) {
     db2SourceLevel      = pipelineConfig.ispw.lifeCycle[ispwLevel].db2SourceLevel
     db2TargetLevel      = pipelineConfig.ispw.lifeCycle[ispwLevel].db2TargetLevel    
 
-    currentBuild.displayName = "Table promote from ${db2SourceLevel} to ${db2TargetLevel}"
+    //currentBuild.displayName = "Change at ${db2SourceLevel} to ${db2TargetLevel}"
 }
 
 def getTaskList(ispwSetId) {

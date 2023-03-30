@@ -82,7 +82,7 @@ def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, ces
                 "Source\n" +
                 "   SSID: " + pipelineConfig.ispw.lifeCycle[db2SourceLevel].ssid + "\n" +
                 "   Database: " + mddlTaskContent.mddl[db2SourceLevel].database + "\n" +
-                "   Tablespace: " + mddlTaskContent.mddl[db2SourceLevel].tablespace + "\n\n"
+                "   Tablespace: " + mddlTaskContent.mddl[db2SourceLevel].tablespace + "\n\n" +
                 "Target\n" +
                 "   SSID: " + pipelineConfig.ispw.lifeCycle[db2TargetLevel].ssid + "\n" +
                 "   Database: " + mddlTaskContent.mddl[db2TargetLevel].database + "\n" +

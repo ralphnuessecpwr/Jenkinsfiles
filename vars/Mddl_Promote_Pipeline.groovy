@@ -83,11 +83,11 @@ def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, ces
 
         emailext(
             attachmentsPattern: '**/AMI_Output/*.txt', 
-            body: 'Hi,\nwe have implemented your schema change in the UT environment. Please review:\n\n', 
+            body: 'Hi,\nwe have implemented your schema change in the UT environment. Please review:\n\n' +
                 "Source\n" +
                 "   SSID: " + pipelineConfig.ispw.lifeCycle[db2SourceLevel].ssid + "\n" +
                 "   Database: " + mddlTaskContent.mddl[db2SourceLevel].database + "\n" +
-                "   Tablespace: " + mddlTaskContent.mddl[db2SourceLevel].tablespace + "\n\n"
+                "   Tablespace: " + mddlTaskContent.mddl[db2SourceLevel].tablespace + "\n\n" +
                 "Target\n" +
                 "   SSID: " + pipelineConfig.ispw.lifeCycle[db2TargetLevel].ssid + "\n" +
                 "   Database: " + mddlTaskContent.mddl[db2TargetLevel].database + "\n" +
