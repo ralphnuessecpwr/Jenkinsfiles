@@ -93,16 +93,11 @@ def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, ces
                 "   Database: " + mddlTaskContent.mddl[db2TargetLevel].database + "\n" +
                 "   Tablespace: " + mddlTaskContent.mddl[db2TargetLevel].tablespace + "\n"
                 , 
-                subject: 'Test', 
+                subject: 'Implemented Schema Change at UT', 
                 to: 'ralph_nuesse@bmc.com'
         )
 
-            subject: 'Implemented Schema Change at UT', 
-            to: 'ralph_nuesse@bmc.com'
-        )
     }
-
-
 }
 
 def initialize(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, cesUrl) {
