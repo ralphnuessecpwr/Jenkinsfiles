@@ -53,6 +53,8 @@ def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
 
         mddlTaskContent.mddl[targetLevel].database  = eParms.ispwOwner.substring(0,6) + pConfig.db2.userDbSuffix
 
+        echo "MDDL Task Content"
+        echo mddlTaskContent.toString()
         // runAuthentication(pipelineConfig)
         runAuthentication()
 
@@ -72,6 +74,9 @@ def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
         echo "Processing Comparison Results"
 
         downloadCompareResults()
+
+        echo "MDDL Task Content"
+        echo mddlTaskContent.toString()
 
         emailext(
             attachmentsPattern: '**/AMI_Output/*.txt', 
@@ -213,7 +218,7 @@ def runComparison() {
             "   SSID: " + pipelineConfig.ispw.lifeCycle[ispwSourceLevel].ssid + "\n" +
             "   Database: " + mddlTaskContent.mddl[ispwSourceLevel].database + "\n" +
             "   Tablespace: " + mddlTaskContent.mddl[ispwSourceLevel].tablespace + "\n"
-        echo "Tartet\n" +
+        echo "Target\n" +
             "   SSID: " + pipelineConfig.ispw.lifeCycle[ispwTargetLevel].ssid + "\n" +
             "   Database: " + mddlTaskContent.mddl[ispwTargetLevel].database + "\n" +
             "   Tablespace: " + mddlTaskContent.mddl[ispwTargetLevel].tablespace + "\n"
