@@ -83,7 +83,9 @@ def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
             body: 'Hi,\nwe have implemented your development schema. Please review' + 
                 "   SSID: " + pipelineConfig.ispw.lifeCycle[ispwTargetLevel].ssid + "\n" +
                 "   Database: " + mddlTaskContent.mddl[ispwTargetLevel].database + "\n" +
-                "   Tablespace: " + mddlTaskContent.mddl[ispwTargetLevel].tablespace + "\n"
+                "   Tablespace: " + mddlTaskContent.mddl[ispwTargetLevel].tablespace + "\n" + 
+                "   Creator: " + mddlTaskContent.userId + "\n" +
+                "   Table: " + mddlTaskContent.mddl[ispwSourceLevel].tablespace // Table name from "production" - will be component name anyway
                 , 
             subject: 'Implemented Development Schema', 
             to: 'ralph_nuesse@bmc.com'
