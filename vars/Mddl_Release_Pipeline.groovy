@@ -87,7 +87,7 @@ def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, ces
                 "   SSID: " + pipelineConfig.ispw.lifeCycle[db2TargetLevel].ssid + "\n" +
                 "   Database: " + mddlTaskContent.mddl[db2TargetLevel].database + "\n" +
                 "   Tablespace: " + mddlTaskContent.mddl[db2TargetLevel].tablespace + "\n\n" +
-                execParms.adoReleaseUrl
+                " https://dev.azure.com/rnuesse/Manage_DDL/_releaseProgress?_a=release-pipeline-progress&releaseId=" + execParms.adoDeploymentId
                 , 
                 subject: 'Test', 
                 to: 'ralph_nuesse@bmc.com'
