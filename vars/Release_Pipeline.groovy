@@ -61,7 +61,7 @@ def initialize(execParms) {
         error "No MDDL Task was found."
     }
 
-    ispwCurrentLevel    = pipelineConfig.ispw.lifeCycle[ispwLevel].nextLevel
+    ispwCurrentLevel    = ispwLevel
     db2SourceLevel      = pipelineConfig.ispw.lifeCycle[ispwLevel].db2SourceLevel
     db2TargetLevel      = pipelineConfig.ispw.lifeCycle[ispwLevel].db2TargetLevel    
 
