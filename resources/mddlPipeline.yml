@@ -33,6 +33,7 @@ ces:
 ispw:
   serverName:           'ispw'
   runtimeConfig:        'iccga'
+  containerTypeRelease: '1'
   containerTypeSet:     '2'
   mddlType:             'MDDL'
   mddlRootFolder:       'Mddl'
