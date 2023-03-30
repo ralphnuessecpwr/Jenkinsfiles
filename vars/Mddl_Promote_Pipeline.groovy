@@ -277,7 +277,7 @@ def runComparison() {
             disablebuildstep: false, 
             execjclpds:     "HDDRXM0.AMI.DEVOPS.UT.EXECJCL(${workIdName})",  //"#execpds#(${workIdName})",
             genjcl:         false, 
-            imprptpds:      "HDDRXM0.AMI.DEVOPS.UT.IMPRT(${workIdName})",  //"#irpds#(${workIdName})",                 
+            imprptpds:      "HDDRXM0.AMI.DEVOPS.UT.IMPRPT(${workIdName})",  //"#irpds#(${workIdName})",                 
             analysisin:     analysisIn, 
             compin:         compIn, 
             impin:          importIn, 
