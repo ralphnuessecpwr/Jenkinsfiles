@@ -9,9 +9,11 @@
      CMPTYPE2 LOCAL
      INCLUDE (ALTER CREATE DROP )
      REPORT (DETAIL )
-     SCOPETYPE RULE
+     SCOPETYPE RULE     
      SCOPERULE1 (* ${Object Type (applies to Compare1 and Compare2)} ${Object Name Part 1 for Compare1}.${Object Name Part 2 for Compare1})
      SCOPERULE2 (* ${Object Type (applies to Compare1 and Compare2)} ${Object Name Part 1 for Compare2}.${Object Name Part 2 for Compare2})
+     CHANGERULESIN2 ${Outbound Migrate Profile (applied before comparison)}
+     CDLCHANGERULES ${Outbound Migrate Profile (applied after comparison)}
      NOSYNONYM
      NOALIAS
      NODEFINE
