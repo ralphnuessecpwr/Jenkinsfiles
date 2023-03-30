@@ -86,7 +86,8 @@ def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, ces
                 "Target\n" +
                 "   SSID: " + pipelineConfig.ispw.lifeCycle[db2TargetLevel].ssid + "\n" +
                 "   Database: " + mddlTaskContent.mddl[db2TargetLevel].database + "\n" +
-                "   Tablespace: " + mddlTaskContent.mddl[db2TargetLevel].tablespace + "\n"
+                "   Tablespace: " + mddlTaskContent.mddl[db2TargetLevel].tablespace + "\n\n" +
+                execParms.adoReleaseUrl
                 , 
                 subject: 'Test', 
                 to: 'ralph_nuesse@bmc.com'
