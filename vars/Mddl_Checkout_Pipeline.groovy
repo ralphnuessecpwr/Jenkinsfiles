@@ -81,9 +81,9 @@ def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
         emailext(
             attachmentsPattern: '**/AMI_Output/*.txt', 
             body: 'Hi,\nwe have implemented your development schema. Please review' + 
-                "   SSID: " + pipelineConfig.ispw.lifeCycle[db2TargetLevel].ssid + "\n" +
-                "   Database: " + mddlTaskContent.mddl[db2TargetLevel].database + "\n" +
-                "   Tablespace: " + mddlTaskContent.mddl[db2TargetLevel].tablespace + "\n"
+                "   SSID: " + pipelineConfig.ispw.lifeCycle[ispwTargetLevel].ssid + "\n" +
+                "   Database: " + mddlTaskContent.mddl[ispwTargetLevel].database + "\n" +
+                "   Tablespace: " + mddlTaskContent.mddl[ispwTargetLevel].tablespace + "\n"
                 , 
             subject: 'Implemented Development Schema', 
             to: 'ralph_nuesse@bmc.com'
