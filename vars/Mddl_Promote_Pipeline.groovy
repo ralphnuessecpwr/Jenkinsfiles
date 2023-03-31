@@ -291,6 +291,15 @@ def runComparison() {
 
 def implementSchema() {
 
+    bmcAmiJclExecution(
+        acceptableRC: '0000', 
+        debug: false, 
+        disablebuildstep: false, 
+        execpds: true, 
+        jdirectory: "HDDRXM0.AMI.DEVOPS.UT.EXECJCL", 
+        jfilename: workIdName, 
+        jobWaitTime: 2
+    )
 }
 
 def downloadCompareResults() {

@@ -282,6 +282,19 @@ def runComparison() {
     return
 }
 
+def implementSchema() {
+
+    bmcAmiJclExecution(
+        acceptableRC: '0000', 
+        debug: false, 
+        disablebuildstep: false, 
+        execpds: true, 
+        jdirectory: "#execpds#", 
+        jfilename: workIdName, 
+        jobWaitTime: 2
+    )
+}
+
 def downloadCompareResults() {
 
     bat ('mkdir ' + pipelineConfig.amiDevOps.outputFolder)
@@ -297,70 +310,4 @@ def downloadCompareResults() {
         sfolderexec:        pipelineConfig.amiDevOps.datasetNames.work.execjclpds, 
         sfolderwlist:       pipelineConfig.amiDevOps.datasetNames.work.wlistpds
     )
-}
-
-def implementSchema() {
-
-    bmcAmiJclExecution(
-        acceptableRC: '0000', 
-        debug: false, 
-        disablebuildstep: false, 
-        execpds: true, 
-        jdirectory: "#execpds#", 
-        jfilename: workIdName, 
-        jobWaitTime: 2
-    )
-
-    // bmcAmiDb2SchemaChangeMigration(
-    //     acceptableRC: '0004', 
-    //     jobWaitTime: 2, 
-    //     moduletype: 'Select comparison type', 
-    //     nocdl: true, 
-    //     objtyp: 'Select object type', 
-    //     ssid: pipelineConfig.ispw.lifeCycle[ispwTargetLevel].ssid,
-    //     objPart1C1: '', 
-    //     objPart2C1: '', 
-    //     objPart3C1: '', 
-    //     location2: '', 
-    //     objPart1C2: '', 
-    //     objPart2C2: '', 
-    //     objPart3C2: '', 
-    //     postbaseexec: false, 
-    //     postbasename: '', 
-    //     postbaseprof: '', 
-    //     preBaseType: 'none', 
-    //     prebasename: '', 
-    //     prebaseprof: '', 
-    //     useCrule: false, 
-    //     useCruleAfter: false, 
-    //     useCruleBefore: false, 
-    //     wkidowner: workIdOwner, 
-    //     wkidname: workIdName,
-    //     wlistpds: "#wlpds#(${workIdName})",
-    //     cdlRollCheck: false,
-    //     cdlRollPds: '', 
-    //     cdlpds: "#cdlpds#(${workIdName})",
-    //     cmpbl1: '', 
-    //     cmpbl2: '', 
-    //     cmpbp1: '', 
-    //     cmpbp2: '', 
-    //     cmpddl1: '', 
-    //     cmpddl2: '', 
-    //     crule: '', 
-    //     crule1: '', 
-    //     crule2: '', 
-    //     cruleAfter: '', 
-    //     cruleBefore: '', 
-    //     debug: false, 
-    //     disablebuildstep: false, 
-    //     execjclpds: "#execpds#(${workIdName})",
-    //     genjcl: false, 
-    //     imprptpds: "#irpds#(${workIdName})",
-    //     analysisin: analysisIn, 
-    //     compin: '', 
-    //     impin: importIn, 
-    //     jclgenin: jclGenIn,
-    //     jcomp: compareJcl, 
-    //     jobCardIn: jobcard
-    // )
 }
