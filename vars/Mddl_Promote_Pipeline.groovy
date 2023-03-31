@@ -72,7 +72,7 @@ def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, ces
 
         echo "Implementing schema at user level"
 
-        //implementSchema()
+        implementSchema()
     }
 
     stage("Process Results"){
