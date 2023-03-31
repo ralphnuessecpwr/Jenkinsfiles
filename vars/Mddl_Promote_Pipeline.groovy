@@ -44,7 +44,7 @@ def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, ces
 
         mddlTaskContent = mddlTaskContentList[0]
         workIdOwner     = mddlTaskContent.userId
-        workIdName      = mddlTaskContent.moduleName
+        workIdName      = mddlTaskContent.moduleName + "U"
         jobcard         = jobcard.replace('${Job_ID}', BUILD_NUMBER)
 
         if (db2SourceLevel == 'USER') {

@@ -48,7 +48,7 @@ def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
 
         mddlTaskContent = mddlTaskContentList[0]
         workIdOwner     = mddlTaskContent.userId
-        workIdName      = mddlTaskContent.moduleName
+        workIdName      = mddlTaskContent.moduleName + "D"
         jobcard         = jobcard.replace('${Job_ID}', BUILD_NUMBER)
 
         mddlTaskContent.mddl[targetLevel].database  = eParms.ispwOwner.substring(0,6) + pConfig.db2.userDbSuffix
