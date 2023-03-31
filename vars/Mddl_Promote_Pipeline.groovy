@@ -305,7 +305,7 @@ def downloadCompareResults() {
         localFileName:      workIdName, 
         sfolderImprpt:      'HDDRXM0.AMI.DEVOPS.UT.IMPRPT', //pipelineConfig.amiDevOps.datasetNames.work.importpds,
         sfoldercdl:         'HDDRXM0.AMI.DEVOPS.UT.CDL', //pipelineConfig.amiDevOps.datasetNames.work.cdlpds, 
-        sfolderexec:        'HDDRXM0.AMI.DEVOPS.UT.EXECJCL', ((pipelineConfig.amiDevOps.datasetNames.work.execjclpds, 
+        sfolderexec:        'HDDRXM0.AMI.DEVOPS.UT.EXECJCL', //pipelineConfig.amiDevOps.datasetNames.work.execjclpds, 
         sfolderwlist:       'HDDRXM0.AMI.DEVOPS.UT.WORKLIST' //pipelineConfig.amiDevOps.datasetNames.work.wlistpds
     )
 }
