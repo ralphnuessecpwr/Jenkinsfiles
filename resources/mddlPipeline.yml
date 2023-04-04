@@ -64,11 +64,19 @@ ispw:
     PRD:
       ssid:             'DSCC'
 mddlTemplate:
-  ST:
-    database:           FDDB
-    tablespace:         SQA10001
-    table:              ""
   UT:
-    database:           EUSLSDB
-    tablespace:         SQA10001
-    table:              ""
+    database: DABNUT
+    tablespace: SQA10001
+    table: ""
+  ST:
+    database: DABNST
+    tablespace: SQA10001
+    table: ""
+  AT:
+    database: DABNAT
+    tablespace: SQA10001
+    table: ""
+  PRD:
+    database: DABNPD
+    tablespace: SQA10001
+    table: ""
