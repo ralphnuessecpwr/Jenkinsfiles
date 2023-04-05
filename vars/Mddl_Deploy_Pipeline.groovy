@@ -20,6 +20,7 @@ def compareJcl
 def jobcard
 def workIdOwner
 def workIdName
+def resultsMember
 
 def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, cesUrl) {
 
@@ -40,7 +41,8 @@ def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, ces
 
         mddlTaskContent = mddlTaskContentList[0]
         workIdOwner     = mddlTaskContent.userId
-        workIdName      = mddlTaskContent.moduleName + "S"
+        workIdName      = ispwReleaseId + '_' + mddlTaskContent.moduleName
+        resultsMember   = mddlTaskContent.moduleName
     }
 
     stage("Schema Implement") {
@@ -180,7 +182,7 @@ def implementSchema() {
         disablebuildstep: false, 
         execpds: true, 
         jdirectory: "HDDRXM0.AMI.DEVOPS.ST.EXECJCL", 
-        jfilename: workIdName, 
+        jfilename: resultsMember, 
         jobWaitTime: 2
     )
 }

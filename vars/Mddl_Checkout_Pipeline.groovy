@@ -19,6 +19,7 @@ def compareJcl
 def jobcard
 def workIdOwner
 def workIdName
+def resultsMember
 
 def sourceDatabase
 def sourceTablespace
@@ -48,7 +49,8 @@ def call(eParms, pConfig, mTaskList, sourceLevel, targetLevel, cesUrl) {
 
         mddlTaskContent = mddlTaskContentList[0]
         workIdOwner     = mddlTaskContent.userId
-        workIdName      = mddlTaskContent.moduleName + "D"
+        workIdName      = ispwSetId + '_' + mddlTaskContent.moduleName
+        resultsMember   = mddlTaskContent.moduleName
         jobcard         = jobcard.replace('${Job_ID}', BUILD_NUMBER)
 
         mddlTaskContent.mddl[targetLevel].database  = eParms.ispwOwner.substring(0,6) + pConfig.db2.userDbSuffix
@@ -251,10 +253,10 @@ def runComparison() {
             useCruleBefore: true, 
             wkidowner:      workIdOwner, 
             wkidname:       workIdName,             
-            wlistpds:       "#wlpds#(${workIdName})",
+            wlistpds:       "#wlpds#(${})",
             cdlRollCheck:   false, 
             cdlRollPds:     '', 
-            cdlpds:         "#cdlpds#(${workIdName})",
+            cdlpds:         "#cdlpds#(${resultsMember})",
             cmpbl1:         '', 
             cmpbl2:         '', 
             cmpbp1:         '', 
@@ -268,9 +270,9 @@ def runComparison() {
             cruleBefore:    'HDDRXM0.ABNDOWN', 
             debug:          false, 
             disablebuildstep: false, 
-            execjclpds:     "#execpds#(${workIdName})",
+            execjclpds:     "#execpds#(${resultsMember})",
             genjcl:         false, 
-            imprptpds:      "#irpds#(${workIdName})",                 
+            imprptpds:      "#irpds#(${resultsMember})",                 
             analysisin:     analysisIn, 
             compin:         compIn, 
             impin:          importIn, 
@@ -290,7 +292,7 @@ def implementSchema() {
         disablebuildstep: false, 
         execpds: true, 
         jdirectory: "#execpds#", 
-        jfilename: workIdName, 
+        jfilename: resultsMember, 
         jobWaitTime: 2
     )
 }
@@ -301,10 +303,10 @@ def downloadCompareResults() {
 
     bmcAmiDb2OutputTransmission(
         debug:              false, 
-        destFileName:       workIdName, 
+        destFileName:       resultsMember, 
         dfolder:            './' + pipelineConfig.amiDevOps.outputFolder, 
         disablebuildstep:   false, 
-        localFileName:      workIdName, 
+        localFileName:      resultsMember, 
         sfolderImprpt:      pipelineConfig.amiDevOps.datasetNames.work.importpds,
         sfoldercdl:         pipelineConfig.amiDevOps.datasetNames.work.cdlpds, 
         sfolderexec:        pipelineConfig.amiDevOps.datasetNames.work.execjclpds, 

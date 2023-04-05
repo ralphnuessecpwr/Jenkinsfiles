@@ -20,6 +20,7 @@ def compareJcl
 def jobcard
 def workIdOwner
 def workIdName
+def resultsMember
 
 def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, cesUrl) {
 
@@ -44,7 +45,8 @@ def call(eParms, pConfig, mTaskList, currentLevel, sourceLevel, targetLevel, ces
 
         mddlTaskContent = mddlTaskContentList[0]
         workIdOwner     = mddlTaskContent.userId
-        workIdName      = mddlTaskContent.moduleName + "S"
+        workIdName      = ispwReleaseId + '_' + mddlTaskContent.moduleName
+        resultsMember   = mddlTaskContent.moduleName
         jobcard         = jobcard.replace('${Job_ID}', BUILD_NUMBER)
 
         if (db2SourceLevel == 'USER') {
@@ -250,10 +252,10 @@ def runComparison() {
             useCruleBefore: true, 
             wkidowner:      workIdOwner, 
             wkidname:       workIdName,             
-            wlistpds:       "HDDRXM0.AMI.DEVOPS.ST.WORKLIST(${workIdName})", //"#wlpds#(${workIdName})",
+            wlistpds:       "HDDRXM0.AMI.DEVOPS.ST.WORKLIST(${resultsMember})", //"#wlpds#(${workIdName})",
             cdlRollCheck:   false, 
             cdlRollPds:     '', 
-            cdlpds:         "HDDRXM0.AMI.DEVOPS.ST.CDL(${workIdName})", //"#cdlpds#(${workIdName})",
+            cdlpds:         "HDDRXM0.AMI.DEVOPS.ST.CDL(${resultsMember})", //"#cdlpds#(${workIdName})",
             cmpbl1:         '', 
             cmpbl2:         '', 
             cmpbp1:         '', 
@@ -267,9 +269,9 @@ def runComparison() {
             cruleBefore:    'HDDRXM0.ABNST', 
             debug:          false, 
             disablebuildstep: false, 
-            execjclpds:     "HDDRXM0.AMI.DEVOPS.ST.EXECJCL(${workIdName})", //"#execpds#(${workIdName})",
+            execjclpds:     "HDDRXM0.AMI.DEVOPS.ST.EXECJCL(${resultsMember})", //"#execpds#(${workIdName})",
             genjcl:         false, 
-            imprptpds:      "HDDRXM0.AMI.DEVOPS.ST.IMPRPT(${workIdName})", //"#irpds#(${workIdName})",                 
+            imprptpds:      "HDDRXM0.AMI.DEVOPS.ST.IMPRPT(${resultsMember})", //"#irpds#(${workIdName})",                 
             analysisin:     analysisIn, 
             compin:         compIn, 
             impin:          importIn, 
@@ -287,10 +289,10 @@ def downloadCompareResults() {
 
     bmcAmiDb2OutputTransmission(
         debug:              false, 
-        destFileName:       workIdName, 
+        destFileName:       resultsMember, 
         dfolder:            './' + pipelineConfig.amiDevOps.outputFolder, 
         disablebuildstep:   false, 
-        localFileName:      workIdName, 
+        localFileName:      resultsMember, 
         sfolderImprpt:      'HDDRXM0.AMI.DEVOPS.ST.IMPRPT', //pipelineConfig.amiDevOps.datasetNames.work.importpds,
         sfoldercdl:         'HDDRXM0.AMI.DEVOPS.ST.CDL', //pipelineConfig.amiDevOps.datasetNames.work.cdlpds, 
         sfolderexec:        'HDDRXM0.AMI.DEVOPS.ST.EXECJCL', //pipelineConfig.amiDevOps.datasetNames.work.execjclpds, 
