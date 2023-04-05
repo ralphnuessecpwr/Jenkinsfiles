@@ -253,7 +253,7 @@ def runComparison() {
             useCruleBefore: true, 
             wkidowner:      workIdOwner, 
             wkidname:       workIdName,             
-            wlistpds:       "#wlpds#(${})",
+            wlistpds:       "#wlpds#(${resultsMember})",
             cdlRollCheck:   false, 
             cdlRollPds:     '', 
             cdlpds:         "#cdlpds#(${resultsMember})",
