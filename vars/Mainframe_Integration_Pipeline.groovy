@@ -333,6 +333,8 @@ def call(Map pipelineParams)
         stage("Start release in XL Release")
         {
             // Trigger XL Release Jenkins Plugin to kickoff a Release
+            echo "Triggering XRL"
+         /*
             xlrCreateRelease(
                 releaseTitle:       'A Release for $BUILD_TAG',
                 serverCredentials:  "${pipelineConfig.xlr.user}",
@@ -345,6 +347,7 @@ def call(Map pipelineParams)
                     [propertyName: 'CES_Token',         propertyValue: "${pipelineParams.cesToken}"]
                 ]
             )
+            */
         }
     }
 }
