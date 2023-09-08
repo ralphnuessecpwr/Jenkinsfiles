@@ -4,7 +4,7 @@ host:
   name:                 'cwcc.bmc.com'                            #'cwcc.bmc.com'                            #'192.168.96.130'                          #'cwcc.bmc.com'
   zosmfPort:            '443'
 amiDevOps:
-  credentialsId:        '2WKZOL+7kniw32t84Sahb8X4fTTQhcee 119,#-66,#4,#5,ZR1hWg==' #'58dZsyU/YmUVLxyB29AkqooNkcG1E8pa 57,#-6,#30,#63,1Sa2QQ=='
+  credentialsId:        'syfua09Am40l7UaHAV8IsTDC1+TNTPVg -30,#80,#122,#5aOZVtg==' #'2WKZOL+7kniw32t84Sahb8X4fTTQhcee 119,#-66,#4,#5,ZR1hWg==' #'58dZsyU/YmUVLxyB29AkqooNkcG1E8pa 57,#-6,#30,#63,1Sa2QQ=='
   symDir:               'AMI_DevOps_CWCC.properties'
   analysisIn:           'skels/ami/analysisInput.skel'
   compIn:               'skels/ami/compareInput.skel'
